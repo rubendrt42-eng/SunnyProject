@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <rect width="800" height="600" fill="#F8D347"/>
+  <circle cx="620" cy="120" r="140" fill="#FF7A3D" opacity="0.55"/>
+  <path d="M0 420 C 200 340, 600 500, 800 400 L800 600 L0 600 Z" fill="#171714" opacity="0.12"/>
+  <text x="50%" y="90%" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-size="28" fill="#171714" opacity="0.55">Sunny Project — demo</text>
+</svg>

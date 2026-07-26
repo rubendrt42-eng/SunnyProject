@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+:root {
+  --color-ivory: #f4f1e8;
+  --color-carbon: #171714;
+  --color-sunny: #f8d347;
+  --color-orange: #ff7a3d;
+  --color-warm-white: #fffdfc;
+  --color-gray: #6d6d65;
+}
+
+@theme inline {
+  --color-ivory: var(--color-ivory);
+  --color-carbon: var(--color-carbon);
+  --color-sunny: var(--color-sunny);
+  --color-orange: var(--color-orange);
+  --color-warm-white: var(--color-warm-white);
+  --color-gray: var(--color-gray);
+
+  --font-sans: var(--font-manrope);
+  --font-serif: var(--font-newsreader);
+
+  --animate-fade-in: fade-in 0.4s ease-out;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-ivory);
+  color: var(--color-carbon);
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background: var(--color-sunny);
+  color: var(--color-carbon);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-orange);
+  outline-offset: 2px;
+}
+
+/* Admin form fields (functional/neutral styling, per PRODUCT_SPEC.md §9 admin exemption). */
+.input {
+  border-radius: 0.5rem;
+  border: 1px solid rgb(212 212 212);
+  background-color: white;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  color: rgb(23 23 23);
+}
+
+.input:focus-visible {
+  border-color: rgb(23 23 23);
+  outline: 2px solid rgb(23 23 23 / 0.2);
+  outline-offset: 1px;
+}
