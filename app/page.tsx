@@ -1,25 +1,18 @@
 import Link from "next/link";
-import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import { getFeaturedExperience, getPublicExperiences } from "@/lib/queries";
-import { ExperienceCard } from "@/components/experience/ExperienceCard";
-import { LinkButton } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
-import { Badge } from "@/components/ui/Badge";
+import { LinkButton } from "@/components/ui/Button";
 import { CATEGORIES } from "@/lib/constants";
-import { categoryLabel } from "@/lib/constants";
-import { formatDateShort } from "@/lib/dates";
-import { spotsLeft } from "@/lib/experience-status";
 import { PartnerLeadForm } from "@/components/site/PartnerLeadForm";
 import { FaqList } from "@/components/site/FaqList";
+import { Hero } from "@/components/home/Hero";
+import { ExperienceCarousel } from "@/components/home/ExperienceCarousel";
+import { HowItWorksNarrative } from "@/components/home/HowItWorksNarrative";
+import { InViewReveal } from "@/components/motion/InViewReveal";
+import { isPast } from "@/lib/dates";
 
 export const dynamic = "force-dynamic";
-
-const STEPS = [
-  { number: "01", title: "Descubre", body: "Explora experiencias seleccionadas en Monterrey." },
-  { number: "02", title: "Reclama", body: "Utiliza tu pase semanal antes de que se agoten los lugares." },
-  { number: "03", title: "Vive", body: "Presenta tu folio, disfruta la experiencia y vuelve la próxima semana." },
-];
 
 const FAQ_PREVIEW = [
   {
@@ -40,80 +33,18 @@ export default async function HomePage() {
   const supabase = await createClient();
   const [featured, all] = await Promise.all([getFeaturedExperience(supabase), getPublicExperiences(supabase)]);
 
-  const highlighted = all
-    .filter((e) => e.status === "published" && e.id !== featured?.id)
-    .slice(0, 5);
-  const destacadas = featured ? [featured, ...highlighted] : highlighted;
+  const upcomingPublished = all.filter((e) => e.status === "published" && !isPast(e.starts_at));
+  const carouselItems = [
+    ...(featured ? [featured] : []),
+    ...upcomingPublished.filter((e) => e.id !== featured?.id),
+  ].slice(0, 5);
 
   return (
     <main>
-      {/* Hero */}
-      <section className="py-16 sm:py-24">
-        <Container className="grid gap-12 lg:grid-cols-2 lg:items-center">
-          <div>
-            <h1 className="font-serif text-4xl leading-tight sm:text-6xl">
-              Descubre algo <em className="italic text-orange">nuevo</em> para sentirte bien.
-            </h1>
-            <p className="mt-6 max-w-md text-lg text-gray">
-              Experiencias de wellness, movimiento, cafés y recovery con cupos limitados en Monterrey.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-4">
-              <LinkButton href="/experiencias" size="lg">
-                Explorar experiencias
-              </LinkButton>
-              <LinkButton href="/como-funciona" size="lg" variant="outline">
-                Cómo funciona
-              </LinkButton>
-            </div>
-          </div>
+      <Hero featured={featured} />
 
-          {featured && (
-            <Link
-              href={`/experiencias/${featured.slug}`}
-              className="group block overflow-hidden rounded-3xl border border-carbon/10 bg-warm-white"
-            >
-              <div className="relative aspect-[4/3] w-full overflow-hidden">
-                <Image
-                  src={featured.image_url || "/images/placeholder-1.svg"}
-                  alt=""
-                  fill
-                  sizes="(min-width: 1024px) 50vw, 100vw"
-                  priority
-                  className="object-cover transition-transform duration-300 group-hover:scale-105"
-                />
-              </div>
-              <div className="flex flex-col gap-2 p-6">
-                <Badge tone="sunny">{categoryLabel(featured.category)}</Badge>
-                <h2 className="font-serif text-2xl">{featured.title}</h2>
-                <p className="text-sm text-gray">{featured.business.name}</p>
-                <div className="mt-2 flex items-center justify-between text-sm text-gray">
-                  <span>{formatDateShort(featured.starts_at)}</span>
-                  <span>{spotsLeft(featured, featured.reserved_count)} lugares restantes</span>
-                </div>
-              </div>
-            </Link>
-          )}
-        </Container>
-      </section>
-
-      {/* Cómo funciona */}
-      <section className="border-y border-carbon/10 bg-warm-white py-20">
-        <Container>
-          <h2 className="font-serif text-3xl italic">Cómo funciona</h2>
-          <div className="mt-10 grid gap-10 sm:grid-cols-3">
-            {STEPS.map((step) => (
-              <div key={step.number}>
-                <span className="font-serif text-5xl text-orange">{step.number}</span>
-                <h3 className="mt-4 text-xl font-semibold">{step.title}</h3>
-                <p className="mt-2 text-gray">{step.body}</p>
-              </div>
-            ))}
-          </div>
-        </Container>
-      </section>
-
-      {/* Experiencias destacadas */}
-      <section className="py-20">
+      {/* Carrusel de experiencias destacadas */}
+      <section className="py-20 sm:py-28">
         <Container>
           <div className="flex items-end justify-between">
             <h2 className="font-serif text-3xl italic">Experiencias destacadas</h2>
@@ -121,11 +52,9 @@ export default async function HomePage() {
               Ver todas →
             </Link>
           </div>
-          {destacadas.length > 0 ? (
-            <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {destacadas.slice(0, 6).map((experience) => (
-                <ExperienceCard key={experience.id} experience={experience} />
-              ))}
+          {carouselItems.length > 0 ? (
+            <div className="mt-10">
+              <ExperienceCarousel experiences={carouselItems} />
             </div>
           ) : (
             <p className="mt-10 text-gray">Pronto publicaremos nuevas experiencias. Vuelve pronto.</p>
@@ -133,46 +62,60 @@ export default async function HomePage() {
         </Container>
       </section>
 
-      {/* Categorías */}
-      <section className="border-y border-carbon/10 bg-warm-white py-20">
+      {/* Cómo funciona */}
+      <section className="border-y border-carbon/10 bg-warm-white py-20 sm:py-28">
         <Container>
-          <h2 className="font-serif text-3xl italic">Categorías</h2>
-          <div className="mt-8 flex flex-wrap gap-3">
-            {CATEGORIES.map((c) => (
-              <Link
-                key={c.value}
-                href={`/experiencias?categoria=${c.value}`}
-                className="rounded-full border border-carbon/15 px-5 py-2.5 text-sm font-medium hover:border-carbon hover:bg-carbon/5"
-              >
-                {c.label}
-              </Link>
-            ))}
+          <h2 className="font-serif text-3xl italic">Cómo funciona</h2>
+          <div className="mt-14">
+            <HowItWorksNarrative />
           </div>
+        </Container>
+      </section>
+
+      {/* Categorías */}
+      <section className="py-20">
+        <Container>
+          <InViewReveal>
+            <h2 className="font-serif text-3xl italic">Categorías</h2>
+            <div className="mt-8 flex flex-wrap gap-3">
+              {CATEGORIES.map((c) => (
+                <Link
+                  key={c.value}
+                  href={`/experiencias?categoria=${c.value}`}
+                  className="rounded-full border border-carbon/15 px-5 py-2.5 text-sm font-medium hover:border-carbon hover:bg-carbon/5"
+                >
+                  {c.label}
+                </Link>
+              ))}
+            </div>
+          </InViewReveal>
         </Container>
       </section>
 
       {/* Pase semanal */}
-      <section className="py-20">
+      <section className="border-y border-carbon/10 bg-warm-white py-20">
         <Container className="grid gap-10 sm:grid-cols-2">
-          <div>
+          <InViewReveal>
             <h2 className="font-serif text-3xl italic">Tu pase semanal</h2>
             <p className="mt-4 text-gray">
               Cada semana tienes un pase gratuito para reclamar tu lugar en una experiencia disponible.
             </p>
-          </div>
-          <ul className="space-y-3 text-carbon">
-            <li className="rounded-xl border border-carbon/10 bg-warm-white p-4">1 pase gratuito por semana.</li>
-            <li className="rounded-xl border border-carbon/10 bg-warm-white p-4">Cupos limitados por experiencia.</li>
-            <li className="rounded-xl border border-carbon/10 bg-warm-white p-4">Se renueva cada lunes.</li>
-            <li className="rounded-xl border border-carbon/10 bg-warm-white p-4">Sin membresía durante esta etapa.</li>
-          </ul>
+          </InViewReveal>
+          <InViewReveal delay={0.1}>
+            <ul className="space-y-3 text-carbon">
+              <li className="rounded-xl border border-carbon/10 bg-ivory p-4">1 pase gratuito por semana.</li>
+              <li className="rounded-xl border border-carbon/10 bg-ivory p-4">Cupos limitados por experiencia.</li>
+              <li className="rounded-xl border border-carbon/10 bg-ivory p-4">Se renueva cada lunes.</li>
+              <li className="rounded-xl border border-carbon/10 bg-ivory p-4">Sin membresía durante esta etapa.</li>
+            </ul>
+          </InViewReveal>
         </Container>
       </section>
 
       {/* Para negocios */}
-      <section className="border-y border-carbon/10 bg-carbon py-20 text-warm-white">
-        <Container className="grid gap-10 lg:grid-cols-2 lg:items-center">
-          <div>
+      <section className="py-20">
+        <Container className="grid gap-10 rounded-3xl bg-carbon p-8 text-warm-white sm:p-14 lg:grid-cols-2 lg:items-center">
+          <InViewReveal>
             <h2 className="font-serif text-3xl italic">Haz que nuevas personas descubran tu espacio.</h2>
             <p className="mt-4 max-w-md text-warm-white/80">
               Comparte algunos lugares, conecta con clientes potenciales y forma parte de la selección de Sunny
@@ -181,21 +124,25 @@ export default async function HomePage() {
             <LinkButton href="/para-negocios" size="lg" variant="secondary" className="mt-8">
               Quiero participar
             </LinkButton>
-          </div>
-          <PartnerLeadForm compact />
+          </InViewReveal>
+          <InViewReveal delay={0.1}>
+            <PartnerLeadForm compact />
+          </InViewReveal>
         </Container>
       </section>
 
       {/* FAQ */}
       <section className="py-20">
         <Container className="max-w-3xl">
-          <h2 className="font-serif text-3xl italic">Preguntas frecuentes</h2>
-          <div className="mt-8">
-            <FaqList items={FAQ_PREVIEW} />
-          </div>
-          <Link href="/preguntas-frecuentes" className="mt-6 inline-block text-sm font-medium text-orange hover:underline">
-            Ver todas las preguntas →
-          </Link>
+          <InViewReveal>
+            <h2 className="font-serif text-3xl italic">Preguntas frecuentes</h2>
+            <div className="mt-8">
+              <FaqList items={FAQ_PREVIEW} />
+            </div>
+            <Link href="/preguntas-frecuentes" className="mt-6 inline-block text-sm font-medium text-orange hover:underline">
+              Ver todas las preguntas →
+            </Link>
+          </InViewReveal>
         </Container>
       </section>
     </main>

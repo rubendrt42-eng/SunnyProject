@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { motion } from "motion/react";
 import type { ExperienceCta } from "@/lib/experience-cta";
 import { CTA_LABEL } from "@/lib/experience-cta";
 import { reservationErrorMessage } from "@/lib/constants";
@@ -70,7 +71,7 @@ export function ClaimPanel({
 
   if (step === "login") {
     return (
-      <div className="rounded-2xl border border-carbon/10 bg-warm-white p-6">
+      <div id="reservar" className="rounded-2xl border border-carbon/10 bg-warm-white p-6">
         <p className="font-medium">Inicia sesión para obtener tu pase</p>
         <p className="mt-1 text-sm text-gray">Usamos un enlace mágico enviado a tu correo, sin contraseñas.</p>
         <LinkButton href={`/acceso?next=${encodeURIComponent(`/experiencias/${experienceSlug}`)}`} className="mt-4">
@@ -81,13 +82,27 @@ export function ClaimPanel({
   }
 
   if (step === "profile_incomplete") {
-    return <ProfileCompletionForm onComplete={() => setStep("confirm")} />;
+    return (
+      <div id="reservar">
+        <ProfileCompletionForm onComplete={() => setStep("confirm")} />
+      </div>
+    );
   }
 
   if (step === "success") {
     return (
-      <div role="status" className="rounded-2xl border border-carbon/10 bg-warm-white p-6">
-        <p className="font-medium text-carbon">¡Pase confirmado!</p>
+      <div id="reservar" role="status" className="rounded-2xl border border-carbon/10 bg-warm-white p-6">
+        <motion.div
+          initial={{ scale: 0.6, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          className="flex h-12 w-12 items-center justify-center rounded-full bg-sunny"
+        >
+          <svg aria-hidden viewBox="0 0 24 24" className="h-6 w-6">
+            <path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" fill="none" />
+          </svg>
+        </motion.div>
+        <p className="mt-4 font-medium text-carbon">¡Pase confirmado!</p>
         <p className="mt-1 text-sm text-gray">
           Tu folio es <strong>{folio}</strong>. Te enviamos los detalles por correo.
         </p>
@@ -100,7 +115,7 @@ export function ClaimPanel({
 
   if (INFO_MESSAGES[step]) {
     return (
-      <div className="rounded-2xl border border-carbon/10 bg-warm-white p-6">
+      <div id="reservar" className="rounded-2xl border border-carbon/10 bg-warm-white p-6">
         <p className="font-medium">{CTA_LABEL[step as ExperienceCta["type"]]}</p>
         <p className="mt-1 text-sm text-gray">{INFO_MESSAGES[step]}</p>
         {(step === "already_reserved" || step === "pass_used_elsewhere") && (
@@ -119,7 +134,7 @@ export function ClaimPanel({
 
   // step === "confirm" | "claiming" | "error"
   return (
-    <div className="rounded-2xl border border-carbon/10 bg-warm-white p-6">
+    <div id="reservar" className="rounded-2xl border border-carbon/10 bg-warm-white p-6">
       <label className="flex items-start gap-3 text-sm">
         <input
           type="checkbox"

@@ -5,6 +5,7 @@ import { isSupabaseConfigured } from "@/lib/env";
 import { SetupRequired } from "@/components/setup-required";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
+import { AppChrome } from "@/components/motion/AppChrome";
 
 const manrope = Manrope({ variable: "--font-manrope", subsets: ["latin"] });
 const newsreader = Newsreader({ variable: "--font-newsreader", subsets: ["latin"], style: ["italic", "normal"] });
@@ -24,7 +25,9 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         {configured ? (
           <>
             <Header />
-            <div className="flex flex-1 flex-col">{children}</div>
+            <AppChrome>
+              <div className="flex flex-1 flex-col">{children}</div>
+            </AppChrome>
             <Footer />
           </>
         ) : (

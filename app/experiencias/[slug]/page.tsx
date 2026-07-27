@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getExperienceBySlug, getExistingReservationForExperience, getActiveWeeklyReservation } from "@/lib/queries";
 import { getCurrentUser, isProfileComplete } from "@/lib/auth";
 import { determineCta } from "@/lib/experience-cta";
-import { EXPERIENCE_STATE_LABEL, EXPERIENCE_STATE_TONE, computeExperienceState, spotsLeft } from "@/lib/experience-status";
-import { categoryLabel } from "@/lib/constants";
+import { computeExperienceState, spotsLeft } from "@/lib/experience-status";
 import { formatDateTime, formatTime } from "@/lib/dates";
 import { Container } from "@/components/ui/Container";
-import { Badge } from "@/components/ui/Badge";
 import { ClaimPanel } from "@/components/experience/ClaimPanel";
+import { DetailHero } from "@/components/experience/DetailHero";
+import { AnimatedAccordion } from "@/components/experience/AnimatedAccordion";
+import { MobileClaimBar } from "@/components/experience/MobileClaimBar";
+import { InViewReveal } from "@/components/motion/InViewReveal";
 
 export const dynamic = "force-dynamic";
 
@@ -53,85 +54,60 @@ export default async function ExperienceDetailPage({
 
   const state = computeExperienceState(experience, experience.reserved_count);
   const left = spotsLeft(experience, experience.reserved_count);
+  const spotsLabel = left > 0 ? `${left} de ${experience.capacity} lugares disponibles` : "Experiencia agotada";
 
   return (
-    <main className="py-10 sm:py-14">
-      <Container className="grid gap-10 lg:grid-cols-[1.4fr_1fr] lg:items-start">
+    <main className="pb-24 lg:pb-14">
+      <DetailHero experience={experience} state={state} />
+
+      <Container className="mt-10 grid gap-10 lg:mt-14 lg:grid-cols-[1.4fr_1fr] lg:items-start">
         <div>
-          <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-carbon/5">
-            <Image src={experience.image_url || "/images/placeholder-2.svg"} alt="" fill className="object-cover" priority />
-          </div>
-
-          <div className="mt-6 flex flex-wrap items-center gap-2">
-            <Badge tone="neutral">{categoryLabel(experience.category)}</Badge>
-            <Badge tone={EXPERIENCE_STATE_TONE[state]}>{EXPERIENCE_STATE_LABEL[state]}</Badge>
-          </div>
-
-          <h1 className="mt-4 font-serif text-4xl italic">{experience.title}</h1>
-          <p className="mt-1 text-lg text-gray">{experience.business.name}</p>
-
-          {experience.description && <p className="mt-6 whitespace-pre-line text-carbon">{experience.description}</p>}
-
-          {experience.what_is_included.length > 0 && (
-            <section className="mt-8">
-              <h2 className="text-lg font-semibold">Qué incluye</h2>
-              <ul className="mt-2 list-inside list-disc text-carbon">
-                {experience.what_is_included.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </section>
+          {experience.description && (
+            <InViewReveal>
+              <p className="whitespace-pre-line text-lg text-carbon">{experience.description}</p>
+            </InViewReveal>
           )}
 
-          {experience.requirements.length > 0 && (
-            <section className="mt-6">
-              <h2 className="text-lg font-semibold">Requisitos</h2>
-              <ul className="mt-2 list-inside list-disc text-carbon">
-                {experience.requirements.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </section>
-          )}
-
-          {experience.restrictions.length > 0 && (
-            <section className="mt-6">
-              <h2 className="text-lg font-semibold">Restricciones</h2>
-              <ul className="mt-2 list-inside list-disc text-carbon">
-                {experience.restrictions.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </section>
-          )}
+          <InViewReveal delay={0.05} className="mt-4">
+            <AnimatedAccordion title="Qué incluye" items={experience.what_is_included} defaultOpen />
+            <AnimatedAccordion title="Requisitos" items={experience.requirements} />
+            <AnimatedAccordion title="Restricciones" items={experience.restrictions} />
+          </InViewReveal>
         </div>
 
-        <aside className="flex flex-col gap-6 lg:sticky lg:top-8">
-          <div className="rounded-2xl border border-carbon/10 bg-warm-white p-6">
-            <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-3 text-sm">
-              <dt className="font-medium text-gray">Fecha</dt>
-              <dd>{formatDateTime(experience.starts_at)}</dd>
-              <dt className="font-medium text-gray">Termina</dt>
-              <dd>{formatTime(experience.ends_at)}</dd>
-              <dt className="font-medium text-gray">Lugar</dt>
-              <dd>{experience.location_name}</dd>
-              {experience.address && (
-                <>
-                  <dt className="font-medium text-gray">Dirección</dt>
-                  <dd>{experience.address}</dd>
-                </>
+        <aside className="flex flex-col gap-6 lg:sticky lg:top-24">
+          <InViewReveal>
+            <div className="rounded-2xl border border-carbon/10 bg-warm-white p-6">
+              <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-3 text-sm">
+                <dt className="font-medium text-gray">Fecha</dt>
+                <dd>{formatDateTime(experience.starts_at)}</dd>
+                <dt className="font-medium text-gray">Termina</dt>
+                <dd>{formatTime(experience.ends_at)}</dd>
+                <dt className="font-medium text-gray">Lugar</dt>
+                <dd>{experience.location_name}</dd>
+                {experience.address && (
+                  <>
+                    <dt className="font-medium text-gray">Dirección</dt>
+                    <dd>{experience.address}</dd>
+                  </>
+                )}
+                <dt className="font-medium text-gray">Cupos</dt>
+                <dd>{left > 0 ? `${left} de ${experience.capacity} disponibles` : "Agotado"}</dd>
+                <dt className="font-medium text-gray">Cierre de reservación</dt>
+                <dd>{formatDateTime(experience.claim_closes_at)}</dd>
+              </dl>
+              {experience.maps_url && (
+                <a
+                  href={experience.maps_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-4 inline-block text-sm font-medium text-orange hover:underline"
+                >
+                  Ver en Google Maps →
+                </a>
               )}
-              <dt className="font-medium text-gray">Cupos</dt>
-              <dd>{left > 0 ? `${left} de ${experience.capacity} disponibles` : "Agotado"}</dd>
-              <dt className="font-medium text-gray">Cierre de reservación</dt>
-              <dd>{formatDateTime(experience.claim_closes_at)}</dd>
-            </dl>
-            {experience.maps_url && (
-              <a href={experience.maps_url} target="_blank" rel="noreferrer" className="mt-4 inline-block text-sm font-medium text-orange hover:underline">
-                Ver en Google Maps →
-              </a>
-            )}
-          </div>
+            </div>
+          </InViewReveal>
 
           <ClaimPanel
             experienceId={experience.id}
@@ -146,6 +122,8 @@ export default async function ExperienceDetailPage({
           </p>
         </aside>
       </Container>
+
+      <MobileClaimBar ctaType={cta.type} spotsLabel={spotsLabel} />
     </main>
   );
 }
