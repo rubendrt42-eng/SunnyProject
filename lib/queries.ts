@@ -10,27 +10,39 @@ async function attachReservedCounts(
 ): Promise<ExperienceWithBusiness[]> {
   if (experiences.length === 0) return [];
 
-  const { data: counts } = await supabase.rpc("reserved_counts_for_experiences", {
+  const { data: counts, error } = await supabase.rpc("reserved_counts_for_experiences", {
     p_experience_ids: experiences.map((e) => e.id),
   });
+
+  if (error) {
+    console.error("[attachReservedCounts] reserved_counts_for_experiences RPC failed", error);
+  }
 
   const countMap = new Map((counts ?? []).map((c) => [c.experience_id, c.reserved_count]));
 
   return experiences.map((e) => ({ ...e, reserved_count: countMap.get(e.id) ?? 0 }));
 }
 
-export async function getPublicExperiences(
-  supabase: SupabaseClient<Database>,
-): Promise<ExperienceWithBusiness[]> {
+export interface ExperiencesResult {
+  data: ExperienceWithBusiness[];
+  /** True when the query itself failed (connection, RLS, etc.) — distinct from a genuinely empty result. */
+  error: boolean;
+}
+
+export async function getPublicExperiences(supabase: SupabaseClient<Database>): Promise<ExperiencesResult> {
   const { data, error } = await supabase
     .from("experiences")
     .select("*, business:businesses(*)")
     .neq("status", "draft")
     .order("starts_at", { ascending: true });
 
-  if (error || !data) return [];
+  if (error) {
+    console.error("[getPublicExperiences] query failed", error);
+    return { data: [], error: true };
+  }
 
-  return attachReservedCounts(supabase, data as unknown as (Experience & { business: Business })[]);
+  const withCounts = await attachReservedCounts(supabase, (data ?? []) as unknown as (Experience & { business: Business })[]);
+  return { data: withCounts, error: false };
 }
 
 export async function getExperienceBySlug(
@@ -53,7 +65,7 @@ export async function getExperienceBySlug(
 export async function getFeaturedExperience(
   supabase: SupabaseClient<Database>,
 ): Promise<ExperienceWithBusiness | null> {
-  const all = await getPublicExperiences(supabase);
+  const { data: all } = await getPublicExperiences(supabase);
   const now = Date.now();
   const upcoming = all.filter((e) => e.status === "published" && new Date(e.starts_at).getTime() > now);
 

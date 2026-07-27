@@ -2,9 +2,12 @@ import { ParallaxImage } from "@/components/motion/ParallaxImage";
 import { Badge } from "@/components/ui/Badge";
 import { categoryLabel } from "@/lib/constants";
 import { EXPERIENCE_STATE_LABEL, EXPERIENCE_STATE_TONE, type ExperienceDisplayState } from "@/lib/experience-status";
+import { isDemoExperience, displayTitle } from "@/lib/demo-content";
 import type { ExperienceWithBusiness } from "@/lib/queries";
 
 export function DetailHero({ experience, state }: { experience: ExperienceWithBusiness; state: ExperienceDisplayState }) {
+  const isDemo = isDemoExperience(experience.title);
+
   return (
     <section className="relative isolate flex h-[56vh] min-h-[380px] flex-col justify-end overflow-hidden rounded-b-[2rem] text-warm-white sm:h-[62vh] sm:rounded-b-[3rem]">
       <ParallaxImage
@@ -22,8 +25,9 @@ export function DetailHero({ experience, state }: { experience: ExperienceWithBu
             {categoryLabel(experience.category)}
           </Badge>
           <Badge tone={EXPERIENCE_STATE_TONE[state]}>{EXPERIENCE_STATE_LABEL[state]}</Badge>
+          {isDemo && <Badge tone="orange">Demostración</Badge>}
         </div>
-        <h1 className="mt-4 max-w-3xl font-serif text-4xl leading-[1.05] italic sm:text-6xl">{experience.title}</h1>
+        <h1 className="mt-4 max-w-3xl font-serif text-4xl leading-[1.05] italic sm:text-6xl">{displayTitle(experience.title)}</h1>
         <p className="mt-2 text-lg text-warm-white/85">{experience.business.name}</p>
       </div>
     </section>

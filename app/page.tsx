@@ -31,7 +31,7 @@ const FAQ_PREVIEW = [
 
 export default async function HomePage() {
   const supabase = await createClient();
-  const [featured, all] = await Promise.all([getFeaturedExperience(supabase), getPublicExperiences(supabase)]);
+  const [featured, { data: all }] = await Promise.all([getFeaturedExperience(supabase), getPublicExperiences(supabase)]);
 
   const upcomingPublished = all.filter((e) => e.status === "published" && !isPast(e.starts_at));
   const carouselItems = [

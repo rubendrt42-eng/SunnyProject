@@ -120,7 +120,8 @@ export default async function MiPasePage() {
     );
   }
 
-  const recommendations = (await getPublicExperiences(supabase))
+  const { data: allExperiences } = await getPublicExperiences(supabase);
+  const recommendations = allExperiences
     .filter((e) => e.status === "published" && !isPast(e.starts_at))
     .slice(0, 3);
 
