@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/Badge";
 import { InViewReveal } from "@/components/motion/InViewReveal";
 import { HoverLift } from "@/components/motion/HoverLift";
 import { AnimatedArrow } from "@/components/motion/AnimatedArrow";
+import { FloatingChip } from "@/components/motion/FloatingChip";
 
 /** Larger, two-column editorial treatment for the featured experience at the top of the catalog. */
 export function FeaturedExperienceCard({ experience }: { experience: ExperienceWithBusiness }) {
@@ -37,6 +38,13 @@ export function FeaturedExperienceCard({ experience }: { experience: ExperienceW
               </Badge>
               {isDemo && <Badge tone="orange">Demostración</Badge>}
             </div>
+            {left > 0 && (state === "available" || state === "low") && (
+              <div className="absolute right-3 bottom-3">
+                <FloatingChip delay={0.15}>
+                  {left} {left === 1 ? "lugar disponible" : "lugares disponibles"}
+                </FloatingChip>
+              </div>
+            )}
           </div>
 
           <div className="flex flex-col justify-center gap-3 p-6 sm:p-10">

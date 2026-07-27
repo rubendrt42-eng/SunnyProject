@@ -2,13 +2,18 @@ import Link from "next/link";
 import { WordReveal } from "@/components/motion/WordReveal";
 import { LineReveal } from "@/components/motion/LineReveal";
 import { ParallaxImage } from "@/components/motion/ParallaxImage";
+import { FloatingChip } from "@/components/motion/FloatingChip";
 import { LinkButton } from "@/components/ui/Button";
 import { HeroFeaturedCard } from "@/components/home/HeroFeaturedCard";
+import { categoryLabel } from "@/lib/constants";
+import { spotsLeft } from "@/lib/experience-status";
 import type { ExperienceWithBusiness } from "@/lib/queries";
 
 export function Hero({ featured }: { featured: ExperienceWithBusiness | null }) {
+  const left = featured ? spotsLeft(featured, featured.reserved_count) : 0;
+
   return (
-    <section className="relative isolate flex min-h-[100svh] flex-col justify-end overflow-hidden rounded-b-[2rem] text-warm-white sm:rounded-b-[3rem]">
+    <section className="relative isolate flex min-h-[100svh] flex-col overflow-hidden rounded-b-[2rem] text-warm-white sm:rounded-b-[3rem]">
       <ParallaxImage
         src={featured?.image_url || "/images/placeholder-2.svg"}
         alt=""
@@ -18,12 +23,23 @@ export function Hero({ featured }: { featured: ExperienceWithBusiness | null }) 
       />
       <div className="absolute inset-0 bg-gradient-to-t from-carbon/85 via-carbon/20 to-carbon/55" />
 
-      <div className="relative mx-auto flex w-full max-w-6xl flex-col gap-10 px-5 pt-32 pb-16 sm:px-8 sm:pb-20 lg:flex-row lg:items-end lg:justify-between lg:pb-24">
+      {featured && (
+        <div className="absolute inset-x-0 top-0 mx-auto flex w-full max-w-6xl flex-wrap gap-3 px-5 pt-24 sm:px-8 sm:pt-28">
+          <FloatingChip delay={1.1}>{categoryLabel(featured.category)}</FloatingChip>
+          {left > 0 && (
+            <FloatingChip delay={1.2}>
+              {left} {left === 1 ? "lugar disponible" : "lugares disponibles"}
+            </FloatingChip>
+          )}
+        </div>
+      )}
+
+      <div className="relative mx-auto mt-auto flex w-full max-w-6xl flex-col gap-10 px-5 pb-16 sm:px-8 sm:pb-20 lg:flex-row lg:items-end lg:justify-between lg:pb-24">
         <div className="max-w-xl">
           <WordReveal
             as="h1"
             text="TU PRÓXIMA EXPERIENCIA EMPIEZA AQUÍ"
-            className="font-serif text-4xl leading-[1.05] italic sm:text-6xl lg:text-7xl"
+            className="font-serif text-5xl leading-[0.98] italic sm:text-7xl lg:text-8xl"
           />
           <LineReveal delay={0.7}>
             <p className="mt-6 max-w-md text-lg text-warm-white/90">

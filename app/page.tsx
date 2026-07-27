@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { getFeaturedExperience, getPublicExperiences } from "@/lib/queries";
+import { getFeaturedExperience, getPublicExperiences, getPublicStats } from "@/lib/queries";
 import { Container } from "@/components/ui/Container";
 import { LinkButton } from "@/components/ui/Button";
 import { CATEGORIES } from "@/lib/constants";
@@ -9,6 +9,8 @@ import { FaqList } from "@/components/site/FaqList";
 import { Hero } from "@/components/home/Hero";
 import { ExperienceCarousel } from "@/components/home/ExperienceCarousel";
 import { HowItWorksNarrative } from "@/components/home/HowItWorksNarrative";
+import { StatsStrip } from "@/components/home/StatsStrip";
+import { PassShowcase } from "@/components/home/PassShowcase";
 import { InViewReveal } from "@/components/motion/InViewReveal";
 import { isPast } from "@/lib/dates";
 
@@ -31,7 +33,11 @@ const FAQ_PREVIEW = [
 
 export default async function HomePage() {
   const supabase = await createClient();
-  const [featured, { data: all }] = await Promise.all([getFeaturedExperience(supabase), getPublicExperiences(supabase)]);
+  const [featured, { data: all }, stats] = await Promise.all([
+    getFeaturedExperience(supabase),
+    getPublicExperiences(supabase),
+    getPublicStats(supabase),
+  ]);
 
   const upcomingPublished = all.filter((e) => e.status === "published" && !isPast(e.starts_at));
   const carouselItems = [
@@ -42,6 +48,8 @@ export default async function HomePage() {
   return (
     <main>
       <Hero featured={featured} />
+
+      <StatsStrip stats={stats} />
 
       {/* Carrusel de experiencias destacadas */}
       <section className="py-20 sm:py-28">
@@ -92,25 +100,7 @@ export default async function HomePage() {
         </Container>
       </section>
 
-      {/* Pase semanal */}
-      <section className="border-y border-carbon/10 bg-warm-white py-20">
-        <Container className="grid gap-10 sm:grid-cols-2">
-          <InViewReveal>
-            <h2 className="font-serif text-3xl italic">Tu pase semanal</h2>
-            <p className="mt-4 text-gray">
-              Cada semana tienes un pase gratuito para reclamar tu lugar en una experiencia disponible.
-            </p>
-          </InViewReveal>
-          <InViewReveal delay={0.1}>
-            <ul className="space-y-3 text-carbon">
-              <li className="rounded-xl border border-carbon/10 bg-ivory p-4">1 pase gratuito por semana.</li>
-              <li className="rounded-xl border border-carbon/10 bg-ivory p-4">Cupos limitados por experiencia.</li>
-              <li className="rounded-xl border border-carbon/10 bg-ivory p-4">Se renueva cada lunes.</li>
-              <li className="rounded-xl border border-carbon/10 bg-ivory p-4">Sin membresía durante esta etapa.</li>
-            </ul>
-          </InViewReveal>
-        </Container>
-      </section>
+      <PassShowcase />
 
       {/* Para negocios */}
       <section className="py-20">

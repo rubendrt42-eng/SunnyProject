@@ -1,6 +1,9 @@
 # Interaction Adaptation Plan
 
-This document records how the public side of Sunny Project adopted the *interaction level* of the "Baseline — Tennis Club & Academy" reference — scroll narrative, microinteractions, editorial motion, carousels, menus, modals — without copying its brand, copy, imagery, colors, or code. Written before implementation, per the request that introduced this phase.
+This document records how the public side of Sunny Project adopted the *interaction level* of external reference sites — scroll narrative, microinteractions, editorial motion, carousels, menus, modals, photography-forward layout — without copying any reference's brand, copy, imagery, colors, or code. Written before implementation, per the requests that introduced each round.
+
+- **Round 1 (below): "Baseline — Tennis Club & Academy"** reference.
+- **Round 2 (bottom of this file): Eight Sleep** (`eightsleep.com`) reference.
 
 ## What was taken as inspiration (behavior only, never assets/copy/brand)
 
@@ -66,3 +69,47 @@ Per the brief's own phasing instructions, these remain for a later pass and were
 ## Components added to the shared "movement system" (`components/motion/`)
 
 `WordReveal`, `LineReveal`, `InViewReveal`, `ParallaxImage`, `HoverLift`, `AnimatedArrow`, `CarouselDots`, `FullscreenMenu`, `AnimatedModal`, `SmoothScrollProvider`, `SessionLoader`, `AppChrome` (route-based motion scoping). All respect `prefers-reduced-motion`, none block scroll, and hover-driven effects rely on Motion's pointer-based `whileHover`/CSS `group-hover`, which don't trigger from touch taps.
+
+---
+
+## Round 2: Eight Sleep inspiration
+
+### Important caveat: the reference could not be fetched
+
+`eightsleep.com` returned `403 Forbidden` from this environment on every attempt (direct proxy `curl` and the `WebFetch` tool both blocked — bot protection and/or sandbox egress policy, verified rather than assumed). **The current live page was never actually seen.** What follows is adapted from general, pre-existing knowledge of premium direct-to-consumer tech/product marketing sites in that category (cinematic full-bleed hero photography/video, oversized bold sans headlines, floating data/sensor callouts over product photography, large real-number proof strips, app/product-preview showcase sections, scroll-driven feature storytelling) — not from inspecting eightsleep.com's actual current markup, copy, or exact layout. If the live site differs meaningfully from this, treat this round as "premium DTC product-site conventions," not a literal Eight Sleep clone (which is what was intended anyway — the client explicitly asked for the palette to stay Sunny's own, not Eight Sleep's black/white).
+
+### Scope confirmed with the client before implementing
+
+- Extend the treatment to **Home + `/experiencias` + the experience detail page** (not the whole public site — `/como-funciona`, `/para-negocios`, FAQ, footer stay as Round 1 left them).
+- **Keep Sunny's existing warm palette** (ivory/carbon/sunny yellow/orange/warm white) — explicitly do *not* adopt a black/dark theme. Only the production/interaction *level* is borrowed, same rule as Round 1.
+- Document this plan before implementing (this section).
+
+### What was taken as inspiration (general premium-product-site conventions, adapted)
+
+- **Floating data chips over full-bleed photography** — instead of a plain photo, key live facts (spots left, category, date) float on top as small pill callouts, the way a product shot gets sensor/spec callouts. Reused as one consistent motif across the Home hero, the `/experiencias` featured card, and the experience detail hero.
+- **A bold, real-number proof strip** — big oversized figures for a handful of facts, placed early on the page for credibility.
+- **A dedicated "product preview" showcase section** — a large, stylized mockup of the core deliverable (here: the digital pass) get its own section with supporting copy, rather than being buried inside a smaller step visual.
+- **Bigger, more confident headline typography** on the hero and detail pages.
+
+### How it was adapted to Sunny (and what was discarded)
+
+- **No fabricated numbers, ever.** The proof strip (`components/home/StatsStrip.tsx`) queries real counts from Supabase at request time (published experiences, active businesses, categories actually represented) via `getPublicStats()` in `lib/queries.ts` — the same "never invent stats" rule from Round 1 (and the original `PRODUCT_SPEC.md`) applies. If a count is genuinely small, it's still shown as-is (no rounding up, no "+" padding) — small real numbers over fake big ones.
+- **No dark theme.** Every new component uses the existing ivory/carbon/sunny/orange/warm-white tokens; the floating chips use the warm-white/carbon combination already established for badges, not a black product-shot treatment.
+- **No literal product comparison table.** Eight Sleep-style spec/tier comparisons don't map to Sunny — there is exactly one pass, no tiers, no SKUs (payments/tiers are explicitly out of scope) — so this idea was discarded rather than forced.
+- **No testimonials or press-logo strip** — still no fake social proof, unchanged from Round 1.
+- **No background video.** There's no real video asset to use, and fabricating a stock-video hero would repeat the "no invented content" mistake in a different medium — photography + parallax stays the treatment.
+
+### What was actually built this round
+
+1. **`components/motion/FloatingChip.tsx`** — small absolutely-positioned pill with a staggered fade/slide entrance, used for the "live data over photography" motif.
+2. **`components/motion/CountUp.tsx`** — animates a number from 0 to its real value once scrolled into view; jumps straight to the final value under `prefers-reduced-motion` (no animated counting).
+3. **`getPublicStats()`** (`lib/queries.ts`) — real counts only, used by `StatsStrip`.
+4. **`components/home/StatsStrip.tsx`** — bold real-number proof section on Home.
+5. **`components/home/PassShowcase.tsx`** — large digital-pass mockup showcase section on Home, expanding on the smaller `PassVisual` built for the "how it works" step in Round 1.
+6. **`Hero.tsx`** — floating chips over the hero photo (category + live spots-left on the featured experience), larger headline scale.
+7. **`DetailHero.tsx`** — same floating-chip motif over the experience photo.
+8. **`/experiencias`** — bolder header treatment; the featured card carries the same floating-chip motif for visual consistency across all three surfaces.
+
+### What functionality was preserved (unchanged, same guarantee as Round 1)
+
+Everything listed in Round 1's "preserved" section still holds — this round only adds presentation-layer components and one new read-only query function. No changes to Supabase schema/RLS/migrations, auth, the transactional reservation functions, admin panel, emails, or any route.

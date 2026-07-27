@@ -68,8 +68,10 @@ export default async function ExperienciasPage({
     <main className="pb-20">
       <Container className="pt-14 sm:pt-20">
         <p className="text-sm font-semibold tracking-widest text-orange uppercase">Explora Monterrey</p>
-        <h1 className="mt-2 font-serif text-4xl italic sm:text-5xl">Experiencias para salir de la rutina.</h1>
-        <p className="mt-3 max-w-xl text-lg text-gray">
+        <h1 className="mt-2 font-serif text-5xl leading-[1.02] italic sm:text-6xl lg:text-7xl">
+          Experiencias para salir de la rutina.
+        </h1>
+        <p className="mt-4 max-w-xl text-lg text-gray">
           Movimiento, recovery, cafés, outdoor y comunidad. Elige una y utiliza tu pase semanal.
         </p>
         {!queryError && experiences.length > 0 && (
