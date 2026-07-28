@@ -8,6 +8,7 @@ import { categoryLabel } from "@/lib/constants";
 import { formatDateShort } from "@/lib/dates";
 import type { ExperienceWithBusiness } from "@/lib/queries";
 import { spotsLeft } from "@/lib/experience-status";
+import { displayTitle } from "@/lib/demo-content";
 
 export function HeroFeaturedCard({ experience }: { experience: ExperienceWithBusiness }) {
   const prefersReducedMotion = useReducedMotion();
@@ -29,7 +30,7 @@ export function HeroFeaturedCard({ experience }: { experience: ExperienceWithBus
           <Badge tone="sunny" className="w-fit">
             {categoryLabel(experience.category)}
           </Badge>
-          <p className="font-serif text-xl leading-snug">{experience.title}</p>
+          <p className="text-xl leading-snug font-semibold">{displayTitle(experience.title)}</p>
           <p className="text-sm text-gray">{experience.business.name}</p>
           <div className="mt-1 flex items-center justify-between text-sm text-gray">
             <span>{formatDateShort(experience.starts_at)}</span>

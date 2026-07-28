@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Manrope, Newsreader } from "next/font/google";
 import "./globals.css";
 import { isSupabaseConfigured } from "@/lib/env";
@@ -6,6 +7,7 @@ import { SetupRequired } from "@/components/setup-required";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { AppChrome } from "@/components/motion/AppChrome";
+import { SessionWelcomeToast } from "@/components/site/SessionWelcomeToast";
 
 const manrope = Manrope({ variable: "--font-manrope", subsets: ["latin"] });
 const newsreader = Newsreader({ variable: "--font-newsreader", subsets: ["latin"], style: ["italic", "normal"] });
@@ -24,6 +26,9 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       <body className="flex min-h-screen flex-col bg-ivory text-carbon">
         {configured ? (
           <>
+            <Suspense fallback={null}>
+              <SessionWelcomeToast />
+            </Suspense>
             <Header />
             <AppChrome>
               <div className="flex flex-1 flex-col">{children}</div>

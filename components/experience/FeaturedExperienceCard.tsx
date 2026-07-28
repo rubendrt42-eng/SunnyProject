@@ -51,7 +51,7 @@ export function FeaturedExperienceCard({ experience }: { experience: ExperienceW
             <Badge tone={EXPERIENCE_STATE_TONE[state]} className="w-fit">
               {state === "available" || state === "low" ? `${left} ${left === 1 ? "lugar" : "lugares"}` : EXPERIENCE_STATE_LABEL[state]}
             </Badge>
-            <h2 className="font-serif text-3xl leading-snug italic sm:text-4xl">{displayTitle(experience.title)}</h2>
+            <h2 className="text-3xl leading-snug font-semibold sm:text-4xl">{displayTitle(experience.title)}</h2>
             <p className="text-gray">{experience.business.name}</p>
             <div className="flex flex-wrap gap-x-6 gap-y-1 text-sm text-gray">
               <span>{formatDateShort(experience.starts_at)}</span>

@@ -133,26 +133,3 @@ export async function getActiveBusinesses(supabase: SupabaseClient<Database>): P
   const { data } = await supabase.from("businesses").select("*").order("name");
   return (data as Business[]) ?? [];
 }
-
-export interface PublicStats {
-  publishedExperiences: number;
-  activeBusinesses: number;
-  categoriesRepresented: number;
-}
-
-/** Real counts only — never invent or round up numbers shown on the public site (see PRODUCT_SPEC.md). */
-export async function getPublicStats(supabase: SupabaseClient<Database>): Promise<PublicStats> {
-  const [{ count: publishedExperiences }, { count: activeBusinesses }, { data: categoryRows }] = await Promise.all([
-    supabase.from("experiences").select("*", { count: "exact", head: true }).eq("status", "published"),
-    supabase.from("businesses").select("*", { count: "exact", head: true }).eq("active", true),
-    supabase.from("experiences").select("category").eq("status", "published"),
-  ]);
-
-  const categoriesRepresented = new Set((categoryRows ?? []).map((row) => row.category)).size;
-
-  return {
-    publishedExperiences: publishedExperiences ?? 0,
-    activeBusinesses: activeBusinesses ?? 0,
-    categoriesRepresented,
-  };
-}

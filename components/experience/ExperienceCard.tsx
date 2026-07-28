@@ -42,7 +42,7 @@ export function ExperienceCard({ experience }: { experience: ExperienceWithBusin
             <Badge tone={EXPERIENCE_STATE_TONE[state]} className="w-fit">
               {state === "available" || state === "low" ? `${left} ${left === 1 ? "lugar" : "lugares"}` : EXPERIENCE_STATE_LABEL[state]}
             </Badge>
-            <h3 className="font-serif text-xl leading-snug">{displayTitle(experience.title)}</h3>
+            <h3 className="text-xl leading-snug font-semibold">{displayTitle(experience.title)}</h3>
             <p className="text-sm text-gray">{experience.business.name}</p>
             <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-1 pt-3 text-sm text-gray">
               <span>{formatDateShort(experience.starts_at)}</span>

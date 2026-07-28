@@ -8,20 +8,29 @@ export async function GET(request: NextRequest) {
   const nextParam = searchParams.get("next");
   const next = nextParam && nextParam.startsWith("/") ? nextParam : "/mi-pase";
 
+  // Supabase redirects here with `error_code`/`error_description` (no `code`)
+  // when the link itself is already dead — e.g. expired or already used —
+  // rather than a valid code that fails on exchange. Surface that distinction
+  // to /acceso instead of a single generic error.
+  const errorCode = searchParams.get("error_code");
   if (!code) {
-    return NextResponse.redirect(`${origin}/acceso`);
+    const reason = errorCode === "otp_expired" ? "expired" : errorCode ? "generic" : null;
+    return NextResponse.redirect(reason ? `${origin}/acceso?error=${reason}` : `${origin}/acceso`);
   }
 
   const supabase = await createClient();
   const { data, error } = await supabase.auth.exchangeCodeForSession(code);
 
   if (error || !data.user) {
-    return NextResponse.redirect(`${origin}/acceso?error=1`);
+    const reason = error?.code === "otp_expired" ? "expired" : "generic";
+    return NextResponse.redirect(`${origin}/acceso?error=${reason}`);
   }
 
   await bootstrapAdminRole(data.user.id, data.user.email ?? "");
 
-  return NextResponse.redirect(`${origin}${next}`);
+  const nextUrl = new URL(`${origin}${next}`);
+  nextUrl.searchParams.set("bienvenido", "1");
+  return NextResponse.redirect(nextUrl);
 }
 
 /**

@@ -1,16 +1,17 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { getFeaturedExperience, getPublicExperiences, getPublicStats } from "@/lib/queries";
+import { getFeaturedExperience, getPublicExperiences, getActiveWeeklyReservation, getUserReservationHistory } from "@/lib/queries";
+import { getCurrentUser, isProfileComplete } from "@/lib/auth";
+import { determineCta } from "@/lib/experience-cta";
 import { Container } from "@/components/ui/Container";
 import { LinkButton } from "@/components/ui/Button";
-import { CATEGORIES } from "@/lib/constants";
-import { PartnerLeadForm } from "@/components/site/PartnerLeadForm";
 import { FaqList } from "@/components/site/FaqList";
 import { Hero } from "@/components/home/Hero";
-import { ExperienceCarousel } from "@/components/home/ExperienceCarousel";
+import { ThisWeekSection } from "@/components/home/ThisWeekSection";
 import { HowItWorksNarrative } from "@/components/home/HowItWorksNarrative";
-import { StatsStrip } from "@/components/home/StatsStrip";
+import { CategoriesSection } from "@/components/home/CategoriesSection";
 import { PassShowcase } from "@/components/home/PassShowcase";
+import { ForBusinessSection } from "@/components/home/ForBusinessSection";
 import { InViewReveal } from "@/components/motion/InViewReveal";
 import { isPast } from "@/lib/dates";
 
@@ -33,36 +34,54 @@ const FAQ_PREVIEW = [
 
 export default async function HomePage() {
   const supabase = await createClient();
-  const [featured, { data: all }, stats] = await Promise.all([
+  const user = await getCurrentUser();
+
+  const [featured, { data: all }, activeWeekly, history] = await Promise.all([
     getFeaturedExperience(supabase),
     getPublicExperiences(supabase),
-    getPublicStats(supabase),
+    user ? getActiveWeeklyReservation(supabase, user.id) : Promise.resolve(null),
+    user ? getUserReservationHistory(supabase, user.id) : Promise.resolve([]),
   ]);
 
   const upcomingPublished = all.filter((e) => e.status === "published" && !isPast(e.starts_at));
-  const carouselItems = [
-    ...(featured ? [featured] : []),
-    ...upcomingPublished.filter((e) => e.id !== featured?.id),
-  ].slice(0, 5);
+  const weekItems = [...(featured ? [featured] : []), ...upcomingPublished.filter((e) => e.id !== featured?.id)].slice(0, 6);
+
+  const reservedExperienceIds = new Set(
+    history.filter((r) => r.status === "confirmed" || r.status === "attended" || r.status === "no_show").map((r) => r.experience_id),
+  );
+
+  const ctaByExperienceId: Record<string, ReturnType<typeof determineCta>["type"]> = {};
+  for (const experience of weekItems) {
+    ctaByExperienceId[experience.id] = determineCta({
+      experience,
+      isAuthenticated: Boolean(user),
+      isProfileComplete: isProfileComplete(user?.profile ?? null),
+      hasReservationForThisExperience: reservedExperienceIds.has(experience.id),
+      hasActivePassElsewhere: Boolean(activeWeekly) && activeWeekly?.experience_id !== experience.id,
+    }).type;
+  }
 
   return (
     <main>
       <Hero featured={featured} />
 
-      <StatsStrip stats={stats} />
-
-      {/* Carrusel de experiencias destacadas */}
+      {/* Esta semana en Sunny — ivory (default page background) */}
       <section className="py-20 sm:py-28">
         <Container>
-          <div className="flex items-end justify-between">
-            <h2 className="font-serif text-3xl italic">Experiencias destacadas</h2>
-            <Link href="/experiencias" className="text-sm font-medium text-orange hover:underline">
-              Ver todas →
-            </Link>
-          </div>
-          {carouselItems.length > 0 ? (
+          <InViewReveal>
+            <p className="text-sm font-semibold tracking-widest text-orange uppercase">Esta semana en Sunny</p>
+            <div className="mt-2 flex flex-wrap items-end justify-between gap-4">
+              <h2 className="max-w-xl text-3xl font-semibold sm:text-4xl">
+                Planes seleccionados para moverte, recuperarte, conectar y probar algo diferente.
+              </h2>
+              <Link href="/experiencias" className="text-sm font-medium text-orange hover:underline">
+                Ver todas →
+              </Link>
+            </div>
+          </InViewReveal>
+          {weekItems.length > 0 ? (
             <div className="mt-10">
-              <ExperienceCarousel experiences={carouselItems} />
+              <ThisWeekSection experiences={weekItems} ctaByExperienceId={ctaByExperienceId} />
             </div>
           ) : (
             <p className="mt-10 text-gray">Pronto publicaremos nuevas experiencias. Vuelve pronto.</p>
@@ -70,68 +89,73 @@ export default async function HomePage() {
         </Container>
       </section>
 
-      {/* Cómo funciona */}
-      <section className="border-y border-carbon/10 bg-warm-white py-20 sm:py-28">
+      {/* Cómo funciona — Sunny yellow */}
+      <section className="bg-sunny py-20 sm:py-28">
         <Container>
-          <h2 className="font-serif text-3xl italic">Cómo funciona</h2>
+          <InViewReveal>
+            <p className="text-sm font-semibold tracking-widest text-carbon/60 uppercase">El recorrido</p>
+            <h2 className="mt-2 text-3xl font-semibold sm:text-4xl">Cómo funciona</h2>
+          </InViewReveal>
           <div className="mt-14">
             <HowItWorksNarrative />
           </div>
         </Container>
       </section>
 
-      {/* Categorías */}
-      <section className="py-20">
+      {/* Categorías — warm white, photo/copy switch per category */}
+      <section className="bg-warm-white py-20 sm:py-28">
         <Container>
           <InViewReveal>
-            <h2 className="font-serif text-3xl italic">Categorías</h2>
-            <div className="mt-8 flex flex-wrap gap-3">
-              {CATEGORIES.map((c) => (
-                <Link
-                  key={c.value}
-                  href={`/experiencias?categoria=${c.value}`}
-                  className="rounded-full border border-carbon/15 px-5 py-2.5 text-sm font-medium hover:border-carbon hover:bg-carbon/5"
-                >
-                  {c.label}
-                </Link>
-              ))}
-            </div>
+            <p className="text-sm font-semibold tracking-widest text-orange uppercase">Explora según lo que buscas</p>
+            <h2 className="mt-2 text-3xl font-semibold sm:text-4xl">Cinco formas de salir de la rutina.</h2>
           </InViewReveal>
+          <div className="mt-10">
+            <CategoriesSection experiences={upcomingPublished} />
+          </div>
         </Container>
       </section>
 
-      <PassShowcase />
-
-      {/* Para negocios */}
-      <section className="py-20">
-        <Container className="grid gap-10 rounded-3xl bg-carbon p-8 text-warm-white sm:p-14 lg:grid-cols-2 lg:items-center">
-          <InViewReveal>
-            <h2 className="font-serif text-3xl italic">Haz que nuevas personas descubran tu espacio.</h2>
-            <p className="mt-4 max-w-md text-warm-white/80">
-              Comparte algunos lugares, conecta con clientes potenciales y forma parte de la selección de Sunny
-              Project.
-            </p>
-            <LinkButton href="/para-negocios" size="lg" variant="secondary" className="mt-8">
-              Quiero participar
-            </LinkButton>
-          </InViewReveal>
-          <InViewReveal delay={0.1}>
-            <PartnerLeadForm compact />
-          </InViewReveal>
+      {/* Tu pase semanal — carbon, yellow accents, real session state */}
+      <section className="bg-carbon py-20 text-warm-white sm:py-28">
+        <Container>
+          <PassShowcase user={user} activeWeekly={activeWeekly} />
         </Container>
       </section>
 
-      {/* FAQ */}
-      <section className="py-20">
+      {/* Para negocios — soft orange, opens the real form in a modal */}
+      <section className="bg-orange/10 py-20 sm:py-28">
+        <Container>
+          <ForBusinessSection />
+        </Container>
+      </section>
+
+      {/* FAQ — ivory */}
+      <section className="py-20 sm:py-28">
         <Container className="max-w-3xl">
           <InViewReveal>
-            <h2 className="font-serif text-3xl italic">Preguntas frecuentes</h2>
+            <h2 className="text-3xl font-semibold">Preguntas frecuentes</h2>
             <div className="mt-8">
               <FaqList items={FAQ_PREVIEW} />
             </div>
             <Link href="/preguntas-frecuentes" className="mt-6 inline-block text-sm font-medium text-orange hover:underline">
               Ver todas las preguntas →
             </Link>
+          </InViewReveal>
+        </Container>
+      </section>
+
+      {/* Cierre editorial — carbon, flows straight into the (also carbon) footer */}
+      <section className="bg-carbon py-24 text-warm-white sm:py-32">
+        <Container className="max-w-2xl text-center">
+          <InViewReveal>
+            <p className="text-3xl font-semibold sm:text-4xl">Cada semana, algo nuevo.</p>
+            <p className="mt-4 text-warm-white/70">
+              Experiencias reales en Monterrey, sin fotos de stock ni promesas vacías. Un pase gratuito, una vez por
+              semana.
+            </p>
+            <LinkButton href="/experiencias" size="lg" variant="secondary" className="mt-8">
+              Explorar experiencias
+            </LinkButton>
           </InViewReveal>
         </Container>
       </section>

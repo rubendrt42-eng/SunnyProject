@@ -39,7 +39,7 @@ export function DetailHero({ experience, state }: { experience: ExperienceWithBu
           <Badge tone={EXPERIENCE_STATE_TONE[state]}>{EXPERIENCE_STATE_LABEL[state]}</Badge>
           {isDemo && <Badge tone="orange">Demostración</Badge>}
         </div>
-        <h1 className="mt-4 max-w-3xl font-serif text-5xl leading-[1.02] italic sm:text-6xl lg:text-7xl">
+        <h1 className="mt-4 max-w-3xl text-5xl leading-[1.03] font-semibold text-balance sm:text-6xl lg:text-7xl">
           {displayTitle(experience.title)}
         </h1>
         <p className="mt-2 text-lg text-warm-white/85">{experience.business.name}</p>
