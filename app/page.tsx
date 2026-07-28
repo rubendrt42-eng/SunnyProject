@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getFeaturedExperience, getPublicExperiences, getActiveWeeklyReservation, getUserReservationHistory } from "@/lib/queries";
 import { getCurrentUser, isProfileComplete } from "@/lib/auth";
 import { determineCta } from "@/lib/experience-cta";
+import { listAvailableDemoAssets } from "@/lib/assets.server";
 import { Container } from "@/components/ui/Container";
 import { LinkButton } from "@/components/ui/Button";
 import { FaqList } from "@/components/site/FaqList";
@@ -35,6 +36,7 @@ const FAQ_PREVIEW = [
 export default async function HomePage() {
   const supabase = await createClient();
   const user = await getCurrentUser();
+  const availableAssets = listAvailableDemoAssets();
 
   const [featured, { data: all }, activeWeekly, history] = await Promise.all([
     getFeaturedExperience(supabase),
@@ -63,7 +65,11 @@ export default async function HomePage() {
 
   return (
     <main>
-      <Hero featured={featured} />
+      <Hero
+        experiences={weekItems.slice(0, 5)}
+        ctaByExperienceId={ctaByExperienceId}
+        availableAssets={availableAssets}
+      />
 
       {/* Esta semana en Sunny — ivory (default page background) */}
       <section className="py-20 sm:py-28">
@@ -81,7 +87,7 @@ export default async function HomePage() {
           </InViewReveal>
           {weekItems.length > 0 ? (
             <div className="mt-10">
-              <ThisWeekSection experiences={weekItems} ctaByExperienceId={ctaByExperienceId} />
+              <ThisWeekSection experiences={weekItems} ctaByExperienceId={ctaByExperienceId} availableAssets={availableAssets} />
             </div>
           ) : (
             <p className="mt-10 text-gray">Pronto publicaremos nuevas experiencias. Vuelve pronto.</p>
@@ -89,28 +95,28 @@ export default async function HomePage() {
         </Container>
       </section>
 
-      {/* Cómo funciona — Sunny yellow */}
-      <section className="bg-sunny py-20 sm:py-28">
+      {/* Cómo funciona — warm white, yellow/orange used only as accents */}
+      <section className="bg-warm-white py-20 sm:py-28">
         <Container>
           <InViewReveal>
-            <p className="text-sm font-semibold tracking-widest text-carbon/60 uppercase">El recorrido</p>
+            <p className="text-sm font-semibold tracking-widest text-orange uppercase">El recorrido</p>
             <h2 className="mt-2 text-3xl font-semibold sm:text-4xl">Cómo funciona</h2>
           </InViewReveal>
           <div className="mt-14">
-            <HowItWorksNarrative />
+            <HowItWorksNarrative experiences={weekItems.slice(0, 2)} availableAssets={availableAssets} />
           </div>
         </Container>
       </section>
 
-      {/* Categorías — warm white, photo/copy switch per category */}
-      <section className="bg-warm-white py-20 sm:py-28">
+      {/* Categorías — ivory/sand, photo/copy switch per category */}
+      <section className="bg-ivory py-20 sm:py-28">
         <Container>
           <InViewReveal>
             <p className="text-sm font-semibold tracking-widest text-orange uppercase">Explora según lo que buscas</p>
             <h2 className="mt-2 text-3xl font-semibold sm:text-4xl">Cinco formas de salir de la rutina.</h2>
           </InViewReveal>
           <div className="mt-10">
-            <CategoriesSection experiences={upcomingPublished} />
+            <CategoriesSection experiences={upcomingPublished} availableAssets={availableAssets} />
           </div>
         </Container>
       </section>
@@ -125,7 +131,7 @@ export default async function HomePage() {
       {/* Para negocios — soft orange, opens the real form in a modal */}
       <section className="bg-orange/10 py-20 sm:py-28">
         <Container>
-          <ForBusinessSection />
+          <ForBusinessSection availableAssets={availableAssets} />
         </Container>
       </section>
 
@@ -153,7 +159,7 @@ export default async function HomePage() {
               Experiencias reales en Monterrey, sin fotos de stock ni promesas vacías. Un pase gratuito, una vez por
               semana.
             </p>
-            <LinkButton href="/experiencias" size="lg" variant="secondary" className="mt-8">
+            <LinkButton href="/experiencias" size="lg" variant="primary" arrow className="mt-8">
               Explorar experiencias
             </LinkButton>
           </InViewReveal>

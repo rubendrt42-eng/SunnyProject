@@ -11,6 +11,12 @@
 -- Mirrors scripts/seed.ts exactly. Requires the migrations in
 -- supabase/migrations/ to already be applied (this does not create any
 -- tables, columns, or policies).
+--
+-- This is also the idempotent fix for stale `image_url` values on rows
+-- that already exist in production: every insert below is `on conflict
+-- (slug) do update set ... image_url = excluded.image_url, ...`, so
+-- re-running this script re-asserts the correct /demo-assets/*.webp path
+-- on each of the 6 demo experiences without creating duplicates.
 
 begin;
 

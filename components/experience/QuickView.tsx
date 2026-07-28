@@ -2,9 +2,10 @@
 
 import { useEffect, useId, useRef } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { AnimatePresence, motion } from "motion/react";
+import { Calendar, Clock, MapPin, X } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
+import { ManagedPhoto } from "@/components/ui/ManagedPhoto";
 import { ClaimPanel } from "@/components/experience/ClaimPanel";
 import { categoryLabel } from "@/lib/constants";
 import { formatDateShort, formatTime } from "@/lib/dates";
@@ -32,11 +33,13 @@ export function QuickView({
   cta,
   open,
   onClose,
+  availableAssets,
 }: {
   experience: ExperienceWithBusiness | null;
   cta: ExperienceCta["type"] | null;
   open: boolean;
   onClose: () => void;
+  availableAssets: string[];
 }) {
   const titleId = useId();
   const panelRef = useRef<HTMLDivElement>(null);
@@ -126,10 +129,10 @@ export function QuickView({
             className="absolute inset-x-0 bottom-0 flex max-h-[88vh] flex-col overflow-y-auto rounded-t-3xl bg-warm-white lg:inset-y-0 lg:left-auto lg:right-0 lg:max-h-none lg:w-full lg:max-w-md lg:rounded-t-none"
           >
             <div className="relative aspect-[16/10] w-full shrink-0 overflow-hidden lg:aspect-[4/3]">
-              <Image
-                src={experience.image_url || "/images/placeholder-1.svg"}
+              <ManagedPhoto
+                url={experience.image_url}
+                availableAssets={availableAssets}
                 alt=""
-                fill
                 sizes="(min-width: 1024px) 448px, 100vw"
                 className="object-cover"
               />
@@ -140,9 +143,7 @@ export function QuickView({
                 aria-label="Cerrar vista rápida"
                 className="absolute top-4 right-4 flex h-9 w-9 items-center justify-center rounded-full bg-warm-white/90 text-carbon shadow-md"
               >
-                <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4">
-                  <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" />
-                </svg>
+                <X aria-hidden size={16} />
               </button>
               <div className="absolute top-4 left-4 flex flex-wrap gap-2">
                 <Badge tone="neutral" className="bg-warm-white/90">
@@ -171,15 +172,21 @@ export function QuickView({
 
               <dl className="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
                 <div>
-                  <dt className="text-xs tracking-wide text-gray uppercase">Fecha</dt>
+                  <dt className="flex items-center gap-1.5 text-xs tracking-wide text-gray uppercase">
+                    <Calendar aria-hidden size={14} /> Fecha
+                  </dt>
                   <dd className="mt-0.5">{formatDateShort(experience.starts_at)}</dd>
                 </div>
                 <div>
-                  <dt className="text-xs tracking-wide text-gray uppercase">Hora</dt>
+                  <dt className="flex items-center gap-1.5 text-xs tracking-wide text-gray uppercase">
+                    <Clock aria-hidden size={14} /> Hora
+                  </dt>
                   <dd className="mt-0.5">{formatTime(experience.starts_at)}</dd>
                 </div>
                 <div className="col-span-2">
-                  <dt className="text-xs tracking-wide text-gray uppercase">Ubicación</dt>
+                  <dt className="flex items-center gap-1.5 text-xs tracking-wide text-gray uppercase">
+                    <MapPin aria-hidden size={14} /> Ubicación
+                  </dt>
                   <dd className="mt-0.5">{experience.location_name}</dd>
                 </div>
               </dl>

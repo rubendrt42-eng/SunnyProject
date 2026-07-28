@@ -3,6 +3,7 @@ import Link from "next/link";
 import { clsx } from "clsx";
 import { createClient } from "@/lib/supabase/server";
 import { getPublicExperiences } from "@/lib/queries";
+import { listAvailableDemoAssets } from "@/lib/assets.server";
 import { ExperienceCard } from "@/components/experience/ExperienceCard";
 import { FeaturedExperienceCard } from "@/components/experience/FeaturedExperienceCard";
 import { Container } from "@/components/ui/Container";
@@ -24,6 +25,7 @@ export default async function ExperienciasPage({
 
   const supabase = await createClient();
   const { data: experiences, error: queryError } = await getPublicExperiences(supabase);
+  const availableAssets = listAvailableDemoAssets();
 
   const needle = q?.trim().toLowerCase();
 
@@ -176,9 +178,9 @@ export default async function ExperienciasPage({
           </div>
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {featured && <FeaturedExperienceCard experience={featured} />}
+            {featured && <FeaturedExperienceCard experience={featured} availableAssets={availableAssets} />}
             {rest.map((experience) => (
-              <ExperienceCard key={experience.id} experience={experience} />
+              <ExperienceCard key={experience.id} experience={experience} availableAssets={availableAssets} />
             ))}
           </div>
         )}

@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { clsx } from "clsx";
 import { AnimatePresence, motion } from "motion/react";
 import { LinkButton } from "@/components/ui/Button";
+import { ManagedPhoto } from "@/components/ui/ManagedPhoto";
 import { CATEGORIES } from "@/lib/constants";
 import { formatDateShort } from "@/lib/dates";
 import { spotsLeft } from "@/lib/experience-status";
@@ -21,16 +21,30 @@ const CATEGORY_COPY: Record<Category, string> = {
   comunidad: "Planes para conocer gente nueva mientras haces algo distinto.",
 };
 
+/** Stable cover photo per category — independent of which experience happens to be published this week. */
+const CATEGORY_COVER: Record<Category, string> = {
+  movimiento: "/demo-assets/pilates.webp",
+  recovery: "/demo-assets/recovery.webp",
+  food_coffee: "/demo-assets/coffee.webp",
+  outdoor: "/demo-assets/paddle.webp",
+  comunidad: "/demo-assets/community.webp",
+};
+
 /**
  * Interactive category switcher: photo, copy, and the related-experiences
  * list all update client-side from the same `experiences` list already
  * fetched on the server — no extra fetch, no full page reload.
  */
-export function CategoriesSection({ experiences }: { experiences: ExperienceWithBusiness[] }) {
+export function CategoriesSection({
+  experiences,
+  availableAssets,
+}: {
+  experiences: ExperienceWithBusiness[];
+  availableAssets: string[];
+}) {
   const [active, setActive] = useState<Category>(CATEGORIES[0].value);
 
   const activeExperiences = experiences.filter((e) => e.category === active).slice(0, 3);
-  const activeImage = activeExperiences[0]?.image_url || "/images/placeholder-2.svg";
   const activeLabel = CATEGORIES.find((c) => c.value === active)?.label ?? "";
 
   return (
@@ -43,7 +57,7 @@ export function CategoriesSection({ experiences }: { experiences: ExperienceWith
             onClick={() => setActive(c.value)}
             aria-pressed={active === c.value}
             className={clsx(
-              "shrink-0 rounded-full border px-5 py-2.5 text-sm font-medium transition-colors duration-200",
+              "shrink-0 rounded-xl border px-5 py-2.5 text-sm font-medium transition-colors duration-200",
               active === c.value ? "border-carbon bg-carbon text-warm-white" : "border-carbon/15 hover:border-carbon",
             )}
           >
@@ -60,9 +74,9 @@ export function CategoriesSection({ experiences }: { experiences: ExperienceWith
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-carbon/5"
+            className="relative aspect-[4/3] w-full overflow-hidden rounded-[20px]"
           >
-            <Image src={activeImage} alt="" fill sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
+            <ManagedPhoto url={CATEGORY_COVER[active]} availableAssets={availableAssets} alt="" sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
           </motion.div>
         </AnimatePresence>
 
@@ -100,7 +114,7 @@ export function CategoriesSection({ experiences }: { experiences: ExperienceWith
               <p className="mt-6 text-sm text-gray">Aún no hay experiencias publicadas en esta categoría.</p>
             )}
 
-            <LinkButton href={`/experiencias?categoria=${active}`} className="mt-6">
+            <LinkButton href={`/experiencias?categoria=${active}`} variant="secondary" arrow className="mt-6">
               Explorar {activeLabel.toLowerCase()}
             </LinkButton>
           </motion.div>

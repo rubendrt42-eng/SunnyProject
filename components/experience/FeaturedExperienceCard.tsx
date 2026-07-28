@@ -1,36 +1,42 @@
 import Link from "next/link";
-import Image from "next/image";
 import type { ExperienceWithBusiness } from "@/lib/queries";
 import { computeExperienceState, EXPERIENCE_STATE_LABEL, EXPERIENCE_STATE_TONE, spotsLeft } from "@/lib/experience-status";
 import { categoryLabel } from "@/lib/constants";
 import { formatDateShort, formatTime } from "@/lib/dates";
 import { isDemoExperience, displayTitle } from "@/lib/demo-content";
 import { Badge } from "@/components/ui/Badge";
+import { ManagedPhoto } from "@/components/ui/ManagedPhoto";
 import { InViewReveal } from "@/components/motion/InViewReveal";
 import { HoverLift } from "@/components/motion/HoverLift";
 import { AnimatedArrow } from "@/components/motion/AnimatedArrow";
 import { FloatingChip } from "@/components/motion/FloatingChip";
 
 /** Larger, two-column editorial treatment for the featured experience at the top of the catalog. */
-export function FeaturedExperienceCard({ experience }: { experience: ExperienceWithBusiness }) {
+export function FeaturedExperienceCard({
+  experience,
+  availableAssets,
+}: {
+  experience: ExperienceWithBusiness;
+  availableAssets: string[];
+}) {
   const state = computeExperienceState(experience, experience.reserved_count);
   const left = spotsLeft(experience, experience.reserved_count);
   const isDemo = isDemoExperience(experience.title);
 
   return (
     <InViewReveal className="sm:col-span-2">
-      <HoverLift lift={4}>
+      <HoverLift lift={3}>
         <Link
           href={`/experiencias/${experience.slug}`}
-          className="group grid overflow-hidden rounded-2xl border border-carbon/10 bg-warm-white sm:grid-cols-2"
+          className="group grid overflow-hidden rounded-[20px] border border-carbon/10 bg-warm-white sm:grid-cols-2"
         >
           <div className="relative aspect-[4/3] w-full overflow-hidden bg-carbon/5 sm:aspect-auto">
-            <Image
-              src={experience.image_url || "/images/placeholder-1.svg"}
+            <ManagedPhoto
+              url={experience.image_url}
+              availableAssets={availableAssets}
               alt=""
-              fill
               sizes="(min-width: 640px) 50vw, 100vw"
-              className="object-cover transition-transform duration-500 ease-out group-hover:scale-110"
+              className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02]"
             />
             <div className="absolute top-3 left-3 flex flex-wrap gap-2">
               <Badge tone="neutral" className="bg-warm-white/90">

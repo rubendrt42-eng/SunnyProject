@@ -31,7 +31,7 @@ export function PassShowcase({ user, activeWeekly }: { user: CurrentUser | null;
             <p className="mt-4 max-w-md text-lg text-warm-white/75">
               Crea tu cuenta con tu correo y reclama un lugar gratuito cada semana. Sin contraseñas, sin costo.
             </p>
-            <LinkButton href="/acceso" size="lg" variant="secondary" className="mt-8">
+            <LinkButton href="/acceso" size="lg" variant="primary" arrow className="mt-8">
               Crear cuenta
             </LinkButton>
           </>
@@ -44,7 +44,7 @@ export function PassShowcase({ user, activeWeekly }: { user: CurrentUser | null;
               Elige una experiencia con cupo y tu pase queda listo al instante: folio, fecha y ubicación en &quot;Mi
               pase&quot;.
             </p>
-            <LinkButton href="/experiencias" size="lg" variant="secondary" className="mt-8">
+            <LinkButton href="/experiencias" size="lg" variant="primary" arrow className="mt-8">
               Elegir experiencia
             </LinkButton>
           </>
@@ -57,7 +57,7 @@ export function PassShowcase({ user, activeWeekly }: { user: CurrentUser | null;
               Reservaste <strong className="text-warm-white">{displayTitle(activeWeekly.experience.title)}</strong> para
               el {formatDateShort(activeWeekly.experience.starts_at)}. Presenta tu folio para entrar.
             </p>
-            <LinkButton href="/mi-pase" size="lg" variant="secondary" className="mt-8">
+            <LinkButton href="/mi-pase" size="lg" variant="primary" arrow className="mt-8">
               Ver mi pase
             </LinkButton>
           </>
@@ -77,7 +77,7 @@ export function PassShowcase({ user, activeWeekly }: { user: CurrentUser | null;
       </InViewReveal>
 
       <InViewReveal delay={0.1}>
-        <div className="mx-auto w-full max-w-sm rotate-1 rounded-2xl border border-warm-white/10 bg-warm-white/5 p-7 text-warm-white shadow-2xl backdrop-blur transition-transform duration-500 hover:rotate-0">
+        <div className="mx-auto w-full max-w-sm rounded-[20px] border border-warm-white/10 bg-warm-white/5 p-7 text-warm-white shadow-lg backdrop-blur">
           <div className="flex items-center justify-between">
             <p className="font-serif text-lg italic">Sunny Project</p>
             <span className="rounded-full bg-sunny px-3 py-1 text-xs font-semibold text-carbon">

@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getExperienceBySlug, getExistingReservationForExperience, getActiveWeeklyReservation } from "@/lib/queries";
 import { getCurrentUser, isProfileComplete } from "@/lib/auth";
 import { determineCta } from "@/lib/experience-cta";
+import { listAvailableDemoAssets } from "@/lib/assets.server";
 import { computeExperienceState, spotsLeft } from "@/lib/experience-status";
 import { formatDateTime, formatTime } from "@/lib/dates";
 import { Container } from "@/components/ui/Container";
@@ -55,10 +56,11 @@ export default async function ExperienceDetailPage({
   const state = computeExperienceState(experience, experience.reserved_count);
   const left = spotsLeft(experience, experience.reserved_count);
   const spotsLabel = left > 0 ? `${left} de ${experience.capacity} lugares disponibles` : "Experiencia agotada";
+  const availableAssets = listAvailableDemoAssets();
 
   return (
     <main className="pb-24 lg:pb-14">
-      <DetailHero experience={experience} state={state} />
+      <DetailHero experience={experience} state={state} availableAssets={availableAssets} />
 
       <Container className="mt-10 grid gap-10 lg:mt-14 lg:grid-cols-[1.4fr_1fr] lg:items-start">
         <div>

@@ -2,6 +2,7 @@
 
 import { useEffect, useId } from "react";
 import { AnimatePresence, motion } from "motion/react";
+import { X } from "lucide-react";
 import type { ReactNode } from "react";
 
 /**
@@ -57,7 +58,7 @@ export function AnimatedModal({
             role="dialog"
             aria-modal="true"
             aria-labelledby={titleId}
-            className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-warm-white p-6 sm:p-8"
+            className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl bg-warm-white p-6 sm:p-8"
             initial={{ opacity: 0, y: 24, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 12, scale: 0.98 }}
@@ -73,9 +74,7 @@ export function AnimatedModal({
                 aria-label="Cerrar"
                 className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-carbon/15"
               >
-                <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4">
-                  <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" />
-                </svg>
+                <X aria-hidden size={16} />
               </button>
             </div>
             <div className="mt-5">{children}</div>

@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentUser } from "@/lib/auth";
 import { getActiveWeeklyReservation, getPublicExperiences } from "@/lib/queries";
+import { listAvailableDemoAssets } from "@/lib/assets.server";
 import { Container } from "@/components/ui/Container";
 import { LinkButton } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
@@ -124,6 +125,7 @@ export default async function MiPasePage() {
   const recommendations = allExperiences
     .filter((e) => e.status === "published" && !isPast(e.starts_at))
     .slice(0, 3);
+  const availableAssets = listAvailableDemoAssets();
 
   return (
     <main className="py-14 sm:py-20">
@@ -141,7 +143,7 @@ export default async function MiPasePage() {
             <h2 className="text-lg font-semibold">Te podría interesar</h2>
             <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {recommendations.map((experience) => (
-                <ExperienceCard key={experience.id} experience={experience} />
+                <ExperienceCard key={experience.id} experience={experience} availableAssets={availableAssets} />
               ))}
             </div>
           </div>

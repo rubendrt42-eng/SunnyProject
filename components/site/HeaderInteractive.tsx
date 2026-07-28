@@ -87,7 +87,7 @@ export function HeaderInteractive({
           >
             {authLink.label}
           </Link>
-          <LinkButton href="/experiencias" size="sm" variant={solid ? "primary" : "secondary"}>
+          <LinkButton href="/experiencias" size="sm" variant="primary">
             Explorar
           </LinkButton>
         </div>

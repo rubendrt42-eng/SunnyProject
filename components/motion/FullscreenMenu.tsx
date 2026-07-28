@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
+import { X } from "lucide-react";
 import type { ReactNode } from "react";
 
 export interface FullscreenMenuLink {
@@ -64,9 +65,7 @@ export function FullscreenMenu({
               aria-label="Cerrar menú"
               className="flex h-11 w-11 items-center justify-center rounded-full border border-carbon/15"
             >
-              <svg aria-hidden viewBox="0 0 24 24" className="h-5 w-5">
-                <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" />
-              </svg>
+              <X aria-hidden size={18} />
             </button>
           </div>
 

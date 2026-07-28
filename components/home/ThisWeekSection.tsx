@@ -1,8 +1,8 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import Image from "next/image";
 import { Badge } from "@/components/ui/Badge";
+import { ManagedPhoto } from "@/components/ui/ManagedPhoto";
 import { FloatingChip } from "@/components/motion/FloatingChip";
 import { HoverLift } from "@/components/motion/HoverLift";
 import { InViewReveal } from "@/components/motion/InViewReveal";
@@ -24,9 +24,11 @@ import type { ExperienceWithBusiness } from "@/lib/queries";
 export function ThisWeekSection({
   experiences,
   ctaByExperienceId,
+  availableAssets,
 }: {
   experiences: ExperienceWithBusiness[];
   ctaByExperienceId: Record<string, ExperienceCta["type"]>;
+  availableAssets: string[];
 }) {
   const [selected, setSelected] = useState<ExperienceWithBusiness | null>(null);
   const [open, setOpen] = useState(false);
@@ -46,17 +48,29 @@ export function ThisWeekSection({
   return (
     <>
       <div className="grid gap-6 lg:grid-cols-5 lg:gap-8">
-        <FeaturedWeekCard experience={featured} onOpen={openQuickView} className="lg:col-span-3" />
+        <FeaturedWeekCard experience={featured} onOpen={openQuickView} availableAssets={availableAssets} className="lg:col-span-3" />
         {secondary.length > 0 && (
           <div className="flex flex-col gap-4 lg:col-span-2">
             {secondary.map((experience, i) => (
-              <SecondaryWeekCard key={experience.id} experience={experience} onOpen={openQuickView} delay={i * 0.06} />
+              <SecondaryWeekCard
+                key={experience.id}
+                experience={experience}
+                onOpen={openQuickView}
+                availableAssets={availableAssets}
+                delay={i * 0.06}
+              />
             ))}
           </div>
         )}
       </div>
 
-      <QuickView experience={selected} cta={selected ? (ctaByExperienceId[selected.id] ?? null) : null} open={open} onClose={closeQuickView} />
+      <QuickView
+        experience={selected}
+        cta={selected ? (ctaByExperienceId[selected.id] ?? null) : null}
+        open={open}
+        onClose={closeQuickView}
+        availableAssets={availableAssets}
+      />
     </>
   );
 }
@@ -64,10 +78,12 @@ export function ThisWeekSection({
 function FeaturedWeekCard({
   experience,
   onOpen,
+  availableAssets,
   className,
 }: {
   experience: ExperienceWithBusiness;
   onOpen: (experience: ExperienceWithBusiness) => void;
+  availableAssets: string[];
   className?: string;
 }) {
   const state = computeExperienceState(experience, experience.reserved_count);
@@ -80,15 +96,15 @@ function FeaturedWeekCard({
         <button
           type="button"
           onClick={() => onOpen(experience)}
-          className="group grid w-full overflow-hidden rounded-2xl border border-carbon/10 bg-warm-white text-left transition-transform duration-150 active:scale-[0.99] sm:grid-cols-2"
+          className="group grid w-full overflow-hidden rounded-[20px] border border-carbon/10 bg-warm-white text-left transition-transform duration-150 active:scale-[0.98] sm:grid-cols-2"
         >
           <div className="relative aspect-[4/3] w-full overflow-hidden bg-carbon/5 sm:aspect-auto">
-            <Image
-              src={experience.image_url || "/images/placeholder-1.svg"}
+            <ManagedPhoto
+              url={experience.image_url}
+              availableAssets={availableAssets}
               alt=""
-              fill
               sizes="(min-width: 1024px) 50vw, 100vw"
-              className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+              className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02]"
             />
             <div className="absolute top-3 left-3 flex flex-wrap gap-2">
               <Badge tone="neutral" className="bg-warm-white/90">
@@ -130,10 +146,12 @@ function FeaturedWeekCard({
 function SecondaryWeekCard({
   experience,
   onOpen,
+  availableAssets,
   delay,
 }: {
   experience: ExperienceWithBusiness;
   onOpen: (experience: ExperienceWithBusiness) => void;
+  availableAssets: string[];
   delay: number;
 }) {
   const state = computeExperienceState(experience, experience.reserved_count);
@@ -145,13 +163,13 @@ function SecondaryWeekCard({
       <button
         type="button"
         onClick={() => onOpen(experience)}
-        className="group flex w-full items-center gap-4 rounded-2xl border border-carbon/10 bg-warm-white p-3 text-left transition-transform duration-150 active:scale-[0.99] hover:border-carbon/25"
+        className="group flex w-full items-center gap-4 rounded-2xl border border-carbon/10 bg-warm-white p-3 text-left transition-transform duration-150 active:scale-[0.98] hover:border-carbon/25"
       >
         <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-carbon/5 sm:h-24 sm:w-24">
-          <Image
-            src={experience.image_url || "/images/placeholder-1.svg"}
+          <ManagedPhoto
+            url={experience.image_url}
+            availableAssets={availableAssets}
             alt=""
-            fill
             sizes="96px"
             className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02]"
           />

@@ -1,5 +1,5 @@
-import Image from "next/image";
 import { InViewReveal } from "@/components/motion/InViewReveal";
+import { ManagedPhoto } from "@/components/ui/ManagedPhoto";
 import { PartnerLeadModal } from "@/components/site/PartnerLeadModal";
 
 const STEPS = [
@@ -12,12 +12,18 @@ const STEPS = [
  * Trimmed pitch, not the full form — the form only appears once someone
  * commits via PartnerLeadModal, so this section stays scannable.
  */
-export function ForBusinessSection() {
+export function ForBusinessSection({ availableAssets }: { availableAssets: string[] }) {
   return (
     <div className="grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
       <InViewReveal>
-        <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl">
-          <Image src="/demo-assets/run-club.webp" alt="" fill sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
+        <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[20px]">
+          <ManagedPhoto
+            url="/demo-assets/business-partner.webp"
+            availableAssets={availableAssets}
+            alt=""
+            sizes="(min-width: 1024px) 50vw, 100vw"
+            className="object-cover"
+          />
         </div>
       </InViewReveal>
 

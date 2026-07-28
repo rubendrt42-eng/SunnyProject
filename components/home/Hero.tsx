@@ -2,14 +2,23 @@ import Link from "next/link";
 import { WordReveal } from "@/components/motion/WordReveal";
 import { LineReveal } from "@/components/motion/LineReveal";
 import { LinkButton } from "@/components/ui/Button";
-import { HeroFeaturedCard } from "@/components/home/HeroFeaturedCard";
+import { HeroExperienceRotator } from "@/components/home/HeroExperienceRotator";
 import { HeroVideo } from "@/components/home/HeroVideo";
+import type { ExperienceCta } from "@/lib/experience-cta";
 import type { ExperienceWithBusiness } from "@/lib/queries";
 
-export function Hero({ featured }: { featured: ExperienceWithBusiness | null }) {
+export function Hero({
+  experiences,
+  ctaByExperienceId,
+  availableAssets,
+}: {
+  experiences: ExperienceWithBusiness[];
+  ctaByExperienceId: Record<string, ExperienceCta["type"]>;
+  availableAssets: string[];
+}) {
   return (
-    <section className="relative isolate flex min-h-[100svh] flex-col overflow-hidden rounded-b-[2rem] text-warm-white sm:rounded-b-[3rem]">
-      <HeroVideo poster="/demo-assets/hero-poster.webp" src="/demo-assets/hero-reel.mp4" />
+    <section className="relative isolate flex min-h-[100svh] flex-col overflow-hidden text-warm-white">
+      <HeroVideo poster="/demo-assets/hero-poster.webp" src="/demo-assets/hero-reel.mp4" availableAssets={availableAssets} />
       <div className="absolute inset-0 bg-gradient-to-t from-carbon/92 via-carbon/40 to-carbon/60" />
 
       <div className="relative mx-auto mt-auto flex w-full max-w-6xl flex-col gap-10 px-5 pb-16 sm:px-8 sm:pb-20 lg:flex-row lg:items-end lg:justify-between lg:pb-24">
@@ -26,12 +35,12 @@ export function Hero({ featured }: { featured: ExperienceWithBusiness | null }) 
           </LineReveal>
           <LineReveal delay={0.65}>
             <div className="mt-8 flex flex-wrap items-center gap-4">
-              <LinkButton href="/experiencias" size="lg" variant="secondary">
+              <LinkButton href="/experiencias" size="lg" variant="primary" arrow>
                 Explorar experiencias
               </LinkButton>
               <Link
                 href="/como-funciona"
-                className="rounded-full border border-warm-white/50 px-8 py-4 text-base font-medium text-warm-white transition-colors hover:bg-warm-white/10"
+                className="rounded-xl border border-warm-white/50 px-6 py-3 text-base font-medium text-warm-white transition-colors hover:bg-warm-white/10"
               >
                 Cómo funciona
               </Link>
@@ -39,7 +48,9 @@ export function Hero({ featured }: { featured: ExperienceWithBusiness | null }) 
           </LineReveal>
         </div>
 
-        {featured && <HeroFeaturedCard experience={featured} />}
+        {experiences.length > 0 && (
+          <HeroExperienceRotator experiences={experiences} ctaByExperienceId={ctaByExperienceId} availableAssets={availableAssets} />
+        )}
       </div>
 
       <div className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-warm-white/70 sm:flex">
