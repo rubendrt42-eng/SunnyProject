@@ -6,7 +6,11 @@ export type Tone = "neutral" | "sunny" | "orange" | "success" | "danger" | "pine
 const toneClasses: Record<Tone, string> = {
   neutral: "bg-carbon/8 text-carbon",
   sunny: "bg-sunny text-carbon",
-  orange: "bg-orange text-warm-white",
+  // Carbon on orange, not warm-white on orange. The label is 11px, so AA
+  // wants 4.5:1 — warm-white gave 2.56:1, carbon gives 6.93:1. This keeps
+  // the brand fill exactly as designed and only changes the lettering,
+  // which is the smaller of the two possible compromises.
+  orange: "bg-orange text-carbon",
   success: "bg-emerald-100 text-emerald-800",
   danger: "bg-red-100 text-red-800",
   // The narrow secondary. Only "Conoce gente nueva" and the Original seal.

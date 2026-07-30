@@ -29,7 +29,7 @@ export function AccountForm({ profile }: { profile: Profile }) {
           defaultValue={profile.full_name ?? ""}
           className="rounded-lg border border-carbon/20 bg-warm-white px-4 py-3 focus:border-carbon"
         />
-        {state.fieldErrors?.full_name && <p className="text-sm text-orange">{state.fieldErrors.full_name}</p>}
+        {state.fieldErrors?.full_name && <p className="text-sm text-orange-ink">{state.fieldErrors.full_name}</p>}
       </div>
 
       <div className="flex flex-col gap-1.5">
@@ -77,7 +77,7 @@ export function AccountForm({ profile }: { profile: Profile }) {
         </p>
       )}
       {state.error && !state.fieldErrors && (
-        <p role="alert" className="text-sm text-orange">
+        <p role="alert" className="text-sm text-orange-ink">
           {state.error}
         </p>
       )}

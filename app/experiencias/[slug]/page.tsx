@@ -158,7 +158,7 @@ export default async function ExperienceDetailPage({
                   href={experience.maps_url}
                   target="_blank"
                   rel="noreferrer"
-                  className="mt-4 inline-block text-sm font-medium text-orange hover:underline"
+                  className="mt-4 inline-block text-sm font-medium text-orange-ink hover:underline"
                 >
                   Ver en Google Maps →
                 </a>

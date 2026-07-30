@@ -15,6 +15,7 @@ import { EXPERIENCE_STATE_LABEL, EXPERIENCE_STATE_TONE, computeExperienceState, 
 import { isOriginal, maxPartySizeOf, socialModesOf } from "@/lib/experience-flags";
 import { isDemoExperience, displayTitle } from "@/lib/demo-content";
 import { useIsDesktop } from "@/components/motion/useIsDesktop";
+import { panelMotion } from "@/lib/quick-view-motion";
 import type { ExperienceCta } from "@/lib/experience-cta";
 import type { ExperienceWithBusiness } from "@/lib/queries";
 
@@ -103,9 +104,9 @@ export function QuickView({
   const state = computeExperienceState(experience, experience.reserved_count);
   const topRequirements = experience.requirements.slice(0, 2);
 
-  const panelInitial = isDesktop ? { x: "100%" } : { y: "100%" };
-  const panelAnimate = isDesktop ? { x: 0 } : { y: 0 };
-  const panelExit = isDesktop ? { x: "100%" } : { y: "100%" };
+  // Both axes, always — see lib/quick-view-motion.ts for why declaring only
+  // the travelling axis left the panel stranded off-screen on share links.
+  const panel = panelMotion(isDesktop);
 
   return (
     <AnimatePresence>
@@ -125,9 +126,9 @@ export function QuickView({
             role="dialog"
             aria-modal="true"
             aria-labelledby={titleId}
-            initial={panelInitial}
-            animate={panelAnimate}
-            exit={panelExit}
+            initial={panel.initial}
+            animate={panel.animate}
+            exit={panel.exit}
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
             className="absolute inset-x-0 bottom-0 flex max-h-[88vh] flex-col overflow-y-auto rounded-t-3xl bg-warm-white lg:inset-y-0 lg:left-auto lg:right-0 lg:max-h-none lg:w-full lg:max-w-md lg:rounded-t-none"
           >

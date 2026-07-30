@@ -103,7 +103,7 @@ export default async function AdminUsuariosPage({ searchParams }: { searchParams
                     <td className="px-4 py-3 text-neutral-600">{formatDate(profile.created_at)}</td>
                     <td className="px-4 py-3 text-neutral-600">{reservationCount}</td>
                     <td className="px-4 py-3 text-neutral-600">{attendedCount}</td>
-                    <td className={noShowCount > 0 ? "px-4 py-3 font-medium text-orange" : "px-4 py-3 text-neutral-600"}>
+                    <td className={noShowCount > 0 ? "px-4 py-3 font-medium text-orange-ink" : "px-4 py-3 text-neutral-600"}>
                       {noShowCount}
                     </td>
                     <td className="px-4 py-3 text-neutral-600">
@@ -143,7 +143,7 @@ export default async function AdminUsuariosPage({ searchParams }: { searchParams
                   </div>
                   <div>
                     <dt className="text-neutral-500">No-show</dt>
-                    <dd className={noShowCount > 0 ? "font-medium text-orange" : "font-medium"}>{noShowCount}</dd>
+                    <dd className={noShowCount > 0 ? "font-medium text-orange-ink" : "font-medium"}>{noShowCount}</dd>
                   </div>
                 </dl>
                 <p className="mt-2 text-small text-neutral-500">

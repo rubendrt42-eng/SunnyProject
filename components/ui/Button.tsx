@@ -18,7 +18,7 @@ const variantClasses: Record<Variant, string> = {
   secondary: "border border-carbon/25 bg-transparent text-carbon hover:border-carbon/60 hover:bg-carbon/5",
   outline: "border border-carbon/25 bg-transparent text-carbon hover:border-carbon/60 hover:bg-carbon/5",
   ghost: "text-carbon underline-offset-4 hover:underline",
-  danger: "border border-orange/60 text-orange hover:bg-orange/10",
+  danger: "border border-orange/60 text-orange-ink hover:bg-orange/10",
 };
 
 /**

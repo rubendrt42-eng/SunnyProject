@@ -37,7 +37,7 @@ export function ForBusinessSection({ availableAssets }: { availableAssets: strin
         <div className="mt-8 flex flex-col gap-5">
           {STEPS.map((step) => (
             <div key={step.number} className="flex gap-4">
-              <span className="text-sm font-semibold text-orange">{step.number}</span>
+              <span className="text-sm font-semibold text-orange-ink">{step.number}</span>
               <div>
                 <p className="font-medium text-carbon">{step.title}</p>
                 <p className="mt-0.5 text-sm text-carbon/60">{step.body}</p>

@@ -5,6 +5,17 @@
   --color-carbon: #171714;
   --color-sunny: #f8d347;
   --color-orange: #ff7a3d;
+  /* The same brand orange, darkened until it is legible AS TEXT.
+     `--color-orange` is a *fill* colour: at #ff7a3d it scores 2.29:1 against
+     ivory and 2.56:1 under warm-white, so every orange word on the site —
+     the hero's second line, the eyebrows, the step numerals, and every form
+     error message — failed WCAG AA. Error text was the worst of it: the
+     copy a person most needs to read was the hardest to read.
+     #bf4408 keeps the hue and scores 4.60:1 on ivory and 5.12:1 with
+     warm-white on top, so it passes AA for small text in both directions.
+     Rule: `orange` fills and outlines, `orange-ink` letters and icons.
+     Verified with axe-core; see SUNNY_DESIGN_QA_REPORT.md. */
+  --color-orange-ink: #bf4408;
   --color-warm-white: #fffdfc;
   --color-gray: #6d6d65;
   /* The one deliberately narrow secondary. Two sanctioned uses only:
@@ -23,6 +34,7 @@
   --color-carbon: var(--color-carbon);
   --color-sunny: var(--color-sunny);
   --color-orange: var(--color-orange);
+  --color-orange-ink: var(--color-orange-ink);
   --color-warm-white: var(--color-warm-white);
   --color-gray: var(--color-gray);
   --color-pine: var(--color-pine);
@@ -153,7 +165,7 @@ h2 {
   letter-spacing: var(--text-label--letter-spacing);
   font-weight: var(--text-label--font-weight);
   text-transform: uppercase;
-  color: var(--color-orange);
+  color: var(--color-orange-ink);
 }
 
 /* Native horizontal carousels (adopted from Eight Sleep — browser scroll

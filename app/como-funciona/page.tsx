@@ -42,7 +42,7 @@ export default function ComoFuncionaPage() {
         <div className="mt-14 flex flex-col gap-12">
           {STEPS.map((step) => (
             <div key={step.number} className="flex gap-6">
-              <span className="font-serif text-5xl text-orange">{step.number}</span>
+              <span className="font-serif text-5xl text-orange-ink">{step.number}</span>
               <div>
                 <h2 className="text-xl font-semibold">{step.title}</h2>
                 <p className="mt-2 text-gray">{step.body}</p>
@@ -56,7 +56,7 @@ export default function ComoFuncionaPage() {
           <ul className="mt-4 space-y-2 text-carbon">
             {RULES.map((rule) => (
               <li key={rule} className="flex gap-3">
-                <span aria-hidden className="text-orange">
+                <span aria-hidden className="text-orange-ink">
                   •
                 </span>
                 {rule}

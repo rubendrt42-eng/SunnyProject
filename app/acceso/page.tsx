@@ -25,7 +25,7 @@ export default async function AccesoPage({
   return (
     <main className="flex flex-1 items-center py-16 sm:py-24">
       <Container className="max-w-md">
-        <p className="font-serif text-2xl italic text-orange">Entra a Sunny</p>
+        <p className="font-serif text-2xl italic text-orange-ink">Entra a Sunny</p>
         <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Accede con tu correo</h1>
         <p className="mt-2 text-gray">Usamos un enlace mágico, sin contraseñas.</p>
 

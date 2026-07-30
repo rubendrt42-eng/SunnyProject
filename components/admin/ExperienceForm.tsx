@@ -194,7 +194,7 @@ export function ExperienceForm({
         </div>
       </div>
 
-      {state.error && !state.fieldErrors && <p className="text-sm text-orange-600">{state.error}</p>}
+      {state.error && !state.fieldErrors && <p className="text-sm text-orange-ink">{state.error}</p>}
 
       <button type="submit" disabled={pending} className="w-fit rounded-md bg-neutral-900 px-5 py-2.5 text-sm font-medium text-white disabled:opacity-50">
         {pending ? "Guardando…" : submitLabel}
@@ -220,7 +220,7 @@ function Field({
         {label}
       </label>
       {children}
-      {error && <p className="text-xs text-orange-600">{error}</p>}
+      {error && <p className="text-xs text-orange-ink">{error}</p>}
     </div>
   );
 }

@@ -27,7 +27,7 @@ export function WhatIsSunny() {
               Phamily's mid-scroll rhythm break. */}
           <h2 className="mt-4 text-title">
             No se trata solo de encontrar planes.{" "}
-            <span className="font-serif italic text-orange">Se trata de encontrar nuevas formas de vivir.</span>
+            <span className="font-serif italic text-orange-ink">Se trata de encontrar nuevas formas de vivir.</span>
           </h2>
         </InViewReveal>
 

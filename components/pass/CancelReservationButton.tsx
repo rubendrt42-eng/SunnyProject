@@ -46,7 +46,7 @@ export function CancelReservationButton({ reservationId, canCancel }: { reservat
         {loading ? "Cancelando…" : "Cancelar reservación"}
       </Button>
       {error && (
-        <p role="alert" className="mt-2 text-sm text-orange">
+        <p role="alert" className="mt-2 text-sm text-orange-ink">
           {error}
         </p>
       )}

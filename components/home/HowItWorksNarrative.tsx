@@ -147,7 +147,7 @@ function ReturnVisual() {
   return (
     <div className="rounded-lg border border-carbon/10 bg-warm-white p-5 shadow-sm">
       <div className="flex items-center gap-2">
-        <RotateCcw aria-hidden size={16} strokeWidth={1.5} className="text-orange" />
+        <RotateCcw aria-hidden size={16} strokeWidth={1.5} className="text-orange-ink" />
         <p className="text-small font-semibold text-carbon">Tu pase se renueva el lunes</p>
       </div>
       <ul className="mt-4 flex flex-col gap-2 text-small text-gray">
@@ -201,7 +201,7 @@ export function HowItWorksNarrative({
           <div className="flex flex-col justify-center gap-10">
             {STEPS.map((step, i) => (
               <div key={step.number} className={clsx("transition-opacity duration-500", active === i ? "opacity-100" : "opacity-55")}>
-                <span className="text-4xl font-semibold text-orange">{step.number}</span>
+                <span className="text-4xl font-semibold text-orange-ink">{step.number}</span>
                 <h3 className="mt-3 text-2xl font-semibold">{step.title}</h3>
                 <p className="mt-2 max-w-sm text-gray">{step.body}</p>
               </div>
@@ -226,7 +226,7 @@ export function HowItWorksNarrative({
       <div className="flex flex-col gap-12 lg:hidden">
         {STEPS.map((step, i) => (
           <InViewReveal key={step.number}>
-            <span className="text-4xl font-semibold text-orange">{step.number}</span>
+            <span className="text-4xl font-semibold text-orange-ink">{step.number}</span>
             <h3 className="mt-3 text-2xl font-semibold">{step.title}</h3>
             <p className="mt-2 max-w-sm text-gray">{step.body}</p>
             <div className="mt-5">{visuals[i]}</div>

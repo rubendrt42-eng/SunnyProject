@@ -93,7 +93,7 @@ export function MagicLinkForm({ next }: { next: string }) {
           role="alert"
           className="flex gap-3 rounded-md border border-orange/30 bg-orange/10 p-4"
         >
-          <AlertTriangle aria-hidden size={18} strokeWidth={1.75} className="mt-0.5 shrink-0 text-orange" />
+          <AlertTriangle aria-hidden size={18} strokeWidth={1.75} className="mt-0.5 shrink-0 text-orange-ink" />
           <div className="min-w-0">
             <p className="text-small font-semibold text-carbon">{error.title}</p>
             <p className="mt-1 text-small text-carbon/80">{error.detail}</p>

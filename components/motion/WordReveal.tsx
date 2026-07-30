@@ -40,7 +40,20 @@ export function WordReveal({
   }
 
   return (
-    <MotionTag className={className} aria-label={text}>
+    <MotionTag className={className}>
+      {/*
+       * This used to be `aria-label={text}` on the wrapper. That silently
+       * did nothing: `aria-label` is prohibited on a `span` with no role, so
+       * assistive technology ignored it — and because every word below is
+       * `aria-hidden`, the element ended up with NO accessible text at all.
+       * On the Home hero that meant the h1 — the page's whole promise —
+       * was invisible to a screen reader. Caught by axe-core
+       * (aria-prohibited-attr, serious).
+       *
+       * A real visually-hidden text node is read verbatim regardless of the
+       * wrapper's element type, so it works for every `as` value.
+       */}
+      <span className="sr-only">{text}</span>
       {words.map((word, i) => (
         <motion.span
           key={`${word}-${i}`}

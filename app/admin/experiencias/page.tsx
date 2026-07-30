@@ -202,7 +202,7 @@ function ExperienceRow({
             {experience.reservedPeople}
             <span className="text-neutral-400">/{experience.capacity}</span>
           </p>
-          <p className={available === 0 ? "text-small font-medium text-orange" : "text-small text-neutral-500"}>
+          <p className={available === 0 ? "text-small font-medium text-orange-ink" : "text-small text-neutral-500"}>
             {available === 0 ? "Sin lugares" : `${available} libres`}
           </p>
         </div>

@@ -40,7 +40,15 @@ export function HeaderInteractive({
   return (
     <header className="sticky inset-x-0 top-0 z-50 border-b border-carbon/10 bg-warm-white">
       <Container className="flex h-18 items-center justify-between gap-6 py-4">
-        <Link href="/" className="font-serif text-2xl font-medium italic tracking-tight text-carbon">
+        {/* `whitespace-nowrap shrink-0`: the brand name must never break. As
+            a flex child it was shrinking below its own content width and
+            wrapping to "Sunny / Project" on every viewport under 640px —
+            two lines of a 32px line-height inside a 72px header, on every
+            page of the site. */}
+        <Link
+          href="/"
+          className="shrink-0 font-serif text-2xl font-medium italic tracking-tight whitespace-nowrap text-carbon"
+        >
           Sunny Project
         </Link>
 
@@ -75,9 +83,18 @@ export function HeaderInteractive({
             brief is explicit that mobile must not hide the main action
             behind the menu. */}
         <div className="flex items-center gap-2 lg:hidden">
-          <LinkButton href="/experiencias" size="sm" variant="primary" className="hidden sm:inline-flex">
-            {ctaLabel}
-          </LinkButton>
+          {/* The responsive hide lives on a WRAPPER, not on the button.
+              `className="hidden sm:inline-flex"` on LinkButton did nothing:
+              its own base classes already declare `inline-flex`, and between
+              two display utilities of equal specificity the stylesheet's
+              source order decides — so the button stayed visible at every
+              width and crowded the wordmark off its line. Wrapping moves the
+              display switch onto an element that isn't fighting anyone. */}
+          <div className="hidden sm:block">
+            <LinkButton href="/experiencias" size="sm" variant="primary">
+              {ctaLabel}
+            </LinkButton>
+          </div>
           <button
             type="button"
             onClick={() => setMenuOpen(true)}

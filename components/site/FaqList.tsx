@@ -5,7 +5,7 @@ export function FaqList({ items }: { items: { q: string; a: string }[] }) {
         <details key={item.q} className="group p-5">
           <summary className="flex cursor-pointer list-none items-center justify-between font-medium marker:content-none">
             {item.q}
-            <span aria-hidden className="ml-4 text-orange transition-transform group-open:rotate-45">
+            <span aria-hidden className="ml-4 text-orange-ink transition-transform group-open:rotate-45">
               +
             </span>
           </summary>

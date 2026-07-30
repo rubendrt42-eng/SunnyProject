@@ -5,7 +5,7 @@ export default function NotFound() {
   return (
     <main className="flex flex-1 items-center py-24">
       <Container className="max-w-md text-center">
-        <p className="font-serif text-6xl italic text-orange">404</p>
+        <p className="font-serif text-6xl italic text-orange-ink">404</p>
         <h1 className="mt-4 text-2xl font-semibold">No encontramos esta página</h1>
         <p className="mt-2 text-gray">
           Puede que el enlace esté roto o que la experiencia ya no esté disponible.

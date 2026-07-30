@@ -67,7 +67,7 @@ export function ImageUploadField({
         className="rounded-lg border border-carbon/20 bg-white px-3 py-2 text-sm"
       />
       {uploading && <p className="text-xs text-gray-500">Subiendo…</p>}
-      {error && <p className="text-xs text-orange">{error}</p>}
+      {error && <p className="text-xs text-orange-ink">{error}</p>}
     </div>
   );
 }

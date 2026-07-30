@@ -123,7 +123,7 @@ export function PartnerLeadForm({ compact = false }: { compact?: boolean }) {
       </div>
 
       {error && (
-        <p role="alert" className={compact ? "text-sm text-sunny" : "text-sm text-orange"}>
+        <p role="alert" className={compact ? "text-sm text-sunny" : "text-sm text-orange-ink"}>
           {error}
         </p>
       )}

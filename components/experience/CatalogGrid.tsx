@@ -18,9 +18,9 @@ import type { ExperienceWithBusiness } from "@/lib/queries";
  * uses `scroll: false` — the grid never jumps when the panel opens or
  * closes, which was the main thing the quick view existed to protect.
  *
- * Closing calls `router.back()` so the panel's own history entry is
- * consumed, keeping the hardware/gesture back button working as the close
- * gesture (the same contract QuickView already implements internally).
+ * Closing only strips `ver` from the URL. QuickView owns the history entry
+ * and the back gesture; this component must not also navigate back, or one
+ * close consumes two entries. See `closeQuickView` below.
  */
 export function CatalogGrid({
   featured,
@@ -70,9 +70,28 @@ export function CatalogGrid({
     [pathname, router, searchParams],
   );
 
+  /**
+   * Strips `ver` — it must NOT call `router.back()`.
+   *
+   * QuickView owns the back gesture: it pushes one history entry when it
+   * opens and every close path (Escape, backdrop, the X button) goes through
+   * `history.back()`, which fires popstate, which is what calls this. So by
+   * the time we get here a history entry has ALREADY been consumed. Calling
+   * `router.back()` on top of that popped a second one.
+   *
+   * Clicking a card happened to hide it, because opening that way pushes two
+   * entries (this component's `?ver=` push plus QuickView's own) and two
+   * backs balanced out. Arriving directly on `/experiencias?ver=<slug>` —
+   * i.e. every link ShareButton produces — has only one entry to give, so
+   * the second back walked out of the site. Verified: pressing Escape on a
+   * shared link left the catalogue entirely.
+   */
   const closeQuickView = useCallback(() => {
-    router.back();
-  }, [router]);
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("ver");
+    const query = params.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+  }, [pathname, router, searchParams]);
 
   return (
     <>

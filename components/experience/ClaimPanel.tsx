@@ -277,7 +277,7 @@ export function ClaimPanel({
       </label>
 
       {error && (
-        <p role="alert" className="mt-3 text-small text-orange">
+        <p role="alert" className="mt-3 text-small text-orange-ink">
           {error}
         </p>
       )}

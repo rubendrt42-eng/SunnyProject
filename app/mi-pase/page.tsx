@@ -55,7 +55,7 @@ export default async function MiPasePage() {
     return (
       <main className="py-14 sm:py-20">
         <Container className="max-w-2xl">
-          <p className="text-sm font-medium uppercase tracking-wide text-orange">Tu pase</p>
+          <p className="text-sm font-medium uppercase tracking-wide text-orange-ink">Tu pase</p>
           <h1 className="mt-1 font-serif text-4xl italic">{experience.title}</h1>
 
           <div className="mt-8 rounded-2xl border border-carbon/10 bg-warm-white p-8">

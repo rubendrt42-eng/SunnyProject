@@ -37,7 +37,7 @@ export function Hero({ experiences }: { experiences: ExperienceWithBusiness[] })
               the whole promise, not just its first half. */}
           <h1 className="mt-4 text-display">
             <WordReveal as="span" text="Descubre algo nuevo." className="block" />
-            <WordReveal as="span" text="Vívelo con alguien." delay={0.22} className="block text-orange" />
+            <WordReveal as="span" text="Vívelo con alguien." delay={0.22} className="block text-orange-ink" />
           </h1>
 
           <LineReveal delay={0.5}>

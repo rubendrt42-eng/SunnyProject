@@ -35,7 +35,7 @@ export function ProfileCompletionForm({ onComplete }: { onComplete: () => void }
           className="rounded-lg border border-carbon/20 bg-warm-white px-4 py-3 focus:border-carbon"
         />
         {state.fieldErrors?.full_name && (
-          <p id="full_name-error" className="text-sm text-orange">
+          <p id="full_name-error" className="text-sm text-orange-ink">
             {state.fieldErrors.full_name}
           </p>
         )}
@@ -80,7 +80,7 @@ export function ProfileCompletionForm({ onComplete }: { onComplete: () => void }
         <input type="checkbox" name="adult_confirmed" required className="mt-1" />
         <span>Confirmo que tengo 18 años o más.</span>
       </label>
-      {state.fieldErrors?.adult_confirmed && <p className="text-sm text-orange">{state.fieldErrors.adult_confirmed}</p>}
+      {state.fieldErrors?.adult_confirmed && <p className="text-sm text-orange-ink">{state.fieldErrors.adult_confirmed}</p>}
 
       <label className="flex items-start gap-3 text-sm">
         <input type="checkbox" name="terms_accepted" required className="mt-1" />
@@ -96,10 +96,10 @@ export function ProfileCompletionForm({ onComplete }: { onComplete: () => void }
           .
         </span>
       </label>
-      {state.fieldErrors?.terms_accepted && <p className="text-sm text-orange">{state.fieldErrors.terms_accepted}</p>}
+      {state.fieldErrors?.terms_accepted && <p className="text-sm text-orange-ink">{state.fieldErrors.terms_accepted}</p>}
 
       {state.error && !state.fieldErrors && (
-        <p role="alert" className="text-sm text-orange">
+        <p role="alert" className="text-sm text-orange-ink">
           {state.error}
         </p>
       )}

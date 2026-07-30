@@ -117,7 +117,7 @@ export default async function AdminDashboardPage() {
           href="/admin/solicitudes"
           className="mt-8 flex items-center gap-3 rounded-lg border border-neutral-200 bg-white p-4 hover:border-neutral-400"
         >
-          <Inbox aria-hidden size={18} strokeWidth={1.5} className="text-orange" />
+          <Inbox aria-hidden size={18} strokeWidth={1.5} className="text-orange-ink" />
           <span className="text-small font-medium">
             {data.newLeads} {data.newLeads === 1 ? "solicitud nueva" : "solicitudes nuevas"} de negocios
           </span>
@@ -173,7 +173,7 @@ function WeekTable({ experiences }: { experiences: ExperienceWithStats[] }) {
                   </td>
                   <td className="px-4 py-3 text-neutral-600">{e.capacity}</td>
                   <td className="px-4 py-3 text-neutral-600">{e.reservedPeople}</td>
-                  <td className={available === 0 ? "px-4 py-3 font-semibold text-orange" : "px-4 py-3 text-neutral-600"}>
+                  <td className={available === 0 ? "px-4 py-3 font-semibold text-orange-ink" : "px-4 py-3 text-neutral-600"}>
                     {available}
                   </td>
                   <td className="px-4 py-3 text-neutral-600">
@@ -215,7 +215,7 @@ function WeekTable({ experiences }: { experiences: ExperienceWithStats[] }) {
                 </div>
                 <div>
                   <dt className="text-neutral-500">Libres</dt>
-                  <dd className={available === 0 ? "font-semibold text-orange" : "font-medium"}>{available}</dd>
+                  <dd className={available === 0 ? "font-semibold text-orange-ink" : "font-medium"}>{available}</dd>
                 </div>
               </dl>
             </li>
