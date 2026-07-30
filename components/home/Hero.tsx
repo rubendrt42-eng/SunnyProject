@@ -1,64 +1,78 @@
-import Link from "next/link";
+import Image from "next/image";
 import { WordReveal } from "@/components/motion/WordReveal";
 import { LineReveal } from "@/components/motion/LineReveal";
 import { LinkButton } from "@/components/ui/Button";
-import { HeroExperienceRotator } from "@/components/home/HeroExperienceRotator";
-import { HeroVideo } from "@/components/home/HeroVideo";
-import type { ExperienceCta } from "@/lib/experience-cta";
+import { Container } from "@/components/ui/Container";
+import { HeroFeaturedRotator } from "@/components/home/HeroFeaturedRotator";
+import { HERO_TOGETHER } from "@/lib/media";
 import type { ExperienceWithBusiness } from "@/lib/queries";
 
-export function Hero({
-  experiences,
-  ctaByExperienceId,
-  availableAssets,
-}: {
-  experiences: ExperienceWithBusiness[];
-  ctaByExperienceId: Record<string, ExperienceCta["type"]>;
-  availableAssets: string[];
-}) {
+/**
+ * Editorial split rather than a full-bleed media hero.
+ *
+ * This is a constraint turned into a decision: there is no video material
+ * and no horizontal photography in the attached assets — everything is
+ * 736px-wide vertical (SUNNY_ASSET_MANIFEST.md §5). A 736px image stretched
+ * across a 1440px viewport would look soft, so the photograph occupies a
+ * column at roughly its native size while the type carries the left half.
+ * It also happens to be the composition both Phamily and Coda use for
+ * their strongest statements.
+ *
+ * The five-second question the hero has to answer: what Sunny is
+ * (experiencias locales), what you can do (explorar esta semana), and why
+ * to keep scrolling (a real experience is already visible).
+ */
+export function Hero({ experiences }: { experiences: ExperienceWithBusiness[] }) {
   return (
-    <section className="relative isolate flex min-h-[100svh] flex-col overflow-hidden text-warm-white">
-      <HeroVideo poster="/demo-assets/hero-poster.webp" src="/demo-assets/hero-reel.mp4" availableAssets={availableAssets} />
-      <div className="absolute inset-0 bg-gradient-to-t from-carbon/92 via-carbon/40 to-carbon/60" />
-
-      <div className="relative mx-auto mt-auto flex w-full max-w-6xl flex-col gap-10 px-5 pb-16 sm:px-8 sm:pb-20 lg:flex-row lg:items-end lg:justify-between lg:pb-24">
+    <section className="relative overflow-hidden border-b border-carbon/10 bg-ivory">
+      <Container className="grid items-center gap-10 py-14 sm:py-20 lg:grid-cols-2 lg:gap-16 lg:py-24">
         <div className="max-w-xl">
-          <WordReveal
-            as="h1"
-            text="DESCUBRE ALGO NUEVO ESTA SEMANA."
-            className="text-5xl leading-[1.03] font-semibold tracking-tight text-balance sm:text-6xl lg:text-[4.75rem] lg:leading-[1.02]"
-          />
+          <LineReveal>
+            <p className="eyebrow">Monterrey · Cada semana</p>
+          </LineReveal>
+
+          {/* Two short lines, ~7 words. The promise is the discovery AND
+              the company — that pairing is the whole differentiator.
+              Both lines live inside the single h1 so the page's heading is
+              the whole promise, not just its first half. */}
+          <h1 className="mt-4 text-display">
+            <WordReveal as="span" text="Descubre algo nuevo." className="block" />
+            <WordReveal as="span" text="Vívelo con alguien." delay={0.22} className="block text-orange" />
+          </h1>
+
           <LineReveal delay={0.5}>
-            <p className="mt-6 max-w-md text-lg text-warm-white/90">
-              Experiencias seleccionadas en Monterrey con cupos limitados y un pase gratuito cada semana.
+            <p className="mt-6 max-w-md text-body-l text-gray">
+              Experiencias locales para salir de la rutina, conectar y formar parte de una comunidad que busca crecer.
             </p>
           </LineReveal>
-          <LineReveal delay={0.65}>
-            <div className="mt-8 flex flex-wrap items-center gap-4">
+
+          <LineReveal delay={0.62}>
+            <div className="mt-8 flex flex-wrap items-center gap-3">
               <LinkButton href="/experiencias" size="lg" variant="primary" arrow>
-                Explorar experiencias
+                Explorar esta semana
               </LinkButton>
-              <Link
-                href="/como-funciona"
-                className="rounded-xl border border-warm-white/50 px-6 py-3 text-base font-medium text-warm-white transition-colors hover:bg-warm-white/10"
-              >
-                Cómo funciona
-              </Link>
+              <LinkButton href="/#que-es-sunny" size="lg" variant="secondary">
+                Conoce Sunny
+              </LinkButton>
             </div>
           </LineReveal>
         </div>
 
-        {experiences.length > 0 && (
-          <HeroExperienceRotator experiences={experiences} ctaByExperienceId={ctaByExperienceId} availableAssets={availableAssets} />
-        )}
-      </div>
+        <div className="relative">
+          <div className="relative aspect-4/5 w-full overflow-hidden rounded-lg bg-carbon/5 sm:aspect-3/4 lg:aspect-4/5">
+            <Image
+              src={HERO_TOGETHER.src}
+              alt={HERO_TOGETHER.alt}
+              fill
+              priority
+              sizes="(min-width: 1024px) 46vw, 100vw"
+              className="object-cover"
+            />
+          </div>
 
-      <div className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-warm-white/70 sm:flex">
-        <span className="text-xs tracking-widest uppercase">Descubre más</span>
-        <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4 motion-safe:animate-bounce">
-          <path d="M12 4v16m0 0l-6-6m6 6l6-6" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" fill="none" />
-        </svg>
-      </div>
+          {experiences.length > 0 && <HeroFeaturedRotator experiences={experiences} />}
+        </div>
+      </Container>
     </section>
   );
 }

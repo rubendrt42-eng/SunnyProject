@@ -3,12 +3,14 @@
 import { useRef, useState } from "react";
 import { clsx } from "clsx";
 import { motion, useScroll, useMotionValueEvent } from "motion/react";
+import { Link2, RotateCcw, Share2 } from "lucide-react";
 import { InViewReveal } from "@/components/motion/InViewReveal";
 import { ManagedPhoto } from "@/components/ui/ManagedPhoto";
 import { Badge } from "@/components/ui/Badge";
 import { CTA_LABEL } from "@/lib/experience-cta";
 import { categoryLabel } from "@/lib/constants";
 import { displayTitle } from "@/lib/demo-content";
+import { maxPartySizeOf } from "@/lib/experience-flags";
 import { spotsLeft } from "@/lib/experience-status";
 import type { ExperienceWithBusiness } from "@/lib/queries";
 
@@ -16,17 +18,27 @@ const STEPS = [
   {
     number: "01",
     title: "Descubre",
-    body: "Explora experiencias seleccionadas de movimiento, recovery, cafés, outdoor y comunidad.",
+    body: "Encuentra experiencias seleccionadas para esta semana.",
   },
   {
     number: "02",
-    title: "Reclama",
-    body: "Utiliza tu pase semanal antes de que se agoten los lugares.",
+    title: "Invita o llega solo",
+    body: "Comparte el plan, lleva a alguien cuando esté permitido o atrévete a llegar solo.",
   },
   {
     number: "03",
+    title: "Reserva",
+    body: "Utiliza tu pase y asegura tus lugares antes de que se terminen.",
+  },
+  {
+    number: "04",
     title: "Vive",
-    body: "Presenta tu folio, disfruta la experiencia y vuelve la siguiente semana.",
+    body: "Presenta tu folio y disfruta la experiencia.",
+  },
+  {
+    number: "05",
+    title: "Comparte y regresa",
+    body: "Cuenta cómo te fue y descubre lo que viene la siguiente semana.",
   },
 ] as const;
 
@@ -89,11 +101,60 @@ function CapacityVisual({ experience }: { experience: ExperienceWithBusiness | n
 
 function PassVisual() {
   return (
-    <div className="rounded-2xl bg-carbon p-5 text-warm-white shadow-sm">
-      <p className="text-xs tracking-widest text-warm-white/50 uppercase">Pase Sunny</p>
+    <div className="rounded-lg bg-carbon p-5 text-warm-white shadow-sm">
+      <p className="text-label text-warm-white/50">Pase Sunny</p>
       <p className="mt-2 font-mono text-lg tracking-wide">SUN-XXXXXX</p>
       <div className="mt-4 h-px w-full bg-warm-white/15" />
-      <p className="mt-4 text-sm text-warm-white/70">Presenta tu nombre y folio al llegar.</p>
+      <p className="mt-4 text-small text-warm-white/70">Presenta tu nombre y folio al llegar.</p>
+    </div>
+  );
+}
+
+/**
+ * Step 02 is about who you go with. Shows the real share affordances the
+ * app actually has (WhatsApp, copy link) and the companion rule — it never
+ * promises invitations the product doesn't send.
+ */
+function InviteVisual({ experience }: { experience: ExperienceWithBusiness | null }) {
+  const max = experience ? maxPartySizeOf(experience) : 1;
+
+  return (
+    <div className="rounded-lg border border-carbon/10 bg-warm-white p-5 shadow-sm">
+      <p className="text-small font-semibold text-carbon">
+        {experience ? displayTitle(experience.title) : "Una experiencia de esta semana"}
+      </p>
+      <div className="mt-4 flex flex-wrap gap-2">
+        <span className="inline-flex items-center gap-1.5 rounded-md border border-carbon/15 px-3 py-1.5 text-small text-carbon/75">
+          <Share2 aria-hidden size={14} strokeWidth={1.5} />
+          Compartir
+        </span>
+        <span className="inline-flex items-center gap-1.5 rounded-md border border-carbon/15 px-3 py-1.5 text-small text-carbon/75">
+          <Link2 aria-hidden size={14} strokeWidth={1.5} />
+          Copiar enlace
+        </span>
+      </div>
+      <p className="mt-4 text-small text-gray">
+        {max > 1
+          ? `Esta experiencia permite hasta ${max} lugares por reservación.`
+          : "Puedes llegar solo: la mayoría de las experiencias son de un lugar por persona."}
+      </p>
+    </div>
+  );
+}
+
+/** Step 05: the loop closing. The pass renews Mondays — a real product rule, not a slogan. */
+function ReturnVisual() {
+  return (
+    <div className="rounded-lg border border-carbon/10 bg-warm-white p-5 shadow-sm">
+      <div className="flex items-center gap-2">
+        <RotateCcw aria-hidden size={16} strokeWidth={1.5} className="text-orange" />
+        <p className="text-small font-semibold text-carbon">Tu pase se renueva el lunes</p>
+      </div>
+      <ul className="mt-4 flex flex-col gap-2 text-small text-gray">
+        <li>Un pase por semana, sin costo.</li>
+        <li>Cancelas hasta 12 horas antes y lo recuperas.</li>
+        <li>Cada semana se publican experiencias nuevas.</li>
+      </ul>
     </div>
   );
 }
@@ -116,14 +177,19 @@ export function HowItWorksNarrative({
 
   const visuals = [
     <CatalogVisual key="catalog" experiences={experiences} availableAssets={availableAssets} />,
+    <InviteVisual key="invite" experience={experiences[0] ?? null} />,
     <CapacityVisual key="capacity" experience={experiences[0] ?? null} />,
     <PassVisual key="pass" />,
+    <ReturnVisual key="return" />,
   ];
 
   return (
     <>
-      {/* Desktop: sticky scroll narrative */}
-      <div ref={containerRef} className="relative hidden lg:block" style={{ height: `${STEPS.length * 60}vh` }}>
+      {/* Desktop only: sticky scroll narrative. Coda pins chapters at `md:`
+          and above and drops the behaviour below that — the same call is
+          made here, and mobile gets the plain vertical sequence below
+          rather than an inflated scroll container (brief §18). */}
+      <div ref={containerRef} className="relative hidden lg:block" style={{ height: `${STEPS.length * 50}vh` }}>
         <div className="sticky top-24 mx-auto grid max-w-6xl grid-cols-[2px_1fr_1fr] gap-12 px-8">
           <div className="relative h-[40vh] self-center rounded-full bg-carbon/10">
             <motion.div

@@ -1,9 +1,7 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { clsx } from "clsx";
 import { Container } from "@/components/ui/Container";
 import { LinkButton } from "@/components/ui/Button";
 import { FullscreenMenu } from "@/components/motion/FullscreenMenu";
@@ -13,101 +11,87 @@ interface NavLink {
   label: string;
 }
 
-function subscribeToScroll(callback: () => void) {
-  window.addEventListener("scroll", callback, { passive: true });
-  return () => window.removeEventListener("scroll", callback);
-}
-
-function getScrolledPastHero() {
-  return window.scrollY > 64;
-}
-
-function getScrolledPastHeroServerSnapshot() {
-  return false;
-}
-
+/**
+ * Header is solid on every route, including Home.
+ *
+ * It used to float transparent over the video hero with white text and
+ * swap to solid on scroll. The redesigned hero is an editorial split on an
+ * ivory background (there is no full-bleed dark video to sit over — see
+ * SUNNY_ASSET_MANIFEST.md §6: no video material exists), so white-on-ivory
+ * would have been invisible for the first viewport. A solid header removes
+ * that whole class of contrast bug and matches how both references
+ * actually behave.
+ *
+ * Account links are passed in rather than derived here, because session
+ * state is read on the server (see Header.tsx) — the header must never
+ * flash the wrong auth state.
+ */
 export function HeaderInteractive({
   links,
-  authLink,
+  accountLinks,
+  ctaLabel = "Explorar esta semana",
 }: {
   links: NavLink[];
-  authLink: NavLink;
+  accountLinks: NavLink[];
+  ctaLabel?: string;
 }) {
-  const pathname = usePathname();
-  const isHome = pathname === "/";
   const [menuOpen, setMenuOpen] = useState(false);
-  const scrolledPastHero = useSyncExternalStore(subscribeToScroll, getScrolledPastHero, getScrolledPastHeroServerSnapshot);
-
-  const solid = !isHome || scrolledPastHero;
 
   return (
-    <header
-      className={clsx(
-        "inset-x-0 top-0 z-50 transition-colors duration-300",
-        // Only the home page has a hero for the header to float over — on
-        // every other route it takes normal document flow (like before)
-        // and starts solid immediately, so page content never sits under it.
-        isHome ? "fixed" : "sticky",
-        solid ? "border-b border-carbon/10 bg-warm-white" : "border-b border-transparent bg-transparent",
-      )}
-    >
-      <Container className="flex h-18 items-center justify-between py-4">
-        <Link
-          href="/"
-          className={clsx(
-            "font-serif text-2xl font-medium italic tracking-tight transition-colors duration-300",
-            solid ? "text-carbon" : "text-warm-white",
-          )}
-        >
+    <header className="sticky inset-x-0 top-0 z-50 border-b border-carbon/10 bg-warm-white">
+      <Container className="flex h-18 items-center justify-between gap-6 py-4">
+        <Link href="/" className="font-serif text-2xl font-medium italic tracking-tight text-carbon">
           Sunny Project
         </Link>
 
-        <nav className="hidden items-center gap-8 sm:flex" aria-label="Principal">
+        <nav className="hidden items-center gap-7 lg:flex" aria-label="Principal">
           {links.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className={clsx(
-                "text-sm font-medium transition-colors duration-300",
-                solid ? "text-carbon/80 hover:text-carbon" : "text-warm-white/85 hover:text-warm-white",
-              )}
+              className="text-small font-medium text-carbon/80 transition-colors hover:text-carbon"
             >
               {link.label}
             </Link>
           ))}
         </nav>
 
-        <div className="hidden items-center gap-4 sm:flex">
-          <Link
-            href={authLink.href}
-            className={clsx(
-              "text-sm font-medium transition-colors duration-300",
-              solid ? "text-carbon/80 hover:text-carbon" : "text-warm-white/85 hover:text-warm-white",
-            )}
-          >
-            {authLink.label}
-          </Link>
+        <div className="hidden items-center gap-5 lg:flex">
+          {accountLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="text-small font-medium text-carbon/80 transition-colors hover:text-carbon"
+            >
+              {link.label}
+            </Link>
+          ))}
           <LinkButton href="/experiencias" size="sm" variant="primary">
-            Explorar
+            {ctaLabel}
           </LinkButton>
         </div>
 
-        <button
-          type="button"
-          onClick={() => setMenuOpen(true)}
-          aria-haspopup="dialog"
-          aria-expanded={menuOpen}
-          aria-label="Abrir menú"
-          className={clsx(
-            "flex h-10 w-10 items-center justify-center rounded-full border transition-colors duration-300 sm:hidden",
-            solid ? "border-carbon/15 text-carbon" : "border-warm-white/40 text-warm-white",
-          )}
-        >
-          <div className="flex flex-col gap-1.5">
-            <span className="h-0.5 w-5 bg-current" />
-            <span className="h-0.5 w-5 bg-current" />
-          </div>
-        </button>
+        {/* Below lg the CTA stays visible next to the menu button — the
+            brief is explicit that mobile must not hide the main action
+            behind the menu. */}
+        <div className="flex items-center gap-2 lg:hidden">
+          <LinkButton href="/experiencias" size="sm" variant="primary" className="hidden sm:inline-flex">
+            {ctaLabel}
+          </LinkButton>
+          <button
+            type="button"
+            onClick={() => setMenuOpen(true)}
+            aria-haspopup="dialog"
+            aria-expanded={menuOpen}
+            aria-label="Abrir menú"
+            className="flex size-11 items-center justify-center rounded-md border border-carbon/15 text-carbon"
+          >
+            <div className="flex flex-col gap-1.5">
+              <span className="h-0.5 w-5 bg-current" />
+              <span className="h-0.5 w-5 bg-current" />
+            </div>
+          </button>
+        </div>
       </Container>
 
       <FullscreenMenu
@@ -116,11 +100,13 @@ export function HeaderInteractive({
         links={links}
         footer={
           <div className="flex flex-col gap-4">
-            <Link href={authLink.href} onClick={() => setMenuOpen(false)} className="font-serif text-4xl italic">
-              {authLink.label}
-            </Link>
-            <LinkButton href="/experiencias" onClick={() => setMenuOpen(false)} className="w-fit">
-              Explorar
+            {accountLinks.map((link) => (
+              <Link key={link.href} href={link.href} onClick={() => setMenuOpen(false)} className="font-serif text-3xl italic">
+                {link.label}
+              </Link>
+            ))}
+            <LinkButton href="/experiencias" onClick={() => setMenuOpen(false)} className="mt-2 w-fit">
+              {ctaLabel}
             </LinkButton>
           </div>
         }

@@ -144,7 +144,9 @@ Regla anti-plantilla: **en Home no hay dos secciones consecutivas con la misma c
 
 ## 10. Video
 
-**No hay video en MVP 1.1.** La carpeta `PaginaWeb` no incluye material de video (ver `SUNNY_ASSET_MANIFEST.md`). No se fabrica video sintético. Si más adelante llega material: `autoplay muted loop playsInline` + `poster` obligatorio + fallback a fotografía + respeto a `prefers-reduced-motion` y a `Save-Data` (la utilidad `useVideoAllowed` ya existe).
+**No hay video en MVP 1.1.** La carpeta `PaginaWeb` no incluye material de video (ver `SUNNY_ASSET_MANIFEST.md`). No se fabrica video sintético.
+
+Como consecuencia, en esta fase se eliminaron `HeroVideo.tsx`, `HeroExperienceRotator.tsx` y el hook `useVideoAllowed.ts`: quedaron sin uso al reemplazar el hero por el split editorial, y mantener código muerto que promete una capacidad inexistente es peor que borrarlo. Si más adelante llega material de video, el contrato a reconstruir es: `autoplay muted loop playsInline` + `poster` obligatorio + fallback a fotografía + respeto a `prefers-reduced-motion` y a la cabecera `Save-Data`.
 
 ## 11. Iconografía
 

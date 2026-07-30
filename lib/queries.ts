@@ -133,3 +133,25 @@ export async function getActiveBusinesses(supabase: SupabaseClient<Database>): P
   const { data } = await supabase.from("businesses").select("*").order("name");
   return (data as Business[]) ?? [];
 }
+
+/**
+ * Businesses Emmy has explicitly chosen to show publicly as allies.
+ *
+ * Being active is NOT enough (decision 9 in SUNNY_MVP_1_1_DECISIONS.md):
+ * an operational partner is not necessarily one that agreed to appear on
+ * the home page. The filter is applied in JS rather than SQL because
+ * `featured_as_partner` only exists once the presentation migration runs —
+ * querying `.eq("featured_as_partner", true)` against today's schema would
+ * error, whereas reading a missing field yields undefined and correctly
+ * returns nobody.
+ */
+export async function getFeaturedPartners(supabase: SupabaseClient<Database>): Promise<Business[]> {
+  const { data, error } = await supabase.from("businesses").select("*").eq("active", true).order("name");
+
+  if (error) {
+    console.error("[getFeaturedPartners] query failed", error);
+    return [];
+  }
+
+  return ((data as Business[]) ?? []).filter((b) => b.featured_as_partner === true);
+}

@@ -64,6 +64,14 @@ export const EXPERIENCE_PHOTOS = {
   },
 } as const satisfies Record<string, SunnyPhoto>;
 
+/**
+ * Shown in the Originals chapter when the flagged experience has no photo
+ * of its own yet. Safe as a fallback because it depicts the Originals idea
+ * generically (people staying to socialise after an activity) rather than
+ * standing in for a specific experience.
+ */
+export const ORIGINALS_FALLBACK_PHOTO: SunnyPhoto = EXPERIENCE_PHOTOS["run-and-coffee"];
+
 export const COMMUNITY_PHOTOS: SunnyPhoto[] = [
   {
     src: "/media/sunny/community/community-gathering-01.webp",

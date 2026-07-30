@@ -2,6 +2,14 @@ import type { Category } from "@/lib/database.types";
 
 export const TIMEZONE = "America/Monterrey";
 
+/**
+ * Sunny's public handle, kept in one place so the footer and the community
+ * section can't drift apart. Same handle the footer has carried since the
+ * first build — not a new claim about an account.
+ */
+export const INSTAGRAM_HANDLE = "sunnyproject.mx";
+export const INSTAGRAM_URL = `https://instagram.com/${INSTAGRAM_HANDLE}`;
+
 export const CATEGORIES: { value: Category; label: string }[] = [
   { value: "movimiento", label: "Movimiento" },
   { value: "recovery", label: "Recovery" },
