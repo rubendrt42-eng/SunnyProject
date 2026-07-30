@@ -1,156 +1,345 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import { Download, Ticket } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { ADMIN_PAGE_SIZE, getAdminReservations, type ReservationWithContext } from "@/lib/admin-queries";
 import { Badge } from "@/components/ui/Badge";
-import { formatDate, formatTime } from "@/lib/dates";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { formatDate, formatDateShort, formatTime } from "@/lib/dates";
+import { displayTitle } from "@/lib/demo-content";
+import { partySizeOf } from "@/lib/experience-flags";
 import { ReservationRowActions } from "@/components/admin/ReservationRowActions";
-import type { Business, Experience, Reservation } from "@/lib/database.types";
+import type { Experience, ReservationStatus } from "@/lib/database.types";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Reservaciones — Sunny Admin" };
 
-const STATUS_LABEL: Record<string, string> = {
+const STATUS_LABEL: Record<ReservationStatus, string> = {
   confirmed: "Confirmada",
   cancelled: "Cancelada",
   attended: "Asistió",
   no_show: "No-show",
 };
 
-const STATUS_TONE: Record<string, "neutral" | "sunny" | "success" | "danger"> = {
+const STATUS_TONE: Record<ReservationStatus, "neutral" | "sunny" | "success" | "danger"> = {
   confirmed: "sunny",
   cancelled: "danger",
   attended: "success",
   no_show: "neutral",
 };
 
-export default async function AdminReservacionesPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ q?: string; status?: string; date?: string }>;
-}) {
-  const { q, status, date } = await searchParams;
+const STATUSES: ReservationStatus[] = ["confirmed", "attended", "no_show", "cancelled"];
+
+function isStatus(value: string | undefined): value is ReservationStatus {
+  return typeof value === "string" && (STATUSES as string[]).includes(value);
+}
+
+interface Params {
+  q?: string;
+  status?: string;
+  experiencia?: string;
+  grupo?: string;
+  fecha?: string;
+  page?: string;
+}
+
+export default async function AdminReservacionesPage({ searchParams }: { searchParams: Promise<Params> }) {
+  const { q, status, experiencia, grupo, fecha, page: pageParam } = await searchParams;
+  const page = Math.max(Number.parseInt(pageParam ?? "1", 10) || 1, 1);
+
   const supabase = await createClient();
 
-  const { data } = await supabase
-    .from("reservations")
-    .select("*, experience:experiences(*, business:businesses(*))")
-    .order("reserved_at", { ascending: false });
+  /**
+   * Status and experience are filtered in the query (indexed columns), so
+   * only the rows Emmy asked for come back. The previous version loaded
+   * every reservation ever made, plus every auth user in pages of 1000, on
+   * every request — fine with twelve rows, a problem later (brief §42).
+   */
+  const [{ reservations, total, error }, { data: experienceRows }] = await Promise.all([
+    getAdminReservations(supabase, {
+      page,
+      status: isStatus(status) ? status : undefined,
+      experienceId: experiencia,
+    }),
+    supabase.from("experiences").select("id, title, starts_at").order("starts_at", { ascending: false }).limit(100),
+  ]);
 
-  let rows = (data ?? []) as unknown as (Reservation & { experience: Experience & { business: Business } })[];
+  const emailByUserId = await lookupEmails(reservations.map((r) => r.user_id));
 
-  const userIds = [...new Set(rows.map((r) => r.user_id))];
-  const { data: profiles } = await supabase.from("profiles").select("id, full_name").in("id", userIds);
-  const profileMap = new Map((profiles ?? []).map((p) => [p.id, p.full_name ?? ""]));
-
-  const emailMap = new Map<string, string>();
-  try {
-    const adminClient = createAdminClient();
-    let page = 1;
-    for (;;) {
-      const { data: userPage } = await adminClient.auth.admin.listUsers({ page, perPage: 1000 });
-      (userPage?.users ?? []).forEach((u) => emailMap.set(u.id, u.email ?? ""));
-      if (!userPage || userPage.users.length < 1000) break;
-      page += 1;
+  // Text search, party-size and exact-date narrowing happen in memory over
+  // the current page only — they are the filters Postgres cannot do here
+  // (the name lives in profiles, the email in auth.users, and party size may
+  // not exist as a column yet).
+  const needle = q?.trim().toLowerCase();
+  const visible = reservations.filter((r) => {
+    if (grupo === "grupo" && partySizeOf(r) < 2) return false;
+    if (grupo === "individual" && partySizeOf(r) > 1) return false;
+    if (fecha && r.experience && formatDate(r.experience.starts_at) !== formatDate(fecha)) return false;
+    if (needle) {
+      const haystack = [
+        r.profile?.full_name ?? "",
+        emailByUserId.get(r.user_id) ?? "",
+        r.folio,
+        r.experience?.title ?? "",
+        ...r.companions.map((c) => c.full_name),
+      ]
+        .join(" ")
+        .toLowerCase();
+      if (!haystack.includes(needle)) return false;
     }
-  } catch {
-    // SUPABASE_SERVICE_ROLE_KEY not configured — email column will show as empty.
-  }
+    return true;
+  });
 
-  if (status) rows = rows.filter((r) => r.status === status);
-  if (date) rows = rows.filter((r) => r.experience && formatDate(r.experience.starts_at) === formatDate(date));
-  if (q) {
-    const needle = q.toLowerCase();
-    rows = rows.filter((r) => {
-      const name = (profileMap.get(r.user_id) ?? "").toLowerCase();
-      const email = (emailMap.get(r.user_id) ?? "").toLowerCase();
-      const title = (r.experience?.title ?? "").toLowerCase();
-      return name.includes(needle) || email.includes(needle) || r.folio.toLowerCase().includes(needle) || title.includes(needle);
-    });
-  }
+  const experiences = (experienceRows ?? []) as Pick<Experience, "id" | "title" | "starts_at">[];
+  const totalPages = Math.max(Math.ceil(total / ADMIN_PAGE_SIZE), 1);
+  const hasFilters = Boolean(q || status || experiencia || grupo || fecha);
 
   return (
     <div>
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-2xl font-semibold">Reservaciones</h1>
-        <a href={`/api/admin/reservations/export`} className="rounded-md bg-neutral-900 px-4 py-2 text-sm font-medium text-white">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-xl font-semibold sm:text-2xl">Reservaciones</h1>
+        <a
+          href="/api/admin/reservations/export"
+          className="flex min-h-10 items-center gap-2 rounded-md bg-neutral-900 px-4 text-small font-medium text-white hover:bg-neutral-800"
+        >
+          <Download aria-hidden size={16} strokeWidth={1.5} />
           Exportar CSV
         </a>
       </div>
 
-      <form method="get" className="mt-6 flex flex-wrap gap-3">
-        <input
-          type="search"
-          name="q"
-          defaultValue={q ?? ""}
-          placeholder="Buscar por nombre, correo, folio o experiencia"
-          className="input min-w-[280px] flex-1"
-        />
-        <select name="status" defaultValue={status ?? ""} className="input">
-          <option value="">Todos los estados</option>
-          <option value="confirmed">Confirmada</option>
-          <option value="cancelled">Cancelada</option>
-          <option value="attended">Asistió</option>
-          <option value="no_show">No-show</option>
-        </select>
-        <input type="date" name="date" defaultValue={date ?? ""} className="input" />
-        <button type="submit" className="rounded-md border border-neutral-300 px-4 py-2 text-sm font-medium">
+      <form method="get" className="mt-5 flex flex-wrap items-end gap-3">
+        <label className="flex min-w-[240px] flex-1 flex-col gap-1">
+          <span className="text-label text-neutral-500">Buscar</span>
+          <input
+            type="search"
+            name="q"
+            defaultValue={q ?? ""}
+            placeholder="Nombre, correo, folio, experiencia o acompañante"
+            className="input h-10"
+          />
+        </label>
+
+        <label className="flex flex-col gap-1">
+          <span className="text-label text-neutral-500">Experiencia</span>
+          <select name="experiencia" defaultValue={experiencia ?? ""} className="input h-10">
+            <option value="">Todas</option>
+            {experiences.map((e) => (
+              <option key={e.id} value={e.id}>
+                {displayTitle(e.title)} — {formatDateShort(e.starts_at)}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className="flex flex-col gap-1">
+          <span className="text-label text-neutral-500">Estado</span>
+          <select name="status" defaultValue={status ?? ""} className="input h-10">
+            <option value="">Todos</option>
+            {STATUSES.map((s) => (
+              <option key={s} value={s}>
+                {STATUS_LABEL[s]}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className="flex flex-col gap-1">
+          <span className="text-label text-neutral-500">Tipo</span>
+          <select name="grupo" defaultValue={grupo ?? ""} className="input h-10">
+            <option value="">Individual y grupo</option>
+            <option value="individual">Solo individuales</option>
+            <option value="grupo">Solo grupos</option>
+          </select>
+        </label>
+
+        <label className="flex flex-col gap-1">
+          <span className="text-label text-neutral-500">Fecha</span>
+          <input type="date" name="fecha" defaultValue={fecha ?? ""} className="input h-10" />
+        </label>
+
+        <button type="submit" className="min-h-10 rounded-md border border-neutral-300 bg-white px-4 text-small font-medium">
           Filtrar
         </button>
-        {(q || status || date) && (
-          <a href="/admin/reservaciones" className="rounded-md px-4 py-2 text-sm text-neutral-500 underline">
+        {hasFilters && (
+          <Link href="/admin/reservaciones" className="min-h-10 px-2 text-small text-neutral-500 underline">
             Limpiar
-          </a>
+          </Link>
         )}
       </form>
 
-      <div className="mt-6 overflow-x-auto rounded-xl border border-neutral-200 bg-white">
-        <table className="w-full min-w-[900px] text-left text-sm">
-          <thead className="border-b border-neutral-200 text-neutral-500">
-            <tr>
-              <th className="px-4 py-3 font-medium">Folio</th>
-              <th className="px-4 py-3 font-medium">Nombre</th>
-              <th className="px-4 py-3 font-medium">Correo</th>
-              <th className="px-4 py-3 font-medium">Experiencia</th>
-              <th className="px-4 py-3 font-medium">Fecha</th>
-              <th className="px-4 py-3 font-medium">Fuente</th>
-              <th className="px-4 py-3 font-medium">Estado</th>
-              <th className="px-4 py-3 font-medium">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((r) => (
-              <tr key={r.id} className="border-b border-neutral-100 last:border-0 align-top hover:bg-neutral-50">
-                <td className="px-4 py-3 font-mono text-xs">{r.folio}</td>
-                <td className="px-4 py-3">{profileMap.get(r.user_id) || "—"}</td>
-                <td className="px-4 py-3 text-neutral-600">{emailMap.get(r.user_id) || "—"}</td>
-                <td className="px-4 py-3">
-                  {r.experience?.title}
-                  <div className="text-xs text-neutral-500">{r.experience?.business?.name}</div>
-                </td>
-                <td className="px-4 py-3 text-neutral-600">
-                  {r.experience && `${formatDate(r.experience.starts_at)} · ${formatTime(r.experience.starts_at)}`}
-                </td>
-                <td className="px-4 py-3 text-neutral-600">{r.source || "—"}</td>
-                <td className="px-4 py-3">
-                  <Badge tone={STATUS_TONE[r.status]}>{STATUS_LABEL[r.status]}</Badge>
-                </td>
-                <td className="px-4 py-3">
-                  <ReservationRowActions reservationId={r.id} status={r.status} />
-                </td>
-              </tr>
+      {error ? (
+        <p role="alert" className="mt-6 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-small text-red-800">
+          No pudimos cargar las reservaciones.
+        </p>
+      ) : visible.length === 0 ? (
+        <EmptyState
+          className="mt-6 border-neutral-300 bg-white"
+          icon={Ticket}
+          title={total === 0 ? "Aún no hay reservaciones" : "Sin resultados para estos filtros"}
+          description={
+            total === 0
+              ? "Cuando alguien reserve una experiencia aparecerá aquí."
+              : "Ajusta o limpia los filtros para ver más."
+          }
+          action={
+            hasFilters ? (
+              <Link href="/admin/reservaciones" className="text-small font-semibold underline">
+                Limpiar filtros
+              </Link>
+            ) : undefined
+          }
+        />
+      ) : (
+        <>
+          <ul className="mt-6 flex flex-col gap-3">
+            {visible.map((r) => (
+              <ReservationCard key={r.id} reservation={r} email={emailByUserId.get(r.user_id) ?? null} />
             ))}
-            {rows.length === 0 && (
-              <tr>
-                <td colSpan={8} className="px-4 py-8 text-center text-neutral-500">
-                  Sin resultados para estos filtros.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+          </ul>
 
-      <p className="mt-3 text-xs text-neutral-500">Mostrando {rows.length} reservaciones.</p>
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-3 text-small text-neutral-600">
+            <p>
+              Mostrando {visible.length} de {total} {total === 1 ? "reservación" : "reservaciones"}
+              {totalPages > 1 ? ` · página ${page} de ${totalPages}` : ""}
+            </p>
+            {totalPages > 1 && (
+              <div className="flex gap-2">
+                {page > 1 && (
+                  <PageLink page={page - 1} params={{ q, status, experiencia, grupo, fecha }} label="Anterior" />
+                )}
+                {page < totalPages && (
+                  <PageLink page={page + 1} params={{ q, status, experiencia, grupo, fecha }} label="Siguiente" />
+                )}
+              </div>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
+}
+
+function PageLink({ page, params, label }: { page: number; params: Omit<Params, "page">; label: string }) {
+  const search = new URLSearchParams();
+  for (const [key, value] of Object.entries(params)) {
+    if (value) search.set(key, value);
+  }
+  search.set("page", String(page));
+  return (
+    <Link
+      href={`/admin/reservaciones?${search.toString()}`}
+      className="min-h-9 rounded-md border border-neutral-300 bg-white px-3 py-1.5 font-medium"
+    >
+      {label}
+    </Link>
+  );
+}
+
+function ReservationCard({ reservation, email }: { reservation: ReservationWithContext; email: string | null }) {
+  const people = partySizeOf(reservation);
+  const experience = reservation.experience;
+
+  return (
+    <li className="rounded-lg border border-neutral-200 bg-white p-4">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge tone={STATUS_TONE[reservation.status]}>{STATUS_LABEL[reservation.status]}</Badge>
+            <span className="font-mono text-[0.7rem] text-neutral-500">{reservation.folio}</span>
+            {people > 1 && <Badge tone="neutral">Grupo de {people}</Badge>}
+          </div>
+
+          <p className="mt-2 text-heading">{reservation.profile?.full_name || "Sin nombre en el perfil"}</p>
+          <p className="text-small text-neutral-600">{email ?? "Correo no disponible"}</p>
+
+          <p className="mt-2 text-small text-neutral-700">
+            {experience ? (
+              <>
+                <Link href={`/admin/experiencias/${experience.id}`} className="font-medium underline">
+                  {displayTitle(experience.title)}
+                </Link>
+                {" — "}
+                {formatDateShort(experience.starts_at)} · {formatTime(experience.starts_at)}
+                {experience.business?.name ? ` · ${experience.business.name}` : ""}
+              </>
+            ) : (
+              "Experiencia eliminada"
+            )}
+          </p>
+
+          {reservation.companions.length > 0 && (
+            <div className="mt-3 rounded-md bg-neutral-50 p-3">
+              <p className="text-label text-neutral-500">Acompañantes</p>
+              <ul className="mt-1.5 flex flex-col gap-1 text-small text-neutral-700">
+                {reservation.companions.map((c) => (
+                  <li key={c.id} className="flex flex-wrap items-center gap-2">
+                    <span>{c.full_name}</span>
+                    {c.email && <span className="text-neutral-500">{c.email}</span>}
+                    <Badge tone={STATUS_TONE[(c.status as ReservationStatus) ?? "confirmed"] ?? "neutral"}>
+                      {STATUS_LABEL[(c.status as ReservationStatus) ?? "confirmed"] ?? c.status}
+                    </Badge>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+
+        <div className="shrink-0 text-right text-small text-neutral-500">
+          <p>Reservó {formatDateShort(reservation.reserved_at)}</p>
+          {reservation.source && <p className="mt-0.5">Origen: {reservation.source}</p>}
+        </div>
+      </div>
+
+      <div className="mt-4 border-t border-neutral-100 pt-3">
+        <ReservationRowActions reservationId={reservation.id} status={reservation.status} />
+      </div>
+    </li>
+  );
+}
+
+/**
+ * Emails for the current page only.
+ *
+ * They live in `auth.users`, which needs the service-role client, and there
+ * is no "get by id list" API — so this does one lookup per user on the page
+ * (bounded by the page size), in small concurrent batches. The previous
+ * implementation walked the entire user table in pages of 1000 on every
+ * request just to fill one column.
+ *
+ * If the service-role key is absent, the column reads "no disponible"
+ * rather than failing the page.
+ */
+async function lookupEmails(userIds: string[]): Promise<Map<string, string>> {
+  const unique = [...new Set(userIds)];
+  const emails = new Map<string, string>();
+  if (unique.length === 0) return emails;
+
+  let adminClient;
+  try {
+    adminClient = createAdminClient();
+  } catch {
+    return emails;
+  }
+
+  const BATCH = 10;
+  for (let i = 0; i < unique.length; i += BATCH) {
+    const batch = unique.slice(i, i + BATCH);
+    const results = await Promise.all(
+      batch.map(async (id) => {
+        try {
+          const { data } = await adminClient.auth.admin.getUserById(id);
+          return [id, data.user?.email ?? ""] as const;
+        } catch {
+          return [id, ""] as const;
+        }
+      }),
+    );
+    for (const [id, email] of results) {
+      if (email) emails.set(id, email);
+    }
+  }
+
+  return emails;
 }

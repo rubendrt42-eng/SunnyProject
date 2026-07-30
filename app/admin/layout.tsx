@@ -1,41 +1,35 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth";
+import { createClient } from "@/lib/supabase/server";
+import { AdminNav } from "@/components/admin/AdminNav";
 
-const NAV = [
-  { href: "/admin", label: "Dashboard" },
-  { href: "/admin/experiencias", label: "Experiencias" },
-  { href: "/admin/negocios", label: "Negocios" },
-  { href: "/admin/reservaciones", label: "Reservaciones" },
-  { href: "/admin/solicitudes", label: "Solicitudes" },
-];
+export const dynamic = "force-dynamic";
 
+/**
+ * Access is enforced here on the server, on every request, for every route
+ * under /admin — not by hiding links. `requireAdmin()` reads the session and
+ * the profile role server-side; a normal user who types /admin, or who
+ * guesses an admin URL, is redirected. Row Level Security in Supabase is the
+ * second line: even with a forged request the database refuses admin reads.
+ */
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const admin = await requireAdmin();
   if (!admin) redirect("/acceso?next=/admin");
 
+  // The one badge in the navigation. Cheap (`head` + count, no rows) and it
+  // surfaces the thing most likely to be forgotten.
+  const supabase = await createClient();
+  const { count } = await supabase
+    .from("partner_leads")
+    .select("id", { count: "exact", head: true })
+    .eq("status", "new");
+
   return (
     <div className="flex flex-1 flex-col bg-neutral-100 text-neutral-900 lg:flex-row">
-      <aside className="border-b border-neutral-200 bg-white p-4 lg:w-56 lg:border-b-0 lg:border-r">
-        <p className="px-2 text-xs font-semibold uppercase tracking-wide text-neutral-500">Sunny Admin</p>
-        <nav className="mt-4 flex gap-1 overflow-x-auto lg:flex-col">
-          {NAV.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-100"
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-        <div className="mt-6 border-t border-neutral-200 px-2 pt-4 text-xs text-neutral-500">
-          <Link href="/" className="hover:underline">
-            ← Volver al sitio
-          </Link>
-        </div>
+      <aside className="border-b border-neutral-200 bg-white p-4 lg:sticky lg:top-18 lg:h-[calc(100svh-4.5rem)] lg:w-60 lg:shrink-0 lg:border-b-0 lg:border-r">
+        <AdminNav newLeads={count ?? 0} />
       </aside>
-      <div className="flex-1 p-6">{children}</div>
+      <div className="min-w-0 flex-1 p-4 sm:p-6">{children}</div>
     </div>
   );
 }
