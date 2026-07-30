@@ -62,6 +62,46 @@ propósito: todas las consultas usan `select("*")` y `lib/experience-flags.ts`
 devuelve el valor previo a la migración cuando la columna no está. El sitio es
 correcto antes y después.
 
+### Paso 1 bis · La plantilla del correo — ESTO ES LO QUE FALTABA
+
+Éste es el paso que faltaba para poder iniciar sesión, y sin él el resto no
+sirve.
+
+**Supabase → Authentication → Emails → Magic Link**, reemplazar el contenido
+por esto:
+
+```html
+<h2>Entra a Sunny</h2>
+<p>
+  <a href="{{ .SiteURL }}/auth/callback?token_hash={{ .TokenHash }}&type=magiclink&next=%2Fmi-pase">
+    Iniciar sesión
+  </a>
+</p>
+<p>Si no pediste este acceso, ignora este correo.</p>
+```
+
+(Si hay una plantilla **Confirm signup**, ponle lo mismo cambiando
+`type=magiclink` por `type=signup`.)
+
+#### Por qué
+
+La plantilla actual usa `{{ .ConfirmationURL }}`, que devuelve un `?code=`.
+Ese código es del flujo **PKCE**: al enviar el formulario, el navegador guarda
+un `code_verifier` en una cookie **suya**, y el código solo se puede canjear
+con él.
+
+El problema es que los enlaces de correo casi nunca se abren en ese navegador.
+Gmail —y WhatsApp, e Instagram— los abren en su **navegador integrado**, que
+tiene su propio almacén de cookies. Ahí no está el verificador, el canje falla,
+y la persona vuelve a `/acceso` sin sesión. Exactamente el fallo reportado.
+
+`token_hash` no usa verificador: el servidor valida el token contra Supabase y
+escribe las cookies de sesión. Funciona se abra donde se abra.
+
+Comprobado en producción antes de arreglarlo: `/auth/callback?token_hash=…`
+redirigía a `/acceso` sin intentar nada, porque la ruta solo miraba `?code=`.
+Ya no.
+
 ### Paso 2 · Autorizar los previews en Supabase (una vez, para siempre)
 
 **Supabase → Authentication → URL Configuration → Redirect URLs**, añadir:

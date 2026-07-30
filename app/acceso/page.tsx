@@ -4,9 +4,15 @@ import { Container } from "@/components/ui/Container";
 
 export const metadata: Metadata = { title: "Acceso — Sunny Project" };
 
+/**
+ * El mensaje genérico decía «Intenta de nuevo», que es el consejo equivocado
+ * para la causa más frecuente: abrir el enlace en un navegador distinto al
+ * que pidió el acceso. Reintentar desde el mismo sitio repite el fallo.
+ */
 const ERROR_MESSAGES: Record<string, string> = {
   expired: "El enlace expiró o ya se usó. Pide uno nuevo abajo.",
-  generic: "No pudimos validar el enlace. Intenta de nuevo.",
+  generic:
+    "Si abriste el enlace desde el correo, prueba a copiarlo y pegarlo en el navegador donde pediste el acceso: algunas apps abren los enlaces en un navegador propio y ahí la sesión no se guarda.",
 };
 
 export default async function AccesoPage({

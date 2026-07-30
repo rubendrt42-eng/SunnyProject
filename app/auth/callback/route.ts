@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import type { EmailOtpType } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
 import { env } from "@/lib/env";
 
@@ -35,7 +36,68 @@ export async function GET(request: NextRequest) {
   // rather than a valid code that fails on exchange. Surface that distinction
   // to /acceso instead of a single generic error.
   const errorCode = searchParams.get("error_code");
-  const hasTokenHash = searchParams.has("token_hash");
+  const tokenHash = searchParams.get("token_hash");
+  const otpType = searchParams.get("type");
+  const hasTokenHash = Boolean(tokenHash);
+
+  /**
+   * Camino `token_hash` — el que funciona cuando el enlace se abre en un
+   * navegador distinto al que pidió el acceso.
+   *
+   * `@supabase/ssr` usa PKCE por defecto: al enviar el formulario guarda un
+   * `code_verifier` en una cookie de ESE navegador, y `exchangeCodeForSession`
+   * lo necesita. Pero los enlaces de correo casi nunca se abren en el mismo
+   * navegador: Gmail —y WhatsApp, e Instagram— los abren en su propio
+   * navegador integrado, que tiene su propio almacén de cookies. Sin el
+   * verificador el intercambio falla y la persona vuelve a la pantalla de
+   * acceso sin sesión, que es exactamente como se reportó el fallo.
+   *
+   * `verifyOtp` con `token_hash` no usa verificador: valida el token contra
+   * Supabase desde el servidor y escribe las cookies de sesión aquí. Por eso
+   * funciona abras donde abras el enlace.
+   *
+   * Se comprueba ANTES que `code` a propósito: si llegan los dos, este es el
+   * que no depende del navegador.
+   *
+   * Requiere que la plantilla de correo apunte a esta ruta con `token_hash`
+   * — ver SUNNY_COMO_PROBARLO.md.
+   */
+  if (tokenHash && otpType) {
+    const supabase = await createClient();
+    const { data, error } = await supabase.auth.verifyOtp({
+      type: otpType as EmailOtpType,
+      token_hash: tokenHash,
+    });
+
+    if (!error && data.user) {
+      await bootstrapAdminRole(data.user.id, data.user.email ?? "");
+      const nextUrl = new URL(`${origin}${next}`);
+      nextUrl.searchParams.set("bienvenido", "1");
+      logCallback({
+        callbackHost: origin,
+        hasCode: false,
+        hasTokenHash: true,
+        hasErrorCode: false,
+        exchangeSucceeded: true,
+        sessionUserPresent: true,
+        redirectDestination: nextUrl.toString(),
+      });
+      return NextResponse.redirect(nextUrl);
+    }
+
+    const reason = error?.code === "otp_expired" ? "expired" : "generic";
+    const destination = `${origin}/acceso?error=${reason}`;
+    logCallback({
+      callbackHost: origin,
+      hasCode: false,
+      hasTokenHash: true,
+      hasErrorCode: Boolean(error),
+      exchangeSucceeded: false,
+      sessionUserPresent: false,
+      redirectDestination: destination,
+    });
+    return NextResponse.redirect(destination);
+  }
 
   if (!code) {
     const reason = errorCode === "otp_expired" ? "expired" : errorCode ? "generic" : null;
