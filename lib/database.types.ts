@@ -190,7 +190,20 @@ export type Database = {
     Views: Record<string, never>;
     Functions: {
       claim_reservation: {
-        Args: { p_experience_id: string; p_source?: string | null };
+        /**
+         * `p_party_size` and `p_companions` are added by
+         * 20260201000100_group_reservations.sql, which also DROPS the old
+         * two-argument overload so it cannot keep row-counting. They are
+         * optional here because the app still supports calling the
+         * pre-migration signature for a party of one — see the fallback in
+         * app/api/reservations/claim/route.ts.
+         */
+        Args: {
+          p_experience_id: string;
+          p_source?: string | null;
+          p_party_size?: number;
+          p_companions?: { full_name: string; email?: string }[];
+        };
         Returns: Reservation;
       };
       cancel_reservation: {

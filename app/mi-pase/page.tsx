@@ -30,6 +30,21 @@ export default async function MiPasePage() {
   const supabase = await createClient();
   const reservation = await getActiveWeeklyReservation(supabase, user.id);
 
+  /**
+   * Companions for the active pass. The table only exists after the group
+   * migration, so a failed query means "not migrated yet" rather than
+   * "broken" — the pass renders exactly as before with an empty group.
+   */
+  let companions: { id: string; full_name: string }[] = [];
+  if (reservation) {
+    const { data, error } = await supabase
+      .from("reservation_companions")
+      .select("id, full_name")
+      .eq("reservation_id", reservation.id)
+      .neq("status", "cancelled");
+    if (!error) companions = (data ?? []) as { id: string; full_name: string }[];
+  }
+
   const isLivePass = reservation && reservation.status === "confirmed" && !isPast(reservation.experience.starts_at);
   const isUsedPass = reservation && !isLivePass;
 
@@ -53,8 +68,14 @@ export default async function MiPasePage() {
             </div>
 
             <dl className="mt-6 grid grid-cols-[auto_1fr] gap-x-4 gap-y-3 text-sm">
-              <dt className="font-medium text-gray">Nombre</dt>
+              <dt className="font-medium text-gray">Titular</dt>
               <dd>{user.profile?.full_name}</dd>
+              {companions.length > 0 && (
+                <>
+                  <dt className="font-medium text-gray">Lugares</dt>
+                  <dd>{companions.length + 1}</dd>
+                </>
+              )}
               <dt className="font-medium text-gray">Negocio</dt>
               <dd>{experience.business.name}</dd>
               <dt className="font-medium text-gray">Fecha</dt>
@@ -68,6 +89,20 @@ export default async function MiPasePage() {
                 </>
               )}
             </dl>
+
+            {companions.length > 0 && (
+              <div className="mt-6 rounded-lg border border-carbon/10 p-4">
+                <p className="text-label text-gray">Vas con</p>
+                <ul className="mt-2 flex flex-col gap-1 text-body">
+                  {companions.map((companion) => (
+                    <li key={companion.id}>{companion.full_name}</li>
+                  ))}
+                </ul>
+                <p className="mt-3 text-small text-gray">
+                  Presenta tu folio al llegar: cubre todo el grupo. Si cancelas, se cancelan todos los lugares.
+                </p>
+              </div>
+            )}
 
             {experience.instructions && (
               <div className="mt-6 rounded-xl bg-sunny/20 p-4 text-sm">

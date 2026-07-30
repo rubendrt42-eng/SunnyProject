@@ -8,6 +8,7 @@ import { businessSchema, experienceSchema } from "@/lib/validations";
 import { fieldErrorsFromZod } from "@/lib/form-errors";
 import type { ActionResult } from "@/lib/actions/profile";
 import type { PartnerLeadStatus } from "@/lib/database.types";
+import { isSocialMode } from "@/lib/social-modes";
 
 function readBusinessForm(formData: FormData) {
   return {
@@ -105,6 +106,13 @@ function readExperienceForm(formData: FormData) {
       .map((s) => s.trim())
       .filter(Boolean),
     instructions: String(formData.get("instructions") ?? ""),
+    max_party_size: String(formData.get("max_party_size") ?? "1"),
+    is_original: formData.get("is_original") === "on",
+    // Only keys the app knows survive: getAll returns whatever was posted,
+    // and unrecognised values would otherwise reach the database and render
+    // as a badge that does not correspond to the experience.
+    social_modes: formData.getAll("social_modes").map(String).filter(isSocialMode),
+    post_benefit: String(formData.get("post_benefit") ?? ""),
   };
 }
 

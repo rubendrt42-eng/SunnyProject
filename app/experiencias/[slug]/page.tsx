@@ -171,6 +171,8 @@ export default async function ExperienceDetailPage({
             experienceSlug={experience.slug}
             initialCta={cta.type}
             source={source ?? null}
+            maxPartySize={maxParty}
+            spotsLeft={left}
           />
 
           {/* Was: "El pase es individual, no transferible y no admite

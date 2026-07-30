@@ -237,7 +237,17 @@ export function QuickView({
                 scroll container covers both, so the primary action never
                 scrolls out of reach in either layout. */}
             <div className="sticky bottom-0 flex flex-col gap-2 border-t border-carbon/10 bg-warm-white/95 p-6 backdrop-blur sm:px-7">
-              {cta && <ClaimPanel key={experience.id} experienceId={experience.id} experienceSlug={experience.slug} initialCta={cta} source="quick_view" />}
+              {cta && (
+                <ClaimPanel
+                  key={experience.id}
+                  experienceId={experience.id}
+                  experienceSlug={experience.slug}
+                  initialCta={cta}
+                  source="quick_view"
+                  maxPartySize={maxPartySizeOf(experience)}
+                  spotsLeft={left}
+                />
+              )}
               <Link
                 href={`/experiencias/${experience.slug}`}
                 className="text-center text-small font-medium text-carbon underline decoration-carbon/30 underline-offset-4 hover:decoration-carbon"

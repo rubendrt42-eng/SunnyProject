@@ -14,8 +14,10 @@ export async function notifyPassConfirmed(params: {
   reservation: Reservation;
   experience: Experience;
   business: Business;
+  /** Companion names, holder excluded. Empty (or omitted) for an individual reservation. */
+  companions?: string[];
 }) {
-  const { toEmail, fullName, reservation, experience, business } = params;
+  const { toEmail, fullName, reservation, experience, business, companions = [] } = params;
   await sendEmail({
     to: toEmail,
     subject: `Tu pase para ${experience.title} está confirmado`,
@@ -29,6 +31,7 @@ export async function notifyPassConfirmed(params: {
       mapsUrl: experience.maps_url,
       folio: reservation.folio,
       passUrl: `${env.siteUrl}/mi-pase`,
+      companions,
     }),
   });
 }

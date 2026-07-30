@@ -11,6 +11,8 @@ export interface PaseConfirmadoProps {
   mapsUrl?: string | null;
   folio: string;
   passUrl: string;
+  /** Companion names, holder excluded. Empty for an individual reservation. */
+  companions?: string[];
 }
 
 export default function PaseConfirmado({
@@ -23,14 +25,24 @@ export default function PaseConfirmado({
   mapsUrl,
   folio,
   passUrl,
+  companions = [],
 }: PaseConfirmadoProps) {
   return (
     <EmailShell preview={`Tu pase para ${experienceTitle} está confirmado`}>
       <EmailHeading>Tu pase está confirmado</EmailHeading>
       <Text style={{ color: "#171714" }}>Hola {fullName},</Text>
       <Text style={{ color: "#171714" }}>
-        Reservaste tu lugar en <strong>{experienceTitle}</strong> con <strong>{businessName}</strong>. Guarda este correo
-        como tu pase.
+        {companions.length > 0 ? (
+          <>
+            Reservaste <strong>{companions.length + 1} lugares</strong> en <strong>{experienceTitle}</strong> con{" "}
+            <strong>{businessName}</strong>. Guarda este correo como tu pase.
+          </>
+        ) : (
+          <>
+            Reservaste tu lugar en <strong>{experienceTitle}</strong> con <strong>{businessName}</strong>. Guarda este
+            correo como tu pase.
+          </>
+        )}
       </Text>
 
       <Section style={{ margin: "20px 0" }}>
@@ -57,9 +69,23 @@ export default function PaseConfirmado({
         </Button>
       </Section>
 
+      {companions.length > 0 && (
+        <Section style={{ margin: "8px 0 24px" }}>
+          <Text style={{ fontSize: 13, color: "#6D6D65", margin: "0 0 4px" }}>
+            Acompañantes registrados ({companions.length + 1} lugares en total)
+          </Text>
+          {companions.map((name) => (
+            <Text key={name} style={{ fontSize: 14, margin: "0 0 2px" }}>
+              {name}
+            </Text>
+          ))}
+        </Section>
+      )}
+
       <Text style={{ fontSize: 13, color: "#6D6D65" }}>
-        Recuerda: tu pase es personal, no transferible y consume tu pase semanal. Puedes cancelar hasta 12 horas antes de
-        la experiencia desde &quot;Mi pase&quot;.
+        {companions.length > 0
+          ? "Recuerda: el pase es personal, consume tu pase semanal y respondes por tu grupo. Si cancelas, se cancelan todos los lugares. Puedes cancelar hasta 12 horas antes desde \"Mi pase\"."
+          : "Recuerda: tu pase es personal, no transferible y consume tu pase semanal. Puedes cancelar hasta 12 horas antes de la experiencia desde \"Mi pase\"."}
       </Text>
     </EmailShell>
   );
