@@ -174,7 +174,12 @@ function SecondaryWeekCard({
             className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02]"
           />
         </div>
-        <div className="flex min-w-0 flex-1 flex-col gap-1">
+        {/* `overflow-hidden` alongside `min-w-0` is load-bearing, not
+            decorative: without it the nowrap metadata line below gave this
+            column a ~505px min-content width, which the parent grid honoured
+            and turned into 150px of horizontal page scroll at 375px. Caught
+            by measuring min-content during QA — see SUNNY_DESIGN_QA_REPORT.md. */}
+        <div className="flex min-w-0 flex-1 flex-col gap-1 overflow-hidden">
           <div className="flex flex-wrap items-center gap-1.5">
             <Badge tone="neutral" className="bg-carbon/6 px-2 py-0.5 text-[0.65rem]">
               {categoryLabel(experience.category)}
@@ -187,8 +192,11 @@ function SecondaryWeekCard({
           </div>
           <p className="truncate font-medium text-carbon">{displayTitle(experience.title)}</p>
           <p className="truncate text-sm text-gray">{experience.business.name}</p>
-          <p className="truncate text-xs text-gray">
-            {formatDateShort(experience.starts_at)} · {formatTime(experience.starts_at)} · {experience.location_name}
+          {/* Wraps rather than truncates: on a phone the ellipsis was hiding
+              the location, which is one of the things you most need to see. */}
+          <p className="text-xs text-gray">
+            {formatDateShort(experience.starts_at)} · {formatTime(experience.starts_at)}
+            {experience.location_name ? ` · ${experience.location_name}` : ""}
           </p>
         </div>
         <div className="flex shrink-0 flex-col items-end gap-2">

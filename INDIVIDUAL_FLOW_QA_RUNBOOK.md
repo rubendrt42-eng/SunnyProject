@@ -8,9 +8,19 @@ No necesitas saber programar. Si algo no coincide con lo que describe esta guía
 
 ## Antes de empezar
 
-**Qué URL abrir**: la URL de vista previa (preview) de Vercel para la rama `claude/sunny-mvp-1-1-implementation`, o el dominio de producción si así se decidió probarlo (`sunny-project-teal.vercel.app` era el dominio usado anteriormente — confirma con quien administra Vercel cuál es la URL correcta para esta rama antes de empezar, porque yo no desplegué nada desde aquí).
+**Qué URL abrir**: la URL de vista previa (preview) de Vercel para la rama `claude/sunny-mvp-1-1-design-admin`. No uses el dominio de producción.
 
-**Qué vas a ver que es normal, no un error**: las fotos y el video del hero probablemente muestren un aviso como "Falta pilates.webp" o "Falta hero-reel.mp4" en vez de una imagen. Eso es intencional en esta fase — las fotos reales todavía no se han subido. No lo reportes como error a menos que en vez de ese aviso veas una imagen rota sin texto o la página se vea rota.
+**Antes de empezar, corre el seed.** Abre el editor SQL de Supabase y ejecuta `supabase/demo_seed.sql`. Es lo único necesario para que el sitio se vea con contenido: crea las seis experiencias de demostración con sus fotografías. Sin eso verás estados vacíos por todas partes, y eso no es un error del sitio.
+
+**Qué vas a ver que es normal, no un error**:
+
+- **Ya hay fotografías reales.** Si alguna sección muestra un recuadro neutro que dice "Falta &lt;archivo&gt;" o "Sin fotografía", es intencional: significa que ese asset concreto no existe todavía. Las categorías *Outdoor* no tienen foto a propósito, y los negocios de demostración no tienen logotipo (la tarjeta de aliado muestra el nombre en letra).
+- **No hay video en el hero.** El hero es una composición editorial con fotografía, no video: no llegó material de video. No lo reportes como falta.
+- **La sección "Sunny Originals" puede no aparecer.** Solo existe si alguna experiencia está marcada como Original, y esa opción requiere una migración que todavía no se aplicó.
+- **La sección "Espacios que forman parte de Sunny" puede no aparecer.** Solo existe si marcas algún negocio como aliado desde el panel.
+- **Las etiquetas de modalidad social** (*Puedes venir solo*, *Permite acompañante*, …) y **el selector de lugares para acompañantes** aparecen solo después de la misma migración pendiente. Hasta entonces todas las experiencias funcionan como individuales.
+
+**Nombres de las experiencias**: si conoces la versión anterior, tres cambiaron de nombre para que coincidan con la fotografía disponible — *Pilates Reformer Intro* → **Mat Pilates Intro**, *Sunrise Paddle* → **Pádel Mix-In** (pádel de raqueta, no paddle board), *Recovery Contrast Session* → **Recovery & Breathwork**. Está explicado en `SUNNY_ASSET_MANIFEST.md` §3.
 
 **Correo a usar**: cualquier correo real al que tengas acceso ahora mismo (Gmail, Outlook, etc.). Vas a recibir un correo con un enlace — asegúrate de abrirlo desde el mismo navegador/dispositivo donde empezaste la prueba.
 
@@ -27,6 +37,8 @@ No necesitas saber programar. Si algo no coincide con lo que describe esta guía
 5. Abre tu bandeja de entrada (revisa también spam/promociones) y busca un correo de Sunny Project / Supabase con un enlace de acceso.
 6. Da clic en el enlace **desde el mismo navegador** donde hiciste el paso 1-3.
 7. **Resultado esperado**: regresas al sitio, ves brevemente un mensaje "Sesión iniciada" en la parte de arriba, y el botón que antes decía "Acceso" ahora dice "Mi pase".
+
+**Importante sobre el correo**: si al presionar "Enviar enlace de acceso" aparece *"No pudimos enviar el enlace"*, **no vuelvas a intentarlo**. Es el límite de envío del mailer de prueba de Supabase (`over_email_send_rate_limit`), no un error del sitio. Anótalo y avísanos.
 
 **Si iniciaste sesión desde una experiencia específica** (por ejemplo, diste clic en "Obtener mi pase" en una experiencia sin haber iniciado sesión): después de abrir el enlace del correo, **deberías regresar a esa misma experiencia**, no a una página genérica. Anota si esto no ocurre — es uno de los puntos que no hemos podido confirmar sin probarlo de verdad.
 
@@ -110,6 +122,7 @@ Copia esta tabla y márcala mientras pruebas. Usa una de estas cuatro opciones e
 | 2 | Recibir el correo | |
 | 3 | Abrir el enlace y volver a Sunny con sesión iniciada | |
 | 4 | Si venías de una experiencia, regresar a esa misma experiencia | |
+| 4b | Compartir una experiencia: "Compartir" abre la hoja nativa y "Copiar enlace" avisa "Enlace copiado." | |
 | 5 | El header cambia de "Acceso" a "Mi pase" | |
 | 6 | Completar el perfil | |
 | 7 | Ver la pantalla de confirmar reservación | |
@@ -127,4 +140,13 @@ Copia esta tabla y márcala mientras pruebas. Usa una de estas cuatro opciones e
 
 ## Nota importante
 
-Este flujo nunca se ha probado de esta forma antes — con un correo real, un enlace real, y un navegador real. Todo lo que describe esta guía está basado en la lectura cuidadosa del código, no en una prueba ya realizada. Es exactamente por eso que necesitamos que tú lo hagas: para confirmar (o descartar) que funciona como se espera.
+Este flujo **sigue sin probarse con un correo real, un enlace real y un navegador real.** El límite de envío de Supabase nunca se liberó durante el trabajo, y el brief prohíbe reintentar envíos de OTP, así que no se envió ninguno.
+
+Lo que **sí** se verificó en esta fase, y no hace falta que repitas:
+
+- Todas las páginas públicas y del panel renderizan sin errores de consola, con datos de forma real (24 capturas revisadas a 375, 390, 430, 768, 1024 y 1440 px).
+- No hay scroll horizontal accidental en ninguna ruta ni viewport (42 combinaciones comprobadas).
+- `/admin` responde 307 y **no envía nada** a quien no sea administradora — un defecto real que se encontró y se corrigió en esta fase.
+- `lint`, `typecheck`, 76 pruebas unitarias y el build de producción pasan.
+
+Lo que **solo tú puedes probar**: el correo llegando, la sesión estableciéndose, y una reservación real contra la base de datos. El detalle completo de qué se probó y qué no está en `SUNNY_DESIGN_QA_REPORT.md` §5.

@@ -45,7 +45,15 @@ export function WordReveal({
         <motion.span
           key={`${word}-${i}`}
           aria-hidden
-          className="inline-block"
+          /**
+           * `whitespace-pre` is required, not cosmetic. The trailing space
+           * lives inside this span, and on an `inline-block` a trailing
+           * space is collapsed away — which ran the hero words together
+           * ("Descubre algonuevo. Vívelocon alguien."). Preserving
+           * whitespace here keeps the words apart while each one still
+           * animates as its own block. Caught in QA screenshots.
+           */
+          className="inline-block whitespace-pre"
           initial={{ opacity: 0, y: "0.6em" }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: delay + i * wordDelay, ease: [0.22, 1, 0.36, 1] }}

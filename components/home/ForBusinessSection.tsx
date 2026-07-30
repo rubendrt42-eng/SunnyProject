@@ -1,5 +1,6 @@
 import { InViewReveal } from "@/components/motion/InViewReveal";
 import { ManagedPhoto } from "@/components/ui/ManagedPhoto";
+import { BUSINESS_SPACE_PHOTO } from "@/lib/media";
 import { PartnerLeadModal } from "@/components/site/PartnerLeadModal";
 
 const STEPS = [
@@ -18,9 +19,9 @@ export function ForBusinessSection({ availableAssets }: { availableAssets: strin
       <InViewReveal>
         <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[20px]">
           <ManagedPhoto
-            url="/demo-assets/business-partner.webp"
+            url={BUSINESS_SPACE_PHOTO.src}
             availableAssets={availableAssets}
-            alt=""
+            alt={BUSINESS_SPACE_PHOTO.alt}
             sizes="(min-width: 1024px) 50vw, 100vw"
             className="object-cover"
           />

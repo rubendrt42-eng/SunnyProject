@@ -22,12 +22,23 @@ const CATEGORY_COPY: Record<Category, string> = {
 };
 
 /** Stable cover photo per category — independent of which experience happens to be published this week. */
-const CATEGORY_COVER: Record<Category, string> = {
-  movimiento: "/demo-assets/pilates.webp",
-  recovery: "/demo-assets/recovery.webp",
-  food_coffee: "/demo-assets/coffee.webp",
-  outdoor: "/demo-assets/paddle.webp",
-  comunidad: "/demo-assets/community.webp",
+/**
+ * Cover photo per category, pointing at the committed Sunny media library.
+ *
+ * These used to point at /demo-assets/*.webp, files deleted two phases ago —
+ * so every category tile rendered the "missing photo" state. Caught in QA
+ * screenshots, where the panel showed an empty box even for a category that
+ * does have photography.
+ *
+ * `outdoor` is deliberately absent: nothing in the attached assets depicts an
+ * outdoor experience (see SUNNY_ASSET_MANIFEST.md §6), so it keeps the honest
+ * missing-photo state rather than borrowing an unrelated image.
+ */
+const CATEGORY_COVER: Partial<Record<Category, string>> = {
+  movimiento: "/media/sunny/categories/category-movimiento-01.webp",
+  recovery: "/media/sunny/experiences/experience-recovery-breathwork-01.webp",
+  food_coffee: "/media/sunny/categories/category-food-coffee-01.webp",
+  comunidad: "/media/sunny/community/community-gathering-01.webp",
 };
 
 /**

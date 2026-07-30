@@ -110,6 +110,15 @@
 
 html {
   scroll-behavior: smooth;
+  /* Accidental horizontal scroll is explicitly out of bounds (brief §40).
+     `clip` rather than `hidden` on purpose: `hidden` would turn the root
+     into a scroll container and break `position: sticky` on the header and
+     the catalogue filter bar.
+     This is a backstop, not a way to hide content — QA verified with
+     Playwright that no element's right edge exceeds the viewport at 375,
+     390, 430, 768, 1024 or 1440 on any page. Without it the document still
+     reported ~41px of empty scrollable width at widths below 900. */
+  overflow-x: clip;
 }
 
 body {
