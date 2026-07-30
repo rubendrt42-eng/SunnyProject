@@ -1,13 +1,15 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { AlertTriangle } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/Button";
+import { describeAuthError, type FriendlyAuthError } from "@/lib/auth-errors";
 
 export function MagicLinkForm({ next }: { next: string }) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "sent" | "error">("idle");
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<FriendlyAuthError | null>(null);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -26,16 +28,20 @@ export function MagicLinkForm({ next }: { next: string }) {
 
       if (signInError) {
         setStatus("error");
-        setError("No pudimos enviar el enlace. Verifica tu correo e intenta de nuevo.");
+        // Every failure used to collapse into one sentence telling the person
+        // to check their address and try again — wrong advice for a rate
+        // limit, and irrelevant for an unauthorised domain. See
+        // lib/auth-errors.ts.
+        setError(describeAuthError(signInError));
         return;
       }
 
       setStatus("sent");
-    } catch {
+    } catch (err) {
       // A network failure here would otherwise leave the button stuck on
       // "Enviando…" forever with no way to retry.
       setStatus("error");
-      setError("No pudimos conectar con el servidor. Revisa tu conexión e intenta de nuevo.");
+      setError(describeAuthError(err));
     }
   }
 
@@ -70,23 +76,63 @@ export function MagicLinkForm({ next }: { next: string }) {
           autoComplete="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          aria-invalid={status === "error"}
+          // Only flag the field itself when the problem IS the field. A rate
+          // limit or an unauthorised domain has nothing to do with what was
+          // typed, and marking the input invalid sends the person hunting for
+          // a typo that isn't there.
+          aria-invalid={error?.kind === "invalid_email"}
           aria-describedby={error ? "email-error" : undefined}
-          className="rounded-lg border border-carbon/20 bg-warm-white px-4 py-3 text-base focus:border-carbon"
+          className="h-12 rounded-sm border border-carbon/20 bg-warm-white px-4 text-body focus:border-carbon"
           placeholder="tu@correo.com"
         />
-        {error && (
-          <p id="email-error" className="text-sm text-orange">
-            {error}
-          </p>
-        )}
       </div>
-      <Button type="submit" disabled={status === "loading"}>
-        {status === "loading" ? "Enviando…" : "Enviar enlace de acceso"}
+
+      {error && (
+        <div
+          id="email-error"
+          role="alert"
+          className="flex gap-3 rounded-md border border-orange/30 bg-orange/10 p-4"
+        >
+          <AlertTriangle aria-hidden size={18} strokeWidth={1.75} className="mt-0.5 shrink-0 text-orange" />
+          <div className="min-w-0">
+            <p className="text-small font-semibold text-carbon">{error.title}</p>
+            <p className="mt-1 text-small text-carbon/80">{error.detail}</p>
+            {error.code && (
+              <p className="mt-2 font-mono text-[0.7rem] text-carbon/50">
+                código: {error.code}
+              </p>
+            )}
+          </div>
+        </div>
+      )}
+
+      <Button
+        type="submit"
+        loading={status === "loading"}
+        loadingLabel="Enviando…"
+        // After a rate limit, offering a live button invites the one action
+        // that makes the wait longer.
+        disabled={error?.discourageRetry}
+      >
+        Enviar enlace de acceso
       </Button>
-      <p className="text-xs text-gray">
-        Sin contraseñas. Te enviaremos un enlace mágico para entrar de forma segura.
-      </p>
+
+      {error?.discourageRetry ? (
+        <button
+          type="button"
+          onClick={() => {
+            setError(null);
+            setStatus("idle");
+          }}
+          className="text-small font-medium text-carbon underline decoration-carbon/30 underline-offset-4 hover:decoration-carbon"
+        >
+          Ya esperé — intentar otra vez
+        </button>
+      ) : (
+        <p className="text-small text-gray">
+          Sin contraseñas. Te enviaremos un enlace mágico para entrar de forma segura.
+        </p>
+      )}
     </form>
   );
 }
