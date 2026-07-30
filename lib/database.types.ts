@@ -6,7 +6,14 @@ export type ExperienceStatus = "draft" | "published" | "cancelled" | "completed"
 
 export type ReservationStatus = "confirmed" | "cancelled" | "attended" | "no_show";
 
-export type PartnerLeadStatus = "new" | "contacted" | "accepted" | "rejected";
+/**
+ * `meeting` and `converted` are added by
+ * 20260201000000_experience_presentation.sql (brief §35). Until that
+ * migration runs the database's CHECK constraint only permits the first
+ * four, so `partnerLeadStatusOptions()` in lib/partner-leads.ts is what the
+ * admin UI offers — it never presents a value the database would reject.
+ */
+export type PartnerLeadStatus = "new" | "contacted" | "meeting" | "accepted" | "rejected" | "converted";
 
 export type Profile = {
   id: string;
@@ -36,6 +43,16 @@ export type Business = {
   active: boolean;
   created_at: string;
   updated_at: string;
+  /**
+   * Added by 20260201000000_experience_presentation.sql. Optional on
+   * purpose: that migration is prepared but not applied, so against the
+   * current database this field arrives `undefined`. Read it through
+   * `featuredAsPartner()` in lib/experience-flags.ts, never directly.
+   *
+   * An active business does NOT become a public ally automatically —
+   * decision 9 in SUNNY_MVP_1_1_DECISIONS.md requires this explicit flag.
+   */
+  featured_as_partner?: boolean | null;
 }
 
 export type Experience = {
@@ -63,6 +80,25 @@ export type Experience = {
   instructions: string | null;
   created_at: string;
   updated_at: string;
+
+  /*
+   * Everything below is added by the two MVP 1.1 migrations, both of which
+   * are prepared but NOT applied (SUNNY_COMPANIONS_MIGRATION_PLAN.md).
+   * They are optional so the app compiles and behaves correctly against
+   * both the current schema and the migrated one — every read goes through
+   * lib/experience-flags.ts, which supplies the pre-migration fallback.
+   */
+
+  /** 20260201000000 — curated by Sunny itself rather than by a partner space. */
+  is_original?: boolean | null;
+  /** 20260201000000 — admin-chosen social modality keys; see lib/social-modes.ts. */
+  social_modes?: string[] | null;
+  /** 20260201000000 — set when Emmy archives an experience; archived rows are kept, never deleted. */
+  archived_at?: string | null;
+  /** 20260201000100 — people per reservation, 1..3. Defaults to 1: group size is always opt-in. */
+  max_party_size?: number | null;
+  /** 20260201000000 — optional post-experience perk offered by the space. */
+  post_benefit?: string | null;
 }
 
 export type Reservation = {
@@ -78,6 +114,27 @@ export type Reservation = {
   checked_in_at: string | null;
   created_at: string;
   updated_at: string;
+  /**
+   * 20260201000100 — how many people this one reservation covers (holder
+   * included), 1..3. Optional until the migration lands; read it through
+   * `partySizeOf()` so existing rows count as 1.
+   */
+  party_size?: number | null;
+}
+
+/**
+ * 20260201000100. Companions are stored relationally (decision 1 in
+ * SUNNY_MVP_1_1_DECISIONS.md), captured at reservation time, with no
+ * post-hoc editing in the MVP. They need no account and consume no pass of
+ * their own.
+ */
+export type ReservationCompanion = {
+  id: string;
+  reservation_id: string;
+  full_name: string;
+  email: string | null;
+  status: ReservationStatus;
+  created_at: string;
 }
 
 export type PartnerLead = {
@@ -94,6 +151,10 @@ export type PartnerLead = {
   status: PartnerLeadStatus;
   created_at: string;
   updated_at: string;
+  /** 20260201000000 — Emmy's private notes on a lead. Never rendered publicly. */
+  internal_notes?: string | null;
+  /** 20260201000000 — set when a lead is turned into a real business row. */
+  converted_business_id?: string | null;
 }
 
 export type Database = {
@@ -117,6 +178,12 @@ export type Database = {
         Row: PartnerLead;
         Insert: Partial<PartnerLead>;
         Update: Partial<PartnerLead>;
+        Relationships: [];
+      };
+      reservation_companions: {
+        Row: ReservationCompanion;
+        Insert: Partial<ReservationCompanion>;
+        Update: Partial<ReservationCompanion>;
         Relationships: [];
       };
     };

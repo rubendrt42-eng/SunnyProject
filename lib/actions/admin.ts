@@ -7,6 +7,7 @@ import { requireAdmin } from "@/lib/auth";
 import { businessSchema, experienceSchema } from "@/lib/validations";
 import { fieldErrorsFromZod } from "@/lib/form-errors";
 import type { ActionResult } from "@/lib/actions/profile";
+import type { PartnerLeadStatus } from "@/lib/database.types";
 
 function readBusinessForm(formData: FormData) {
   return {
@@ -189,7 +190,7 @@ export async function duplicateExperienceAction(experienceId: string) {
   redirect(`/admin/experiencias/${copy.id}`);
 }
 
-export async function setPartnerLeadStatusAction(leadId: string, status: "new" | "contacted" | "accepted" | "rejected") {
+export async function setPartnerLeadStatusAction(leadId: string, status: PartnerLeadStatus) {
   const admin = await requireAdmin();
   if (!admin) return;
 

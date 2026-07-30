@@ -7,6 +7,15 @@
   --color-orange: #ff7a3d;
   --color-warm-white: #fffdfc;
   --color-gray: #6d6d65;
+  /* The one deliberately narrow secondary. Two sanctioned uses only:
+     the Sunny Original seal and the "Conoce gente nueva" badge.
+     See SUNNY_VISUAL_DIRECTION_1_0.md §1. */
+  --color-pine: #2f4739;
+
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
 }
 
 @theme inline {
@@ -16,11 +25,56 @@
   --color-orange: var(--color-orange);
   --color-warm-white: var(--color-warm-white);
   --color-gray: var(--color-gray);
+  --color-pine: var(--color-pine);
 
   --font-sans: var(--font-manrope);
   --font-serif: var(--font-newsreader);
 
+  /* Named type scale, adopted from Coda's `type-*` pattern (see
+     SUNNY_REFERENCE_ANALYSIS.md §2). Sections must use these instead of
+     inventing per-section sizes — inconsistent type is the main reason a
+     page reads as a template. */
+  --text-display: clamp(2.5rem, 6.5vw, 4.75rem);
+  --text-display--line-height: 0.98;
+  --text-display--letter-spacing: -0.03em;
+  --text-display--font-weight: 600;
+
+  --text-title: clamp(1.875rem, 3.6vw, 3rem);
+  --text-title--line-height: 1.06;
+  --text-title--letter-spacing: -0.022em;
+  --text-title--font-weight: 600;
+
+  --text-subtitle: clamp(1.375rem, 2.2vw, 1.875rem);
+  --text-subtitle--line-height: 1.15;
+  --text-subtitle--letter-spacing: -0.015em;
+  --text-subtitle--font-weight: 600;
+
+  --text-heading: 1.125rem;
+  --text-heading--line-height: 1.3;
+  --text-heading--letter-spacing: -0.01em;
+  --text-heading--font-weight: 600;
+
+  --text-body-l: 1.0625rem;
+  --text-body-l--line-height: 1.6;
+
+  --text-body: 1rem;
+  --text-body--line-height: 1.6;
+
+  --text-small: 0.875rem;
+  --text-small--line-height: 1.5;
+
+  --text-label: 0.6875rem;
+  --text-label--line-height: 1.2;
+  --text-label--letter-spacing: 0.14em;
+  --text-label--font-weight: 600;
+
+  --radius-xs: var(--radius-xs);
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+
   --animate-fade-in: fade-in 0.4s ease-out;
+  --animate-marquee: marquee 46s linear infinite;
 
   @keyframes fade-in {
     from {
@@ -30,6 +84,15 @@
     to {
       opacity: 1;
       transform: translateY(0);
+    }
+  }
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
     }
   }
 }
@@ -55,6 +118,13 @@ body {
   font-family: var(--font-sans);
 }
 
+/* Long headlines break into even lines instead of leaving a single word
+   stranded on the last line. */
+h1,
+h2 {
+  text-wrap: balance;
+}
+
 ::selection {
   background: var(--color-sunny);
   color: var(--color-carbon);
@@ -65,9 +135,41 @@ body {
   outline-offset: 2px;
 }
 
+/* Small uppercase label that locates a section above its headline
+   (Coda's `eyebrow`). The one sanctioned place all-caps appears in body
+   content — headings never use it. */
+.eyebrow {
+  font-size: var(--text-label);
+  line-height: var(--text-label--line-height);
+  letter-spacing: var(--text-label--letter-spacing);
+  font-weight: var(--text-label--font-weight);
+  text-transform: uppercase;
+  color: var(--color-orange);
+}
+
+/* Native horizontal carousels (adopted from Eight Sleep — browser scroll
+   instead of a JS drag implementation, so touch swipe and reduced-motion
+   come for free). The scrollbar is hidden, but every one of these tracks
+   also exposes visible affordances: snap points plus arrow or pill
+   controls — never a hidden scrollbar as the only cue. */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Fades the left/right edges of a horizontal track so it reads as
+   continuing past the viewport rather than being cut off. */
+.mask-fade-x {
+  mask-image: linear-gradient(to right, transparent, black 4rem, black calc(100% - 4rem), transparent);
+}
+
 /* Admin form fields (functional/neutral styling, per PRODUCT_SPEC.md §9 admin exemption). */
 .input {
-  border-radius: 0.5rem;
+  border-radius: var(--radius-sm);
   border: 1px solid rgb(212 212 212);
   background-color: white;
   padding: 0.5rem 0.75rem;

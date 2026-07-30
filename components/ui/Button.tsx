@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 import { clsx } from "clsx";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Loader2 } from "lucide-react";
 
 type Variant = "primary" | "secondary" | "outline" | "ghost" | "danger";
 type Size = "md" | "lg" | "sm";
@@ -21,10 +21,15 @@ const variantClasses: Record<Variant, string> = {
   danger: "border border-orange/60 text-orange hover:bg-orange/10",
 };
 
+/**
+ * Radius is `rounded-md` (10px), never a capsule — SUNNY_VISUAL_DIRECTION_1_0.md
+ * §4 reserves the pill shape for filter chips, where the shape itself
+ * communicates "selectable". Heights keep a 44px touch target at `md`.
+ */
 const containedSizeClasses: Record<Size, string> = {
-  sm: "h-9 px-4 text-sm rounded-xl",
-  md: "h-11 px-5 text-sm rounded-xl",
-  lg: "h-[50px] px-6 text-base rounded-xl",
+  sm: "h-9 px-4 text-small rounded-md",
+  md: "h-11 px-5 text-small rounded-md",
+  lg: "h-[50px] px-6 text-body rounded-md",
 };
 
 const base =
@@ -43,6 +48,17 @@ interface CommonProps {
   arrow?: boolean;
 }
 
+/**
+ * Loading is a first-class button state, not something each call site
+ * reimplements: the label swaps to a gerundio, a spinner replaces the
+ * arrow, the button is disabled so a double click can't fire twice, and
+ * `aria-busy` announces it. Screen readers get the changed label too —
+ * the spinner is never the only signal.
+ */
+function ButtonSpinner() {
+  return <Loader2 aria-hidden size={16} strokeWidth={1.75} className="shrink-0 animate-spin" />;
+}
+
 function ButtonArrow() {
   return (
     <ArrowRight
@@ -59,12 +75,20 @@ export function Button({
   className,
   children,
   arrow = false,
+  loading = false,
+  loadingLabel,
+  disabled,
   ...props
-}: CommonProps & ButtonHTMLAttributes<HTMLButtonElement>) {
+}: CommonProps & { loading?: boolean; loadingLabel?: string } & ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
-    <button className={clsx(base, variantClasses[variant], sizeClassesFor(variant, size), className)} {...props}>
-      {children}
-      {arrow && <ButtonArrow />}
+    <button
+      className={clsx(base, variantClasses[variant], sizeClassesFor(variant, size), className)}
+      disabled={disabled || loading}
+      aria-busy={loading || undefined}
+      {...props}
+    >
+      {loading && loadingLabel ? loadingLabel : children}
+      {loading ? <ButtonSpinner /> : arrow && <ButtonArrow />}
     </button>
   );
 }

@@ -4,31 +4,22 @@ import { setPartnerLeadStatusAction } from "@/lib/actions/admin";
 import { Badge } from "@/components/ui/Badge";
 import { formatDate } from "@/lib/dates";
 import { categoryLabel } from "@/lib/constants";
-import type { PartnerLead, PartnerLeadStatus } from "@/lib/database.types";
+import type { PartnerLead } from "@/lib/database.types";
+import {
+  PARTNER_LEAD_STATUS_LABEL as STATUS_LABEL,
+  PARTNER_LEAD_STATUS_TONE as STATUS_TONE,
+  partnerLeadStatusOptions,
+} from "@/lib/partner-leads";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Solicitudes — Sunny Admin" };
-
-const STATUS_LABEL: Record<PartnerLeadStatus, string> = {
-  new: "Nueva",
-  contacted: "Contactado",
-  accepted: "Aceptado",
-  rejected: "Rechazado",
-};
-
-const STATUS_TONE: Record<PartnerLeadStatus, "neutral" | "sunny" | "success" | "danger"> = {
-  new: "sunny",
-  contacted: "neutral",
-  accepted: "success",
-  rejected: "danger",
-};
-
-const STATUSES: PartnerLeadStatus[] = ["new", "contacted", "accepted", "rejected"];
 
 export default async function AdminSolicitudesPage() {
   const supabase = await createClient();
   const { data } = await supabase.from("partner_leads").select("*").order("created_at", { ascending: false });
   const leads = (data ?? []) as PartnerLead[];
+  // Only offer statuses the database will actually accept — see partnerLeadStatusOptions().
+  const statuses = partnerLeadStatusOptions(leads[0]);
 
   return (
     <div>
@@ -54,7 +45,7 @@ export default async function AdminSolicitudesPage() {
             {lead.message && <p className="mt-3 text-sm text-neutral-700">&quot;{lead.message}&quot;</p>}
 
             <div className="mt-4 flex flex-wrap items-center gap-2">
-              {STATUSES.filter((s) => s !== lead.status).map((s) => {
+              {statuses.filter((s) => s !== lead.status).map((s) => {
                 const action = setPartnerLeadStatusAction.bind(null, lead.id, s);
                 return (
                   <form key={s} action={action}>
