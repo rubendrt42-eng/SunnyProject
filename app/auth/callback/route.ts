@@ -87,10 +87,29 @@ export async function GET(request: NextRequest) {
 }
 
 /**
- * Promotes ADMIN_EMAIL to the admin role on first login. Uses the
- * service-role client server-side only — never exposed to the browser,
- * and the profiles.role column can't be changed by the client anyway
- * (see trg_prevent_role_self_update).
+ * Promotes ADMIN_EMAIL to the admin role on login, creating the profile row
+ * if it is missing. Uses the service-role client server-side only — never
+ * exposed to the browser, and the profiles.role column can't be changed by
+ * the client anyway (see trg_prevent_role_self_update).
+ *
+ * This used to be a bare UPDATE, guarded by `if (profile && ...)`, which
+ * meant that when the profile row did not exist it silently did nothing —
+ * and the admin never got access no matter how many times they signed in.
+ *
+ * That is not hypothetical: it is exactly what happened on this project.
+ * `public.profiles` normally gets its row from the `on_auth_user_created`
+ * trigger, but the only account in the database was created BEFORE the
+ * migrations that installed that trigger. So the account had a valid
+ * session and four successful logins recorded in the Auth logs, while
+ * `profiles` held zero rows — which made `requireAdmin()` refuse /admin and
+ * `isProfileComplete()` refuse every reservation. From the outside it looked
+ * exactly like "login doesn't work".
+ *
+ * An upsert makes the callback self-healing: any account whose profile row is
+ * missing for any reason gets one on next sign-in. Only `id` and `role` are
+ * written — `full_name` and the two consent timestamps are the user's own
+ * data and are left for them to fill in via ProfileCompletionForm. Filling
+ * those in on their behalf would fabricate a consent.
  */
 async function bootstrapAdminRole(userId: string, email: string) {
   if (!env.adminEmail || !env.supabaseServiceRoleKey) return;
@@ -99,11 +118,10 @@ async function bootstrapAdminRole(userId: string, email: string) {
   try {
     const { createAdminClient } = await import("@/lib/supabase/admin");
     const admin = createAdminClient();
-    const { data: profile } = await admin.from("profiles").select("role").eq("id", userId).maybeSingle();
 
-    if (profile && profile.role !== "admin") {
-      await admin.from("profiles").update({ role: "admin" }).eq("id", userId);
-    }
+    const { error } = await admin.from("profiles").upsert({ id: userId, role: "admin" }, { onConflict: "id" });
+
+    if (error) console.error("[auth/callback] admin bootstrap failed", error.message);
   } catch (err) {
     console.error("[auth/callback] admin bootstrap failed", err);
   }
