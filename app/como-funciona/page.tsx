@@ -24,7 +24,7 @@ const STEPS = [
 
 const RULES = [
   "Un pase gratuito por semana calendario (inicia el lunes).",
-  "El pase es individual, no transferible y no admite acompañantes.",
+  "El pase es personal y no transferible. Cada experiencia define cuántos lugares admite por reservación: la mayoría uno, algunas hasta tres.",
   "Solo puedes tener una reservación activa a la vez por semana.",
   "Puedes cancelar hasta 12 horas antes y recuperar tu pase.",
   "No hay pagos, suscripciones ni pases adicionales en esta etapa.",

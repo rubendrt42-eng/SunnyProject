@@ -23,8 +23,13 @@ export default function TerminosPage() {
             <h2 className="text-lg font-semibold">El pase semanal</h2>
             <p className="mt-2 text-gray">
               Cada usuario tiene derecho a un pase gratuito por semana calendario (lunes a domingo). El pase es
-              personal, no transferible y no admite acompañantes. No se acumulan pases no utilizados de semanas
-              anteriores.
+              personal y no transferible. No se acumulan pases no utilizados de semanas anteriores.
+            </p>
+            <p className="mt-2 text-gray">
+              Algunas experiencias admiten acompañantes (hasta tres lugares por reservación, según lo que defina cada
+              experiencia). En ese caso, los lugares de los acompañantes se descuentan del cupo de la experiencia, los
+              acompañantes no requieren cuenta ni consumen un pase propio, y la persona que reserva es responsable de su
+              grupo. Cancelar una reservación cancela todos los lugares de ese grupo.
             </p>
           </section>
 

@@ -87,9 +87,9 @@ export default async function MiPasePage() {
               </LinkButton>
             </div>
 
-            <p className="mt-6 text-xs text-gray">
-              Tu pase es personal, no transferible y no admite acompañantes. Puedes cancelar hasta{" "}
-              {CANCELLATION_WINDOW_HOURS} horas antes del inicio.
+            <p className="mt-6 text-small text-gray">
+              Tu pase es personal y no transferible. Puedes cancelar hasta {CANCELLATION_WINDOW_HOURS} horas antes del
+              inicio.
             </p>
 
             <div className="mt-6">
