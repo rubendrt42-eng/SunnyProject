@@ -15,7 +15,11 @@ export default async function AccesoPage({
   searchParams: Promise<{ next?: string; error?: string }>;
 }) {
   const { next, error } = await searchParams;
-  const safeNext = next && next.startsWith("/") ? next : "/mi-pase";
+  // `startsWith("/")` alone would still accept a protocol-relative URL like
+  // "//evil.com" (browsers treat that as https://evil.com) — every current
+  // caller of `next` is already safe against that (origin is always
+  // hardcoded elsewhere), but this closes it here too as defense in depth.
+  const safeNext = next && next.startsWith("/") && !next.startsWith("//") ? next : "/mi-pase";
   const errorMessage = error ? (ERROR_MESSAGES[error] ?? ERROR_MESSAGES.generic) : null;
 
   return (

@@ -10,22 +10,30 @@ export function ReservationRowActions({ reservationId, status }: { reservationId
   const [error, setError] = useState<string | null>(null);
 
   async function call(url: string, action: string, body?: object) {
+    if (loading) return;
     setLoading(action);
     setError(null);
 
-    const res = await fetch(url, {
-      method: "POST",
-      headers: body ? { "Content-Type": "application/json" } : undefined,
-      body: body ? JSON.stringify(body) : undefined,
-    });
-    const data = await res.json().catch(() => ({ code: "UNKNOWN_ERROR" }));
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: body ? { "Content-Type": "application/json" } : undefined,
+        body: body ? JSON.stringify(body) : undefined,
+      });
+      const data = await res.json().catch(() => ({ code: "UNKNOWN_ERROR" }));
 
-    setLoading(null);
-    if (!res.ok) {
-      setError(data.code ?? "Ocurrió un error.");
-      return;
+      setLoading(null);
+      if (!res.ok) {
+        setError(data.code ?? "Ocurrió un error.");
+        return;
+      }
+      router.refresh();
+    } catch {
+      // A network failure here would otherwise leave every button in this
+      // row permanently disabled with no way to retry.
+      setLoading(null);
+      setError("No pudimos conectar con el servidor.");
     }
-    router.refresh();
   }
 
   return (

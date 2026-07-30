@@ -38,35 +38,47 @@ export function ClaimPanel({
   const [folio, setFolio] = useState<string | null>(null);
 
   async function handleClaim() {
+    // Guards against a double-click/double-tap firing two claims before
+    // React re-renders the disabled button — the transactional RPC would
+    // reject the second one anyway, but this avoids a wasted request.
+    if (step === "claiming") return;
+
     setStep("claiming");
     setError(null);
 
-    const res = await fetch("/api/reservations/claim", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ experienceId, source, acknowledgement: true }),
-    });
+    try {
+      const res = await fetch("/api/reservations/claim", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ experienceId, source, acknowledgement: true }),
+      });
 
-    const body = await res.json().catch(() => ({ code: "UNKNOWN_ERROR" }));
+      const body = await res.json().catch(() => ({ code: "UNKNOWN_ERROR" }));
 
-    if (!res.ok) {
-      const code = body.code as string;
-      if (code === "EXPERIENCE_SOLD_OUT") setStep("sold_out");
-      else if (code === "WEEKLY_PASS_ALREADY_USED") setStep("pass_used_elsewhere");
-      else if (code === "ALREADY_RESERVED_EXPERIENCE") setStep("already_reserved");
-      else if (code === "NOT_AUTHENTICATED") setStep("login");
-      else if (code === "PROFILE_INCOMPLETE") setStep("profile_incomplete");
-      else if (code === "CLAIM_WINDOW_CLOSED" || code === "EXPERIENCE_PAST") setStep("closed");
-      else {
-        setStep("error");
-        setError(reservationErrorMessage(code));
+      if (!res.ok) {
+        const code = body.code as string;
+        if (code === "EXPERIENCE_SOLD_OUT") setStep("sold_out");
+        else if (code === "WEEKLY_PASS_ALREADY_USED") setStep("pass_used_elsewhere");
+        else if (code === "ALREADY_RESERVED_EXPERIENCE") setStep("already_reserved");
+        else if (code === "NOT_AUTHENTICATED") setStep("login");
+        else if (code === "PROFILE_INCOMPLETE") setStep("profile_incomplete");
+        else if (code === "CLAIM_WINDOW_CLOSED" || code === "EXPERIENCE_PAST") setStep("closed");
+        else {
+          setStep("error");
+          setError(reservationErrorMessage(code));
+        }
+        return;
       }
-      return;
-    }
 
-    setFolio(body.reservation.folio);
-    setStep("success");
-    router.refresh();
+      setFolio(body.reservation.folio);
+      setStep("success");
+      router.refresh();
+    } catch {
+      // A network failure (offline, DNS, timeout) — without this, the button
+      // would stay stuck on "Reservando…" forever with no way to retry.
+      setStep("error");
+      setError("No pudimos conectar con el servidor. Revisa tu conexión e intenta de nuevo.");
+    }
   }
 
   if (step === "login") {

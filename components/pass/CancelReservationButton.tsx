@@ -11,21 +11,29 @@ export function CancelReservationButton({ reservationId, canCancel }: { reservat
   const [error, setError] = useState<string | null>(null);
 
   async function handleCancel() {
+    if (loading) return;
     if (!confirm("¿Seguro que quieres cancelar tu pase? Esta acción no se puede deshacer.")) return;
 
     setLoading(true);
     setError(null);
 
-    const res = await fetch(`/api/reservations/${reservationId}/cancel`, { method: "POST" });
-    const body = await res.json().catch(() => ({ code: "UNKNOWN_ERROR" }));
+    try {
+      const res = await fetch(`/api/reservations/${reservationId}/cancel`, { method: "POST" });
+      const body = await res.json().catch(() => ({ code: "UNKNOWN_ERROR" }));
 
-    if (!res.ok) {
-      setError(reservationErrorMessage(body.code));
+      if (!res.ok) {
+        setError(reservationErrorMessage(body.code));
+        setLoading(false);
+        return;
+      }
+
+      router.refresh();
+    } catch {
+      // A network failure here would otherwise leave the button stuck on
+      // "Cancelando…" forever with no way to retry.
+      setError("No pudimos conectar con el servidor. Revisa tu conexión e intenta de nuevo.");
       setLoading(false);
-      return;
     }
-
-    router.refresh();
   }
 
   if (!canCancel) {

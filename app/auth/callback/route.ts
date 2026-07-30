@@ -6,7 +6,9 @@ export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
   const nextParam = searchParams.get("next");
-  const next = nextParam && nextParam.startsWith("/") ? nextParam : "/mi-pase";
+  // See the matching comment in app/acceso/page.tsx: also reject
+  // protocol-relative URLs ("//evil.com"), not just anything starting with "/".
+  const next = nextParam && nextParam.startsWith("/") && !nextParam.startsWith("//") ? nextParam : "/mi-pase";
 
   // Supabase redirects here with `error_code`/`error_description` (no `code`)
   // when the link itself is already dead — e.g. expired or already used —

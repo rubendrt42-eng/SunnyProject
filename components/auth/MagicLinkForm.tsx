@@ -11,24 +11,32 @@ export function MagicLinkForm({ next }: { next: string }) {
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
+    if (status === "loading") return;
     setStatus("loading");
     setError(null);
 
-    const supabase = createClient();
-    const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`;
+    try {
+      const supabase = createClient();
+      const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`;
 
-    const { error: signInError } = await supabase.auth.signInWithOtp({
-      email,
-      options: { emailRedirectTo: redirectTo },
-    });
+      const { error: signInError } = await supabase.auth.signInWithOtp({
+        email,
+        options: { emailRedirectTo: redirectTo },
+      });
 
-    if (signInError) {
+      if (signInError) {
+        setStatus("error");
+        setError("No pudimos enviar el enlace. Verifica tu correo e intenta de nuevo.");
+        return;
+      }
+
+      setStatus("sent");
+    } catch {
+      // A network failure here would otherwise leave the button stuck on
+      // "Enviando…" forever with no way to retry.
       setStatus("error");
-      setError("No pudimos enviar el enlace. Verifica tu correo e intenta de nuevo.");
-      return;
+      setError("No pudimos conectar con el servidor. Revisa tu conexión e intenta de nuevo.");
     }
-
-    setStatus("sent");
   }
 
   if (status === "sent") {
@@ -38,6 +46,13 @@ export function MagicLinkForm({ next }: { next: string }) {
         <p className="mt-1 text-sm text-gray">
           Enviamos un enlace de acceso a <strong>{email}</strong>. Ábrelo desde este mismo dispositivo para continuar.
         </p>
+        <button
+          type="button"
+          onClick={() => setStatus("idle")}
+          className="mt-4 text-sm font-medium text-carbon underline decoration-carbon/30 underline-offset-4 hover:decoration-carbon"
+        >
+          ¿Correo incorrecto? Intenta de nuevo
+        </button>
       </div>
     );
   }
