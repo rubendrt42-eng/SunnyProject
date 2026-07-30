@@ -1,10 +1,37 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState, useSyncExternalStore, type FormEvent } from "react";
 import { AlertTriangle } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/Button";
 import { describeAuthError, type FriendlyAuthError } from "@/lib/auth-errors";
+
+/** El host no cambia mientras la página vive, así que no hay a qué suscribirse. */
+const subscribeToNothing = () => () => {};
+
+/**
+ * Se resuelve tras la hidratación porque `window` no existe al renderizar en
+ * el servidor, y el valor depende del despliegue concreto que estés visitando.
+ *
+ * `useSyncExternalStore` y no un efecto con `setState`: es el mecanismo que
+ * React ofrece justo para leer un valor del navegador que el servidor no
+ * puede conocer, y evita el render extra que `react-hooks/set-state-in-effect`
+ * señala con razón. Mismo patrón que `components/motion/useIsDesktop.ts`.
+ */
+function ReturnDomainHint() {
+  const origin = useSyncExternalStore(
+    subscribeToNothing,
+    () => window.location.host,
+    () => null,
+  );
+  if (!origin) return null;
+  return (
+    <p className="mt-1.5">
+      El enlace te devolverá a <span className="font-medium text-carbon">{origin}</span>. Si al abrirlo
+      apareces en otro sitio, avísanos: falta autorizar este dominio.
+    </p>
+  );
+}
 
 export function MagicLinkForm({ next }: { next: string }) {
   const [email, setEmail] = useState("");
@@ -129,9 +156,23 @@ export function MagicLinkForm({ next }: { next: string }) {
           Ya esperé — intentar otra vez
         </button>
       ) : (
-        <p className="text-small text-gray">
-          Sin contraseñas. Te enviaremos un enlace mágico para entrar de forma segura.
-        </p>
+        <div className="text-small text-gray">
+          <p>Sin contraseñas. Te enviaremos un enlace mágico para entrar de forma segura.</p>
+          {/*
+           * Decir a qué dominio volverá el enlace.
+           *
+           * Cuando `redirect_to` no está en la lista de URLs permitidas de
+           * Supabase, Supabase NO devuelve error: redirige en silencio al
+           * Site URL del proyecto. El síntoma es que abres el enlace desde
+           * el correo y apareces en otro despliegue —otra versión del
+           * sitio— sin ninguna pista de por qué. Nos costó una sesión
+           * entera diagnosticarlo mirando logs de servidor.
+           *
+           * Con el origen a la vista, basta comparar esta línea con la
+           * barra de direcciones para detectarlo en dos segundos.
+           */}
+          <ReturnDomainHint />
+        </div>
       )}
     </form>
   );
