@@ -103,7 +103,7 @@ export default async function HomePage() {
   return (
     <main>
       {/* 2. Hero — editorial split on ivory */}
-      <Hero experiences={weekItems.slice(0, 5)} />
+      <Hero />
 
       {/* 3. Cinta de experiencias — real names, slow, pausable */}
       <ExperienceMarquee items={upcomingPublished.map((e) => ({ slug: e.slug, title: displayTitle(e.title) }))} />

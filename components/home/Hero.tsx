@@ -3,9 +3,7 @@ import { WordReveal } from "@/components/motion/WordReveal";
 import { LineReveal } from "@/components/motion/LineReveal";
 import { LinkButton } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
-import { HeroFeaturedRotator } from "@/components/home/HeroFeaturedRotator";
 import { HERO_TOGETHER } from "@/lib/media";
-import type { ExperienceWithBusiness } from "@/lib/queries";
 
 /**
  * Editorial split rather than a full-bleed media hero.
@@ -19,10 +17,11 @@ import type { ExperienceWithBusiness } from "@/lib/queries";
  * their strongest statements.
  *
  * The five-second question the hero has to answer: what Sunny is
- * (experiencias locales), what you can do (explorar esta semana), and why
- * to keep scrolling (a real experience is already visible).
+ * (experiencias locales) and what you can do (explorar esta semana). The
+ * week's actual experiences are the very next thing on the page, so the
+ * hero does not need to show one here — see the note on the photograph.
  */
-export function Hero({ experiences }: { experiences: ExperienceWithBusiness[] }) {
+export function Hero() {
   return (
     <section className="relative overflow-hidden border-b border-carbon/10 bg-ivory">
       <Container className="grid items-center gap-10 py-14 sm:py-20 lg:grid-cols-2 lg:gap-16 lg:py-24">
@@ -58,19 +57,23 @@ export function Hero({ experiences }: { experiences: ExperienceWithBusiness[] })
           </LineReveal>
         </div>
 
-        <div className="relative">
-          <div className="relative aspect-4/5 w-full overflow-hidden rounded-lg bg-carbon/5 sm:aspect-3/4 lg:aspect-4/5">
-            <Image
-              src={HERO_TOGETHER.src}
-              alt={HERO_TOGETHER.alt}
-              fill
-              priority
-              sizes="(min-width: 1024px) 46vw, 100vw"
-              className="object-cover"
-            />
-          </div>
-
-          {experiences.length > 0 && <HeroFeaturedRotator experiences={experiences} />}
+        {/* The photograph is a photograph, not a tray.
+            A rotating card used to float on top of it, covering the lower
+            third — in practice the players' legs — while a sliver of image
+            stayed visible around it. It also showed the week one experience
+            at a time behind pagination dots, which is a worse way to read a
+            five-item list than the grid that already sits directly below in
+            "Esta semana". Redundant AND obstructive, so it goes: the image
+            gets its full frame back and the list is read as a list. */}
+        <div className="relative aspect-4/5 w-full overflow-hidden rounded-lg bg-carbon/5 sm:aspect-3/4 lg:aspect-square">
+          <Image
+            src={HERO_TOGETHER.src}
+            alt={HERO_TOGETHER.alt}
+            fill
+            priority
+            sizes="(min-width: 1024px) 46vw, 100vw"
+            className="object-cover"
+          />
         </div>
       </Container>
     </section>

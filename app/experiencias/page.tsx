@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { clsx } from "clsx";
-import { AlertTriangle, CalendarOff, SearchX } from "lucide-react";
+import { AlertTriangle, CalendarOff, ChevronDown, SearchX, SlidersHorizontal } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getPublicExperiences, getActiveWeeklyReservation, getUserReservationHistory } from "@/lib/queries";
 import { getCurrentUser, isProfileComplete } from "@/lib/auth";
@@ -111,6 +111,19 @@ export default async function ExperienciasPage({ searchParams }: { searchParams:
   );
   const businessName = negocio ? visible.find((e) => e.business.slug === negocio)?.business.name : null;
 
+  /**
+   * How many filters are hidden inside "Más filtros". Shown as a count on the
+   * summary so an active filter is never invisible just because the panel is
+   * collapsed — `categoria` is excluded because its chips stay on screen.
+   */
+  const advancedFilterCount = [
+    activeIntent,
+    disponibilidad && disponibilidad !== "cualquiera" ? disponibilidad : null,
+    tipo,
+    negocio,
+    q,
+  ].filter(Boolean).length;
+
   /** Preserves every other filter (and drops `ver`, which is panel state, not a filter). */
   function buildHref(next: Partial<CatalogParams>) {
     const merged: CatalogParams = { categoria, disponibilidad, intencion, tipo, negocio, q, ...next };
@@ -143,91 +156,128 @@ export default async function ExperienciasPage({ searchParams }: { searchParams:
       </Container>
 
       {/* Filters stay server-rendered links so the catalogue is fully
-          usable and crawlable without JavaScript. */}
-      <div className="sticky top-18 z-30 mt-8 border-y border-carbon/10 bg-ivory/95 py-4 backdrop-blur">
+          usable and crawlable without JavaScript.
+
+          ONE row is sticky, the rest lives inside a <details>. The bar used
+          to pin four stacked rows — intención, categoría, disponibilidad and
+          the search form — which measured 290 px. Added to the 73 px header
+          that is **363 px of every viewport occupied permanently**: 40% at
+          1440×900 and 45% at 375×812, so the catalogue was always read
+          through a slot barely half a screen tall and the first card started
+          at y=828. The whole point of this page is to look at experiences.
+
+          <details> and not a toggle component on purpose: it opens with no
+          JavaScript, so the "usable without JS" property above survives. */}
+      <div className="sticky top-18 z-30 mt-8 border-y border-carbon/10 bg-ivory/95 py-3 backdrop-blur">
         <Container className="flex flex-col gap-3">
-          <FilterRow label="¿Qué buscas?">
-            <FilterChip href={buildHref({ intencion: undefined })} active={!activeIntent} label="Todo" />
-            {INTENT_KEYS.map((key) => (
-              <FilterChip
-                key={key}
-                href={buildHref({ intencion: activeIntent === key ? undefined : key })}
-                active={activeIntent === key}
-                label={INTENTS[key].label}
-              />
-            ))}
-          </FilterRow>
+          <div className="flex items-center gap-3">
+            <nav aria-label="Filtrar por categoría" className="no-scrollbar flex min-w-0 flex-1 flex-nowrap gap-2 overflow-x-auto">
+              <FilterChip href={buildHref({ categoria: undefined })} active={!categoria} label="Todas" />
+              {CATEGORIES.map((c) => (
+                <FilterChip
+                  key={c.value}
+                  href={buildHref({ categoria: categoria === c.value ? undefined : c.value })}
+                  active={categoria === c.value}
+                  label={c.label}
+                />
+              ))}
+            </nav>
 
-          <FilterRow label="Categoría">
-            <FilterChip href={buildHref({ categoria: undefined })} active={!categoria} label="Todas" />
-            {CATEGORIES.map((c) => (
-              <FilterChip
-                key={c.value}
-                href={buildHref({ categoria: categoria === c.value ? undefined : c.value })}
-                active={categoria === c.value}
-                label={c.label}
-              />
-            ))}
-          </FilterRow>
-
-          <FilterRow label="Disponibilidad">
-            {(
-              [
-                { value: "cualquiera", label: "Cualquier estado" },
-                { value: "disponibles", label: "Con cupo" },
-                { value: "agotadas", label: "Agotadas" },
-              ] as { value: Availability; label: string }[]
-            ).map((a) => (
-              <FilterChip
-                key={a.value}
-                href={buildHref({ disponibilidad: a.value })}
-                active={(disponibilidad ?? "cualquiera") === a.value}
-                label={a.label}
-              />
-            ))}
-            {hasOriginals && (
-              <FilterChip
-                href={buildHref({ tipo: tipo === "originals" ? undefined : "originals" })}
-                active={tipo === "originals"}
-                label="Sunny Originals"
-              />
-            )}
-          </FilterRow>
-
-          <div className="flex flex-wrap items-center gap-3 pt-1">
-            <form method="get" className="flex flex-1 items-center gap-2">
-              {categoria && <input type="hidden" name="categoria" value={categoria} />}
-              {disponibilidad && <input type="hidden" name="disponibilidad" value={disponibilidad} />}
-              {intencion && <input type="hidden" name="intencion" value={intencion} />}
-              {tipo && <input type="hidden" name="tipo" value={tipo} />}
-              {negocio && <input type="hidden" name="negocio" value={negocio} />}
-              <label htmlFor="q" className="sr-only">
-                Buscar experiencias
-              </label>
-              <input
-                id="q"
-                name="q"
-                type="search"
-                defaultValue={q ?? ""}
-                placeholder="Buscar por nombre, negocio o zona…"
-                className="h-11 w-full max-w-xs rounded-md border border-carbon/20 bg-warm-white px-4 text-small focus:border-carbon"
-              />
-              <button
-                type="submit"
-                className="h-11 rounded-md border border-carbon/20 px-4 text-small font-medium transition-colors hover:border-carbon"
-              >
-                Buscar
-              </button>
-            </form>
             {hasActiveFilters && (
               <Link
                 href="/experiencias"
-                className="text-small font-medium text-carbon underline decoration-carbon/30 underline-offset-4 hover:decoration-carbon"
+                className="hidden shrink-0 text-small font-medium text-carbon underline decoration-carbon/30 underline-offset-4 hover:decoration-carbon sm:inline"
               >
-                Limpiar filtros
+                Limpiar
               </Link>
             )}
           </div>
+
+          <details className="group">
+            <summary className="flex w-fit cursor-pointer list-none items-center gap-2 text-small font-medium text-carbon/75 hover:text-carbon">
+              <SlidersHorizontal aria-hidden size={15} strokeWidth={1.75} />
+              Más filtros
+              {advancedFilterCount > 0 && (
+                <span className="rounded-full bg-carbon px-1.5 text-[0.7rem] font-semibold text-warm-white">
+                  {advancedFilterCount}
+                </span>
+              )}
+              <ChevronDown aria-hidden size={15} strokeWidth={1.75} className="transition-transform group-open:rotate-180" />
+            </summary>
+
+            <div className="mt-3 flex flex-col gap-3 border-t border-carbon/10 pt-3">
+              <FilterRow label="¿Qué buscas?">
+                <FilterChip href={buildHref({ intencion: undefined })} active={!activeIntent} label="Todo" />
+                {INTENT_KEYS.map((key) => (
+                  <FilterChip
+                    key={key}
+                    href={buildHref({ intencion: activeIntent === key ? undefined : key })}
+                    active={activeIntent === key}
+                    label={INTENTS[key].label}
+                  />
+                ))}
+              </FilterRow>
+
+              <FilterRow label="Disponibilidad">
+                {(
+                  [
+                    { value: "cualquiera", label: "Cualquier estado" },
+                    { value: "disponibles", label: "Con cupo" },
+                    { value: "agotadas", label: "Agotadas" },
+                  ] as { value: Availability; label: string }[]
+                ).map((a) => (
+                  <FilterChip
+                    key={a.value}
+                    href={buildHref({ disponibilidad: a.value })}
+                    active={(disponibilidad ?? "cualquiera") === a.value}
+                    label={a.label}
+                  />
+                ))}
+                {hasOriginals && (
+                  <FilterChip
+                    href={buildHref({ tipo: tipo === "originals" ? undefined : "originals" })}
+                    active={tipo === "originals"}
+                    label="Sunny Originals"
+                  />
+                )}
+              </FilterRow>
+
+              <div className="flex flex-wrap items-center gap-3">
+                <form method="get" className="flex flex-1 items-center gap-2">
+                  {categoria && <input type="hidden" name="categoria" value={categoria} />}
+                  {disponibilidad && <input type="hidden" name="disponibilidad" value={disponibilidad} />}
+                  {intencion && <input type="hidden" name="intencion" value={intencion} />}
+                  {tipo && <input type="hidden" name="tipo" value={tipo} />}
+                  {negocio && <input type="hidden" name="negocio" value={negocio} />}
+                  <label htmlFor="q" className="sr-only">
+                    Buscar experiencias
+                  </label>
+                  <input
+                    id="q"
+                    name="q"
+                    type="search"
+                    defaultValue={q ?? ""}
+                    placeholder="Buscar por nombre, negocio o zona…"
+                    className="h-11 w-full max-w-xs rounded-md border border-carbon/20 bg-warm-white px-4 text-small focus:border-carbon"
+                  />
+                  <button
+                    type="submit"
+                    className="h-11 rounded-md border border-carbon/20 px-4 text-small font-medium transition-colors hover:border-carbon"
+                  >
+                    Buscar
+                  </button>
+                </form>
+                {hasActiveFilters && (
+                  <Link
+                    href="/experiencias"
+                    className="text-small font-medium text-carbon underline decoration-carbon/30 underline-offset-4 hover:decoration-carbon"
+                  >
+                    Limpiar filtros
+                  </Link>
+                )}
+              </div>
+            </div>
+          </details>
         </Container>
       </div>
 

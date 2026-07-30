@@ -46,20 +46,27 @@
      SUNNY_REFERENCE_ANALYSIS.md §2). Sections must use these instead of
      inventing per-section sizes — inconsistent type is the main reason a
      page reads as a template. */
+  /* Weight and tracking carry the personality here, because the family is
+     fixed. Manrope at 600 with loose-ish tracking is the default any project
+     lands on — it reads as "a website" rather than as Sunny. Manrope is a
+     variable font (200–800), so pushing display to 800 and pulling the
+     tracking in costs nothing at load time and makes the headline dense and
+     poster-like instead of merely large. Leading tightens with it, otherwise
+     heavier type at the old 0.98 drifts apart. */
   --text-display: clamp(2.5rem, 6.5vw, 4.75rem);
-  --text-display--line-height: 0.98;
-  --text-display--letter-spacing: -0.03em;
-  --text-display--font-weight: 600;
+  --text-display--line-height: 0.92;
+  --text-display--letter-spacing: -0.045em;
+  --text-display--font-weight: 800;
 
   --text-title: clamp(1.875rem, 3.6vw, 3rem);
-  --text-title--line-height: 1.06;
-  --text-title--letter-spacing: -0.022em;
-  --text-title--font-weight: 600;
+  --text-title--line-height: 1.02;
+  --text-title--letter-spacing: -0.032em;
+  --text-title--font-weight: 700;
 
   --text-subtitle: clamp(1.375rem, 2.2vw, 1.875rem);
-  --text-subtitle--line-height: 1.15;
-  --text-subtitle--letter-spacing: -0.015em;
-  --text-subtitle--font-weight: 600;
+  --text-subtitle--line-height: 1.12;
+  --text-subtitle--letter-spacing: -0.022em;
+  --text-subtitle--font-weight: 700;
 
   --text-heading: 1.125rem;
   --text-heading--line-height: 1.3;
