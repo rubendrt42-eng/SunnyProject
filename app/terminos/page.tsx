@@ -7,7 +7,7 @@ export default function TerminosPage() {
   return (
     <main className="py-16 sm:py-24">
       <Container className="max-w-2xl">
-        <h1 className="font-serif text-4xl italic">Términos de uso</h1>
+        <h1 className="text-title">Términos de uso</h1>
         <p className="mt-2 text-sm text-gray">Última actualización: proyecto de demostración.</p>
 
         <div className="mt-10 space-y-8 text-carbon">

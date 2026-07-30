@@ -47,7 +47,7 @@ export default async function AdminSolicitudesPage({
 
   return (
     <div>
-      <h1 className="text-xl font-semibold sm:text-2xl">Solicitudes de negocios</h1>
+      <h1 className="text-subtitle">Solicitudes de negocios</h1>
       <p className="mt-1 text-small text-neutral-600">
         Cada solicitud llega del formulario público de <strong>Para negocios</strong>.
       </p>

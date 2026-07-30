@@ -55,10 +55,10 @@ export default async function MiPasePage() {
     return (
       <main className="py-14 sm:py-20">
         <Container className="max-w-2xl">
-          <p className="text-sm font-medium uppercase tracking-wide text-orange-ink">Tu pase</p>
-          <h1 className="mt-1 font-serif text-4xl italic">{experience.title}</h1>
+          <p className="eyebrow">Tu pase</p>
+          <h1 className="mt-3 text-title">{experience.title}</h1>
 
-          <div className="mt-8 rounded-2xl border border-carbon/10 bg-warm-white p-8">
+          <div className="mt-8 rounded-xl border border-carbon/10 bg-warm-white p-8">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-sm text-gray">Folio</p>
@@ -140,7 +140,7 @@ export default async function MiPasePage() {
     return (
       <main className="py-14 sm:py-20">
         <Container className="max-w-2xl">
-          <h1 className="font-serif text-4xl italic">Ya utilizaste tu pase de esta semana</h1>
+          <h1 className="text-title">Ya utilizaste tu pase de esta semana</h1>
           <p className="mt-3 text-gray">
             Reservaste <strong>{reservation.experience.title}</strong>. Tu siguiente pase estará disponible el lunes{" "}
             {nextMondayLabel()}.
@@ -165,7 +165,7 @@ export default async function MiPasePage() {
   return (
     <main className="py-14 sm:py-20">
       <Container>
-        <h1 className="font-serif text-4xl italic">Tienes 1 pase disponible esta semana</h1>
+        <h1 className="text-title">Tienes 1 pase disponible esta semana</h1>
         <p className="mt-3 max-w-xl text-gray">
           Elige una experiencia y reclama tu lugar. Tu pase se renueva cada lunes.
         </p>

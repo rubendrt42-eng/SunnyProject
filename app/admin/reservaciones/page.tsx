@@ -98,7 +98,7 @@ export default async function AdminReservacionesPage({ searchParams }: { searchP
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-xl font-semibold sm:text-2xl">Reservaciones</h1>
+        <h1 className="text-subtitle">Reservaciones</h1>
         <a
           href="/api/admin/reservations/export"
           className="flex min-h-10 items-center gap-2 rounded-md bg-neutral-900 px-4 text-small font-medium text-white hover:bg-neutral-800"
@@ -246,7 +246,7 @@ function ReservationCard({ reservation, email }: { reservation: ReservationWithC
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
             <Badge tone={STATUS_TONE[reservation.status]}>{STATUS_LABEL[reservation.status]}</Badge>
-            <span className="font-mono text-[0.7rem] text-neutral-500">{reservation.folio}</span>
+            <span className="font-mono text-label text-neutral-500">{reservation.folio}</span>
             {people > 1 && <Badge tone="neutral">Grupo de {people}</Badge>}
           </div>
 

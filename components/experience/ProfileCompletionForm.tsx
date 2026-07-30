@@ -20,7 +20,7 @@ export function ProfileCompletionForm({ onComplete }: { onComplete: () => void }
     .filter(Boolean);
 
   return (
-    <form action={formAction} className="flex flex-col gap-4 rounded-2xl border border-carbon/10 bg-warm-white p-6">
+    <form action={formAction} className="flex flex-col gap-4 rounded-xl border border-carbon/10 bg-warm-white p-6">
       <p className="font-medium">Completa tu perfil para reservar</p>
 
       <div className="flex flex-col gap-1.5">

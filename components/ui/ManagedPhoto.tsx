@@ -37,7 +37,7 @@ export function ManagedPhoto({
   return (
     <div className={clsx("absolute inset-0 flex flex-col items-center justify-center gap-1.5 bg-carbon/[0.04]", className)}>
       <ImageOff aria-hidden size={20} strokeWidth={1.5} className="text-carbon/25" />
-      <span className="px-3 text-center text-[0.65rem] leading-tight text-carbon/35">
+      <span className="px-3 text-center text-label leading-tight text-carbon/35">
         {resolved.missingLabel === "Sin fotografía" ? resolved.missingLabel : `Falta ${resolved.missingLabel}`}
       </span>
     </div>

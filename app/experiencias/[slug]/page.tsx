@@ -132,7 +132,7 @@ export default async function ExperienceDetailPage({
 
         <aside className="flex flex-col gap-6 lg:sticky lg:top-24">
           <InViewReveal>
-            <div className="rounded-2xl border border-carbon/10 bg-warm-white p-6">
+            <div className="rounded-xl border border-carbon/10 bg-warm-white p-6">
               <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-3 text-sm">
                 <dt className="font-medium text-gray">Fecha</dt>
                 <dd>{formatDateTime(experience.starts_at)}</dd>

@@ -84,7 +84,7 @@ export default async function AdminExperienciasPage({ searchParams }: { searchPa
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-xl font-semibold sm:text-2xl">Experiencias</h1>
+        <h1 className="text-subtitle">Experiencias</h1>
         <Link
           href="/admin/experiencias/nueva"
           className="flex min-h-10 items-center gap-2 rounded-md bg-neutral-900 px-4 text-small font-medium text-white hover:bg-neutral-800"

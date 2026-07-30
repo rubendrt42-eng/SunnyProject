@@ -27,6 +27,11 @@
   --radius-sm: 8px;
   --radius-md: 10px;
   --radius-lg: 14px;
+  /* Las tarjetas ya usaban 16, 20 y 24 px por su cuenta: 31 usos fuera de
+     escala, casi todos en el elemento que más se repite en el sitio. En vez
+     de forzarlas a 14 y cambiar el aspecto, el sistema sube su tope a 16 y
+     todo lo que estaba suelto aterriza aquí. */
+  --radius-xl: 16px;
 }
 
 @theme inline {
@@ -45,7 +50,23 @@
   /* Named type scale, adopted from Coda's `type-*` pattern (see
      SUNNY_REFERENCE_ANALYSIS.md §2). Sections must use these instead of
      inventing per-section sizes — inconsistent type is the main reason a
-     page reads as a template. */
+     page reads as a template.
+
+     Esto no era retórico: una auditoría encontró que 72 títulos usaban
+     tamaños sueltos de Tailwind contra 50 que usaban la escala, así que
+     subir el peso del display solo se notaba en 2 de 12 páginas. Si añades
+     un título, usa la escala.
+
+     Qué escalón toca:
+       · `display`  — el h1 de una página de marketing, SOLO cuando dispone
+                      del ancho completo del contenedor. En una columna
+                      estrecha se parte en cinco líneas; ahí va `title`.
+       · `title`    — h1 de páginas de utilidad y legales, y encabezados de
+                      sección dentro del contenido.
+       · `subtitle` — títulos de tarjeta y de página del panel.
+       · `heading`  — subtítulos dentro de una tarjeta o un bloque.
+     Y no acompañes ninguno de `font-semibold`: el peso lo fija el token, y
+     600 lo pisaría. */
   /* Weight and tracking carry the personality here, because the family is
      fixed. Manrope at 600 with loose-ish tracking is the default any project
      lands on — it reads as "a website" rather than as Sunny. Manrope is a
@@ -91,6 +112,7 @@
   --radius-sm: var(--radius-sm);
   --radius-md: var(--radius-md);
   --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
 
   --animate-fade-in: fade-in 0.4s ease-out;
   --animate-marquee: marquee 46s linear infinite;

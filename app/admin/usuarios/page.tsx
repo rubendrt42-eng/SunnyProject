@@ -32,7 +32,7 @@ export default async function AdminUsuariosPage({ searchParams }: { searchParams
 
   return (
     <div>
-      <h1 className="text-xl font-semibold sm:text-2xl">Usuarios</h1>
+      <h1 className="text-subtitle">Usuarios</h1>
       <p className="mt-1 text-small text-neutral-600">
         Personas registradas y su historial. Esta vista es de consulta: no se editan permisos ni contraseñas desde aquí.
       </p>

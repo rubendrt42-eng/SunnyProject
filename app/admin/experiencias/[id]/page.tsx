@@ -28,7 +28,7 @@ export default async function EditExperienciaPage({ params }: { params: Promise<
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold">{(experience as Experience).title}</h1>
+      <h1 className="text-subtitle">{(experience as Experience).title}</h1>
 
       <div className="mt-4">
         <ExperienceActions experience={experience as Experience} />

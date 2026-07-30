@@ -124,7 +124,7 @@ export function ClaimPanel({
 
   if (step === "login") {
     return (
-      <div id="reservar" className="rounded-2xl border border-carbon/10 bg-warm-white p-6">
+      <div id="reservar" className="rounded-xl border border-carbon/10 bg-warm-white p-6">
         <p className="font-medium">Inicia sesión para obtener tu pase</p>
         <p className="mt-1 text-sm text-gray">Usamos un enlace mágico enviado a tu correo, sin contraseñas.</p>
         <LinkButton href={`/acceso?next=${encodeURIComponent(`/experiencias/${experienceSlug}`)}`} className="mt-4">
@@ -144,7 +144,7 @@ export function ClaimPanel({
 
   if (step === "success") {
     return (
-      <div id="reservar" role="status" className="rounded-2xl border border-carbon/10 bg-warm-white p-6">
+      <div id="reservar" role="status" className="rounded-xl border border-carbon/10 bg-warm-white p-6">
         <motion.div
           initial={{ scale: 0.6, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -174,7 +174,7 @@ export function ClaimPanel({
 
   if (INFO_MESSAGES[step]) {
     return (
-      <div id="reservar" className="rounded-2xl border border-carbon/10 bg-warm-white p-6">
+      <div id="reservar" className="rounded-xl border border-carbon/10 bg-warm-white p-6">
         <p className="font-medium">{CTA_LABEL[step as ExperienceCta["type"]]}</p>
         <p className="mt-1 text-sm text-gray">{INFO_MESSAGES[step]}</p>
         {(step === "already_reserved" || step === "pass_used_elsewhere") && (

@@ -27,7 +27,7 @@ export function PassShowcase({ user, activeWeekly }: { user: CurrentUser | null;
 
         {!user && (
           <>
-            <h2 className="mt-2 text-4xl font-semibold sm:text-5xl">Tu primer pase te espera.</h2>
+            <h2 className="mt-2 text-title">Tu primer pase te espera.</h2>
             <p className="mt-4 max-w-md text-lg text-warm-white/75">
               Crea tu cuenta con tu correo y reclama un lugar gratuito cada semana. Sin contraseñas, sin costo.
             </p>
@@ -39,7 +39,7 @@ export function PassShowcase({ user, activeWeekly }: { user: CurrentUser | null;
 
         {user && !activeWeekly && (
           <>
-            <h2 className="mt-2 text-4xl font-semibold sm:text-5xl">Tu pase de esta semana está disponible.</h2>
+            <h2 className="mt-2 text-title">Tu pase de esta semana está disponible.</h2>
             <p className="mt-4 max-w-md text-lg text-warm-white/75">
               Elige una experiencia con cupo y tu pase queda listo al instante: folio, fecha y ubicación en &quot;Mi
               pase&quot;.
@@ -52,7 +52,7 @@ export function PassShowcase({ user, activeWeekly }: { user: CurrentUser | null;
 
         {isActive && activeWeekly && (
           <>
-            <h2 className="mt-2 text-4xl font-semibold sm:text-5xl">Ya tienes un lugar esta semana.</h2>
+            <h2 className="mt-2 text-title">Ya tienes un lugar esta semana.</h2>
             <p className="mt-4 max-w-md text-lg text-warm-white/75">
               Reservaste <strong className="text-warm-white">{displayTitle(activeWeekly.experience.title)}</strong> para
               el {formatDateShort(activeWeekly.experience.starts_at)}. Presenta tu folio para entrar.
@@ -65,7 +65,7 @@ export function PassShowcase({ user, activeWeekly }: { user: CurrentUser | null;
 
         {isUsed && activeWeekly && (
           <>
-            <h2 className="mt-2 text-4xl font-semibold sm:text-5xl">Ya usaste tu pase de esta semana.</h2>
+            <h2 className="mt-2 text-title">Ya usaste tu pase de esta semana.</h2>
             <p className="mt-4 max-w-md text-lg text-warm-white/75">
               Tu próximo pase estará disponible el {nextMondayLabel()}. Mientras tanto, explora qué se viene.
             </p>
@@ -77,7 +77,7 @@ export function PassShowcase({ user, activeWeekly }: { user: CurrentUser | null;
       </InViewReveal>
 
       <InViewReveal delay={0.1}>
-        <div className="mx-auto w-full max-w-sm rounded-[20px] border border-warm-white/10 bg-warm-white/5 p-7 text-warm-white shadow-lg backdrop-blur">
+        <div className="mx-auto w-full max-w-sm rounded-xl border border-warm-white/10 bg-warm-white/5 p-7 text-warm-white shadow-lg backdrop-blur">
           <div className="flex items-center justify-between">
             <p className="font-serif text-lg italic">Sunny Project</p>
             <span className="rounded-full bg-sunny px-3 py-1 text-xs font-semibold text-carbon">

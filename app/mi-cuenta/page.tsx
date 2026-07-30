@@ -17,9 +17,9 @@ export default async function MiCuentaPage() {
   return (
     <main className="py-14 sm:py-20">
       <Container className="max-w-xl">
-        <h1 className="font-serif text-4xl italic">Mi cuenta</h1>
+        <h1 className="text-title">Mi cuenta</h1>
 
-        <div className="mt-8 rounded-2xl border border-carbon/10 bg-warm-white p-6">
+        <div className="mt-8 rounded-xl border border-carbon/10 bg-warm-white p-6">
           <p className="text-sm font-medium text-gray">Correo</p>
           <p className="mt-1">{user.email}</p>
         </div>

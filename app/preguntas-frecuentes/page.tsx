@@ -28,7 +28,8 @@ export default function FaqPage() {
   return (
     <main className="py-16 sm:py-24">
       <Container className="max-w-3xl">
-        <h1 className="font-serif text-4xl italic sm:text-5xl">Preguntas frecuentes</h1>
+        <p className="eyebrow">Ayuda</p>
+        <h1 className="mt-3 text-display">Preguntas frecuentes</h1>
         <div className="mt-10">
           <FaqList items={FAQS} />
         </div>

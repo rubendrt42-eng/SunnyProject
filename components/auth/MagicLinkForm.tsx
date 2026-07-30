@@ -98,7 +98,7 @@ export function MagicLinkForm({ next }: { next: string }) {
             <p className="text-small font-semibold text-carbon">{error.title}</p>
             <p className="mt-1 text-small text-carbon/80">{error.detail}</p>
             {error.code && (
-              <p className="mt-2 font-mono text-[0.7rem] text-carbon/50">
+              <p className="mt-2 font-mono text-label text-carbon/50">
                 código: {error.code}
               </p>
             )}

@@ -58,14 +58,14 @@ export function AnimatedModal({
             role="dialog"
             aria-modal="true"
             aria-labelledby={titleId}
-            className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl bg-warm-white p-6 sm:p-8"
+            className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl bg-warm-white p-6 sm:p-8"
             initial={{ opacity: 0, y: 24, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 12, scale: 0.98 }}
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
           >
             <div className="flex items-start justify-between gap-4">
-              <h2 id={titleId} className="font-serif text-2xl italic">
+              <h2 id={titleId} className="text-subtitle">
                 {title}
               </h2>
               <button

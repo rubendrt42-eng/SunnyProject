@@ -48,7 +48,7 @@ function CatalogVisual({ experiences, availableAssets }: { experiences: Experien
     return (
       <div className="grid grid-cols-2 gap-3">
         {[0, 1].map((i) => (
-          <div key={i} className="aspect-[4/3] rounded-2xl bg-carbon/5" />
+          <div key={i} className="aspect-[4/3] rounded-xl bg-carbon/5" />
         ))}
       </div>
     );
@@ -57,13 +57,13 @@ function CatalogVisual({ experiences, availableAssets }: { experiences: Experien
   return (
     <div className="grid grid-cols-2 gap-3">
       {experiences.slice(0, 2).map((exp) => (
-        <div key={exp.id} className="overflow-hidden rounded-2xl border border-carbon/10 bg-warm-white shadow-sm">
+        <div key={exp.id} className="overflow-hidden rounded-xl border border-carbon/10 bg-warm-white shadow-sm">
           <div className="relative aspect-[4/3] w-full">
             <ManagedPhoto url={exp.image_url} availableAssets={availableAssets} alt="" sizes="180px" className="object-cover" />
           </div>
           <div className="p-2.5">
             <p className="truncate text-xs font-medium text-carbon">{displayTitle(exp.title)}</p>
-            <p className="mt-0.5 truncate text-[0.7rem] text-gray">{categoryLabel(exp.category)}</p>
+            <p className="mt-0.5 truncate text-label text-gray">{categoryLabel(exp.category)}</p>
           </div>
         </div>
       ))}
@@ -79,7 +79,7 @@ function CapacityVisual({ experience }: { experience: ExperienceWithBusiness | n
   const pct = capacity > 0 ? Math.min(100, Math.round((reserved / capacity) * 100)) : 0;
 
   return (
-    <div className="rounded-2xl border border-carbon/10 bg-warm-white p-5 shadow-sm">
+    <div className="rounded-xl border border-carbon/10 bg-warm-white p-5 shadow-sm">
       <div className="flex items-center justify-between gap-3">
         <span className="truncate text-sm font-semibold text-carbon">{experience ? displayTitle(experience.title) : "Tu experiencia"}</span>
         <Badge tone="orange">
@@ -202,7 +202,7 @@ export function HowItWorksNarrative({
             {STEPS.map((step, i) => (
               <div key={step.number} className={clsx("transition-opacity duration-500", active === i ? "opacity-100" : "opacity-55")}>
                 <span className="text-4xl font-semibold text-orange-ink">{step.number}</span>
-                <h3 className="mt-3 text-2xl font-semibold">{step.title}</h3>
+                <h3 className="mt-3 text-subtitle">{step.title}</h3>
                 <p className="mt-2 max-w-sm text-gray">{step.body}</p>
               </div>
             ))}
@@ -227,7 +227,7 @@ export function HowItWorksNarrative({
         {STEPS.map((step, i) => (
           <InViewReveal key={step.number}>
             <span className="text-4xl font-semibold text-orange-ink">{step.number}</span>
-            <h3 className="mt-3 text-2xl font-semibold">{step.title}</h3>
+            <h3 className="mt-3 text-subtitle">{step.title}</h3>
             <p className="mt-2 max-w-sm text-gray">{step.body}</p>
             <div className="mt-5">{visuals[i]}</div>
           </InViewReveal>

@@ -17,7 +17,7 @@ export function ForBusinessSection({ availableAssets }: { availableAssets: strin
   return (
     <div className="grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
       <InViewReveal>
-        <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[20px]">
+        <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl">
           <ManagedPhoto
             url={BUSINESS_SPACE_PHOTO.src}
             availableAssets={availableAssets}
@@ -29,7 +29,7 @@ export function ForBusinessSection({ availableAssets }: { availableAssets: strin
       </InViewReveal>
 
       <InViewReveal delay={0.1}>
-        <h2 className="text-3xl font-semibold sm:text-4xl">Haz que nuevas personas descubran tu espacio.</h2>
+        <h2 className="text-title">Haz que nuevas personas descubran tu espacio.</h2>
         <p className="mt-4 max-w-md text-lg text-carbon/70">
           Comparte algunos lugares, conecta con clientes potenciales y forma parte de la selección de Sunny Project.
         </p>

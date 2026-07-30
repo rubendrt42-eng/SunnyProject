@@ -85,7 +85,7 @@ export function CategoriesSection({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="relative aspect-[4/3] w-full overflow-hidden rounded-[20px]"
+            className="relative aspect-[4/3] w-full overflow-hidden rounded-xl"
           >
             <ManagedPhoto url={CATEGORY_COVER[active]} availableAssets={availableAssets} alt="" sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
           </motion.div>
@@ -99,7 +99,7 @@ export function CategoriesSection({
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.35, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
           >
-            <h3 className="text-2xl font-semibold">{activeLabel}</h3>
+            <h3 className="text-subtitle">{activeLabel}</h3>
             <p className="mt-2 max-w-md text-gray">{CATEGORY_COPY[active]}</p>
 
             {activeExperiences.length > 0 ? (

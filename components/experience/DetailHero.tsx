@@ -33,7 +33,7 @@ export function DetailHero({
           {isDemo && <Badge tone="orange">Demostración</Badge>}
         </div>
 
-        <h1 className="mt-4 max-w-2xl text-4xl leading-[1.05] font-semibold text-balance sm:text-5xl lg:text-6xl">
+        <h1 className="mt-4 max-w-2xl text-display text-balance">
           {displayTitle(experience.title)}
         </h1>
         <p className="mt-2 text-lg text-warm-white/85">{experience.business.name}</p>

@@ -31,7 +31,7 @@ export default async function AdminDashboardPage() {
     <div>
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-xl font-semibold sm:text-2xl">Esta semana en Sunny</h1>
+          <h1 className="text-subtitle">Esta semana en Sunny</h1>
           <p className="mt-1 text-small text-neutral-600">
             {data.nextExperience ? (
               <>
@@ -133,7 +133,7 @@ function Stat({ label, value, hint }: { label: string; value: string | number; h
     <div className="rounded-lg border border-neutral-200 bg-white p-4">
       <dt className="text-small text-neutral-500">{label}</dt>
       <dd className="mt-1 text-xl font-semibold">{value}</dd>
-      {hint && <p className="mt-0.5 text-[0.7rem] text-neutral-400">{hint}</p>}
+      {hint && <p className="mt-0.5 text-label text-neutral-400">{hint}</p>}
     </div>
   );
 }

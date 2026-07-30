@@ -51,7 +51,7 @@ export default async function AdminNegociosPage() {
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-xl font-semibold sm:text-2xl">Negocios</h1>
+        <h1 className="text-subtitle">Negocios</h1>
         <Link
           href="/admin/negocios/nuevo"
           className="flex min-h-10 items-center gap-2 rounded-md bg-neutral-900 px-4 text-small font-medium text-white hover:bg-neutral-800"

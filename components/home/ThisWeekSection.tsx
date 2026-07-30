@@ -107,7 +107,7 @@ function FeaturedWeekCard({
         <button
           type="button"
           onClick={() => onOpen(experience)}
-          className="group grid w-full overflow-hidden rounded-[20px] border border-carbon/10 bg-warm-white text-left transition-transform duration-150 active:scale-[0.98] sm:grid-cols-2"
+          className="group grid w-full overflow-hidden rounded-xl border border-carbon/10 bg-warm-white text-left transition-transform duration-150 active:scale-[0.98] sm:grid-cols-2"
         >
           {/* `aspect-[3/2]` y no `aspect-auto`: a lo ancho, dejar que la foto
               tomase la altura de la columna de texto la aplastaba a una
@@ -139,7 +139,7 @@ function FeaturedWeekCard({
             <Badge tone={EXPERIENCE_STATE_TONE[state]} className="w-fit">
               {state === "available" || state === "low" ? `${left} ${left === 1 ? "lugar" : "lugares"}` : EXPERIENCE_STATE_LABEL[state]}
             </Badge>
-            <h3 className="text-2xl leading-snug font-semibold sm:text-3xl">{displayTitle(experience.title)}</h3>
+            <h3 className="text-subtitle">{displayTitle(experience.title)}</h3>
             <p className="text-gray">{experience.business.name}</p>
             <div className="flex flex-wrap gap-x-6 gap-y-1 text-sm text-gray">
               <span>{formatDateShort(experience.starts_at)}</span>
@@ -184,7 +184,7 @@ function SecondaryWeekCard({
       <button
         type="button"
         onClick={() => onOpen(experience)}
-        className="group flex h-full w-full flex-col overflow-hidden rounded-2xl border border-carbon/10 bg-warm-white text-left transition-transform duration-150 hover:border-carbon/25 active:scale-[0.98]"
+        className="group flex h-full w-full flex-col overflow-hidden rounded-xl border border-carbon/10 bg-warm-white text-left transition-transform duration-150 hover:border-carbon/25 active:scale-[0.98]"
       >
         <div className="relative aspect-[16/10] w-full shrink-0 overflow-hidden bg-carbon/5">
           <ManagedPhoto
@@ -195,11 +195,11 @@ function SecondaryWeekCard({
             className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02]"
           />
           <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
-            <Badge tone="neutral" className="bg-warm-white/90 px-2 py-0.5 text-[0.65rem]">
+            <Badge tone="neutral" className="bg-warm-white/90 px-2 py-0.5 text-label">
               {categoryLabel(experience.category)}
             </Badge>
             {isDemo && (
-              <Badge tone="orange" className="px-2 py-0.5 text-[0.65rem]">
+              <Badge tone="orange" className="px-2 py-0.5 text-label">
                 Demostración
               </Badge>
             )}
@@ -217,7 +217,7 @@ function SecondaryWeekCard({
               sobre la foto chocaba con el badge de categoría de la esquina
               opuesta. En su propia fila tiene todo el ancho y no le quita
               nada a nadie. */}
-          <Badge tone={EXPERIENCE_STATE_TONE[state]} className="px-2 py-0.5 text-[0.65rem]">
+          <Badge tone={EXPERIENCE_STATE_TONE[state]} className="px-2 py-0.5 text-label">
             {state === "available" || state === "low" ? `${left} ${left === 1 ? "lugar" : "lugares"}` : EXPERIENCE_STATE_LABEL[state]}
           </Badge>
           <p className="font-medium text-carbon">{displayTitle(experience.title)}</p>

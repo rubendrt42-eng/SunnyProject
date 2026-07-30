@@ -43,7 +43,7 @@ export function PartnerLeadForm({ compact = false }: { compact?: boolean }) {
 
   if (status === "sent") {
     return (
-      <div role="status" className={compact ? "rounded-2xl bg-warm-white/10 p-6 text-warm-white" : "rounded-2xl border border-carbon/10 bg-warm-white p-6"}>
+      <div role="status" className={compact ? "rounded-xl bg-warm-white/10 p-6 text-warm-white" : "rounded-xl border border-carbon/10 bg-warm-white p-6"}>
         <p className="font-medium">¡Gracias por tu interés!</p>
         <p className="mt-1 text-sm opacity-80">Nuestro equipo revisará tu solicitud y se pondrá en contacto contigo pronto.</p>
       </div>

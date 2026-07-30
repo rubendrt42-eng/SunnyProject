@@ -1,5 +1,10 @@
 # Sunny — Diagnóstico de diseño
 
+> **Estado tras la ronda de pulido.** Seis de los ocho puntos están resueltos y
+> vueltos a medir; los dos abiertos requieren una decisión tuya. Resumen al
+> final, en «Resultado». El cuerpo del documento describe el estado **antes**
+> del arreglo, que es lo que da sentido a las cifras.
+
 Todo lo de aquí está **medido**, no opinado. La telemetría se recogió con
 Playwright sobre el build de producción (`pnpm build` + `pnpm start`) con datos
 en las 7 rutas públicas, recorriendo cada página entera para que las
@@ -113,13 +118,17 @@ tarjetas bajan a 14 px. Cualquiera de las dos, pero una sola.
 
 ---
 
-## 6. Las separaciones tampoco tienen sistema — MEDIO
+## 6. Las separaciones — REVISADO A LA BAJA, NO SE TOCA
 
-**13 valores de `gap` distintos** en circulación: 4, 6, 8, 12, 16, 20, 24, 28,
-32, 40, 48, 56 y 64 px. Los de 4, 6, 20 y 28 px no pertenecen a ninguna escala
-declarada. El padding vertical de sección, en cambio, sí es consistente
-(112 px en 10 de 13 secciones), así que el problema está en el interior de los
-componentes, no en el ritmo general de la página.
+Conté **13 valores de `gap` distintos**: 4, 6, 8, 12, 16, 20, 24, 28, 32, 40,
+48, 56 y 64 px, y escribí que 4, 6, 20 y 28 «no pertenecen a ninguna escala
+declarada». Eso estaba mal: todos salvo el 6 px son múltiplos de 4 y pertenecen
+a la escala de espaciado de Tailwind, que es el sistema que este proyecto usa
+por defecto. Trece valores repartidos en un sitio entero no es incoherencia,
+es un rango normal.
+
+El padding vertical de sección sí es consistente (112 px en 10 de 13 secciones).
+No hay nada que arreglar aquí, y cambiarlo habría sido ruido en el diff.
 
 ---
 
@@ -156,3 +165,46 @@ etiquetan con `aria-label` + `aria-current`. Conviene un solo patrón.
 Los puntos 1, 2, 5, 6 y 7 son mecánicos y verificables: se pueden hacer sin
 decisiones de producto. Los puntos 3 y 4 sí las requieren — qué se cuenta en el
 Home y qué material fotográfico existe para las páginas secundarias.
+
+---
+
+# Resultado
+
+Medido de nuevo con el mismo script, sobre el mismo build de producción.
+
+| # | Punto | Antes | Después |
+|---|---|---|---|
+| 1 | Tratamientos distintos de `<h1>` | 3 (8 páginas en serif cursiva) | **1** — toda página en la escala nombrada |
+| 2 | Títulos con tamaño suelto | 72 sueltos / 50 en escala | **0 en el sitio público** |
+| 2 | Tamaños de tipo renderizados | 15 | **12** (fuera 10,4 px y 11,2 px) |
+| 2 | Peso 700 / 800 en pantalla | 14 / 9 | **29 / 12** |
+| 4 | Imágenes en `/como-funciona` | 0 | **3** |
+| 4 | Imágenes en `/para-negocios` | 0 | **1** |
+| 5 | Radios distintos | 7 (16, 12, 20, 24 px fuera) | **5, todos del sistema** |
+| 7 | Encabezados en `/preguntas-frecuentes` | 0 | **11** |
+
+Compuertas tras el cambio: lint y typecheck limpios, 94 pruebas, **0 hallazgos
+WCAG** en 9 rutas × 2 viewports, **14/14** comprobaciones funcionales.
+
+## Qué se decidió por el camino
+
+- **El sistema de radios sube a 16 px** (`--radius-xl`) en lugar de forzar las
+  tarjetas a 14. Los 31 usos fuera de escala aterrizan ahí sin cambiar el
+  aspecto de lo que ya estaba bien.
+- **`display` solo con ancho completo.** En `/para-negocios`, que reparte el
+  ancho con el formulario, el titular a 76 px se partía en cinco líneas; ahí va
+  `title`. La regla quedó escrita en `globals.css`.
+- **El panel conserva sus 5 textos de 12 px.** `PRODUCT_SPEC.md` §9 le da
+  exención de estilo por ser una herramienta densa, y tocar la densidad de esas
+  tablas sin poder revisarlas a fondo era peor negocio.
+
+## Lo que sigue abierto — necesita decisión tuya
+
+- **Punto 3, la longitud del Home.** Sigue en 12.445 px, 13 secciones y 14
+  `<h2>`. No lo toqué porque recortar la portada es una decisión de producto,
+  no de maquetación: hay que elegir qué tres secciones la sostienen. Ahora que
+  `/como-funciona` está a la altura, es el destino natural de lo explicativo.
+- **Fotografía propia.** Las imágenes que puse en las dos páginas salen del
+  material ya aprobado en `lib/media.ts` y son genéricas a propósito: ilustran
+  el momento, no el local de un negocio con nombre. Con material propio de los
+  espacios aliados, estas dos páginas mejoran otro escalón.

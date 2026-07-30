@@ -53,7 +53,7 @@ export function AdminNav({ newLeads }: { newLeads: number }) {
               {item.href === "/admin/solicitudes" && newLeads > 0 && (
                 <span
                   className={clsx(
-                    "ml-1 rounded-full px-1.5 text-[0.65rem] font-semibold",
+                    "ml-1 rounded-full px-1.5 text-label font-semibold",
                     // Carbon rather than white on the orange fill: at
                     // 0.65rem, white scored 2.56:1. See components/ui/Badge.
                     active ? "bg-white text-neutral-900" : "bg-orange text-carbon",

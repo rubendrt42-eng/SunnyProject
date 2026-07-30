@@ -198,7 +198,7 @@ export default async function ExperienciasPage({ searchParams }: { searchParams:
               <SlidersHorizontal aria-hidden size={15} strokeWidth={1.75} />
               Más filtros
               {advancedFilterCount > 0 && (
-                <span className="rounded-full bg-carbon px-1.5 text-[0.7rem] font-semibold text-warm-white">
+                <span className="rounded-full bg-carbon px-1.5 text-label font-semibold text-warm-white">
                   {advancedFilterCount}
                 </span>
               )}
