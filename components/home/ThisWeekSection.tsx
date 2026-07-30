@@ -47,10 +47,21 @@ export function ThisWeekSection({
 
   return (
     <>
-      <div className="grid gap-6 lg:grid-cols-5 lg:gap-8">
-        <FeaturedWeekCard experience={featured} onOpen={openQuickView} availableAssets={availableAssets} className="lg:col-span-3" />
+      {/* Destacada a lo ancho arriba, el resto en fila debajo.
+          Antes eran dos columnas lado a lado (3/5 y 2/5): la destacada mide
+          284 px y la pila de secundarias 829 px, así que la columna izquierda
+          se quedaba con **544 px de vacío** debajo de la tarjeta, idéntico en
+          1280, 1440 y 1920. La rejilla estiraba ambas columnas a la misma
+          altura, por eso medir las columnas no delataba nada: el hueco estaba
+          dentro. Apilando destacada + rejilla, la altura de una nunca depende
+          de la otra y el vacío desaparece por construcción. */}
+      <div className="flex flex-col gap-6">
+        <FeaturedWeekCard experience={featured} onOpen={openQuickView} availableAssets={availableAssets} />
+        {/* Dos columnas ya desde el móvil. En una sola, las cinco tarjetas
+            verticales estiraban el bloque a 2712 px — más de tres pantallas de
+            teléfono para una sección que se debería abarcar de un vistazo. */}
         {secondary.length > 0 && (
-          <div className="flex flex-col gap-4 lg:col-span-2">
+          <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
             {secondary.map((experience, i) => (
               <SecondaryWeekCard
                 key={experience.id}
@@ -98,7 +109,10 @@ function FeaturedWeekCard({
           onClick={() => onOpen(experience)}
           className="group grid w-full overflow-hidden rounded-[20px] border border-carbon/10 bg-warm-white text-left transition-transform duration-150 active:scale-[0.98] sm:grid-cols-2"
         >
-          <div className="relative aspect-[4/3] w-full overflow-hidden bg-carbon/5 sm:aspect-auto">
+          {/* `aspect-[3/2]` y no `aspect-auto`: a lo ancho, dejar que la foto
+              tomase la altura de la columna de texto la aplastaba a una
+              franja de ~260 px que cortaba a la persona por la mitad. */}
+          <div className="relative aspect-[4/3] w-full overflow-hidden bg-carbon/5 sm:aspect-[3/2]">
             <ManagedPhoto
               url={experience.image_url}
               availableAssets={availableAssets}
@@ -160,28 +174,28 @@ function SecondaryWeekCard({
 
   return (
     <InViewReveal delay={delay}>
+      {/* Vertical, not thumbnail-beside-text.
+          The horizontal form worked when these lived in a narrow column
+          stacked on top of each other. In a three-across grid the text half
+          is only ~140 px, so the title truncated mid-word ("Run & Coffee …",
+          "Recovery & Br…") and the venue line broke into three. Photo on top
+          gives the title the full width of the card, and nothing needs an
+          ellipsis to fit. */}
       <button
         type="button"
         onClick={() => onOpen(experience)}
-        className="group flex w-full items-center gap-4 rounded-2xl border border-carbon/10 bg-warm-white p-3 text-left transition-transform duration-150 active:scale-[0.98] hover:border-carbon/25"
+        className="group flex h-full w-full flex-col overflow-hidden rounded-2xl border border-carbon/10 bg-warm-white text-left transition-transform duration-150 hover:border-carbon/25 active:scale-[0.98]"
       >
-        <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-carbon/5 sm:h-24 sm:w-24">
+        <div className="relative aspect-[16/10] w-full shrink-0 overflow-hidden bg-carbon/5">
           <ManagedPhoto
             url={experience.image_url}
             availableAssets={availableAssets}
             alt=""
-            sizes="96px"
+            sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
             className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02]"
           />
-        </div>
-        {/* `overflow-hidden` alongside `min-w-0` is load-bearing, not
-            decorative: without it the nowrap metadata line below gave this
-            column a ~505px min-content width, which the parent grid honoured
-            and turned into 150px of horizontal page scroll at 375px. Caught
-            by measuring min-content during QA — see SUNNY_DESIGN_QA_REPORT.md. */}
-        <div className="flex min-w-0 flex-1 flex-col gap-1 overflow-hidden">
-          <div className="flex flex-wrap items-center gap-1.5">
-            <Badge tone="neutral" className="bg-carbon/6 px-2 py-0.5 text-[0.65rem]">
+          <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
+            <Badge tone="neutral" className="bg-warm-white/90 px-2 py-0.5 text-[0.65rem]">
               {categoryLabel(experience.category)}
             </Badge>
             {isDemo && (
@@ -190,20 +204,32 @@ function SecondaryWeekCard({
               </Badge>
             )}
           </div>
-          <p className="truncate font-medium text-carbon">{displayTitle(experience.title)}</p>
-          <p className="truncate text-sm text-gray">{experience.business.name}</p>
-          {/* Wraps rather than truncates: on a phone the ellipsis was hiding
-              the location, which is one of the things you most need to see. */}
+        </div>
+
+        {/* `min-w-0` stays load-bearing: without it the metadata line below
+            inflates this column's min-content width, which a parent grid
+            honours and turns into horizontal page scroll on a phone. Caught
+            by measuring min-content during QA — see SUNNY_DESIGN_QA_REPORT.md. */}
+        <div className="flex min-w-0 flex-1 flex-col gap-1.5 p-4">
+          {/* El cupo en su propia línea, ni junto al título ni sobre la foto.
+              A dos columnas en un teléfono la tarjeta mide ~160 px: al lado
+              del título lo partía en tres líneas ("Pádel / Mix- / In"), y
+              sobre la foto chocaba con el badge de categoría de la esquina
+              opuesta. En su propia fila tiene todo el ancho y no le quita
+              nada a nadie. */}
+          <Badge tone={EXPERIENCE_STATE_TONE[state]} className="px-2 py-0.5 text-[0.65rem]">
+            {state === "available" || state === "low" ? `${left} ${left === 1 ? "lugar" : "lugares"}` : EXPERIENCE_STATE_LABEL[state]}
+          </Badge>
+          <p className="font-medium text-carbon">{displayTitle(experience.title)}</p>
+          <p className="text-sm text-gray">{experience.business.name}</p>
           <p className="text-xs text-gray">
             {formatDateShort(experience.starts_at)} · {formatTime(experience.starts_at)}
             {experience.location_name ? ` · ${experience.location_name}` : ""}
           </p>
-        </div>
-        <div className="flex shrink-0 flex-col items-end gap-2">
-          <Badge tone={EXPERIENCE_STATE_TONE[state]} className="px-2 py-0.5 text-[0.65rem]">
-            {state === "available" || state === "low" ? `${left} ${left === 1 ? "lugar" : "lugares"}` : EXPERIENCE_STATE_LABEL[state]}
-          </Badge>
-          <AnimatedArrow className="text-carbon/50 group-hover:text-carbon" />
+          <span className="mt-auto flex items-center gap-1.5 pt-2 text-sm font-medium text-carbon">
+            Vista rápida
+            <AnimatedArrow className="text-carbon/50 group-hover:text-carbon" />
+          </span>
         </div>
       </button>
     </InViewReveal>

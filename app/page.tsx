@@ -108,22 +108,26 @@ export default async function HomePage() {
       {/* 3. Cinta de experiencias — real names, slow, pausable */}
       <ExperienceMarquee items={upcomingPublished.map((e) => ({ slug: e.slug, title: displayTitle(e.title) }))} />
 
-      {/* 4. Esta semana en Sunny — asymmetric grid, 1 featured + secondaries */}
+      {/* 4. Esta semana en Sunny — destacada a lo ancho + el resto en fila */}
       <section className="py-20 sm:py-28">
         <Container>
-          <InViewReveal>
+          {/* Centrado y con una medida ancha a propósito. Antes el titular
+              vivía en `max-w-xl` (576 px medidos) alineado a la izquierda,
+              con "Ver todas" empujado al extremo derecho: en una pantalla de
+              escritorio eso dejaba medio ancho vacío arriba de la sección.
+              Centrado a `max-w-4xl` el texto ocupa el espacio en vez de
+              dejarlo colgando. */}
+          <InViewReveal className="text-center">
             <p className="eyebrow">Esta semana en Sunny</p>
-            <div className="mt-3 flex flex-wrap items-end justify-between gap-4">
-              <h2 className="max-w-xl text-title">
-                Planes seleccionados para moverte, recuperarte, conectar y probar algo diferente.
-              </h2>
-              <Link
-                href="/experiencias"
-                className="text-small font-medium text-carbon underline decoration-carbon/30 underline-offset-4 hover:decoration-carbon"
-              >
-                Ver todas
-              </Link>
-            </div>
+            <h2 className="mx-auto mt-3 max-w-4xl text-title text-balance">
+              Planes seleccionados para moverte, recuperarte, conectar y probar algo diferente.
+            </h2>
+            <Link
+              href="/experiencias"
+              className="mt-5 inline-block text-small font-medium text-carbon underline decoration-carbon/30 underline-offset-4 hover:decoration-carbon"
+            >
+              Ver todas
+            </Link>
           </InViewReveal>
           {weekItems.length > 0 ? (
             <div className="mt-10">
