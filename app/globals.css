@@ -172,6 +172,25 @@
 }
 
 /**
+ * Grano fino sobre la fotografía del hero.
+ *
+ * No es un efecto de estilo, es una compensación técnica. La única fotografía
+ * disponible mide 736 px de ancho y el hero la estira a 1920: ese escalado
+ * deja bandas suaves y bordes blandos. Un grano muy tenue rompe las bandas y
+ * el ojo lee «fotografía con textura» en lugar de «imagen ampliada».
+ *
+ * El ruido va incrustado como SVG (`feTurbulence`) en vez de como archivo:
+ * son ~200 bytes en el CSS y no añade una petición más al camino crítico de
+ * la primera pantalla.
+ */
+.hero-grain {
+  pointer-events: none;
+  opacity: 0.16;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/**
  * Señal de «esto está en curso» — para acciones del panel y para navegaciones
  * que tardan.
  *

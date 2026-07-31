@@ -102,8 +102,13 @@ export default async function HomePage() {
 
   return (
     <main>
-      {/* 2. Hero — editorial split on ivory */}
-      <Hero />
+      {/* 2. Hero — fotografía a sangre completa, contenido anclado abajo.
+          Los dos números son reales: se cuentan de lo que hay publicado, así
+          que una semana floja dice la verdad en vez de presumir. */}
+      <Hero
+        experienceCount={upcomingPublished.length}
+        venueCount={new Set(upcomingPublished.map((e) => e.business_id)).size}
+      />
 
       {/* 3. Cinta de experiencias — real names, slow, pausable */}
       <ExperienceMarquee items={upcomingPublished.map((e) => ({ slug: e.slug, title: displayTitle(e.title) }))} />

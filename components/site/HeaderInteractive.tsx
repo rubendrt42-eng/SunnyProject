@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { clsx } from "clsx";
 import { Container } from "@/components/ui/Container";
 import { LinkButton } from "@/components/ui/Button";
 import { FullscreenMenu } from "@/components/motion/FullscreenMenu";
@@ -12,20 +14,44 @@ interface NavLink {
 }
 
 /**
- * Header is solid on every route, including Home.
+ * Sólido en todas partes menos sobre el hero de la portada, donde flota.
  *
- * It used to float transparent over the video hero with white text and
- * swap to solid on scroll. The redesigned hero is an editorial split on an
- * ivory background (there is no full-bleed dark video to sit over — see
- * SUNNY_ASSET_MANIFEST.md §6: no video material exists), so white-on-ivory
- * would have been invisible for the first viewport. A solid header removes
- * that whole class of contrast bug and matches how both references
- * actually behave.
+ * El comentario anterior aquí decía que el header era sólido siempre «porque
+ * el hero es una división editorial sobre marfil, y blanco sobre marfil sería
+ * invisible». Era correcto entonces. Ahora el hero es una fotografía a sangre
+ * completa con un velo oscuro encima, así que la premisa cambió y el header
+ * puede volver a flotar — que es lo que hace la referencia.
+ *
+ * Lo que NO se repite del intento anterior: no se confía en que la foto sea
+ * oscura. El header dibuja su propio degradado, y en cuanto se hace scroll
+ * pasa a sólido. Así el texto blanco nunca depende de qué haya debajo.
+ *
+ * Solo la portada. Cualquier otra ruta arranca sólida: es la única forma de
+ * no reintroducir el fallo de contraste que costó arreglar.
  *
  * Account links are passed in rather than derived here, because session
  * state is read on the server (see Header.tsx) — the header must never
  * flash the wrong auth state.
  */
+
+/**
+ * ¿Se ha bajado de los primeros 64 px?
+ *
+ * `useSyncExternalStore` y no `useEffect` + `setState`: el proyecto ya usa
+ * este patrón en `useIsDesktop` y en `ReturnDomainHint`, y la regla
+ * `react-hooks/set-state-in-effect` rechaza la otra forma. El snapshot del
+ * servidor es `false` — arriba del todo, que es donde empieza la página.
+ */
+function subscribeToScroll(callback: () => void) {
+  window.addEventListener("scroll", callback, { passive: true });
+  return () => window.removeEventListener("scroll", callback);
+}
+function isScrolled() {
+  return window.scrollY > 64;
+}
+function notScrolled() {
+  return false;
+}
 export function HeaderInteractive({
   links,
   accountLinks,
@@ -36,9 +62,22 @@ export function HeaderInteractive({
   ctaLabel?: string;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const scrolled = useSyncExternalStore(subscribeToScroll, isScrolled, notScrolled);
+  const floating = pathname === "/" && !scrolled;
 
   return (
-    <header className="sticky inset-x-0 top-0 z-50 border-b border-carbon/10 bg-warm-white">
+    <header
+      className={clsx(
+        "sticky inset-x-0 top-0 z-50 transition-colors",
+        floating ? "border-b border-transparent bg-transparent" : "border-b border-carbon/10 bg-warm-white",
+      )}
+    >
+      {/* El degradado propio del header. Sin esto, la legibilidad del menú
+          dependería de qué zona de la fotografía le tocara debajo. */}
+      {floating && (
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-32 bg-gradient-to-b from-carbon/70 to-transparent" />
+      )}
       <Container className="flex h-18 items-center justify-between gap-6 py-4">
         {/* `whitespace-nowrap shrink-0`: the brand name must never break. As
             a flex child it was shrinking below its own content width and
@@ -47,7 +86,10 @@ export function HeaderInteractive({
             page of the site. */}
         <Link
           href="/"
-          className="shrink-0 font-serif text-2xl font-medium italic tracking-tight whitespace-nowrap text-carbon"
+          className={clsx(
+            "shrink-0 font-serif text-2xl font-medium italic tracking-tight whitespace-nowrap transition-colors",
+            floating ? "text-warm-white" : "text-carbon",
+          )}
         >
           Sunny Project
         </Link>
@@ -57,7 +99,10 @@ export function HeaderInteractive({
             <Link
               key={link.href}
               href={link.href}
-              className="text-small font-medium text-carbon/80 transition-colors hover:text-carbon"
+              className={clsx(
+                "text-small font-medium transition-colors",
+                floating ? "text-warm-white/85 hover:text-warm-white" : "text-carbon/80 hover:text-carbon",
+              )}
             >
               {link.label}
             </Link>
@@ -69,7 +114,10 @@ export function HeaderInteractive({
             <Link
               key={link.href}
               href={link.href}
-              className="text-small font-medium text-carbon/80 transition-colors hover:text-carbon"
+              className={clsx(
+                "text-small font-medium transition-colors",
+                floating ? "text-warm-white/85 hover:text-warm-white" : "text-carbon/80 hover:text-carbon",
+              )}
             >
               {link.label}
             </Link>
@@ -101,7 +149,10 @@ export function HeaderInteractive({
             aria-haspopup="dialog"
             aria-expanded={menuOpen}
             aria-label="Abrir menú"
-            className="flex size-11 items-center justify-center rounded-md border border-carbon/15 text-carbon"
+            className={clsx(
+              "flex size-11 items-center justify-center rounded-md border transition-colors",
+              floating ? "border-white/30 text-warm-white" : "border-carbon/15 text-carbon",
+            )}
           >
             <div className="flex flex-col gap-1.5">
               <span className="h-0.5 w-5 bg-current" />
