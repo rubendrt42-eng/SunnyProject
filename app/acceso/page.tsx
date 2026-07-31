@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { MagicLinkForm } from "@/components/auth/MagicLinkForm";
+import { HashErrorNotice } from "@/components/auth/HashErrorNotice";
 import { Container } from "@/components/ui/Container";
 
 export const metadata: Metadata = { title: "Acceso — Sunny Project" };
@@ -34,6 +35,11 @@ export default async function AccesoPage({
         <p className="eyebrow">Entra a Sunny</p>
         <h1 className="mt-3 text-title">Accede con tu correo</h1>
         <p className="mt-2 text-gray">Usamos un enlace mágico, sin contraseñas.</p>
+
+        {/* Supabase devuelve algunos fallos en el fragmento de la URL, que
+            nunca llega al servidor. Sin esto la página se pinta como si no
+            hubiera pasado nada. */}
+        <HashErrorNotice />
 
         {errorMessage && (
           <div role="alert" className="mt-6 rounded-xl border border-orange/30 bg-orange/10 p-4 text-sm text-carbon">
