@@ -19,6 +19,8 @@ import {
   partnerLeadStatusOptions,
 } from "@/lib/partner-leads";
 import type { PartnerLead } from "@/lib/database.types";
+import { paginate, searchRows } from "@/lib/admin-list";
+import { AdminSearch, AdminPager } from "@/components/admin/AdminListControls";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Solicitudes — Sunny Admin" };
@@ -33,16 +35,19 @@ export const metadata: Metadata = { title: "Solicitudes — Sunny Admin" };
 export default async function AdminSolicitudesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ estado?: string }>;
+  searchParams: Promise<{ estado?: string; q?: string; page?: string }>;
 }) {
-  const { estado } = await searchParams;
+  const { estado, q, page } = await searchParams;
   const supabase = await createClient();
   const leads = await getAdminLeads(supabase);
 
   const statuses = partnerLeadStatusOptions(leads[0]);
   const supportsNotes = leads.length > 0 && "internal_notes" in leads[0];
 
-  const visible = estado ? leads.filter((l) => l.status === estado) : leads;
+  const byStatus = estado ? leads.filter((l) => l.status === estado) : leads;
+  const searched = searchRows(byStatus, q, (l) => [l.business_name, l.contact_name, l.email, l.city, l.category]);
+  const paged = paginate(searched, page);
+  const visible = paged.rows;
   const countByStatus = new Map(statuses.map((s) => [s, leads.filter((l) => l.status === s).length]));
 
   return (
@@ -65,6 +70,8 @@ export default async function AdminSolicitudesPage({
         ))}
       </nav>
 
+      <AdminSearch placeholder="Buscar por negocio, contacto o ciudad…" value={q} carry={{ estado }} />
+
       {visible.length === 0 ? (
         <EmptyState
           className="mt-6 border-neutral-300 bg-white"
@@ -83,6 +90,7 @@ export default async function AdminSolicitudesPage({
           ))}
         </ul>
       )}
+      <AdminPager paged={paged} carry={{ estado, q }} label="solicitudes" />
     </div>
   );
 }

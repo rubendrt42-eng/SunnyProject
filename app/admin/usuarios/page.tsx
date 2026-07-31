@@ -6,6 +6,8 @@ import { getAdminUsers } from "@/lib/admin-queries";
 import { Badge } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { formatDate } from "@/lib/dates";
+import { paginate } from "@/lib/admin-list";
+import { AdminPager } from "@/components/admin/AdminListControls";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Usuarios — Sunny Admin" };
@@ -25,10 +27,12 @@ export const metadata: Metadata = { title: "Usuarios — Sunny Admin" };
  *   reservations view surfaces the email for the person Emmy is actually
  *   dealing with, and the CSV export carries them for real operational use.
  */
-export default async function AdminUsuariosPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
-  const { q } = await searchParams;
+export default async function AdminUsuariosPage({ searchParams }: { searchParams: Promise<{ q?: string; page?: string }> }) {
+  const { q, page } = await searchParams;
   const supabase = await createClient();
-  const { users, error } = await getAdminUsers(supabase, { search: q });
+  const { users: allUsers, error } = await getAdminUsers(supabase, { search: q });
+  const paged = paginate(allUsers, page);
+  const users = paged.rows;
 
   return (
     <div>
@@ -163,6 +167,7 @@ export default async function AdminUsuariosPage({ searchParams }: { searchParams
           </p>
         </>
       )}
+      <AdminPager paged={paged} carry={{ q }} label="usuarios" />
     </div>
   );
 }

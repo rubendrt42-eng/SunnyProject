@@ -19,6 +19,8 @@ import { ExperienceRowActions } from "@/components/admin/ExperienceRowActions";
 import { formatDateShort, formatTime } from "@/lib/dates";
 import { categoryLabel } from "@/lib/constants";
 import { displayTitle } from "@/lib/demo-content";
+import { paginate, searchRows } from "@/lib/admin-list";
+import { AdminSearch, AdminPager } from "@/components/admin/AdminListControls";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Experiencias — Sunny Admin" };
@@ -59,8 +61,8 @@ function matchesFilter(state: AdminExperienceState, filter: FilterValue): boolea
   }
 }
 
-export default async function AdminExperienciasPage({ searchParams }: { searchParams: Promise<{ estado?: string }> }) {
-  const { estado } = await searchParams;
+export default async function AdminExperienciasPage({ searchParams }: { searchParams: Promise<{ estado?: string; q?: string; page?: string }> }) {
+  const { estado, q, page } = await searchParams;
   const filter: FilterValue = FILTERS.some((f) => f.value === estado) ? (estado as FilterValue) : "activas";
 
   const supabase = await createClient();
@@ -75,7 +77,14 @@ export default async function AdminExperienciasPage({ searchParams }: { searchPa
   const supportsFlags = experiences.length > 0 && "archived_at" in experiences[0];
 
   const withState = experiences.map((e) => ({ experience: e, state: computeAdminState(e, e.reservedPeople) }));
-  const visible = withState.filter(({ state }) => matchesFilter(state, filter));
+  const filtered = withState.filter(({ state }) => matchesFilter(state, filter));
+  const searched = searchRows(filtered, q, ({ experience }) => [
+    experience.title,
+    experience.business?.name,
+    experience.location_name,
+  ]);
+  const paged = paginate(searched, page);
+  const visible = paged.rows;
 
   const counts = Object.fromEntries(
     FILTERS.map((f) => [f.value, withState.filter(({ state }) => matchesFilter(state, f.value)).length]),
@@ -120,6 +129,8 @@ export default async function AdminExperienciasPage({ searchParams }: { searchPa
         ))}
       </nav>
 
+      <AdminSearch placeholder="Buscar por título, negocio o zona…" value={q} carry={{ estado }} />
+
       {error ? (
         <p role="alert" className="mt-6 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-small text-red-800">
           No pudimos cargar las experiencias.
@@ -153,6 +164,7 @@ export default async function AdminExperienciasPage({ searchParams }: { searchPa
           ))}
         </ul>
       )}
+      <AdminPager paged={paged} carry={{ estado, q }} label="experiencias" />
     </div>
   );
 }

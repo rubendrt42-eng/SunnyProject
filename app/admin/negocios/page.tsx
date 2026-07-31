@@ -9,6 +9,8 @@ import { BusinessRowActions } from "@/components/admin/BusinessRowActions";
 import { categoryLabel } from "@/lib/constants";
 import { isPast } from "@/lib/dates";
 import type { Business } from "@/lib/database.types";
+import { paginate, searchRows } from "@/lib/admin-list";
+import { AdminSearch, AdminPager } from "@/components/admin/AdminListControls";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Negocios — Sunny Admin" };
@@ -21,7 +23,8 @@ interface BusinessStats {
   attended: number;
 }
 
-export default async function AdminNegociosPage() {
+export default async function AdminNegociosPage({ searchParams }: { searchParams: Promise<{ q?: string; page?: string }> }) {
+  const { q, page } = await searchParams;
   const supabase = await createClient();
 
   const [{ data }, { experiences }] = await Promise.all([
@@ -29,8 +32,11 @@ export default async function AdminNegociosPage() {
     getAdminExperiences(supabase),
   ]);
 
-  const businesses = (data ?? []) as Business[];
-  const supportsPartnerFlag = businesses.length > 0 && "featured_as_partner" in businesses[0];
+  const allBusinesses = (data ?? []) as Business[];
+  const searched = searchRows(allBusinesses, q, (b) => [b.name, b.category, b.contact_email, b.contact_name]);
+  const paged = paginate(searched, page);
+  const businesses = paged.rows;
+  const supportsPartnerFlag = allBusinesses.length > 0 && "featured_as_partner" in allBusinesses[0];
 
   // One pass over the experiences we already have, rather than a query per
   // business.
@@ -120,6 +126,8 @@ export default async function AdminNegociosPage() {
                       {[b.contact_name, b.contact_email, b.contact_phone].filter(Boolean).join(" · ") ||
                         "Sin datos de contacto"}
                     </p>
+
+      <AdminSearch placeholder="Buscar por nombre, categoría o contacto…" value={q} />
                     {b.instagram_url && (
                       <a
                         href={b.instagram_url}
@@ -181,6 +189,7 @@ export default async function AdminNegociosPage() {
           })}
         </ul>
       )}
+      <AdminPager paged={paged} carry={{ q }} label="negocios" />
     </div>
   );
 }

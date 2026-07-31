@@ -14,12 +14,21 @@ export default async function EditExperienciaPage({ params }: { params: Promise<
   const { id } = await params;
   const supabase = await createClient();
 
-  const [{ data: experience }, { data: businesses }] = await Promise.all([
+  const [{ data: experience }, { data: businesses }, { data: confirmadas }] = await Promise.all([
     supabase.from("experiences").select("*").eq("id", id).maybeSingle(),
     supabase.from("businesses").select("*").order("name"),
+    // Cuántas personas pierden su lugar si se cancela. El diálogo de
+    // confirmación necesita el número: "se cancelarán 8 reservaciones" hace
+    // dudar; una frase genérica se descarta sin leer.
+    supabase.from("reservations").select("party_size").eq("experience_id", id).eq("status", "confirmed"),
   ]);
 
   if (!experience) notFound();
+
+  const afectados = (confirmadas ?? []).reduce(
+    (total, r) => total + ((r as { party_size?: number | null }).party_size ?? 1),
+    0,
+  );
 
   async function action(prev: ActionResult, formData: FormData) {
     "use server";
@@ -31,7 +40,7 @@ export default async function EditExperienciaPage({ params }: { params: Promise<
       <h1 className="text-subtitle">{(experience as Experience).title}</h1>
 
       <div className="mt-4">
-        <ExperienceActions experience={experience as Experience} />
+        <ExperienceActions experience={experience as Experience} affectedPeople={afectados} />
       </div>
 
       <div className="mt-8">
