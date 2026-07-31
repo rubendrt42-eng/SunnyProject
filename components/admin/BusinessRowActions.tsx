@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { Power, Store } from "lucide-react";
-import { clsx } from "clsx";
+import { AdminActionButton } from "@/components/admin/AdminActionButton";
 import { setBusinessActiveAction, togglePartnerFeatureAction } from "@/lib/actions/admin";
 
 /**
@@ -43,10 +43,12 @@ export function BusinessRowActions({
 
   return (
     <div className="flex flex-wrap items-center gap-1.5">
-      <button
-        type="button"
+      <AdminActionButton
+        label={active ? "Activo" : "Inactivo"}
+        icon={Power}
+        active={active}
+        busy={busy === "active"}
         disabled={pending}
-        aria-pressed={active}
         onClick={() =>
           run(
             "active",
@@ -56,31 +58,17 @@ export function BusinessRowActions({
               : undefined,
           )
         }
-        className={clsx(
-          "inline-flex min-h-8 items-center gap-1.5 rounded-md border px-2 text-[0.75rem] font-medium transition-colors disabled:opacity-50",
-          active ? "border-neutral-900 bg-neutral-900 text-white" : "border-neutral-300 text-neutral-700 hover:bg-neutral-50",
-        )}
-      >
-        <Power aria-hidden size={13} strokeWidth={1.75} />
-        {busy === "active" ? "…" : active ? "Activo" : "Inactivo"}
-      </button>
+      />
 
       {supportsPartnerFlag && (
-        <button
-          type="button"
+        <AdminActionButton
+          label={featuredAsPartner ? "Aliado visible" : "Mostrar como aliado"}
+          icon={Store}
+          active={featuredAsPartner}
+          busy={busy === "partner"}
           disabled={pending}
-          aria-pressed={featuredAsPartner}
           onClick={() => run("partner", () => togglePartnerFeatureAction(businessId, !featuredAsPartner))}
-          className={clsx(
-            "inline-flex min-h-8 items-center gap-1.5 rounded-md border px-2 text-[0.75rem] font-medium transition-colors disabled:opacity-50",
-            featuredAsPartner
-              ? "border-neutral-900 bg-neutral-900 text-white"
-              : "border-neutral-300 text-neutral-700 hover:bg-neutral-50",
-          )}
-        >
-          <Store aria-hidden size={13} strokeWidth={1.75} />
-          {busy === "partner" ? "…" : featuredAsPartner ? "Aliado visible" : "Mostrar como aliado"}
-        </button>
+        />
       )}
     </div>
   );

@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useRef } from "react";
 import Link from "next/link";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { EASE, MOTION } from "@/lib/motion";
 import { Calendar, Clock, MapPin, X } from "lucide-react";
 import { Badge, OriginalSeal } from "@/components/ui/Badge";
@@ -50,6 +50,7 @@ export function QuickView({
   const panelRef = useRef<HTMLDivElement>(null);
   const onCloseRef = useRef(onClose);
   const isDesktop = useIsDesktop();
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     onCloseRef.current = onClose;
@@ -107,7 +108,7 @@ export function QuickView({
 
   // Both axes, always — see lib/quick-view-motion.ts for why declaring only
   // the travelling axis left the panel stranded off-screen on share links.
-  const panel = panelMotion(isDesktop);
+  const panel = panelMotion(isDesktop, prefersReducedMotion ?? false);
 
   return (
     <AnimatePresence>

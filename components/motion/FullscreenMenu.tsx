@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { EASE, MOTION, STAGGER } from "@/lib/motion";
 import { X } from "lucide-react";
 import type { ReactNode } from "react";
@@ -28,6 +28,11 @@ export function FullscreenMenu({
   links: FullscreenMenuLink[];
   footer?: ReactNode;
 }) {
+  // Sin desplazamiento cuando se ha pedido menos movimiento: entra y sale solo
+  // con opacidad. El bloque global de globals.css no alcanza esto — anula
+  // transiciones y animaciones de CSS, y esto es un transform desde JavaScript.
+  const still = useReducedMotion() ?? false;
+
   useEffect(() => {
     if (!open) return;
 
@@ -74,7 +79,7 @@ export function FullscreenMenu({
             {links.map((link, i) => (
               <motion.div
                 key={link.href}
-                initial={{ opacity: 0, y: 24 }}
+                initial={{ opacity: 0, y: still ? 0 : 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: MOTION.settle, delay: 0.08 + i * STAGGER.item, ease: EASE }}
               >
@@ -86,7 +91,7 @@ export function FullscreenMenu({
 
             {footer && (
               <motion.div
-                initial={{ opacity: 0, y: 24 }}
+                initial={{ opacity: 0, y: still ? 0 : 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: MOTION.settle, delay: 0.08 + links.length * STAGGER.item, ease: EASE }}
                 className="mt-8"

@@ -34,7 +34,22 @@ export interface PanelMotion {
   exit: { x: number | string; y: number | string };
 }
 
-export function panelMotion(isDesktop: boolean): PanelMotion {
+/**
+ * `reducedMotion` quita el desplazamiento y deja solo la opacidad, que
+ * `QuickView` anima aparte. Un panel que cruza media pantalla es justo el tipo
+ * de movimiento que provoca el mareo por el que se activa ese ajuste, y el
+ * bloque global de globals.css no lo alcanza: solo anula transiciones y
+ * animaciones de CSS, y esto es un `transform` animado desde JavaScript.
+ *
+ * Sigue declarando LOS DOS EJES por la razón de arriba: si el punto de ruptura
+ * cambia a media animación, ningún eje puede quedarse sin destino.
+ */
+export function panelMotion(isDesktop: boolean, reducedMotion = false): PanelMotion {
+  if (reducedMotion) {
+    const still = { x: 0, y: 0 };
+    return { initial: still, animate: still, exit: still };
+  }
+
   const offscreen = isDesktop ? { x: "100%", y: 0 } : { x: 0, y: "100%" };
   return {
     initial: offscreen,

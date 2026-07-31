@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { Archive, ArchiveRestore, Copy, Eye, EyeOff, Star, Sparkles } from "lucide-react";
-import { clsx } from "clsx";
+import { AdminActionButton } from "@/components/admin/AdminActionButton";
 import {
   duplicateExperienceAction,
   setExperienceArchivedAction,
@@ -61,7 +61,7 @@ export function ExperienceRowActions({
   return (
     <div className="flex flex-wrap items-center gap-1.5">
       {canPublish && (
-        <ActionButton
+        <AdminActionButton
           label="Publicar"
           icon={Eye}
           busy={busy === "publish"}
@@ -71,7 +71,7 @@ export function ExperienceRowActions({
       )}
 
       {canHide && (
-        <ActionButton
+        <AdminActionButton
           label="Ocultar"
           icon={EyeOff}
           busy={busy === "hide"}
@@ -86,7 +86,7 @@ export function ExperienceRowActions({
         />
       )}
 
-      <ActionButton
+      <AdminActionButton
         label="Duplicar"
         icon={Copy}
         busy={busy === "duplicate"}
@@ -100,7 +100,7 @@ export function ExperienceRowActions({
         }
       />
 
-      <ActionButton
+      <AdminActionButton
         label={featured ? "Quitar destacada" : "Destacar"}
         icon={Star}
         active={featured}
@@ -110,7 +110,7 @@ export function ExperienceRowActions({
       />
 
       {supportsFlags && (
-        <ActionButton
+        <AdminActionButton
           label={isOriginal ? "Quitar Original" : "Sunny Original"}
           icon={Sparkles}
           active={isOriginal}
@@ -122,7 +122,7 @@ export function ExperienceRowActions({
 
       {supportsFlags &&
         (archived ? (
-          <ActionButton
+          <AdminActionButton
             label="Restaurar"
             icon={ArchiveRestore}
             busy={busy === "restore"}
@@ -130,7 +130,7 @@ export function ExperienceRowActions({
             onClick={() => run("restore", () => setExperienceArchivedAction(experienceId, false))}
           />
         ) : (
-          <ActionButton
+          <AdminActionButton
             label="Archivar"
             icon={Archive}
             busy={busy === "archive"}
@@ -145,38 +145,5 @@ export function ExperienceRowActions({
           />
         ))}
     </div>
-  );
-}
-
-function ActionButton({
-  label,
-  icon: Icon,
-  onClick,
-  busy,
-  disabled,
-  active,
-}: {
-  label: string;
-  icon: typeof Copy;
-  onClick: () => void;
-  busy?: boolean;
-  disabled?: boolean;
-  active?: boolean;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      aria-busy={busy || undefined}
-      aria-pressed={active}
-      className={clsx(
-        "inline-flex min-h-8 items-center gap-1.5 rounded-md border px-2 text-[0.75rem] font-medium transition-colors disabled:opacity-50",
-        active ? "border-neutral-900 bg-neutral-900 text-white" : "border-neutral-300 text-neutral-700 hover:bg-neutral-50",
-      )}
-    >
-      <Icon aria-hidden size={13} strokeWidth={1.75} />
-      {busy ? "…" : label}
-    </button>
   );
 }

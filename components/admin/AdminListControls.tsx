@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Search } from "lucide-react";
 import type { Paged } from "@/lib/admin-list";
+import { NavPending } from "@/components/admin/NavPending";
 
 /**
  * Buscador y paginador de las listas del panel.
@@ -89,9 +90,10 @@ export function AdminPager<T>({ paged, carry, label }: { paged: Paged<T>; carry?
           {page > 1 && (
             <Link
               href={href(page - 1)}
-              className="min-h-9 rounded-md border border-neutral-300 px-3 py-2 font-medium transition-colors hover:border-neutral-900 hover:text-neutral-900"
+              className="inline-flex min-h-9 items-center gap-1.5 rounded-md border border-neutral-300 px-3 py-2 font-medium transition-colors hover:border-neutral-900 hover:text-neutral-900"
             >
               Anterior
+              <NavPending label="la página anterior" />
             </Link>
           )}
           <span className="px-1">
@@ -100,9 +102,10 @@ export function AdminPager<T>({ paged, carry, label }: { paged: Paged<T>; carry?
           {page < totalPages && (
             <Link
               href={href(page + 1)}
-              className="min-h-9 rounded-md border border-neutral-300 px-3 py-2 font-medium transition-colors hover:border-neutral-900 hover:text-neutral-900"
+              className="inline-flex min-h-9 items-center gap-1.5 rounded-md border border-neutral-300 px-3 py-2 font-medium transition-colors hover:border-neutral-900 hover:text-neutral-900"
             >
               Siguiente
+              <NavPending label="la página siguiente" />
             </Link>
           )}
         </div>

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { motion } from "motion/react";
+import { useReducedMotion, motion } from "motion/react";
 import { EASE, MOTION } from "@/lib/motion";
 import type { ExperienceCta } from "@/lib/experience-cta";
 import { CTA_LABEL } from "@/lib/experience-cta";
@@ -38,6 +38,10 @@ export function ClaimPanel({
   /** Real remaining spots, so the selector can't offer more places than exist. */
   spotsLeft?: number;
 }) {
+  // Sin desplazamiento cuando se ha pedido menos movimiento. El bloque global
+  // de globals.css no alcanza esto: anula transiciones y animaciones de CSS,
+  // y esto es un transform animado desde JavaScript.
+  const still = useReducedMotion() ?? false;
   const router = useRouter();
   const [step, setStep] = useState<Step>(initialCta === "claimable" ? "confirm" : initialCta);
   const [acknowledged, setAcknowledged] = useState(false);
@@ -147,7 +151,7 @@ export function ClaimPanel({
     return (
       <div id="reservar" role="status" className="rounded-xl border border-carbon/10 bg-warm-white p-6">
         <motion.div
-          initial={{ scale: 0.6, opacity: 0 }}
+          initial={{ scale: still ? 1 : 0.6, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: MOTION.settle, ease: EASE }}
           className="flex h-12 w-12 items-center justify-center rounded-full bg-sunny"

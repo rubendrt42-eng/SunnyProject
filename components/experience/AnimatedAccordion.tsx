@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { useReducedMotion, AnimatePresence, motion } from "motion/react";
 import { EASE, MOTION } from "@/lib/motion";
 import { clsx } from "clsx";
 
@@ -14,6 +14,10 @@ export function AnimatedAccordion({
   items: string[];
   defaultOpen?: boolean;
 }) {
+  // Sin desplazamiento cuando se ha pedido menos movimiento. El bloque global
+  // de globals.css no alcanza esto: anula transiciones y animaciones de CSS,
+  // y esto es un transform animado desde JavaScript.
+  const still = useReducedMotion() ?? false;
   const [open, setOpen] = useState(defaultOpen);
 
   if (items.length === 0) return null;
@@ -41,7 +45,7 @@ export function AnimatedAccordion({
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: MOTION.collapse, ease: EASE }}
+            transition={{ duration: still ? 0 : MOTION.collapse, ease: EASE }}
             className="overflow-hidden"
           >
             <ul className="mt-3 list-inside list-disc space-y-1 text-carbon">

@@ -43,6 +43,13 @@
   --motion-nudge: 250ms;
   --motion-collapse: 300ms;
   --motion-enter: 500ms;
+
+  /* Cuánto esperar antes de admitir que algo va lento. Por debajo de este
+     umbral, un indicador de carga aparece y desaparece en un parpadeo y lo
+     único que transmite es nerviosismo. Mismo valor que PENDING_DELAY_MS en
+     lib/motion.ts, y la misma técnica que recomienda la documentación de Next
+     para `useLinkStatus`: empezar invisible y entrar con `animation-delay`. */
+  --motion-pending-delay: 100ms;
 }
 
 @theme inline {
@@ -161,6 +168,51 @@
     to {
       transform: translateX(-50%);
     }
+  }
+}
+
+/**
+ * Señal de «esto está en curso» — para acciones del panel y para navegaciones
+ * que tardan.
+ *
+ * Empieza invisible y entra tras `--motion-pending-delay`, así que una acción
+ * rápida no llega a mostrarla. El elemento SIEMPRE está montado y con tamaño,
+ * de modo que no desplaza nada al aparecer: solo cambia de opacidad.
+ *
+ * Es la técnica que la documentación de Next recomienda para `useLinkStatus`,
+ * aplicada aquí también a los botones del panel, que sufrían el mismo
+ * problema.
+ */
+.pending-indicator {
+  opacity: 0;
+  animation: pending-in var(--motion-tint) ease forwards;
+  animation-delay: var(--motion-pending-delay);
+}
+
+/**
+ * La contraparte: la etiqueta que el indicador va a tapar. Se desvanece con
+ * EXACTAMENTE el mismo retraso.
+ *
+ * Sin esto el arreglo se convertía en otro defecto: la etiqueta desaparecía al
+ * instante y el indicador tardaba 100 ms, así que toda acción rápida enseñaba
+ * un botón vacío durante una décima de segundo. Con los dos sincronizados, una
+ * acción de 80 ms no produce ningún cambio visible más allá de que el botón
+ * queda desactivado — que es justo lo que debe pasar.
+ */
+.pending-label {
+  animation: pending-out var(--motion-tint) ease forwards;
+  animation-delay: var(--motion-pending-delay);
+}
+
+@keyframes pending-in {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pending-out {
+  to {
+    opacity: 0;
   }
 }
 

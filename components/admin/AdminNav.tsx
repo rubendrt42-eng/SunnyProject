@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { clsx } from "clsx";
 import { ArrowLeft, Building2, CalendarDays, Inbox, LayoutDashboard, Ticket, Users } from "lucide-react";
+import { NavPending } from "@/components/admin/NavPending";
 
 const NAV = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
@@ -63,6 +64,7 @@ export function AdminNav({ newLeads }: { newLeads: number }) {
                   <span className="sr-only"> solicitudes nuevas</span>
                 </span>
               )}
+              <NavPending label={item.label} />
             </Link>
           );
         })}

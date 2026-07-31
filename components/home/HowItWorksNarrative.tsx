@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { clsx } from "clsx";
-import { motion, useScroll, useMotionValueEvent } from "motion/react";
+import { useReducedMotion, motion, useScroll, useMotionValueEvent } from "motion/react";
 import { EASE, MOTION } from "@/lib/motion";
 import { Link2, RotateCcw, Share2 } from "lucide-react";
 import { InViewReveal } from "@/components/motion/InViewReveal";
@@ -167,6 +167,10 @@ export function HowItWorksNarrative({
   experiences: ExperienceWithBusiness[];
   availableAssets: string[];
 }) {
+  // Sin desplazamiento cuando se ha pedido menos movimiento. El bloque global
+  // de globals.css no alcanza esto: anula transiciones y animaciones de CSS,
+  // y esto es un transform animado desde JavaScript.
+  const still = useReducedMotion() ?? false;
   const containerRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
   const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end end"] });
@@ -212,7 +216,7 @@ export function HowItWorksNarrative({
           <div className="flex items-center">
             <motion.div
               key={active}
-              initial={{ opacity: 0, y: 8 }}
+              initial={{ opacity: 0, y: still ? 0 : 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: MOTION.panel, ease: EASE }}
               className="w-full"

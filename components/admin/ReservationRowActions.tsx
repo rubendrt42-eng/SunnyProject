@@ -2,8 +2,18 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Check, Mail, UserX, X } from "lucide-react";
+import { AdminActionButton } from "@/components/admin/AdminActionButton";
 import type { ReservationStatus } from "@/lib/database.types";
 
+/**
+ * Acciones sobre una reservación: marcar asistencia, cancelar, reenviar correo.
+ *
+ * Todas pasan por la red, así que todas tienen que decir que están pasando.
+ * Antes no lo decían: el estado `loading` se guardaba y no se dibujaba, y los
+ * botones ni siquiera se atenuaban al desactivarse. Pulsar «Asistió» dejaba la
+ * pantalla idéntica hasta que volvía la respuesta.
+ */
 export function ReservationRowActions({ reservationId, status }: { reservationId: string; status: ReservationStatus }) {
   const router = useRouter();
   const [loading, setLoading] = useState<string | null>(null);
@@ -40,43 +50,46 @@ export function ReservationRowActions({ reservationId, status }: { reservationId
     <div className="flex flex-wrap items-center gap-2">
       {status === "confirmed" && (
         <>
-          <button
-            type="button"
+          <AdminActionButton
+            label="Asistió"
+            icon={Check}
+            tone="positive"
+            busy={loading === "attended"}
             disabled={loading !== null}
             onClick={() => call(`/api/admin/reservations/${reservationId}/attendance`, "attended", { status: "attended" })}
-            className="rounded-md border border-emerald-300 px-2.5 py-1 text-xs font-medium text-emerald-700 hover:bg-emerald-50"
-          >
-            Asistió
-          </button>
-          <button
-            type="button"
+          />
+          <AdminActionButton
+            label="No-show"
+            icon={UserX}
+            busy={loading === "no_show"}
             disabled={loading !== null}
             onClick={() => call(`/api/admin/reservations/${reservationId}/attendance`, "no_show", { status: "no_show" })}
-            className="rounded-md border border-neutral-300 px-2.5 py-1 text-xs font-medium text-neutral-700 hover:bg-neutral-50"
-          >
-            No-show
-          </button>
-          <button
-            type="button"
+          />
+          <AdminActionButton
+            label="Cancelar"
+            icon={X}
+            tone="danger"
+            busy={loading === "cancel"}
             disabled={loading !== null}
             onClick={() => {
               if (confirm("¿Cancelar esta reservación?")) call(`/api/admin/reservations/${reservationId}/cancel`, "cancel");
             }}
-            className="rounded-md border border-red-300 px-2.5 py-1 text-xs font-medium text-red-700 hover:bg-red-50"
-          >
-            Cancelar
-          </button>
+          />
         </>
       )}
-      <button
-        type="button"
+      <AdminActionButton
+        label="Reenviar correo"
+        busyLabel="Reenviando el correo"
+        icon={Mail}
+        busy={loading === "resend"}
         disabled={loading !== null}
         onClick={() => call(`/api/admin/reservations/${reservationId}/resend-email`, "resend")}
-        className="rounded-md border border-neutral-300 px-2.5 py-1 text-xs font-medium text-neutral-700 hover:bg-neutral-50"
-      >
-        Reenviar correo
-      </button>
-      {error && <span className="text-xs text-red-600">{error}</span>}
+      />
+      {error && (
+        <span role="status" className="text-xs text-red-600">
+          {error}
+        </span>
+      )}
     </div>
   );
 }

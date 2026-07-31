@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { clsx } from "clsx";
-import { AnimatePresence, motion } from "motion/react";
+import { useReducedMotion, AnimatePresence, motion } from "motion/react";
 import { EASE, MOTION } from "@/lib/motion";
 import { LinkButton } from "@/components/ui/Button";
 import { ManagedPhoto } from "@/components/ui/ManagedPhoto";
@@ -54,6 +54,10 @@ export function CategoriesSection({
   experiences: ExperienceWithBusiness[];
   availableAssets: string[];
 }) {
+  // Sin desplazamiento cuando se ha pedido menos movimiento. El bloque global
+  // de globals.css no alcanza esto: anula transiciones y animaciones de CSS,
+  // y esto es un transform animado desde JavaScript.
+  const still = useReducedMotion() ?? false;
   const [active, setActive] = useState<Category>(CATEGORIES[0].value);
 
   const activeExperiences = experiences.filter((e) => e.category === active).slice(0, 3);
@@ -82,9 +86,9 @@ export function CategoriesSection({
         <AnimatePresence mode="wait">
           <motion.div
             key={active}
-            initial={{ opacity: 0, y: 8 }}
+            initial={{ opacity: 0, y: still ? 0 : 8 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
+            exit={{ opacity: 0, y: still ? 0 : -8 }}
             transition={{ duration: MOTION.panel, ease: EASE }}
             className="relative aspect-[4/3] w-full overflow-hidden rounded-xl"
           >
@@ -95,9 +99,9 @@ export function CategoriesSection({
         <AnimatePresence mode="wait">
           <motion.div
             key={active}
-            initial={{ opacity: 0, y: 8 }}
+            initial={{ opacity: 0, y: still ? 0 : 8 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
+            exit={{ opacity: 0, y: still ? 0 : -8 }}
             transition={{ duration: MOTION.panel, delay: 0.05, ease: EASE }}
           >
             <h3 className="text-subtitle">{activeLabel}</h3>
