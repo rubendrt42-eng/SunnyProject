@@ -71,7 +71,7 @@ export async function GET(request: NextRequest) {
 
     if (!error && data.user) {
       await bootstrapAdminRole(data.user.id, data.user.email ?? "");
-      const nextUrl = new URL(`${origin}${next}`);
+      const nextUrl = new URL(`${origin}${await destinationAfterLogin(next)}`);
       nextUrl.searchParams.set("bienvenido", "1");
       logCallback({
         callbackHost: origin,
@@ -134,7 +134,7 @@ export async function GET(request: NextRequest) {
 
   await bootstrapAdminRole(data.user.id, data.user.email ?? "");
 
-  const nextUrl = new URL(`${origin}${next}`);
+  const nextUrl = new URL(`${origin}${await destinationAfterLogin(next)}`);
   nextUrl.searchParams.set("bienvenido", "1");
   logCallback({
     callbackHost: origin,
@@ -146,6 +146,36 @@ export async function GET(request: NextRequest) {
     redirectDestination: nextUrl.toString(),
   });
   return NextResponse.redirect(nextUrl);
+}
+
+/**
+ * A dónde mandar a alguien recién autenticado.
+ *
+ * Si su perfil está incompleto, a completarlo — no a donde iba.
+ *
+ * El recorrido anterior pedía el perfil al pulsar «reservar», es decir en el
+ * momento de máxima intención, que es el peor sitio posible para plantar un
+ * formulario: la persona ya eligió una experiencia y se encuentra un trámite
+ * entre ella y su lugar. Pedirlo justo después del primer acceso lo pone en el
+ * único momento en que todavía no hay nada que perder, y de paso evita que la
+ * reservación falle por `PROFILE_INCOMPLETE` cuando ya se dio por hecha.
+ *
+ * El destino original viaja en `destino` para poder ofrecer «continuar» al
+ * terminar. Se valida igual que `next`: solo rutas internas.
+ */
+async function destinationAfterLogin(next: string): Promise<string> {
+  try {
+    const { getCurrentUser, isProfileComplete } = await import("@/lib/auth");
+    const user = await getCurrentUser();
+    if (isProfileComplete(user?.profile ?? null)) return next;
+
+    const destino = next && next !== "/mi-cuenta" ? `?destino=${encodeURIComponent(next)}` : "";
+    return `/mi-cuenta${destino}`;
+  } catch {
+    // Si la comprobación falla por cualquier motivo, no bloquear el acceso:
+    // el guardia de la reservación sigue en pie más adelante.
+    return next;
+  }
 }
 
 /**

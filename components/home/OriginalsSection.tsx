@@ -76,7 +76,7 @@ export function OriginalsSection({
             <article className="mt-8 rounded-lg border border-warm-white/15 bg-warm-white/5 p-5">
               <div className="flex flex-wrap items-center gap-2">
                 <OriginalSeal />
-                {isDemoExperience(lead.title) && <Badge tone="orange">Demostración</Badge>}
+                {isDemoExperience(lead) && <Badge tone="orange">Demostración</Badge>}
               </div>
 
               <h3 className="mt-3 text-subtitle text-warm-white">{displayTitle(lead.title)}</h3>

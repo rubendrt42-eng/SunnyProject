@@ -99,7 +99,7 @@ export function QuickView({
 
   if (!experience) return null;
 
-  const isDemo = isDemoExperience(experience.title);
+  const isDemo = isDemoExperience(experience);
   const left = spotsLeft(experience, experience.reserved_count);
   const state = computeExperienceState(experience, experience.reserved_count);
   const topRequirements = experience.requirements.slice(0, 2);

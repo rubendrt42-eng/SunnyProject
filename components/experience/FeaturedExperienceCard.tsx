@@ -33,7 +33,7 @@ export function FeaturedExperienceCard({
 }) {
   const state = computeExperienceState(experience, experience.reserved_count);
   const left = spotsLeft(experience, experience.reserved_count);
-  const isDemo = isDemoExperience(experience.title);
+  const isDemo = isDemoExperience(experience);
   const title = displayTitle(experience.title);
   const maxParty = maxPartySizeOf(experience);
 

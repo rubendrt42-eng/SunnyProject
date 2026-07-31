@@ -16,7 +16,7 @@ export function DetailHero({
   state: ExperienceDisplayState;
   availableAssets: string[];
 }) {
-  const isDemo = isDemoExperience(experience.title);
+  const isDemo = isDemoExperience(experience);
   const left = spotsLeft(experience, experience.reserved_count);
 
   return (
