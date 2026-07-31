@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { clsx } from "clsx";
 import { motion, useScroll, useMotionValueEvent } from "motion/react";
+import { EASE, MOTION } from "@/lib/motion";
 import { Link2, RotateCcw, Share2 } from "lucide-react";
 import { InViewReveal } from "@/components/motion/InViewReveal";
 import { ManagedPhoto } from "@/components/ui/ManagedPhoto";
@@ -200,7 +201,7 @@ export function HowItWorksNarrative({
 
           <div className="flex flex-col justify-center gap-10">
             {STEPS.map((step, i) => (
-              <div key={step.number} className={clsx("transition-opacity duration-500", active === i ? "opacity-100" : "opacity-55")}>
+              <div key={step.number} className={clsx("transition-opacity duration-[var(--motion-enter)]", active === i ? "opacity-100" : "opacity-55")}>
                 <span className="text-4xl font-semibold text-orange-ink">{step.number}</span>
                 <h3 className="mt-3 text-subtitle">{step.title}</h3>
                 <p className="mt-2 max-w-sm text-gray">{step.body}</p>
@@ -213,7 +214,7 @@ export function HowItWorksNarrative({
               key={active}
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: MOTION.panel, ease: EASE }}
               className="w-full"
             >
               {visuals[active]}

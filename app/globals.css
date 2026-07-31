@@ -32,9 +32,35 @@
      de forzarlas a 14 y cambiar el aspecto, el sistema sube su tope a 16 y
      todo lo que estaba suelto aterriza aquí. */
   --radius-xl: 16px;
+
+  /* Sistema de movimiento 1.0 — la escala vive en lib/motion.ts, esto es su
+     mitad en CSS. Los nombres y los valores son los mismos a propósito: antes
+     había dos escalas de tiempo que no se conocían entre sí (JS usaba 250,
+     350, 400, 600, 650; CSS usaba 150, 200, 300, 500) y coincidían en dos
+     valores por accidente, no por decisión.
+     Ver SUNNY_MOTION_SYSTEM_1_0.md. */
+  --motion-tint: 150ms;
+  --motion-nudge: 250ms;
+  --motion-collapse: 300ms;
+  --motion-enter: 500ms;
 }
 
 @theme inline {
+  /* cubic-bezier(0.22, 1, 0.36, 1) — ease-out-quint, la curva del producto.
+     Arranca rápido y frena largo: la interfaz responde en el primer fotograma
+     y el elemento se posa en vez de estrellarse. No rebota nunca.
+     Ya era la curva de facto (20 de 22 transiciones en JS) antes de tener
+     nombre; esto no la cambia, la escribe. */
+  --ease-sunny: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Lo que se lleva `transition-colors` a secas, que son 28 sitios del
+     proyecto — casi todos botones y enlaces del panel. Cambiando el valor por
+     defecto se alinean los 28 sin tocar ni una clase, que es justo lo que no
+     pasó la última vez y por eso el panel se quedó con la curva de Tailwind
+     mientras el sitio público usaba la suya. */
+  --default-transition-duration: var(--motion-tint);
+  --default-transition-timing-function: var(--ease-sunny);
+
   --color-ivory: var(--color-ivory);
   --color-carbon: var(--color-carbon);
   --color-sunny: var(--color-sunny);

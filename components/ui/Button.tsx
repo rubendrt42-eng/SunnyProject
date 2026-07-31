@@ -33,7 +33,7 @@ const containedSizeClasses: Record<Size, string> = {
 };
 
 const base =
-  "group inline-flex items-center justify-center gap-2 font-medium transition-colors duration-150 disabled:opacity-40 disabled:pointer-events-none";
+  "group inline-flex items-center justify-center gap-2 font-medium transition-colors duration-[var(--motion-tint)] disabled:opacity-40 disabled:pointer-events-none";
 
 function sizeClassesFor(variant: Variant, size: Size) {
   return variant === "ghost" ? "text-sm" : containedSizeClasses[size];
@@ -64,7 +64,7 @@ function ButtonArrow() {
     <ArrowRight
       aria-hidden
       size={16}
-      className="shrink-0 transition-transform duration-300 ease-out group-hover:translate-x-1 group-focus-visible:translate-x-1"
+      className="shrink-0 transition-transform duration-[var(--motion-collapse)] ease-sunny group-hover:translate-x-1 group-focus-visible:translate-x-1"
     />
   );
 }

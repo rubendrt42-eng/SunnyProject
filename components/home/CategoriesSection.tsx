@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { clsx } from "clsx";
 import { AnimatePresence, motion } from "motion/react";
+import { EASE, MOTION } from "@/lib/motion";
 import { LinkButton } from "@/components/ui/Button";
 import { ManagedPhoto } from "@/components/ui/ManagedPhoto";
 import { CATEGORIES } from "@/lib/constants";
@@ -68,7 +69,7 @@ export function CategoriesSection({
             onClick={() => setActive(c.value)}
             aria-pressed={active === c.value}
             className={clsx(
-              "shrink-0 rounded-xl border px-5 py-2.5 text-sm font-medium transition-colors duration-200",
+              "shrink-0 rounded-xl border px-5 py-2.5 text-sm font-medium transition-colors duration-[var(--motion-nudge)]",
               active === c.value ? "border-carbon bg-carbon text-warm-white" : "border-carbon/15 hover:border-carbon",
             )}
           >
@@ -84,7 +85,7 @@ export function CategoriesSection({
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: MOTION.panel, ease: EASE }}
             className="relative aspect-[4/3] w-full overflow-hidden rounded-xl"
           >
             <ManagedPhoto url={CATEGORY_COVER[active]} availableAssets={availableAssets} alt="" sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
@@ -97,7 +98,7 @@ export function CategoriesSection({
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.35, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: MOTION.panel, delay: 0.05, ease: EASE }}
           >
             <h3 className="text-subtitle">{activeLabel}</h3>
             <p className="mt-2 max-w-md text-gray">{CATEGORY_COPY[active]}</p>

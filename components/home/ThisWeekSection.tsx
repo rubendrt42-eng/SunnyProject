@@ -107,7 +107,7 @@ function FeaturedWeekCard({
         <button
           type="button"
           onClick={() => onOpen(experience)}
-          className="group grid w-full overflow-hidden rounded-xl border border-carbon/10 bg-warm-white text-left transition-transform duration-150 active:scale-[0.98] sm:grid-cols-2"
+          className="group grid w-full overflow-hidden rounded-xl border border-carbon/10 bg-warm-white text-left transition-transform duration-[var(--motion-tint)] active:scale-[0.98] sm:grid-cols-2"
         >
           {/* `aspect-[3/2]` y no `aspect-auto`: a lo ancho, dejar que la foto
               tomase la altura de la columna de texto la aplastaba a una
@@ -118,7 +118,7 @@ function FeaturedWeekCard({
               availableAssets={availableAssets}
               alt=""
               sizes="(min-width: 1024px) 50vw, 100vw"
-              className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02]"
+              className="object-cover transition-transform duration-[var(--motion-enter)] ease-sunny group-hover:scale-[1.02]"
             />
             <div className="absolute top-3 left-3 flex flex-wrap gap-2">
               <Badge tone="neutral" className="bg-warm-white/90">
@@ -184,7 +184,7 @@ function SecondaryWeekCard({
       <button
         type="button"
         onClick={() => onOpen(experience)}
-        className="group flex h-full w-full flex-col overflow-hidden rounded-xl border border-carbon/10 bg-warm-white text-left transition-transform duration-150 hover:border-carbon/25 active:scale-[0.98]"
+        className="group flex h-full w-full flex-col overflow-hidden rounded-xl border border-carbon/10 bg-warm-white text-left transition-transform duration-[var(--motion-tint)] hover:border-carbon/25 active:scale-[0.98]"
       >
         <div className="relative aspect-[16/10] w-full shrink-0 overflow-hidden bg-carbon/5">
           <ManagedPhoto
@@ -192,7 +192,7 @@ function SecondaryWeekCard({
             availableAssets={availableAssets}
             alt=""
             sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-            className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02]"
+            className="object-cover transition-transform duration-[var(--motion-enter)] ease-sunny group-hover:scale-[1.02]"
           />
           <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
             <Badge tone="neutral" className="bg-warm-white/90 px-2 py-0.5 text-label">

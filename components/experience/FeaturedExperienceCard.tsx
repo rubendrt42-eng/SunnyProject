@@ -47,7 +47,7 @@ export function FeaturedExperienceCard({
               availableAssets={availableAssets}
               alt=""
               sizes="(min-width: 640px) 50vw, 100vw"
-              className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02]"
+              className="object-cover transition-transform duration-[var(--motion-enter)] ease-sunny group-hover:scale-[1.02]"
             />
             <div className="absolute top-3 left-3 flex flex-wrap gap-2">
               {isOriginal(experience) ? <OriginalSeal /> : <Badge tone="onPhoto">{categoryLabel(experience.category)}</Badge>}

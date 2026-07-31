@@ -22,7 +22,7 @@ export function CarouselDots({
           aria-label={`Ver ${label} ${i + 1} de ${count}`}
           onClick={() => onSelect(i)}
           className={clsx(
-            "h-1.5 rounded-full transition-all duration-300",
+            "h-1.5 rounded-full transition-all duration-[var(--motion-collapse)]",
             i === activeIndex ? "w-6 bg-carbon" : "w-1.5 bg-carbon/25 hover:bg-carbon/40",
           )}
         />

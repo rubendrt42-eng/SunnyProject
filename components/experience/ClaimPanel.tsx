@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
+import { EASE, MOTION } from "@/lib/motion";
 import type { ExperienceCta } from "@/lib/experience-cta";
 import { CTA_LABEL } from "@/lib/experience-cta";
 import { reservationErrorMessage } from "@/lib/constants";
@@ -148,7 +149,7 @@ export function ClaimPanel({
         <motion.div
           initial={{ scale: 0.6, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: MOTION.settle, ease: EASE }}
           className="flex h-12 w-12 items-center justify-center rounded-full bg-sunny"
         >
           <svg aria-hidden viewBox="0 0 24 24" className="h-6 w-6">

@@ -2,6 +2,7 @@
 
 import { useEffect, useId } from "react";
 import { AnimatePresence, motion } from "motion/react";
+import { EASE, MOTION } from "@/lib/motion";
 import { X } from "lucide-react";
 import type { ReactNode } from "react";
 
@@ -50,7 +51,7 @@ export function AnimatedModal({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
+            transition={{ duration: MOTION.scrim, ease: EASE }}
             onClick={onClose}
             aria-hidden
           />
@@ -62,7 +63,7 @@ export function AnimatedModal({
             initial={{ opacity: 0, y: 24, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 12, scale: 0.98 }}
-            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: MOTION.collapse, ease: EASE }}
           >
             <div className="flex items-start justify-between gap-4">
               <h2 id={titleId} className="text-subtitle">

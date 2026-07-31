@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
+import { EASE, MOTION } from "@/lib/motion";
 
 /**
  * Brief "Sesión iniciada" confirmation after /auth/callback redirects with
@@ -38,7 +39,7 @@ export function SessionWelcomeToast() {
           initial={{ opacity: 0, y: -16 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -16 }}
-          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: MOTION.panel, ease: EASE }}
           className="fixed inset-x-0 top-4 z-[100] mx-auto flex w-fit items-center gap-2 rounded-full bg-carbon px-5 py-2.5 text-sm font-medium text-warm-white shadow-xl"
         >
           <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4 text-sunny">

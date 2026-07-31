@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
+import { EASE, MOTION, STAGGER } from "@/lib/motion";
 import { X } from "lucide-react";
 import type { ReactNode } from "react";
 
@@ -55,7 +56,7 @@ export function FullscreenMenu({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.25 }}
+          transition={{ duration: MOTION.scrim, ease: EASE }}
         >
           <div className="flex justify-end p-5">
             <button
@@ -75,7 +76,7 @@ export function FullscreenMenu({
                 key={link.href}
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.08 + i * 0.06, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ duration: MOTION.settle, delay: 0.08 + i * STAGGER.item, ease: EASE }}
               >
                 <Link href={link.href} onClick={onClose} className="block py-2 font-serif text-4xl italic">
                   {link.label}
@@ -87,7 +88,7 @@ export function FullscreenMenu({
               <motion.div
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.08 + links.length * 0.06, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ duration: MOTION.settle, delay: 0.08 + links.length * STAGGER.item, ease: EASE }}
                 className="mt-8"
               >
                 {footer}

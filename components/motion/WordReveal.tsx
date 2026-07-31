@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
+import { EASE, MOTION, STAGGER } from "@/lib/motion";
 
 const TAGS = {
   span: motion.span,
@@ -19,7 +20,7 @@ export function WordReveal({
   as = "span",
   className,
   delay = 0,
-  wordDelay = 0.055,
+  wordDelay = STAGGER.word,
 }: {
   text: string;
   as?: keyof typeof TAGS;
@@ -33,7 +34,7 @@ export function WordReveal({
 
   if (prefersReducedMotion) {
     return (
-      <MotionTag className={className} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
+      <MotionTag className={className} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: MOTION.collapse, ease: EASE }}>
         {text}
       </MotionTag>
     );
@@ -69,7 +70,7 @@ export function WordReveal({
           className="inline-block whitespace-pre"
           initial={{ opacity: 0, y: "0.6em" }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: delay + i * wordDelay, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: MOTION.enter, delay: delay + i * wordDelay, ease: EASE }}
         >
           {word}
           {i < words.length - 1 ? " " : ""}

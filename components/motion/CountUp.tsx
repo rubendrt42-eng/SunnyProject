@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { animate, useInView, useReducedMotion } from "motion/react";
+import { EASE, MOTION } from "@/lib/motion";
 
 /**
  * Animates a number from 0 to `value` once it scrolls into view. Jumps
@@ -21,8 +22,8 @@ export function CountUp({ value, className }: { value: number; className?: strin
     // onUpdate callback (a genuine external-system subscription) rather
     // than setting state synchronously in the effect body.
     const controls = animate(0, value, {
-      duration: prefersReducedMotion ? 0 : 1.1,
-      ease: [0.22, 1, 0.36, 1],
+      duration: prefersReducedMotion ? 0 : MOTION.count,
+      ease: EASE,
       onUpdate: (v) => setDisplay(Math.round(v)),
     });
 

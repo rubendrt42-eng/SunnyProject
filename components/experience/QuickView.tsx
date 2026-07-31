@@ -3,6 +3,7 @@
 import { useEffect, useId, useRef } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
+import { EASE, MOTION } from "@/lib/motion";
 import { Calendar, Clock, MapPin, X } from "lucide-react";
 import { Badge, OriginalSeal } from "@/components/ui/Badge";
 import { ManagedPhoto } from "@/components/ui/ManagedPhoto";
@@ -117,7 +118,7 @@ export function QuickView({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
+            transition={{ duration: MOTION.scrim, ease: EASE }}
             onClick={() => window.history.back()}
             aria-hidden
           />
@@ -129,7 +130,7 @@ export function QuickView({
             initial={panel.initial}
             animate={panel.animate}
             exit={panel.exit}
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: MOTION.panel, ease: EASE }}
             className="absolute inset-x-0 bottom-0 flex max-h-[88vh] flex-col overflow-y-auto rounded-t-3xl bg-warm-white lg:inset-y-0 lg:left-auto lg:right-0 lg:max-h-none lg:w-full lg:max-w-md lg:rounded-t-none"
           >
             <div className="relative aspect-[16/10] w-full shrink-0 overflow-hidden lg:aspect-[4/3]">
