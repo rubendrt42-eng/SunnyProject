@@ -1,0 +1,339 @@
+<title>The Sunny Project — Ficha técnica para cotización</title>
+
+<style>
+  :root {
+    --ground: #fbfcfd;
+    --panel: #ffffff;
+    --ink: #141a1f;
+    --muted: #5c6a75;
+    --line: #dde3e8;
+    --accent: #0f5c6e;
+    --accent-soft: #e6f1f4;
+    --pending: #b4530a;
+    --pending-soft: #fdf0e4;
+    --shadow: 0 1px 2px rgba(20, 26, 31, .05);
+
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    --sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground: #0f1418;
+      --panel: #161d23;
+      --ink: #e6edf2;
+      --muted: #93a3af;
+      --line: #26313a;
+      --accent: #5fc0d4;
+      --accent-soft: #14303a;
+      --pending: #e59355;
+      --pending-soft: #33220f;
+      --shadow: none;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #0f1418;
+    --panel: #161d23;
+    --ink: #e6edf2;
+    --muted: #93a3af;
+    --line: #26313a;
+    --accent: #5fc0d4;
+    --accent-soft: #14303a;
+    --pending: #e59355;
+    --pending-soft: #33220f;
+    --shadow: none;
+  }
+  :root[data-theme="light"] {
+    --ground: #fbfcfd;
+    --panel: #ffffff;
+    --ink: #141a1f;
+    --muted: #5c6a75;
+    --line: #dde3e8;
+    --accent: #0f5c6e;
+    --accent-soft: #e6f1f4;
+    --pending: #b4530a;
+    --pending-soft: #fdf0e4;
+    --shadow: 0 1px 2px rgba(20, 26, 31, .05);
+  }
+
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 50rem;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: .6875rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: .75rem;
+  }
+
+  h1 {
+    font-size: clamp(1.6rem, 4vw, 2.1rem);
+    line-height: 1.15;
+    letter-spacing: -.025em;
+    font-weight: 700;
+    text-wrap: balance;
+    margin-bottom: .5rem;
+  }
+  h2 {
+    font-size: 1.0625rem;
+    letter-spacing: -.01em;
+    font-weight: 650;
+    margin-bottom: .9rem;
+  }
+  p { max-width: 65ch; }
+  .lede { color: var(--muted); max-width: 62ch; }
+
+  header { border-bottom: 1px solid var(--line); padding-bottom: 2rem; }
+
+  /* Cifras del inventario */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
+    gap: 1px;
+    margin-top: 1.75rem;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .stat { background: var(--panel); padding: .8rem .9rem; }
+  .stat b {
+    display: block;
+    font-family: var(--mono);
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: -.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat span {
+    display: block;
+    font-size: .75rem;
+    color: var(--muted);
+    margin-top: .1rem;
+  }
+
+  section { border-bottom: 1px solid var(--line); padding-bottom: 2.5rem; }
+  section:last-of-type { border-bottom: 0; padding-bottom: 0; }
+
+  .stack {
+    font-family: var(--mono);
+    font-size: .8125rem;
+    color: var(--muted);
+    line-height: 1.9;
+  }
+  .stack b { color: var(--ink); font-weight: 600; }
+
+  .table-scroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: .875rem; }
+  th, td {
+    text-align: left;
+    padding: .55rem .8rem .55rem 0;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  th {
+    font-family: var(--mono);
+    font-size: .6875rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+  }
+  td:first-child { font-weight: 600; white-space: nowrap; padding-right: 1.25rem; }
+  td:last-child, th:last-child { padding-right: 0; }
+  .detail { color: var(--muted); }
+
+  ul { list-style: none; display: flex; flex-direction: column; gap: .5rem; }
+  li { padding-left: 1.1rem; position: relative; max-width: 64ch; }
+  li::before {
+    content: "";
+    position: absolute;
+    left: 0; top: .62em;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  li.warn::before { background: var(--pending); }
+  li b { font-weight: 650; }
+  li span { color: var(--muted); }
+
+  .tag {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: .625rem;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: .12rem .4rem;
+    border-radius: 2px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    vertical-align: 1px;
+  }
+  .tag.pending { background: var(--pending-soft); color: var(--pending); }
+
+  .note {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-left: 2px solid var(--pending);
+    border-radius: 3px;
+    padding: 1rem 1.1rem;
+    box-shadow: var(--shadow);
+  }
+  .note p + p { margin-top: .6rem; }
+
+  footer {
+    font-size: .8125rem;
+    color: var(--muted);
+    border-top: 1px solid var(--line);
+    padding-top: 1.25rem;
+  }
+</style>
+
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">Ficha técnica · Alcance para cotización</p>
+    <h1>The Sunny Project — plataforma de experiencias</h1>
+    <p class="lede">
+      Aplicación web con cuentas de usuario, base de datos y panel de administración.
+      Plataforma de pase semanal: negocios aliados ceden cupos, los usuarios los reclaman,
+      la administradora opera todo sin intervención del desarrollador. En producción, con
+      contenido de demostración.
+    </p>
+
+    <div class="stats">
+      <div class="stat"><b>16,701</b><span>líneas propias</span></div>
+      <div class="stat"><b>21</b><span>rutas</span></div>
+      <div class="stat"><b>65</b><span>componentes</span></div>
+      <div class="stat"><b>9</b><span>endpoints API</span></div>
+      <div class="stat"><b>6</b><span>tablas</span></div>
+      <div class="stat"><b>119</b><span>pruebas</span></div>
+    </div>
+  </header>
+
+  <section>
+    <p class="eyebrow">Stack</p>
+    <p class="stack">
+      <b>Next.js 16</b> (App Router, RSC, Turbopack) · <b>React</b> · <b>TypeScript</b> estricto · <b>Tailwind v4</b><br>
+      <b>Supabase</b> — Postgres, Auth, Storage, Row Level Security, funciones <span style="white-space:nowrap">security definer</span><br>
+      <b>Resend</b> + React Email · <b>Vercel</b> · <b>Motion</b> · <b>Vitest</b> + <b>Playwright</b> + axe-core
+    </p>
+  </section>
+
+  <section>
+    <p class="eyebrow">Fase 1 · Construido y desplegado</p>
+    <h2>Qué existe hoy</h2>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th scope="col">Módulo</th><th scope="col">Detalle</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Autenticación</td>
+            <td class="detail">Sin contraseña (enlace mágico). Doble flujo PKCE + token_hash para que el enlace funcione desde navegadores embebidos de Gmail/WhatsApp. Roles usuario/admin, guardia en middleware del servidor.</td>
+          </tr>
+          <tr>
+            <td>Base de datos</td>
+            <td class="detail">6 tablas con RLS por fila, 14 migraciones versionadas, triggers, 2 buckets de Storage con políticas. Reglas de negocio en RPC con guardias internas.</td>
+          </tr>
+          <tr>
+            <td>Reservaciones</td>
+            <td class="detail">Pase semanal (semana calendario, zona horaria fija), control de cupo, folio, cancelación con ventana de 12 h, 10 estados distintos de llamada a la acción, exportación CSV.</td>
+          </tr>
+          <tr>
+            <td>Sitio público</td>
+            <td class="detail">14 secciones en portada, catálogo con filtros y búsqueda sincronizados a la URL, panel de vista rápida, ficha de experiencia, enlaces compartibles, 8 páginas de contenido.</td>
+          </tr>
+          <tr>
+            <td>Panel de administración</td>
+            <td class="detail">6 pantallas. Alta/edición de experiencias con subida de imagen, publicar/ocultar/duplicar/archivar, control de asistencia, alta de negocios, bandeja de solicitudes, usuarios. Búsqueda y paginación.</td>
+          </tr>
+          <tr>
+            <td>Correo</td>
+            <td class="detail">4 plantillas transaccionales con SMTP propio.</td>
+          </tr>
+          <tr>
+            <td>Calidad</td>
+            <td class="detail">119 pruebas automatizadas, 0 hallazgos WCAG 2.1 AA (axe-core, 9 rutas × 2 anchos), responsive verificado en 6 anchos, sistema de diseño con tokens de color, tipografía, radio y movimiento.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Fase 2 · Correcciones antes de abrir</p>
+    <h2>Pendiente de corto plazo</h2>
+    <ul>
+      <li class="warn"><b>Dominio propio y remitente verificado.</b> <span>Bloqueante: hoy los correos solo llegan a la cuenta dueña.</span></li>
+      <li class="warn"><b>Reservación con acompañantes.</b> <span>Migración escrita, sin aplicar. Requiere entorno aislado y pruebas de concurrencia contra sobreventa.</span></li>
+      <li class="warn"><b>Cambio del límite de pases por persona.</b> <span>Toca restricción de base de datos, lógica de reclamo y los 10 estados de la llamada a la acción.</span></li>
+      <li><b>Aviso por correo al negocio</b> <span>con folio y datos del asistente. No existe; es el entregable de valor para el aliado.</span></li>
+      <li><b>Apartado de experiencias corporativas / institucionales.</b> <span>Formulario y bandeja aparte. Demanda ya existente.</span></li>
+      <li><b>Banda de periodo de lanzamiento gratuito</b> <span>con fecha de corte visible, previa al cobro.</span></li>
+      <li><b>Renombrado de marca</b> <span>y carga de contenido y fotografía reales.</span></li>
+    </ul>
+  </section>
+
+  <section>
+    <p class="eyebrow">Fase 3 · Modelo de negocio</p>
+    <h2>Suscripción y crecimiento</h2>
+    <ul>
+      <li><b>Suscripción mensual.</b> <span>Pasarela de pago, estados de suscripción, webhooks de cobro, reintentos y cancelación, niveles gratuito y de pago con permisos distintos.</span></li>
+      <li><b>Programa de referidos y puntos.</b> <span>Invitaciones con atribución, acumulación y canje. Es el diferenciador declarado frente a las plataformas de clases existentes.</span></li>
+      <li><b>Comunidad cerrada para suscriptores.</b> <span>Espacio de conversación y contenido exclusivo.</span></li>
+      <li><b>Alta autogestionada por el negocio.</b> <span>Enlace con token para que el aliado capture su propia experiencia, con revisión y aprobación previa a publicar.</span></li>
+      <li><b>Productos digitales.</b> <span>Catálogo y entrega de material descargable.</span></li>
+      <li><b>Analítica de comportamiento</b> <span>y panel de métricas.</span></li>
+    </ul>
+  </section>
+
+  <section>
+    <p class="eyebrow">Recurrente</p>
+    <h2>Mantenimiento</h2>
+    <ul>
+      <li>Actualización de dependencias y del framework <span>— Next.js y Supabase liberan versiones mayores con frecuencia.</span></li>
+      <li>Monitoreo, respaldos y atención a incidentes.</li>
+      <li>Soporte a la administradora y ajustes de contenido.</li>
+      <li>Cambios menores de diseño y copia.</li>
+    </ul>
+    <p style="margin-top:1rem" class="detail">
+      Infraestructura (Vercel, Supabase, Resend, dominio) a nombre y cuenta del cliente,
+      fuera de honorarios.
+    </p>
+  </section>
+
+  <section>
+    <p class="eyebrow">Para quien cotiza</p>
+    <h2>Notas y riesgos</h2>
+    <div class="note">
+      <p><b>El alcance sigue abierto.</b> La clienta está definiendo el modelo de negocio en paralelo — el paso a suscripción, el programa de puntos y el canal corporativo salieron de la última sesión de revisión. Se recomienda cotizar por fases cerradas y no como precio único.</p>
+      <p><b>Cuatro migraciones sin aplicar.</b> Incluyen la garantía de no sobreventa bajo concurrencia, que no está demostrada en ningún entorno. Requiere rama de base de datos o proyecto de prueba.</p>
+      <p><b>La fotografía actual no está autorizada para producción.</b> Son imágenes de referencia. El contrato debe fijar que el cliente entrega fotografía propia o autoriza la compra de banco.</p>
+    </div>
+  </section>
+
+  <footer>
+    Sitio en producción sobre Vercel, con base de datos activa y contenido de demostración.
+    Primera demo con la clienta realizada el 31 de julio de 2026.
+  </footer>
+
+</div>
