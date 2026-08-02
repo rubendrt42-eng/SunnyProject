@@ -1,4 +1,4 @@
-<title>The Sunny Project — Ficha técnica para cotización</title>
+<title>The Sunny Project — Alcance para cotización</title>
 
 <style>
   :root {
@@ -19,41 +19,20 @@
 
   @media (prefers-color-scheme: dark) {
     :root {
-      --ground: #0f1418;
-      --panel: #161d23;
-      --ink: #e6edf2;
-      --muted: #93a3af;
-      --line: #26313a;
-      --accent: #5fc0d4;
-      --accent-soft: #14303a;
-      --pending: #e59355;
-      --pending-soft: #33220f;
-      --shadow: none;
+      --ground: #0f1418; --panel: #161d23; --ink: #e6edf2; --muted: #93a3af;
+      --line: #26313a; --accent: #5fc0d4; --accent-soft: #14303a;
+      --pending: #e59355; --pending-soft: #33220f; --shadow: none;
     }
   }
   :root[data-theme="dark"] {
-    --ground: #0f1418;
-    --panel: #161d23;
-    --ink: #e6edf2;
-    --muted: #93a3af;
-    --line: #26313a;
-    --accent: #5fc0d4;
-    --accent-soft: #14303a;
-    --pending: #e59355;
-    --pending-soft: #33220f;
-    --shadow: none;
+    --ground: #0f1418; --panel: #161d23; --ink: #e6edf2; --muted: #93a3af;
+    --line: #26313a; --accent: #5fc0d4; --accent-soft: #14303a;
+    --pending: #e59355; --pending-soft: #33220f; --shadow: none;
   }
   :root[data-theme="light"] {
-    --ground: #fbfcfd;
-    --panel: #ffffff;
-    --ink: #141a1f;
-    --muted: #5c6a75;
-    --line: #dde3e8;
-    --accent: #0f5c6e;
-    --accent-soft: #e6f1f4;
-    --pending: #b4530a;
-    --pending-soft: #fdf0e4;
-    --shadow: 0 1px 2px rgba(20, 26, 31, .05);
+    --ground: #fbfcfd; --panel: #ffffff; --ink: #141a1f; --muted: #5c6a75;
+    --line: #dde3e8; --accent: #0f5c6e; --accent-soft: #e6f1f4;
+    --pending: #b4530a; --pending-soft: #fdf0e4; --shadow: 0 1px 2px rgba(20, 26, 31, .05);
   }
 
   body {
@@ -61,7 +40,7 @@
     color: var(--ink);
     font-family: var(--sans);
     font-size: 15px;
-    line-height: 1.55;
+    line-height: 1.6;
     -webkit-font-smoothing: antialiased;
   }
 
@@ -89,20 +68,26 @@
     letter-spacing: -.025em;
     font-weight: 700;
     text-wrap: balance;
-    margin-bottom: .5rem;
+    margin-bottom: .6rem;
   }
   h2 {
-    font-size: 1.0625rem;
-    letter-spacing: -.01em;
+    font-size: 1.125rem;
+    letter-spacing: -.012em;
     font-weight: 650;
     margin-bottom: .9rem;
+    text-wrap: balance;
   }
-  p { max-width: 65ch; }
+  h3 {
+    font-size: .9375rem;
+    font-weight: 650;
+    margin-bottom: .3rem;
+  }
+  p { max-width: 66ch; }
+  p + p { margin-top: .7rem; }
   .lede { color: var(--muted); max-width: 62ch; }
 
   header { border-bottom: 1px solid var(--line); padding-bottom: 2rem; }
 
-  /* Cifras del inventario */
   .stats {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
@@ -122,15 +107,29 @@
     letter-spacing: -.02em;
     font-variant-numeric: tabular-nums;
   }
-  .stat span {
-    display: block;
-    font-size: .75rem;
-    color: var(--muted);
-    margin-top: .1rem;
-  }
+  .stat span { display: block; font-size: .75rem; color: var(--muted); margin-top: .1rem; }
 
   section { border-bottom: 1px solid var(--line); padding-bottom: 2.5rem; }
   section:last-of-type { border-bottom: 0; padding-bottom: 0; }
+
+  .roles { display: flex; flex-direction: column; gap: 1.1rem; margin-top: 1.25rem; }
+  .role {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 1rem 1.1rem;
+    box-shadow: var(--shadow);
+  }
+  .role .who {
+    font-family: var(--mono);
+    font-size: .6875rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: .35rem;
+  }
+  .role p { color: var(--muted); max-width: none; }
+  .role p b { color: var(--ink); font-weight: 600; }
 
   .stack {
     font-family: var(--mono);
@@ -161,11 +160,11 @@
   .detail { color: var(--muted); }
 
   ul { list-style: none; display: flex; flex-direction: column; gap: .5rem; }
-  li { padding-left: 1.1rem; position: relative; max-width: 64ch; }
+  li { padding-left: 1.1rem; position: relative; max-width: 65ch; }
   li::before {
     content: "";
     position: absolute;
-    left: 0; top: .62em;
+    left: 0; top: .68em;
     width: 5px; height: 5px;
     border-radius: 50%;
     background: var(--accent);
@@ -174,19 +173,37 @@
   li b { font-weight: 650; }
   li span { color: var(--muted); }
 
-  .tag {
-    display: inline-block;
-    font-family: var(--mono);
-    font-size: .625rem;
-    letter-spacing: .06em;
-    text-transform: uppercase;
-    padding: .12rem .4rem;
-    border-radius: 2px;
-    background: var(--accent-soft);
-    color: var(--accent);
-    vertical-align: 1px;
+  /* Cadena automatizada */
+  .chain { display: flex; flex-direction: column; gap: 0; margin-top: 1rem; }
+  .step {
+    display: grid;
+    grid-template-columns: 2.25rem 1fr;
+    gap: .9rem;
+    padding: .6rem 0;
+    border-bottom: 1px dashed var(--line);
   }
-  .tag.pending { background: var(--pending-soft); color: var(--pending); }
+  .step:last-child { border-bottom: 0; }
+  .step .n {
+    font-family: var(--mono);
+    font-size: .75rem;
+    color: var(--accent);
+    padding-top: .12rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .step p { margin: 0; color: var(--muted); max-width: none; }
+  .step p b { color: var(--ink); font-weight: 600; }
+
+  .ask {
+    background: var(--accent-soft);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 1.15rem 1.25rem;
+    margin-top: 1rem;
+  }
+  .ask ol { margin: 0; padding-left: 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+  .ask li { padding-left: 0; max-width: 62ch; }
+  .ask li::before { display: none; }
+  .ask li::marker { font-family: var(--mono); font-size: .85rem; color: var(--accent); }
 
   .note {
     background: var(--panel);
@@ -196,7 +213,6 @@
     padding: 1rem 1.1rem;
     box-shadow: var(--shadow);
   }
-  .note p + p { margin-top: .6rem; }
 
   footer {
     font-size: .8125rem;
@@ -209,131 +225,165 @@
 <div class="wrap">
 
   <header>
-    <p class="eyebrow">Ficha técnica · Alcance para cotización</p>
-    <h1>The Sunny Project — plataforma de experiencias</h1>
+    <p class="eyebrow">Para José · Alcance del proyecto</p>
+    <h1>The Sunny Project</h1>
     <p class="lede">
-      Aplicación web con cuentas de usuario, base de datos y panel de administración.
-      Plataforma de pase semanal: negocios aliados ceden cupos, los usuarios los reclaman,
-      la administradora opera todo sin intervención del desarrollador. En producción, con
-      contenido de demostración.
+      Plataforma web de experiencias con pase gratuito. Negocios locales ceden cupos,
+      los usuarios los reclaman, y la dueña del proyecto administra todo desde un panel
+      propio. Ya está construida y desplegada con contenido de prueba. Falta cerrar
+      correcciones para abrirla al público, y viene una segunda etapa con suscripción de pago.
+    </p>
+    <p class="lede" style="margin-top:.7rem">
+      <b style="color:var(--ink)">Lo que necesito de ti está al final</b>, en «Las tres preguntas».
+      Todo lo demás es contexto para que puedas contestarlas.
     </p>
 
     <div class="stats">
       <div class="stat"><b>16,701</b><span>líneas propias</span></div>
-      <div class="stat"><b>21</b><span>rutas</span></div>
-      <div class="stat"><b>65</b><span>componentes</span></div>
+      <div class="stat"><b>21</b><span>pantallas</span></div>
       <div class="stat"><b>9</b><span>endpoints API</span></div>
       <div class="stat"><b>6</b><span>tablas</span></div>
       <div class="stat"><b>119</b><span>pruebas</span></div>
+      <div class="stat"><b>5</b><span>días de build</span></div>
     </div>
   </header>
 
   <section>
-    <p class="eyebrow">Stack</p>
-    <p class="stack">
-      <b>Next.js 16</b> (App Router, RSC, Turbopack) · <b>React</b> · <b>TypeScript</b> estricto · <b>Tailwind v4</b><br>
-      <b>Supabase</b> — Postgres, Auth, Storage, Row Level Security, funciones <span style="white-space:nowrap">security definer</span><br>
-      <b>Resend</b> + React Email · <b>Vercel</b> · <b>Motion</b> · <b>Vitest</b> + <b>Playwright</b> + axe-core
-    </p>
+    <p class="eyebrow">Cómo funciona</p>
+    <h2>Tres tipos de usuario en el mismo sitio</h2>
+
+    <div class="roles">
+      <div class="role">
+        <p class="who">El usuario</p>
+        <p>Entra buscando un plan. Ve las experiencias de la semana —yoga, pilates, hyrox, café, running— y <b>reclama un pase gratuito</b>. Crea cuenta con su correo, sin contraseña. Puede apartar lugar para sí mismo y, según la experiencia, <b>invitar hasta 2 o 3 acompañantes</b>. Recibe un folio que presenta en el lugar.</p>
+      </div>
+      <div class="role">
+        <p class="who">El negocio aliado</p>
+        <p>Un estudio con clases se registra desde el sitio y deja sus datos. Si la administradora lo aprueba, sus clases aparecen publicadas: <b>«tengo clase diaria a las 4, doy 15 cupos»</b>. A cambio recibe prospectos reales — gente nueva que prueba su espacio.</p>
+      </div>
+      <div class="role">
+        <p class="who">La administradora</p>
+        <p>Panel propio de 6 pantallas. <b>Crea y publica experiencias, ve quién viene, marca asistencia, aprueba negocios y consulta usuarios registrados.</b> Opera sin tocar código y sin depender de mí.</p>
+      </div>
+    </div>
   </section>
 
   <section>
-    <p class="eyebrow">Fase 1 · Construido y desplegado</p>
+    <p class="eyebrow">Requisito transversal</p>
+    <h2>Todo tiene que ser automático</h2>
+    <p class="detail">
+      Es la condición que más pesa en el costo y la más fácil de subestimar. La administradora
+      no debe intervenir en ningún paso de una reservación. La cadena completa corre sola:
+    </p>
+
+    <div class="chain">
+      <div class="step"><span class="n">01</span><p>El usuario pone su correo y <b>recibe un enlace de acceso</b> — sin contraseña.</p></div>
+      <div class="step"><span class="n">02</span><p>Entra a su perfil ya con sesión iniciada, desde el navegador que sea.</p></div>
+      <div class="step"><span class="n">03</span><p>Elige experiencia y aparta lugar. <b>El cupo baja en tiempo real</b> y se cierra al llenarse.</p></div>
+      <div class="step"><span class="n">04</span><p>Se genera un <b>folio</b>, visible en pantalla y enviado por correo al usuario.</p></div>
+      <div class="step"><span class="n">05</span><p>Ese mismo folio <b>se envía automáticamente al negocio</b>, con los datos de quién asiste.</p></div>
+      <div class="step"><span class="n">06</span><p>Si cancela, se libera el cupo y se avisa a ambas partes.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Etapa 1 · Construido y desplegado</p>
     <h2>Qué existe hoy</h2>
+    <p class="stack" style="margin-bottom:1.25rem">
+      <b>Next.js 16</b> (App Router, componentes de servidor) · <b>TypeScript</b> · <b>Tailwind v4</b><br>
+      <b>Supabase</b> — Postgres, Auth, Storage, seguridad a nivel de fila<br>
+      <b>Resend</b> · <b>Vercel</b> · <b>Vitest</b> + <b>Playwright</b> + axe-core
+    </p>
     <div class="table-scroll">
       <table>
-        <thead>
-          <tr><th scope="col">Módulo</th><th scope="col">Detalle</th></tr>
-        </thead>
+        <thead><tr><th scope="col">Módulo</th><th scope="col">Detalle</th></tr></thead>
         <tbody>
-          <tr>
-            <td>Autenticación</td>
-            <td class="detail">Sin contraseña (enlace mágico). Doble flujo PKCE + token_hash para que el enlace funcione desde navegadores embebidos de Gmail/WhatsApp. Roles usuario/admin, guardia en middleware del servidor.</td>
-          </tr>
-          <tr>
-            <td>Base de datos</td>
-            <td class="detail">6 tablas con RLS por fila, 14 migraciones versionadas, triggers, 2 buckets de Storage con políticas. Reglas de negocio en RPC con guardias internas.</td>
-          </tr>
-          <tr>
-            <td>Reservaciones</td>
-            <td class="detail">Pase semanal (semana calendario, zona horaria fija), control de cupo, folio, cancelación con ventana de 12 h, 10 estados distintos de llamada a la acción, exportación CSV.</td>
-          </tr>
-          <tr>
-            <td>Sitio público</td>
-            <td class="detail">14 secciones en portada, catálogo con filtros y búsqueda sincronizados a la URL, panel de vista rápida, ficha de experiencia, enlaces compartibles, 8 páginas de contenido.</td>
-          </tr>
-          <tr>
-            <td>Panel de administración</td>
-            <td class="detail">6 pantallas. Alta/edición de experiencias con subida de imagen, publicar/ocultar/duplicar/archivar, control de asistencia, alta de negocios, bandeja de solicitudes, usuarios. Búsqueda y paginación.</td>
-          </tr>
-          <tr>
-            <td>Correo</td>
-            <td class="detail">4 plantillas transaccionales con SMTP propio.</td>
-          </tr>
-          <tr>
-            <td>Calidad</td>
-            <td class="detail">119 pruebas automatizadas, 0 hallazgos WCAG 2.1 AA (axe-core, 9 rutas × 2 anchos), responsive verificado en 6 anchos, sistema de diseño con tokens de color, tipografía, radio y movimiento.</td>
-          </tr>
+          <tr><td>Autenticación</td><td class="detail">Sin contraseña. Doble flujo (PKCE + token_hash) para que el enlace funcione también desde los navegadores embebidos de Gmail y WhatsApp. Roles usuario/admin con guardia en el servidor.</td></tr>
+          <tr><td>Base de datos</td><td class="detail">6 tablas con seguridad por fila, 14 migraciones versionadas, triggers, 2 buckets de archivos con políticas. Reglas de negocio en funciones con permisos elevados y guardias internas.</td></tr>
+          <tr><td>Reservaciones</td><td class="detail">Pase semanal con zona horaria fija, control de cupo, folio, cancelación con ventana de 12 h, 10 estados distintos del botón según sesión y disponibilidad, exportación a CSV.</td></tr>
+          <tr><td>Sitio público</td><td class="detail">14 secciones en portada, catálogo con filtros y búsqueda sincronizados a la URL, panel de vista rápida, ficha de experiencia, enlaces compartibles, 8 páginas de contenido.</td></tr>
+          <tr><td>Panel admin</td><td class="detail">6 pantallas. Alta y edición de experiencias con carga de imagen, publicar/ocultar/duplicar/archivar, control de asistencia, alta de negocios, bandeja de solicitudes, usuarios. Con búsqueda y paginación.</td></tr>
+          <tr><td>Correo</td><td class="detail">4 plantillas transaccionales con servidor de envío propio.</td></tr>
+          <tr><td>Calidad</td><td class="detail">119 pruebas automatizadas, 0 hallazgos de accesibilidad WCAG 2.1 AA, responsive verificado en 6 anchos, sistema de diseño con tokens.</td></tr>
         </tbody>
       </table>
     </div>
   </section>
 
   <section>
-    <p class="eyebrow">Fase 2 · Correcciones antes de abrir</p>
-    <h2>Pendiente de corto plazo</h2>
+    <p class="eyebrow">Etapa 2 · Antes de abrir al público</p>
+    <h2>Lo que falta para lanzar</h2>
     <ul>
       <li class="warn"><b>Dominio propio y remitente verificado.</b> <span>Bloqueante: hoy los correos solo llegan a la cuenta dueña.</span></li>
-      <li class="warn"><b>Reservación con acompañantes.</b> <span>Migración escrita, sin aplicar. Requiere entorno aislado y pruebas de concurrencia contra sobreventa.</span></li>
-      <li class="warn"><b>Cambio del límite de pases por persona.</b> <span>Toca restricción de base de datos, lógica de reclamo y los 10 estados de la llamada a la acción.</span></li>
-      <li><b>Aviso por correo al negocio</b> <span>con folio y datos del asistente. No existe; es el entregable de valor para el aliado.</span></li>
-      <li><b>Apartado de experiencias corporativas / institucionales.</b> <span>Formulario y bandeja aparte. Demanda ya existente.</span></li>
-      <li><b>Banda de periodo de lanzamiento gratuito</b> <span>con fecha de corte visible, previa al cobro.</span></li>
-      <li><b>Renombrado de marca</b> <span>y carga de contenido y fotografía reales.</span></li>
+      <li class="warn"><b>Reservación con acompañantes.</b> <span>Escrito pero sin aplicar. Necesita entorno aislado y pruebas de concurrencia contra sobreventa.</span></li>
+      <li class="warn"><b>Aviso automático al negocio</b> <span>con folio y datos del asistente. No existe todavía, y es el entregable de valor para el aliado.</span></li>
+      <li><b>Definir el límite de pases por persona.</b> <span>Toca restricción de base de datos, lógica de reclamo y los 10 estados del botón.</span></li>
+      <li><b>Sección de comunidad y experiencias propias</b> <span>de la fundadora — pedida en la primera revisión.</span></li>
+      <li><b>Canal de experiencias corporativas</b> <span>para empresas y escuelas. Demanda que ya existe y hoy no tiene dónde aterrizar.</span></li>
+      <li><b>Aviso del periodo de lanzamiento gratuito</b> <span>con fecha de corte visible, antes de que empiece el cobro.</span></li>
+      <li><b>Contenido y fotografía reales.</b></li>
     </ul>
   </section>
 
   <section>
-    <p class="eyebrow">Fase 3 · Modelo de negocio</p>
-    <h2>Suscripción y crecimiento</h2>
-    <ul>
-      <li><b>Suscripción mensual.</b> <span>Pasarela de pago, estados de suscripción, webhooks de cobro, reintentos y cancelación, niveles gratuito y de pago con permisos distintos.</span></li>
-      <li><b>Programa de referidos y puntos.</b> <span>Invitaciones con atribución, acumulación y canje. Es el diferenciador declarado frente a las plataformas de clases existentes.</span></li>
-      <li><b>Comunidad cerrada para suscriptores.</b> <span>Espacio de conversación y contenido exclusivo.</span></li>
-      <li><b>Alta autogestionada por el negocio.</b> <span>Enlace con token para que el aliado capture su propia experiencia, con revisión y aprobación previa a publicar.</span></li>
-      <li><b>Productos digitales.</b> <span>Catálogo y entrega de material descargable.</span></li>
-      <li><b>Analítica de comportamiento</b> <span>y panel de métricas.</span></li>
-    </ul>
-  </section>
-
-  <section>
-    <p class="eyebrow">Recurrente</p>
-    <h2>Mantenimiento</h2>
-    <ul>
-      <li>Actualización de dependencias y del framework <span>— Next.js y Supabase liberan versiones mayores con frecuencia.</span></li>
-      <li>Monitoreo, respaldos y atención a incidentes.</li>
-      <li>Soporte a la administradora y ajustes de contenido.</li>
-      <li>Cambios menores de diseño y copia.</li>
-    </ul>
-    <p style="margin-top:1rem" class="detail">
-      Infraestructura (Vercel, Supabase, Resend, dominio) a nombre y cuenta del cliente,
-      fuera de honorarios.
+    <p class="eyebrow">Etapa 3 · Actualización mayor</p>
+    <h2>Suscripción y comunidad</h2>
+    <p class="detail">
+      El modelo de negocio todavía no está cerrado, pero la dirección sí: arranca gratis
+      unas semanas para conseguir usuarios, y después pasa a suscripción mensual. Quien
+      pague obtiene más pases, acceso a un espacio de comunidad y experiencias directas
+      con la fundadora. La clienta lo describe como «que se sienta app», pero sigue siendo web.
     </p>
+    <ul style="margin-top:1rem">
+      <li><b>Cobro recurrente.</b> <span>Pasarela de pago, estados de suscripción, avisos de cobro, reintentos, cancelación, y niveles gratuito y de pago con permisos distintos.</span></li>
+      <li><b>Espacio de comunidad para suscriptores.</b> <span>Publicaciones y mensajes entre miembros — es una sección nueva completa, no un ajuste.</span></li>
+      <li><b>Programa de referidos y puntos.</b> <span>Ganar por invitar y compartir. Es el diferenciador declarado frente a las plataformas de clases que ya existen.</span></li>
+      <li><b>Alta autogestionada por el negocio.</b> <span>Enlace con token para que el aliado capture su propia experiencia, con revisión previa a publicar.</span></li>
+      <li><b>Productos digitales</b> <span>y panel de métricas.</span></li>
+    </ul>
   </section>
 
   <section>
-    <p class="eyebrow">Para quien cotiza</p>
-    <h2>Notas y riesgos</h2>
+    <p class="eyebrow">Lo que necesito de ti</p>
+    <h2>Las tres preguntas</h2>
+
+    <div class="ask">
+      <ol>
+        <li>
+          <h3>¿Cuánto cobro por la construcción?</h3>
+          Por lo de la etapa 1 —que ya está hecho y desplegado— más lo de la etapa 2
+          para dejarlo abierto al público. Mercado de Monterrey, primer proyecto formal.
+        </li>
+        <li>
+          <h3>¿Cuánto mensual, y qué debe incluir exactamente?</h3>
+          Esta es la que más me traba. Necesito distinguir entre <b>«te atiendo si algo
+          se rompe»</b> y <b>«además te hago cambios cada mes»</b>. Son dos precios distintos
+          y quiero dejarlo escrito para que no se convierta en trabajo infinito.
+          ¿Cómo lo redactarías tú?
+        </li>
+        <li>
+          <h3>¿Cómo cobro la etapa 3?</h3>
+          La suscripción y la comunidad son desarrollo nuevo y todavía sin definir del todo.
+          ¿Se cotiza aparte cuando esté definida, se cobra por hora, o se puede dar un rango
+          ahora? ¿Y conviene participación sobre la suscripción, o mejor no meterme en eso?
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Contexto que conviene que sepas</p>
+    <h2>Tres cosas que pueden cambiar el número</h2>
     <div class="note">
-      <p><b>El alcance sigue abierto.</b> La clienta está definiendo el modelo de negocio en paralelo — el paso a suscripción, el programa de puntos y el canal corporativo salieron de la última sesión de revisión. Se recomienda cotizar por fases cerradas y no como precio único.</p>
-      <p><b>Cuatro migraciones sin aplicar.</b> Incluyen la garantía de no sobreventa bajo concurrencia, que no está demostrada en ningún entorno. Requiere rama de base de datos o proyecto de prueba.</p>
-      <p><b>La fotografía actual no está autorizada para producción.</b> Son imágenes de referencia. El contrato debe fijar que el cliente entrega fotografía propia o autoriza la compra de banco.</p>
+      <p><b>El alcance sigue abierto.</b> La clienta está definiendo el modelo de negocio mientras avanzo — la suscripción, los puntos y el canal corporativo salieron apenas en la primera revisión. Por eso separé todo en etapas en lugar de dar un precio único.</p>
+      <p style="margin-top:.6rem"><b>Cuatro migraciones sin aplicar</b>, incluida la garantía de que dos personas no puedan tomar el mismo último lugar al mismo tiempo. Eso no está demostrado todavía y necesita un entorno de prueba aparte.</p>
+      <p style="margin-top:.6rem"><b>La fotografía actual es de referencia</b>, no está autorizada para producción. Debe quedar en el contrato que la clienta entrega fotos propias o autoriza comprar banco.</p>
     </div>
   </section>
 
   <footer>
-    Sitio en producción sobre Vercel, con base de datos activa y contenido de demostración.
-    Primera demo con la clienta realizada el 31 de julio de 2026.
+    Sitio en producción sobre Vercel con base de datos activa y contenido de demostración.
+    Primera revisión con la clienta: 31 de julio de 2026.
   </footer>
 
 </div>
