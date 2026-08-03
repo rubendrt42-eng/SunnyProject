@@ -1,4 +1,4 @@
-<title>The Sunny Project — Propuesta de desarrollo</title>
+<title>The Sunny Project — Cotización</title>
 
 <style>
   :root {
@@ -48,12 +48,12 @@
   }
 
   .wrap {
-    max-width: 46rem;
+    max-width: 44rem;
     margin: 0 auto;
     padding: 3.5rem 1.5rem 5rem;
     display: flex;
     flex-direction: column;
-    gap: 3rem;
+    gap: 2.75rem;
   }
 
   .eyebrow {
@@ -62,36 +62,44 @@
     text-transform: uppercase;
     color: var(--accent);
     font-weight: 600;
-    margin-bottom: .9rem;
+    margin-bottom: .8rem;
   }
 
   h1 {
-    font-size: clamp(1.9rem, 5vw, 2.6rem);
+    font-size: clamp(1.9rem, 5vw, 2.5rem);
     line-height: 1.1;
     letter-spacing: -.03em;
     font-weight: 700;
     text-wrap: balance;
-    margin-bottom: .8rem;
+    margin-bottom: .7rem;
   }
   h2 {
-    font-size: 1.25rem;
+    font-size: 1.2rem;
     letter-spacing: -.015em;
     font-weight: 650;
-    margin-bottom: 1rem;
+    margin-bottom: .8rem;
     text-wrap: balance;
   }
-  h3 { font-size: 1.05rem; font-weight: 650; letter-spacing: -.01em; }
+  h3 { font-size: 1.1rem; font-weight: 650; letter-spacing: -.012em; }
   p { max-width: 62ch; }
-  p + p { margin-top: .8rem; }
+  p + p { margin-top: .7rem; }
   .lede { font-size: 1.0625rem; color: var(--muted); }
 
-  header { border-bottom: 1px solid var(--line); padding-bottom: 2.5rem; }
-
+  header { border-bottom: 1px solid var(--line); padding-bottom: 2.25rem; }
   section { display: flex; flex-direction: column; }
 
-  /* Opciones */
-  .tiers { display: flex; flex-direction: column; gap: 1.25rem; margin-top: 1.5rem; }
-  .tier {
+  /* La diferencia que define el precio */
+  .why {
+    background: var(--accent-soft);
+    border-radius: 6px;
+    padding: 1.4rem 1.5rem;
+  }
+  .why p { max-width: none; }
+  .why .big { font-size: 1.0625rem; font-weight: 600; }
+
+  /* Productos */
+  .products { display: flex; flex-direction: column; gap: 1.25rem; margin-top: 1.25rem; }
+  .p {
     background: var(--card);
     border: 1px solid var(--line);
     border-radius: 6px;
@@ -99,15 +107,7 @@
     box-shadow: var(--shadow);
     position: relative;
   }
-  .tier.featured {
-    border-color: var(--accent);
-    border-width: 1.5px;
-    box-shadow: var(--shadow-lift);
-  }
-  /* El texto de la etiqueta va contra el fondo del acento, no contra el papel:
-     en modo oscuro el acento se aclara y el papel también, así que usar
-     `--paper` dejaría texto claro sobre verde claro. `--flag-ink` se
-     redefine con el resto de los tokens en cada tema. */
+  .p.featured { border-color: var(--accent); border-width: 1.5px; box-shadow: var(--shadow-lift); }
   .flag {
     position: absolute;
     top: -.7rem; left: 1.5rem;
@@ -120,270 +120,247 @@
     padding: .25rem .65rem;
     border-radius: 3px;
   }
-
-  .tier-head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: .5rem 1rem;
-    margin-bottom: .35rem;
+  .p-head {
+    display: flex; flex-wrap: wrap; align-items: baseline;
+    justify-content: space-between; gap: .4rem 1rem; margin-bottom: .2rem;
   }
   .price {
-    font-size: 1.5rem;
-    font-weight: 700;
-    letter-spacing: -.02em;
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
+    font-size: 1.45rem; font-weight: 700; letter-spacing: -.02em;
+    font-variant-numeric: tabular-nums; white-space: nowrap;
   }
-  .tier > p { color: var(--muted); font-size: .9375rem; margin-bottom: .9rem; }
-  .tier ul { list-style: none; display: flex; flex-direction: column; gap: .4rem; }
-  .tier li {
-    position: relative;
-    padding-left: 1.35rem;
-    font-size: .9375rem;
-    max-width: 58ch;
+  .p .sub { color: var(--muted); font-size: .9375rem; margin-bottom: 1rem; }
+  .p ul { list-style: none; display: flex; flex-direction: column; gap: .4rem; }
+  .p li { position: relative; padding-left: 1.3rem; font-size: .9375rem; max-width: 56ch; }
+  .p li::before {
+    content: ""; position: absolute; left: .15rem; top: .58em;
+    width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
   }
-  .tier li::before {
-    content: "";
-    position: absolute;
-    left: .15rem; top: .58em;
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--accent);
+  .p li.no::before { background: var(--muted); opacity: .45; }
+  .p li.no { color: var(--muted); }
+  .meta {
+    margin-top: 1.1rem; padding-top: .9rem; border-top: 1px solid var(--line);
+    font-size: .875rem; color: var(--muted);
   }
-
-  /* Mantenimiento: dos columnas */
-  .split { display: grid; gap: 1.25rem; margin-top: 1.25rem; }
-  @media (min-width: 44rem) { .split { grid-template-columns: 1fr 1fr; } }
-  .box {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 6px;
-    padding: 1.25rem;
-    box-shadow: var(--shadow);
-  }
-  .box h3 { margin-bottom: .75rem; }
-  .box ul { list-style: none; display: flex; flex-direction: column; gap: .45rem; }
-  .box li { font-size: .9375rem; padding-left: 1.15rem; position: relative; }
-  .box li::before {
-    content: "";
-    position: absolute;
-    left: 0; top: .55em;
-    width: 5px; height: 5px;
-    border-radius: 50%;
-    background: var(--accent);
-  }
-  .box.excl li::before { background: var(--muted); opacity: .5; }
-
-  .highlight {
-    background: var(--gold-soft);
-    border-left: 2px solid var(--gold);
-    border-radius: 3px;
-    padding: .9rem 1.1rem;
-    margin-top: 1rem;
-    font-size: .9375rem;
-  }
-  .highlight b { color: var(--ink); }
+  .meta b { color: var(--ink); font-weight: 650; }
 
   table { border-collapse: collapse; width: 100%; margin-top: 1rem; }
-  td {
-    padding: .6rem 1rem .6rem 0;
-    border-bottom: 1px solid var(--line);
-    font-size: .9375rem;
-    vertical-align: top;
+  th, td {
+    padding: .65rem 1rem .65rem 0; border-bottom: 1px solid var(--line);
+    font-size: .9375rem; vertical-align: top; text-align: left;
   }
-  td:last-child {
-    text-align: right;
-    padding-right: 0;
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-    font-weight: 600;
+  th {
+    font-size: .6875rem; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--muted); font-weight: 600;
   }
-  td b { font-weight: 650; }
-  td span { color: var(--muted); display: block; font-size: .875rem; }
+  td:last-child, th:last-child {
+    text-align: right; padding-right: 0;
+    font-variant-numeric: tabular-nums; white-space: nowrap;
+  }
+  td:last-child { font-weight: 650; }
+  td span { color: var(--muted); display: block; font-size: .875rem; font-weight: 400; }
 
-  ol { padding-left: 1.2rem; display: flex; flex-direction: column; gap: .5rem; margin-top: 1rem; }
-  ol li { max-width: 58ch; }
+  .split { display: grid; gap: 1.1rem; margin-top: 1.1rem; }
+  @media (min-width: 42rem) { .split { grid-template-columns: 1fr 1fr; } }
+  .box {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 6px; padding: 1.2rem; box-shadow: var(--shadow);
+  }
+  .box h3 { font-size: 1rem; margin-bottom: .7rem; }
+  .box ul { list-style: none; display: flex; flex-direction: column; gap: .4rem; }
+  .box li { font-size: .9375rem; padding-left: 1.1rem; position: relative; }
+  .box li::before {
+    content: ""; position: absolute; left: 0; top: .55em;
+    width: 5px; height: 5px; border-radius: 50%; background: var(--accent);
+  }
+  .box.excl li::before { background: var(--muted); opacity: .45; }
+
+  .highlight {
+    background: var(--gold-soft); border-left: 2px solid var(--gold);
+    border-radius: 3px; padding: .85rem 1.05rem; margin-top: 1rem; font-size: .9375rem;
+  }
+
+  ol { padding-left: 1.2rem; display: flex; flex-direction: column; gap: .45rem; margin-top: .9rem; }
+  ol li { max-width: 58ch; font-size: .9375rem; }
   ol li::marker { color: var(--accent); font-weight: 700; }
 
   footer {
-    border-top: 1px solid var(--line);
-    padding-top: 1.5rem;
-    font-size: .875rem;
-    color: var(--muted);
+    border-top: 1px solid var(--line); padding-top: 1.4rem;
+    font-size: .875rem; color: var(--muted);
   }
 </style>
 
 <div class="wrap">
 
   <header>
-    <p class="eyebrow">Propuesta de desarrollo</p>
+    <p class="eyebrow">Cotización · Desarrollo web</p>
     <h1>The Sunny Project</h1>
     <p class="lede">
-      Plataforma de experiencias con pase gratuito. Contempla el desarrollo ya realizado,
-      lo necesario para abrirla al público, y el acompañamiento posterior.
+      Dos productos distintos, con lo que incluye cada uno y su tiempo de entrega.
+      Elige el que corresponda a lo que quieres que haga el sitio, y de ahí se
+      desprende el acompañamiento mensual.
     </p>
   </header>
 
   <section>
-    <p class="eyebrow">Contexto</p>
-    <h2>Qué pasó entre lo que pediste y lo que hay</h2>
-    <p>
-      Cuando arrancamos hablamos de un sitio sencillo para mostrar las experiencias.
-      Conforme lo fuimos definiendo quedó claro que lo que necesitas es otra cosa:
-      que la gente pueda crear cuenta y apartar su lugar sola, que el cupo se controle
-      solo, que los negocios se registren desde el sitio, y sobre todo que <b>tú
-      administres todo sin depender de mí</b>.
-    </p>
-    <p>
-      Eso ya no es un sitio informativo — es una plataforma con base de datos y panel
-      propio. Está construida y funcionando. Te la presento en dos partes: lo que ya
-      está, y lo que falta para poder abrirla a gente real.
-    </p>
-  </section>
-
-  <section>
-    <p class="eyebrow">Lo construido</p>
-    <h2>Qué existe hoy</h2>
-    <table>
-      <tbody>
-        <tr><td><b>Sitio público</b><span>Portada, catálogo con filtros y buscador, ficha de cada experiencia, y 8 páginas de contenido</span></td><td>Listo</td></tr>
-        <tr><td><b>Cuentas de usuario</b><span>Acceso por correo, sin contraseñas que recordar ni perder</span></td><td>Listo</td></tr>
-        <tr><td><b>Reservaciones</b><span>Pase semanal, control de cupo en tiempo real, folio, cancelación con ventana de 12 horas</span></td><td>Listo</td></tr>
-        <tr><td><b>Tu panel</b><span>6 pantallas: publicar experiencias, ver quién asiste, marcar asistencia, aprobar negocios, consultar usuarios</span></td><td>Listo</td></tr>
-        <tr><td><b>Registro de negocios</b><span>Formulario público y bandeja de solicitudes en tu panel</span></td><td>Listo</td></tr>
-        <tr><td><b>Correos automáticos</b><span>Confirmación, cancelación y aviso de nueva solicitud</span></td><td>Listo</td></tr>
-        <tr><td><b>Calidad</b><span>Probado en 6 tamaños de pantalla y auditado en accesibilidad</span></td><td>Listo</td></tr>
-      </tbody>
-    </table>
+    <div class="why">
+      <p class="big">La diferencia de precio no está en el diseño. Los dos se ven igual de bien.</p>
+      <p style="margin-top:.5rem">
+        Está en si el sitio <b>solo muestra información</b>, o si además la <b>guarda, la
+        protege y la administra sola</b>. Lo segundo necesita base de datos, cuentas de
+        usuario y un panel para ti — y eso es lo que cambia el trabajo por completo.
+      </p>
+    </div>
   </section>
 
   <section>
     <p class="eyebrow">Opciones</p>
-    <h2>Tres caminos para cerrar</h2>
+    <h2>Qué puedes elegir</h2>
 
-    <div class="tiers">
+    <div class="products">
 
-      <div class="tier">
-        <div class="tier-head">
-          <h3>Publicación</h3>
-          <span class="price">$45,000</span>
+      <div class="p">
+        <div class="p-head">
+          <h3>Producto 1 · Sitio de presentación</h3>
+          <span class="price">$22,000</span>
         </div>
-        <p>Sale al aire tal como está hoy. Lo mínimo para que exista y funcione.</p>
+        <p class="sub">El sitio cuenta qué es Sunny y muestra las experiencias. Las reservaciones se manejan por fuera.</p>
         <ul>
-          <li>Todo lo construido, en línea y operando</li>
-          <li>Dominio propio y correos a nombre de The Sunny Project</li>
-          <li>Carga de tu contenido y tus fotografías reales</li>
-          <li>Capacitación para que uses tu panel</li>
+          <li>Portada, listado de experiencias, cómo funciona, preguntas frecuentes</li>
+          <li>Formulario de contacto para negocios interesados</li>
+          <li>Diseño propio, adaptado a celular</li>
+          <li>La gente te escribe por WhatsApp o Instagram para apartar</li>
+          <li class="no">Sin cuentas de usuario</li>
+          <li class="no">Sin control de cupos ni folios</li>
+          <li class="no">Sin panel: los cambios me los pides y yo los hago</li>
         </ul>
+        <p class="meta"><b>Tiempo:</b> 2 semanas · <b>Acompañamiento:</b> Básico</p>
       </div>
 
-      <div class="tier featured">
-        <span class="flag">Recomendada</span>
-        <div class="tier-head">
-          <h3>Plataforma completa</h3>
+      <div class="p featured">
+        <span class="flag">Es lo que ya está construido</span>
+        <div class="p-head">
+          <h3>Producto 2 · Plataforma</h3>
           <span class="price">$75,000</span>
         </div>
-        <p>Todo lo anterior más lo que pediste en la revisión. Es la versión que puede sostener el lanzamiento.</p>
+        <p class="sub">El sitio opera solo. La gente aparta su lugar sin que tú intervengas, y tú administras todo desde tu panel.</p>
         <ul>
-          <li>Todo lo de Publicación</li>
-          <li><b>Aviso automático al negocio</b> con el folio y los datos de quién asiste — es lo que convierte los cupos en clientes para el aliado</li>
-          <li><b>Reservar con acompañantes</b>, con la garantía probada de que no haya sobreventa</li>
-          <li><b>Sección de comunidad</b></li>
-          <li><b>«Lleva The Sunny Project a tu institución»</b> — el canal para empresas y escuelas que ya te están preguntando</li>
-          <li>Tus puntos físicos de bienestar integrados al sitio</li>
-          <li>Portada reorganizada para que se lea completa desde el celular</li>
+          <li>Todo lo del Producto 1</li>
+          <li><b>Cuentas de usuario</b> con acceso por correo, sin contraseñas</li>
+          <li><b>Reservaciones automáticas:</b> el cupo baja solo y se cierra al llenarse</li>
+          <li><b>Folio</b> en pantalla y por correo, con cancelación hasta 12 horas antes</li>
+          <li><b>Aviso automático al negocio</b> con los datos de quién asiste</li>
+          <li><b>Reservar con acompañantes</b></li>
+          <li><b>Tu panel:</b> publicas experiencias, ves quién viene, marcas asistencia, apruebas negocios</li>
+          <li>Registro de negocios desde el sitio, con bandeja de solicitudes</li>
+          <li>Secciones de comunidad y de experiencias para instituciones</li>
         </ul>
+        <p class="meta"><b>Tiempo:</b> construido · 3 semanas para abrirlo al público · <b>Acompañamiento:</b> Plataforma</p>
       </div>
 
-      <div class="tier">
-        <div class="tier-head">
-          <h3>Suscripción y membresía</h3>
+      <div class="p">
+        <div class="p-head">
+          <h3>Producto 3 · Membresía</h3>
           <span class="price">Etapa siguiente</span>
         </div>
-        <p>Cobro recurrente, comunidad privada para suscriptores y programa de puntos por invitar.</p>
+        <p class="sub">Cobro mensual a los usuarios, comunidad privada y programa de puntos por invitar.</p>
         <ul>
-          <li>Se cotiza cuando definamos el modelo — hoy todavía no está cerrado</li>
-          <li>Rango orientativo: $45,000 a $70,000 según el alcance</li>
-          <li>Conviene hacerlo después del lanzamiento, con datos reales de qué usa la gente</li>
+          <li>Suscripción con cobro recurrente y niveles gratuito y de paga</li>
+          <li>Comunidad privada para suscriptores</li>
+          <li>Puntos por invitar y compartir</li>
         </ul>
+        <p class="meta">Se cotiza cuando definamos el modelo de cobro. <b>Rango orientativo: $45,000 a $70,000.</b> Conviene hacerlo después del lanzamiento, con datos reales de qué usa la gente.</p>
       </div>
 
     </div>
   </section>
 
   <section>
-    <p class="eyebrow">Acompañamiento</p>
-    <h2>Mantenimiento — $6,000 al mes</h2>
+    <p class="eyebrow">Acompañamiento mensual</p>
+    <h2>Depende del producto que elijas</h2>
     <p>
-      Una plataforma con base de datos no se queda quieta: las herramientas se actualizan,
-      salen parches de seguridad y siempre hay ajustes. Para que sepas exactamente qué
-      estás pagando, lo dejo por escrito.
+      Un sitio informativo casi no necesita atención. Una plataforma con base de datos sí:
+      las herramientas se actualizan, salen parches de seguridad y siempre hay ajustes.
     </p>
+    <table>
+      <thead>
+        <tr><th scope="col">Plan</th><th scope="col">Para</th><th scope="col">Mensual</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>Básico</b><span>En línea, respaldos y hasta 2 h de cambios de contenido</span></td>
+          <td>Producto 1</td>
+          <td>$1,800</td>
+        </tr>
+        <tr>
+          <td><b>Plataforma</b><span>Todo lo anterior, más seguridad, base de datos y hasta 4 h de cambios</span></td>
+          <td>Producto 2</td>
+          <td>$6,000</td>
+        </tr>
+        <tr>
+          <td><b>Membresía</b><span>Todo lo anterior, más atención a cobros y soporte a suscriptores</span></td>
+          <td>Producto 3</td>
+          <td>$8,500</td>
+        </tr>
+      </tbody>
+    </table>
 
     <div class="split">
       <div class="box">
-        <h3>Incluye</h3>
+        <h3>Siempre incluye</h3>
         <ul>
           <li>Que el sitio siga en línea y funcionando</li>
-          <li>Corrección de cualquier falla, sin costo extra</li>
-          <li>Actualizaciones de seguridad y de las herramientas</li>
-          <li>Respaldos de la base de datos</li>
-          <li>Soporte por WhatsApp o correo, con respuesta en 48 horas hábiles</li>
-          <li><b>Hasta 4 horas al mes de cambios menores</b>: textos, fotos, precios, ajustes de contenido</li>
+          <li>Corrección de fallas, sin costo extra</li>
+          <li>Actualizaciones de seguridad</li>
+          <li>Respaldos de la información</li>
+          <li>Soporte por WhatsApp, respuesta en 48 h hábiles</li>
+          <li>Las horas de cambios menores del plan: textos, fotos, fechas, precios</li>
         </ul>
       </div>
       <div class="box excl">
-        <h3>No incluye</h3>
+        <h3>Nunca incluye</h3>
         <ul>
           <li>Funciones nuevas</li>
           <li>Rediseño de secciones</li>
           <li>Integraciones con otros servicios</li>
-          <li>Creación de contenido, textos o fotografía</li>
-          <li>Costos de infraestructura (dominio, alojamiento y correo van a tu nombre y a tu cuenta)</li>
+          <li>Redacción de textos y fotografía</li>
+          <li>Dominio, alojamiento y correo (van a tu nombre y a tu cuenta)</li>
         </ul>
       </div>
     </div>
 
     <div class="highlight">
-      Lo que caiga fuera se cotiza aparte, con <b>tarifa preferente para clientes con
-      mantenimiento activo</b>. Las 4 horas mensuales no se acumulan de un mes a otro.
+      Las horas de cambios <b>no se acumulan</b> de un mes a otro. Lo que caiga fuera se
+      cotiza aparte, con tarifa preferente mientras el acompañamiento esté activo.
       <br><br>
-      <b>Con la opción recomendada, el primer mes de mantenimiento va sin costo.</b>
+      <b>El primer mes va sin costo con cualquiera de los tres planes.</b>
     </div>
   </section>
 
   <section>
     <p class="eyebrow">Condiciones</p>
-    <h2>Forma de pago y tiempos</h2>
+    <h2>Pago</h2>
     <table>
       <tbody>
-        <tr><td><b>40 % al aceptar</b><span>Para arrancar con lo pendiente</span></td><td>$30,000</td></tr>
-        <tr><td><b>30 % al publicar</b><span>Cuando el sitio esté abierto y funcionando</span></td><td>$22,500</td></tr>
-        <tr><td><b>30 % a 30 días</b><span>Después de que lo hayas usado un mes completo</span></td><td>$22,500</td></tr>
+        <tr><td><b>40 % al aceptar</b></td><td>Para arrancar</td></tr>
+        <tr><td><b>30 % al publicar</b></td><td>Sitio abierto y funcionando</td></tr>
+        <tr><td><b>30 % a 30 días</b></td><td>Después de un mes de uso</td></tr>
       </tbody>
     </table>
-    <p style="margin-top:1.25rem">
-      Cifras de la opción recomendada. Tiempo estimado para dejarlo abierto al público:
-      <b>3 a 4 semanas</b> a partir de que tenga el dominio, tus fotografías y los primeros
-      negocios reales.
-    </p>
   </section>
 
   <section>
     <p class="eyebrow">Para arrancar</p>
     <h2>Lo que necesito de tu lado</h2>
     <ol>
-      <li><b>El dominio</b> que vamos a usar. Sin dominio propio los correos no pueden salir a tu nombre, y es lo único que impide abrir hoy.</li>
-      <li><b>Fotografías reales</b> de las clases y los espacios aliados. Las actuales son de referencia.</li>
+      <li><b>El dominio</b> del proyecto. Sin dominio propio los correos no salen a tu nombre, y es lo único que impide abrir hoy.</li>
+      <li><b>Fotografías reales</b> de las clases y los espacios. Las actuales son de referencia.</li>
       <li><b>Los primeros negocios de verdad</b>, con nombre y contacto.</li>
-      <li><b>Cuántos pases</b> quieres dar por persona durante el lanzamiento.</li>
+      <li><b>Cuántos pases</b> por persona durante el lanzamiento.</li>
     </ol>
   </section>
 
   <footer>
-    Precios en pesos mexicanos. <b>Vigencia de esta propuesta: 15 días naturales.</b>
+    Precios en pesos mexicanos, antes de impuestos. <b>Vigencia: 15 días naturales.</b>
     La infraestructura (dominio, alojamiento, base de datos y servicio de correo) se
     contrata a nombre de The Sunny Project y no está incluida en estos montos.
   </footer>
