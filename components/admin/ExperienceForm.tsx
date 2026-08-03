@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import type { ActionResult } from "@/lib/actions/profile";
 import { CATEGORIES } from "@/lib/constants";
+import { SOCIAL_MODES, SOCIAL_MODE_KEYS } from "@/lib/social-modes";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
 import type { Business, Experience } from "@/lib/database.types";
 
@@ -127,6 +128,51 @@ export function ExperienceForm({
         <textarea id="instructions" name="instructions" rows={3} defaultValue={experience?.instructions ?? ""} className="input" />
       </Field>
 
+      <Field label="Beneficio posterior (opcional)" htmlFor="post_benefit">
+        <input
+          id="post_benefit"
+          name="post_benefit"
+          defaultValue={experience?.post_benefit ?? ""}
+          placeholder="Ej. 20% en su primera mensualidad"
+          className="input"
+        />
+      </Field>
+
+      {/* Group allowance. Defaults to 1 for every new experience — group
+          size is opt-in, never the default (decision 8). */}
+      <Field label="Lugares por reservación" htmlFor="max_party_size">
+        <select id="max_party_size" name="max_party_size" defaultValue={String(experience?.max_party_size ?? 1)} className="input">
+          <option value="1">1 — individual</option>
+          <option value="2">2 — permite un acompañante</option>
+          <option value="3">3 — permite dos acompañantes</option>
+        </select>
+        <p className="text-xs text-neutral-500">
+          Los lugares de los acompañantes se descuentan del cupo total. El máximo del MVP es 3.
+        </p>
+      </Field>
+
+      {/* Modality is explicit, never inferred: an experience shows only the
+          badges Emmy actually ticks here. */}
+      <fieldset className="flex flex-col gap-2">
+        <legend className="text-sm font-medium text-neutral-700">Modalidad social</legend>
+        <p className="text-xs text-neutral-500">
+          Marca solo lo que sea cierto para esta experiencia. Aparecen como etiquetas en el sitio.
+        </p>
+        <div className="grid gap-2 sm:grid-cols-2">
+          {SOCIAL_MODE_KEYS.map((key) => (
+            <label key={key} className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                name="social_modes"
+                value={key}
+                defaultChecked={(experience?.social_modes ?? []).includes(key)}
+              />
+              {SOCIAL_MODES[key].label}
+            </label>
+          ))}
+        </div>
+      </fieldset>
+
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="Estado" htmlFor="status">
           <select id="status" name="status" defaultValue={experience?.status ?? "draft"} className="input">
@@ -136,13 +182,19 @@ export function ExperienceForm({
             <option value="completed">Finalizada</option>
           </select>
         </Field>
-        <label className="mt-6 flex items-center gap-2 text-sm">
-          <input type="checkbox" name="featured" defaultChecked={experience?.featured} />
-          Marcar como destacada
-        </label>
+        <div className="mt-6 flex flex-col gap-2">
+          <label className="flex items-center gap-2 text-sm">
+            <input type="checkbox" name="featured" defaultChecked={experience?.featured} />
+            Marcar como destacada
+          </label>
+          <label className="flex items-center gap-2 text-sm">
+            <input type="checkbox" name="is_original" defaultChecked={experience?.is_original ?? false} />
+            Es un Sunny Original
+          </label>
+        </div>
       </div>
 
-      {state.error && !state.fieldErrors && <p className="text-sm text-orange-600">{state.error}</p>}
+      {state.error && !state.fieldErrors && <p className="text-sm text-orange-ink">{state.error}</p>}
 
       <button type="submit" disabled={pending} className="w-fit rounded-md bg-neutral-900 px-5 py-2.5 text-sm font-medium text-white disabled:opacity-50">
         {pending ? "Guardando…" : submitLabel}
@@ -168,7 +220,7 @@ function Field({
         {label}
       </label>
       {children}
-      {error && <p className="text-xs text-orange-600">{error}</p>}
+      {error && <p className="text-xs text-orange-ink">{error}</p>}
     </div>
   );
 }

@@ -5,22 +5,150 @@
   --color-carbon: #171714;
   --color-sunny: #f8d347;
   --color-orange: #ff7a3d;
+  /* The same brand orange, darkened until it is legible AS TEXT.
+     `--color-orange` is a *fill* colour: at #ff7a3d it scores 2.29:1 against
+     ivory and 2.56:1 under warm-white, so every orange word on the site —
+     the hero's second line, the eyebrows, the step numerals, and every form
+     error message — failed WCAG AA. Error text was the worst of it: the
+     copy a person most needs to read was the hardest to read.
+     #bf4408 keeps the hue and scores 4.60:1 on ivory and 5.12:1 with
+     warm-white on top, so it passes AA for small text in both directions.
+     Rule: `orange` fills and outlines, `orange-ink` letters and icons.
+     Verified with axe-core; see SUNNY_DESIGN_QA_REPORT.md. */
+  --color-orange-ink: #bf4408;
   --color-warm-white: #fffdfc;
   --color-gray: #6d6d65;
+  /* The one deliberately narrow secondary. Two sanctioned uses only:
+     the Sunny Original seal and the "Conoce gente nueva" badge.
+     See SUNNY_VISUAL_DIRECTION_1_0.md §1. */
+  --color-pine: #2f4739;
+
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  /* Las tarjetas ya usaban 16, 20 y 24 px por su cuenta: 31 usos fuera de
+     escala, casi todos en el elemento que más se repite en el sitio. En vez
+     de forzarlas a 14 y cambiar el aspecto, el sistema sube su tope a 16 y
+     todo lo que estaba suelto aterriza aquí. */
+  --radius-xl: 16px;
+
+  /* Sistema de movimiento 1.0 — la escala vive en lib/motion.ts, esto es su
+     mitad en CSS. Los nombres y los valores son los mismos a propósito: antes
+     había dos escalas de tiempo que no se conocían entre sí (JS usaba 250,
+     350, 400, 600, 650; CSS usaba 150, 200, 300, 500) y coincidían en dos
+     valores por accidente, no por decisión.
+     Ver SUNNY_MOTION_SYSTEM_1_0.md. */
+  --motion-tint: 150ms;
+  --motion-nudge: 250ms;
+  --motion-collapse: 300ms;
+  --motion-enter: 500ms;
+
+  /* Cuánto esperar antes de admitir que algo va lento. Por debajo de este
+     umbral, un indicador de carga aparece y desaparece en un parpadeo y lo
+     único que transmite es nerviosismo. Mismo valor que PENDING_DELAY_MS en
+     lib/motion.ts, y la misma técnica que recomienda la documentación de Next
+     para `useLinkStatus`: empezar invisible y entrar con `animation-delay`. */
+  --motion-pending-delay: 100ms;
 }
 
 @theme inline {
+  /* cubic-bezier(0.22, 1, 0.36, 1) — ease-out-quint, la curva del producto.
+     Arranca rápido y frena largo: la interfaz responde en el primer fotograma
+     y el elemento se posa en vez de estrellarse. No rebota nunca.
+     Ya era la curva de facto (20 de 22 transiciones en JS) antes de tener
+     nombre; esto no la cambia, la escribe. */
+  --ease-sunny: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Lo que se lleva `transition-colors` a secas, que son 28 sitios del
+     proyecto — casi todos botones y enlaces del panel. Cambiando el valor por
+     defecto se alinean los 28 sin tocar ni una clase, que es justo lo que no
+     pasó la última vez y por eso el panel se quedó con la curva de Tailwind
+     mientras el sitio público usaba la suya. */
+  --default-transition-duration: var(--motion-tint);
+  --default-transition-timing-function: var(--ease-sunny);
+
   --color-ivory: var(--color-ivory);
   --color-carbon: var(--color-carbon);
   --color-sunny: var(--color-sunny);
   --color-orange: var(--color-orange);
+  --color-orange-ink: var(--color-orange-ink);
   --color-warm-white: var(--color-warm-white);
   --color-gray: var(--color-gray);
+  --color-pine: var(--color-pine);
 
   --font-sans: var(--font-manrope);
   --font-serif: var(--font-newsreader);
 
+  /* Named type scale, adopted from Coda's `type-*` pattern (see
+     SUNNY_REFERENCE_ANALYSIS.md §2). Sections must use these instead of
+     inventing per-section sizes — inconsistent type is the main reason a
+     page reads as a template.
+
+     Esto no era retórico: una auditoría encontró que 72 títulos usaban
+     tamaños sueltos de Tailwind contra 50 que usaban la escala, así que
+     subir el peso del display solo se notaba en 2 de 12 páginas. Si añades
+     un título, usa la escala.
+
+     Qué escalón toca:
+       · `display`  — el h1 de una página de marketing, SOLO cuando dispone
+                      del ancho completo del contenedor. En una columna
+                      estrecha se parte en cinco líneas; ahí va `title`.
+       · `title`    — h1 de páginas de utilidad y legales, y encabezados de
+                      sección dentro del contenido.
+       · `subtitle` — títulos de tarjeta y de página del panel.
+       · `heading`  — subtítulos dentro de una tarjeta o un bloque.
+     Y no acompañes ninguno de `font-semibold`: el peso lo fija el token, y
+     600 lo pisaría. */
+  /* Weight and tracking carry the personality here, because the family is
+     fixed. Manrope at 600 with loose-ish tracking is the default any project
+     lands on — it reads as "a website" rather than as Sunny. Manrope is a
+     variable font (200–800), so pushing display to 800 and pulling the
+     tracking in costs nothing at load time and makes the headline dense and
+     poster-like instead of merely large. Leading tightens with it, otherwise
+     heavier type at the old 0.98 drifts apart. */
+  --text-display: clamp(2.5rem, 6.5vw, 4.75rem);
+  --text-display--line-height: 0.92;
+  --text-display--letter-spacing: -0.045em;
+  --text-display--font-weight: 800;
+
+  --text-title: clamp(1.875rem, 3.6vw, 3rem);
+  --text-title--line-height: 1.02;
+  --text-title--letter-spacing: -0.032em;
+  --text-title--font-weight: 700;
+
+  --text-subtitle: clamp(1.375rem, 2.2vw, 1.875rem);
+  --text-subtitle--line-height: 1.12;
+  --text-subtitle--letter-spacing: -0.022em;
+  --text-subtitle--font-weight: 700;
+
+  --text-heading: 1.125rem;
+  --text-heading--line-height: 1.3;
+  --text-heading--letter-spacing: -0.01em;
+  --text-heading--font-weight: 600;
+
+  --text-body-l: 1.0625rem;
+  --text-body-l--line-height: 1.6;
+
+  --text-body: 1rem;
+  --text-body--line-height: 1.6;
+
+  --text-small: 0.875rem;
+  --text-small--line-height: 1.5;
+
+  --text-label: 0.6875rem;
+  --text-label--line-height: 1.2;
+  --text-label--letter-spacing: 0.14em;
+  --text-label--font-weight: 600;
+
+  --radius-xs: var(--radius-xs);
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+
   --animate-fade-in: fade-in 0.4s ease-out;
+  --animate-marquee: marquee 46s linear infinite;
 
   @keyframes fade-in {
     from {
@@ -31,6 +159,79 @@
       opacity: 1;
       transform: translateY(0);
     }
+  }
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+}
+
+/**
+ * Grano fino sobre la fotografía del hero.
+ *
+ * No es un efecto de estilo, es una compensación técnica. La única fotografía
+ * disponible mide 736 px de ancho y el hero la estira a 1920: ese escalado
+ * deja bandas suaves y bordes blandos. Un grano muy tenue rompe las bandas y
+ * el ojo lee «fotografía con textura» en lugar de «imagen ampliada».
+ *
+ * El ruido va incrustado como SVG (`feTurbulence`) en vez de como archivo:
+ * son ~200 bytes en el CSS y no añade una petición más al camino crítico de
+ * la primera pantalla.
+ */
+.hero-grain {
+  pointer-events: none;
+  opacity: 0.16;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/**
+ * Señal de «esto está en curso» — para acciones del panel y para navegaciones
+ * que tardan.
+ *
+ * Empieza invisible y entra tras `--motion-pending-delay`, así que una acción
+ * rápida no llega a mostrarla. El elemento SIEMPRE está montado y con tamaño,
+ * de modo que no desplaza nada al aparecer: solo cambia de opacidad.
+ *
+ * Es la técnica que la documentación de Next recomienda para `useLinkStatus`,
+ * aplicada aquí también a los botones del panel, que sufrían el mismo
+ * problema.
+ */
+.pending-indicator {
+  opacity: 0;
+  animation: pending-in var(--motion-tint) ease forwards;
+  animation-delay: var(--motion-pending-delay);
+}
+
+/**
+ * La contraparte: la etiqueta que el indicador va a tapar. Se desvanece con
+ * EXACTAMENTE el mismo retraso.
+ *
+ * Sin esto el arreglo se convertía en otro defecto: la etiqueta desaparecía al
+ * instante y el indicador tardaba 100 ms, así que toda acción rápida enseñaba
+ * un botón vacío durante una décima de segundo. Con los dos sincronizados, una
+ * acción de 80 ms no produce ningún cambio visible más allá de que el botón
+ * queda desactivado — que es justo lo que debe pasar.
+ */
+.pending-label {
+  animation: pending-out var(--motion-tint) ease forwards;
+  animation-delay: var(--motion-pending-delay);
+}
+
+@keyframes pending-in {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pending-out {
+  to {
+    opacity: 0;
   }
 }
 
@@ -47,12 +248,28 @@
 
 html {
   scroll-behavior: smooth;
+  /* Accidental horizontal scroll is explicitly out of bounds (brief §40).
+     `clip` rather than `hidden` on purpose: `hidden` would turn the root
+     into a scroll container and break `position: sticky` on the header and
+     the catalogue filter bar.
+     This is a backstop, not a way to hide content — QA verified with
+     Playwright that no element's right edge exceeds the viewport at 375,
+     390, 430, 768, 1024 or 1440 on any page. Without it the document still
+     reported ~41px of empty scrollable width at widths below 900. */
+  overflow-x: clip;
 }
 
 body {
   background: var(--color-ivory);
   color: var(--color-carbon);
   font-family: var(--font-sans);
+}
+
+/* Long headlines break into even lines instead of leaving a single word
+   stranded on the last line. */
+h1,
+h2 {
+  text-wrap: balance;
 }
 
 ::selection {
@@ -65,9 +282,41 @@ body {
   outline-offset: 2px;
 }
 
+/* Small uppercase label that locates a section above its headline
+   (Coda's `eyebrow`). The one sanctioned place all-caps appears in body
+   content — headings never use it. */
+.eyebrow {
+  font-size: var(--text-label);
+  line-height: var(--text-label--line-height);
+  letter-spacing: var(--text-label--letter-spacing);
+  font-weight: var(--text-label--font-weight);
+  text-transform: uppercase;
+  color: var(--color-orange-ink);
+}
+
+/* Native horizontal carousels (adopted from Eight Sleep — browser scroll
+   instead of a JS drag implementation, so touch swipe and reduced-motion
+   come for free). The scrollbar is hidden, but every one of these tracks
+   also exposes visible affordances: snap points plus arrow or pill
+   controls — never a hidden scrollbar as the only cue. */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Fades the left/right edges of a horizontal track so it reads as
+   continuing past the viewport rather than being cut off. */
+.mask-fade-x {
+  mask-image: linear-gradient(to right, transparent, black 4rem, black calc(100% - 4rem), transparent);
+}
+
 /* Admin form fields (functional/neutral styling, per PRODUCT_SPEC.md §9 admin exemption). */
 .input {
-  border-radius: 0.5rem;
+  border-radius: var(--radius-sm);
   border: 1px solid rgb(212 212 212);
   background-color: white;
   padding: 0.5rem 0.75rem;

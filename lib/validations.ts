@@ -33,13 +33,42 @@ export const accountUpdateSchema = z.object({
 
 export type AccountUpdateInput = z.infer<typeof accountUpdateSchema>;
 
-export const claimReservationSchema = z.object({
-  experienceId: z.string().uuid(),
-  source: z.string().trim().max(60).optional().nullable(),
-  acknowledgement: z.boolean().refine((v) => v === true, {
-    message: "Debes confirmar las condiciones del pase antes de continuar.",
-  }),
+/**
+ * One companion. Full name required, email optional (decisions 2 and 5 in
+ * SUNNY_MVP_1_1_DECISIONS.md). The empty string is coerced to undefined so a
+ * blank optional email field doesn't fail email validation.
+ */
+export const companionSchema = z.object({
+  full_name: z.string().trim().min(2, "Escribe el nombre completo del acompañante.").max(120),
+  email: z
+    .string()
+    .trim()
+    .max(200)
+    .optional()
+    .transform((v) => (v ? v : undefined))
+    .pipe(z.string().email("Escribe un correo válido o déjalo vacío.").optional()),
 });
+
+export const claimReservationSchema = z
+  .object({
+    experienceId: z.string().uuid(),
+    source: z.string().trim().max(60).optional().nullable(),
+    /**
+     * People this reservation covers, holder included. Capped at the MVP
+     * ceiling here; the per-experience `max_party_size` is enforced inside
+     * claim_reservation(), which is the only check that actually protects
+     * capacity (this one just avoids a pointless round trip).
+     */
+    partySize: z.coerce.number().int().min(1).max(3).default(1),
+    companions: z.array(companionSchema).max(2).default([]),
+    acknowledgement: z.boolean().refine((v) => v === true, {
+      message: "Debes confirmar las condiciones del pase antes de continuar.",
+    }),
+  })
+  .refine((data) => data.companions.length === data.partySize - 1, {
+    message: "Faltan nombres de acompañantes para el número de lugares elegido.",
+    path: ["companions"],
+  });
 
 export type ClaimReservationInput = z.infer<typeof claimReservationSchema>;
 
@@ -102,6 +131,16 @@ export const experienceSchema = z
     capacity: z.coerce.number().int().min(1, "El cupo debe ser al menos 1.").max(1000),
     status: z.enum(["draft", "published", "cancelled", "completed"]).default("draft"),
     featured: z.boolean().default(false),
+    /**
+     * Group allowance. Capped at the MVP ceiling of 3 (decision 4/15) and
+     * defaulting to 1, so an experience is individual unless Emmy says
+     * otherwise (decision 8) — group size is never the default.
+     */
+    max_party_size: z.coerce.number().int().min(1).max(3).default(1),
+    is_original: z.boolean().default(false),
+    /** Validated against lib/social-modes.ts; unknown keys are dropped, not stored. */
+    social_modes: z.array(z.string()).default([]),
+    post_benefit: z.string().trim().max(300).optional().or(z.literal("")),
     what_is_included: z.array(z.string().trim().max(200)).default([]),
     requirements: z.array(z.string().trim().max(200)).default([]),
     restrictions: z.array(z.string().trim().max(200)).default([]),

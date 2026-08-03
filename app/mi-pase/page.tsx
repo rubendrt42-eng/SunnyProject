@@ -30,6 +30,21 @@ export default async function MiPasePage() {
   const supabase = await createClient();
   const reservation = await getActiveWeeklyReservation(supabase, user.id);
 
+  /**
+   * Companions for the active pass. The table only exists after the group
+   * migration, so a failed query means "not migrated yet" rather than
+   * "broken" — the pass renders exactly as before with an empty group.
+   */
+  let companions: { id: string; full_name: string }[] = [];
+  if (reservation) {
+    const { data, error } = await supabase
+      .from("reservation_companions")
+      .select("id, full_name")
+      .eq("reservation_id", reservation.id)
+      .neq("status", "cancelled");
+    if (!error) companions = (data ?? []) as { id: string; full_name: string }[];
+  }
+
   const isLivePass = reservation && reservation.status === "confirmed" && !isPast(reservation.experience.starts_at);
   const isUsedPass = reservation && !isLivePass;
 
@@ -40,10 +55,10 @@ export default async function MiPasePage() {
     return (
       <main className="py-14 sm:py-20">
         <Container className="max-w-2xl">
-          <p className="text-sm font-medium uppercase tracking-wide text-orange">Tu pase</p>
-          <h1 className="mt-1 font-serif text-4xl italic">{experience.title}</h1>
+          <p className="eyebrow">Tu pase</p>
+          <h1 className="mt-3 text-title">{experience.title}</h1>
 
-          <div className="mt-8 rounded-2xl border border-carbon/10 bg-warm-white p-8">
+          <div className="mt-8 rounded-xl border border-carbon/10 bg-warm-white p-8">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-sm text-gray">Folio</p>
@@ -53,8 +68,14 @@ export default async function MiPasePage() {
             </div>
 
             <dl className="mt-6 grid grid-cols-[auto_1fr] gap-x-4 gap-y-3 text-sm">
-              <dt className="font-medium text-gray">Nombre</dt>
+              <dt className="font-medium text-gray">Titular</dt>
               <dd>{user.profile?.full_name}</dd>
+              {companions.length > 0 && (
+                <>
+                  <dt className="font-medium text-gray">Lugares</dt>
+                  <dd>{companions.length + 1}</dd>
+                </>
+              )}
               <dt className="font-medium text-gray">Negocio</dt>
               <dd>{experience.business.name}</dd>
               <dt className="font-medium text-gray">Fecha</dt>
@@ -68,6 +89,20 @@ export default async function MiPasePage() {
                 </>
               )}
             </dl>
+
+            {companions.length > 0 && (
+              <div className="mt-6 rounded-lg border border-carbon/10 p-4">
+                <p className="text-label text-gray">Vas con</p>
+                <ul className="mt-2 flex flex-col gap-1 text-body">
+                  {companions.map((companion) => (
+                    <li key={companion.id}>{companion.full_name}</li>
+                  ))}
+                </ul>
+                <p className="mt-3 text-small text-gray">
+                  Presenta tu folio al llegar: cubre todo el grupo. Si cancelas, se cancelan todos los lugares.
+                </p>
+              </div>
+            )}
 
             {experience.instructions && (
               <div className="mt-6 rounded-xl bg-sunny/20 p-4 text-sm">
@@ -87,9 +122,9 @@ export default async function MiPasePage() {
               </LinkButton>
             </div>
 
-            <p className="mt-6 text-xs text-gray">
-              Tu pase es personal, no transferible y no admite acompañantes. Puedes cancelar hasta{" "}
-              {CANCELLATION_WINDOW_HOURS} horas antes del inicio.
+            <p className="mt-6 text-small text-gray">
+              Tu pase es personal y no transferible. Puedes cancelar hasta {CANCELLATION_WINDOW_HOURS} horas antes del
+              inicio.
             </p>
 
             <div className="mt-6">
@@ -105,7 +140,7 @@ export default async function MiPasePage() {
     return (
       <main className="py-14 sm:py-20">
         <Container className="max-w-2xl">
-          <h1 className="font-serif text-4xl italic">Ya utilizaste tu pase de esta semana</h1>
+          <h1 className="text-title">Ya utilizaste tu pase de esta semana</h1>
           <p className="mt-3 text-gray">
             Reservaste <strong>{reservation.experience.title}</strong>. Tu siguiente pase estará disponible el lunes{" "}
             {nextMondayLabel()}.
@@ -130,7 +165,7 @@ export default async function MiPasePage() {
   return (
     <main className="py-14 sm:py-20">
       <Container>
-        <h1 className="font-serif text-4xl italic">Tienes 1 pase disponible esta semana</h1>
+        <h1 className="text-title">Tienes 1 pase disponible esta semana</h1>
         <p className="mt-3 max-w-xl text-gray">
           Elige una experiencia y reclama tu lugar. Tu pase se renueva cada lunes.
         </p>

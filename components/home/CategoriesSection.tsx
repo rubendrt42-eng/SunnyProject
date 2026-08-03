@@ -3,7 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { clsx } from "clsx";
-import { AnimatePresence, motion } from "motion/react";
+import { useReducedMotion, AnimatePresence, motion } from "motion/react";
+import { EASE, MOTION } from "@/lib/motion";
 import { LinkButton } from "@/components/ui/Button";
 import { ManagedPhoto } from "@/components/ui/ManagedPhoto";
 import { CATEGORIES } from "@/lib/constants";
@@ -22,12 +23,23 @@ const CATEGORY_COPY: Record<Category, string> = {
 };
 
 /** Stable cover photo per category — independent of which experience happens to be published this week. */
-const CATEGORY_COVER: Record<Category, string> = {
-  movimiento: "/demo-assets/pilates.webp",
-  recovery: "/demo-assets/recovery.webp",
-  food_coffee: "/demo-assets/coffee.webp",
-  outdoor: "/demo-assets/paddle.webp",
-  comunidad: "/demo-assets/community.webp",
+/**
+ * Cover photo per category, pointing at the committed Sunny media library.
+ *
+ * These used to point at /demo-assets/*.webp, files deleted two phases ago —
+ * so every category tile rendered the "missing photo" state. Caught in QA
+ * screenshots, where the panel showed an empty box even for a category that
+ * does have photography.
+ *
+ * `outdoor` is deliberately absent: nothing in the attached assets depicts an
+ * outdoor experience (see SUNNY_ASSET_MANIFEST.md §6), so it keeps the honest
+ * missing-photo state rather than borrowing an unrelated image.
+ */
+const CATEGORY_COVER: Partial<Record<Category, string>> = {
+  movimiento: "/media/sunny/categories/category-movimiento-01.webp",
+  recovery: "/media/sunny/experiences/experience-recovery-breathwork-01.webp",
+  food_coffee: "/media/sunny/categories/category-food-coffee-01.webp",
+  comunidad: "/media/sunny/community/community-gathering-01.webp",
 };
 
 /**
@@ -42,6 +54,10 @@ export function CategoriesSection({
   experiences: ExperienceWithBusiness[];
   availableAssets: string[];
 }) {
+  // Sin desplazamiento cuando se ha pedido menos movimiento. El bloque global
+  // de globals.css no alcanza esto: anula transiciones y animaciones de CSS,
+  // y esto es un transform animado desde JavaScript.
+  const still = useReducedMotion() ?? false;
   const [active, setActive] = useState<Category>(CATEGORIES[0].value);
 
   const activeExperiences = experiences.filter((e) => e.category === active).slice(0, 3);
@@ -57,7 +73,7 @@ export function CategoriesSection({
             onClick={() => setActive(c.value)}
             aria-pressed={active === c.value}
             className={clsx(
-              "shrink-0 rounded-xl border px-5 py-2.5 text-sm font-medium transition-colors duration-200",
+              "shrink-0 rounded-xl border px-5 py-2.5 text-sm font-medium transition-colors duration-[var(--motion-nudge)]",
               active === c.value ? "border-carbon bg-carbon text-warm-white" : "border-carbon/15 hover:border-carbon",
             )}
           >
@@ -70,11 +86,11 @@ export function CategoriesSection({
         <AnimatePresence mode="wait">
           <motion.div
             key={active}
-            initial={{ opacity: 0, y: 8 }}
+            initial={{ opacity: 0, y: still ? 0 : 8 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="relative aspect-[4/3] w-full overflow-hidden rounded-[20px]"
+            exit={{ opacity: 0, y: still ? 0 : -8 }}
+            transition={{ duration: MOTION.panel, ease: EASE }}
+            className="relative aspect-[4/3] w-full overflow-hidden rounded-xl"
           >
             <ManagedPhoto url={CATEGORY_COVER[active]} availableAssets={availableAssets} alt="" sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
           </motion.div>
@@ -83,12 +99,12 @@ export function CategoriesSection({
         <AnimatePresence mode="wait">
           <motion.div
             key={active}
-            initial={{ opacity: 0, y: 8 }}
+            initial={{ opacity: 0, y: still ? 0 : 8 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.35, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
+            exit={{ opacity: 0, y: still ? 0 : -8 }}
+            transition={{ duration: MOTION.panel, delay: 0.05, ease: EASE }}
           >
-            <h3 className="text-2xl font-semibold">{activeLabel}</h3>
+            <h3 className="text-subtitle">{activeLabel}</h3>
             <p className="mt-2 max-w-md text-gray">{CATEGORY_COPY[active]}</p>
 
             {activeExperiences.length > 0 ? (

@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "motion/react";
 import type { ReactNode } from "react";
+import { EASE, MOTION } from "@/lib/motion";
 
 /**
  * Fades + lifts a block (paragraph, CTA row) in on mount, after `delay`.
@@ -23,7 +24,7 @@ export function LineReveal({
       className={className}
       initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: prefersReducedMotion ? 0 : delay, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: MOTION.enter, delay: prefersReducedMotion ? 0 : delay, ease: EASE }}
     >
       {children}
     </motion.div>

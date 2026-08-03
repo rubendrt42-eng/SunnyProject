@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useId } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { EASE, MOTION } from "@/lib/motion";
 import { X } from "lucide-react";
 import type { ReactNode } from "react";
 
@@ -23,6 +24,10 @@ export function AnimatedModal({
   children: ReactNode;
 }) {
   const titleId = useId();
+  // Sin desplazamiento cuando se ha pedido menos movimiento: entra y sale solo
+  // con opacidad. El bloque global de globals.css no alcanza esto — anula
+  // transiciones y animaciones de CSS, y esto es un transform desde JavaScript.
+  const still = useReducedMotion() ?? false;
 
   useEffect(() => {
     if (!open) return;
@@ -50,7 +55,7 @@ export function AnimatedModal({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
+            transition={{ duration: MOTION.scrim, ease: EASE }}
             onClick={onClose}
             aria-hidden
           />
@@ -58,14 +63,14 @@ export function AnimatedModal({
             role="dialog"
             aria-modal="true"
             aria-labelledby={titleId}
-            className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl bg-warm-white p-6 sm:p-8"
-            initial={{ opacity: 0, y: 24, scale: 0.98 }}
+            className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl bg-warm-white p-6 sm:p-8"
+            initial={{ opacity: 0, y: still ? 0 : 24, scale: still ? 1 : 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 12, scale: 0.98 }}
-            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            exit={{ opacity: 0, y: still ? 0 : 12, scale: still ? 1 : 0.98 }}
+            transition={{ duration: MOTION.collapse, ease: EASE }}
           >
             <div className="flex items-start justify-between gap-4">
-              <h2 id={titleId} className="font-serif text-2xl italic">
+              <h2 id={titleId} className="text-subtitle">
                 {title}
               </h2>
               <button

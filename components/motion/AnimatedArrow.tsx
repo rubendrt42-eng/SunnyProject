@@ -11,7 +11,7 @@ export function AnimatedArrow({ className }: { className?: string }) {
       viewBox="0 0 24 24"
       fill="none"
       className={clsx(
-        "h-4 w-4 shrink-0 transition-transform duration-300 ease-out group-hover:translate-x-1 group-focus-visible:translate-x-1",
+        "h-4 w-4 shrink-0 transition-transform duration-[var(--motion-collapse)] ease-sunny group-hover:translate-x-1 group-focus-visible:translate-x-1",
         className,
       )}
     >

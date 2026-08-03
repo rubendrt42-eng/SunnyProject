@@ -36,19 +36,19 @@ export default async function HistorialPage() {
   return (
     <main className="py-14 sm:py-20">
       <Container>
-        <h1 className="font-serif text-4xl italic">Mi historial</h1>
+        <h1 className="text-title">Mi historial</h1>
         <p className="mt-2 text-gray">Todas tus experiencias confirmadas, canceladas y asistidas.</p>
 
         {reservations.length === 0 ? (
-          <div className="mt-12 rounded-2xl border border-dashed border-carbon/20 p-12 text-center">
-            <p className="font-serif text-2xl italic">Aún no tienes historial</p>
+          <div className="mt-12 rounded-xl border border-dashed border-carbon/20 p-12 text-center">
+            <p className="text-subtitle">Aún no tienes historial</p>
             <p className="mt-2 text-gray">Reclama tu primer pase para empezar a construir tu historial.</p>
             <LinkButton href="/experiencias" className="mt-6">
               Explorar experiencias
             </LinkButton>
           </div>
         ) : (
-          <ul className="mt-10 flex flex-col divide-y divide-carbon/10 rounded-2xl border border-carbon/10 bg-warm-white">
+          <ul className="mt-10 flex flex-col divide-y divide-carbon/10 rounded-xl border border-carbon/10 bg-warm-white">
             {reservations.map((r) => (
               <li key={r.id} className="flex flex-col gap-2 p-6 sm:flex-row sm:items-center sm:justify-between">
                 <div>

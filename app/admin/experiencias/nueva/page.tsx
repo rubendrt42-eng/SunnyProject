@@ -13,7 +13,7 @@ export default async function NuevaExperienciaPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold">Nueva experiencia</h1>
+      <h1 className="text-subtitle">Nueva experiencia</h1>
       <div className="mt-6">
         <ExperienceForm action={createExperienceAction} businesses={(data ?? []) as Business[]} submitLabel="Crear experiencia" />
       </div>

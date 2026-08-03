@@ -23,7 +23,7 @@ export default async function EditNegocioPage({ params }: { params: Promise<{ id
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold">{(business as Business).name}</h1>
+      <h1 className="text-subtitle">{(business as Business).name}</h1>
       <div className="mt-6">
         <BusinessForm action={action} business={business as Business} submitLabel="Guardar cambios" />
       </div>

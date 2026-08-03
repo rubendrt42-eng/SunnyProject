@@ -15,19 +15,19 @@
 -- This is also the idempotent fix for stale `image_url` values on rows
 -- that already exist in production: every insert below is `on conflict
 -- (slug) do update set ... image_url = excluded.image_url, ...`, so
--- re-running this script re-asserts the correct /demo-assets/*.webp path
+-- re-running this script re-asserts the correct /media/sunny/**/*.webp path
 -- on each of the 6 demo experiences without creating duplicates.
 
 begin;
 
 insert into public.businesses (name, slug, description, category, active, contact_name, contact_email, logo_url)
 values
-  ('Studio Norte', 'studio-norte', 'Estudio boutique de movimiento en San Pedro. [Demostración]', 'movimiento', true, 'Studio Norte Team', 'hola@studionorte.demo', '/images/placeholder-1.svg'),
-  ('Reset Lab', 'reset-lab', 'Laboratorio de recovery y bienestar en Monterrey. [Demostración]', 'recovery', true, 'Reset Lab Team', 'hola@resetlab.demo', '/images/placeholder-2.svg'),
-  ('Casa Clara', 'casa-clara', 'Café de especialidad en Barrio Antiguo. [Demostración]', 'food_coffee', true, 'Casa Clara Team', 'hola@casaclara.demo', '/images/placeholder-3.svg'),
-  ('Agua Club', 'agua-club', 'Club de actividades acuáticas en Santiago. [Demostración]', 'outdoor', true, 'Agua Club Team', 'hola@aguaclub.demo', '/images/placeholder-4.svg'),
-  ('Norte Run Club', 'norte-run-club', 'Comunidad de corredores en San Pedro. [Demostración]', 'comunidad', true, 'Norte Run Club Team', 'hola@norterunclub.demo', '/images/placeholder-1.svg'),
-  ('Lumen Studio', 'lumen-studio', 'Estudio de yoga y movimiento consciente en Monterrey. [Demostración]', 'movimiento', true, 'Lumen Studio Team', 'hola@lumenstudio.demo', '/images/placeholder-2.svg')
+  ('Studio Norte', 'studio-norte', 'Estudio boutique de movimiento en San Pedro. [Demostración]', 'movimiento', true, 'Studio Norte Team', 'hola@studionorte.demo', null),
+  ('Reset Lab', 'reset-lab', 'Laboratorio de recovery y bienestar en Monterrey. [Demostración]', 'recovery', true, 'Reset Lab Team', 'hola@resetlab.demo', null),
+  ('Casa Clara', 'casa-clara', 'Café de especialidad en Barrio Antiguo. [Demostración]', 'food_coffee', true, 'Casa Clara Team', 'hola@casaclara.demo', null),
+  ('Club Norte Pádel', 'club-norte-padel', 'Club de pádel con canchas de cristal en Valle Oriente. [Demostración]', 'movimiento', true, 'Club Norte Team', 'hola@clubnortepadel.demo', null),
+  ('Norte Run Club', 'norte-run-club', 'Comunidad de corredores en San Pedro. [Demostración]', 'comunidad', true, 'Norte Run Club Team', 'hola@norterunclub.demo', null),
+  ('Lumen Studio', 'lumen-studio', 'Estudio de yoga y movimiento consciente en Monterrey. [Demostración]', 'movimiento', true, 'Lumen Studio Team', 'hola@lumenstudio.demo', null)
 on conflict (slug) do update set
   name = excluded.name,
   description = excluded.description,
@@ -46,12 +46,12 @@ insert into public.experiences (
 values
   (
     (select id from public.businesses where slug = 'studio-norte'),
-    'Pilates Reformer Intro [Demostración]',
-    'pilates-reformer-intro-demo',
-    'Clase introductoria de pilates reformer para todos los niveles.',
-    'Clase introductoria de pilates reformer para personas que quieren probar el método por primera vez. Experiencia de demostración para Sunny Project.',
+    'Mat Pilates Intro [Demostración]',
+    'mat-pilates-intro-demo',
+    'Clase introductoria de mat pilates para todos los niveles.',
+    'Clase introductoria de mat pilates en tapete, con pelota y props, para personas que quieren probar el método por primera vez. Experiencia de demostración para Sunny Project.',
     'movimiento',
-    '/demo-assets/pilates.webp',
+    '/media/sunny/experiences/experience-mat-pilates-01.webp',
     'Studio Norte — San Pedro',
     'Av. Gómez Morín 1000, San Pedro Garza García',
     'https://maps.google.com/?q=Studio+Norte+San+Pedro',
@@ -69,12 +69,12 @@ values
   ),
   (
     (select id from public.businesses where slug = 'reset-lab'),
-    'Recovery Contrast Session [Demostración]',
-    'recovery-contrast-session-demo',
-    'Sesión guiada de sauna, baño frío y movilidad.',
-    'Sesión guiada de sauna, baño frío y movilidad para recuperación física. Experiencia de demostración para Sunny Project.',
+    'Recovery & Breathwork [Demostración]',
+    'recovery-breathwork-demo',
+    'Sesión guiada de respiración y movilidad para bajar el ritmo.',
+    'Sesión guiada de respiración consciente y movilidad suave, en grupo pequeño y con luz baja, para cerrar la semana bajando el ritmo. Experiencia de demostración para Sunny Project.',
     'recovery',
-    '/demo-assets/recovery.webp',
+    '/media/sunny/experiences/experience-recovery-breathwork-01.webp',
     'Reset Lab — Monterrey',
     'Av. Constitución 500, Monterrey Centro',
     'https://maps.google.com/?q=Reset+Lab+Monterrey',
@@ -85,10 +85,10 @@ values
     8,
     'published',
     false,
-    array['Sauna', 'Baño frío', 'Movilidad guiada'],
-    array['Traje de baño', 'Toalla'],
-    array['No recomendado para personas con condiciones cardiacas sin autorización médica'],
-    'Llega con traje de baño puesto. Los casilleros están disponibles en recepción.'
+    array['Guía de respiración', 'Tapete', 'Props de movilidad'],
+    array['Ropa cómoda', 'Calcetines'],
+    array['Si estás en tratamiento respiratorio, consulta a tu médico antes de asistir'],
+    'Llega 10 minutos antes. La sesión empieza en punto y no se puede entrar después.'
   ),
   (
     (select id from public.businesses where slug = 'casa-clara'),
@@ -97,7 +97,7 @@ values
     'Degustación guiada de tres cafés de especialidad.',
     'Degustación guiada de tres cafés de especialidad y explicación de sus procesos. Experiencia de demostración para Sunny Project.',
     'food_coffee',
-    '/demo-assets/coffee.webp',
+    '/media/sunny/experiences/experience-coffee-tasting-01.webp',
     'Casa Clara — Barrio Antiguo',
     'Calle Padre Mier 300, Barrio Antiguo, Monterrey',
     'https://maps.google.com/?q=Casa+Clara+Barrio+Antiguo',
@@ -114,27 +114,27 @@ values
     'Pregunta por la mesa de degustación de Sunny Project al llegar.'
   ),
   (
-    (select id from public.businesses where slug = 'agua-club'),
-    'Sunrise Paddle [Demostración]',
-    'sunrise-paddle-demo',
-    'Paddle board al amanecer con equipo e introducción para principiantes.',
-    'Experiencia de paddle board al amanecer con equipo e introducción para principiantes. Experiencia de demostración para Sunny Project.',
-    'outdoor',
-    '/demo-assets/paddle.webp',
-    'Agua Club — Santiago',
-    'Presa La Boca, Santiago, Nuevo León',
-    'https://maps.google.com/?q=Presa+La+Boca+Santiago',
-    date_trunc('day', now()) + interval '6 days' + interval '7 hours',
-    date_trunc('day', now()) + interval '6 days' + interval '9 hours',
+    (select id from public.businesses where slug = 'club-norte-padel'),
+    'Pádel Mix-In [Demostración]',
+    'padel-mixin-demo',
+    'Partidos rotativos de pádel para conocer gente, con palas incluidas.',
+    'Sesión de pádel con formato mix-in: cambias de pareja cada set, así que juegas con varias personas en la misma hora. Incluye palas y pelotas, y hay una explicación breve al inicio para quien nunca ha jugado. Experiencia de demostración para Sunny Project.',
+    'movimiento',
+    '/media/sunny/experiences/experience-padel-mixin-01.webp',
+    'Club Norte Pádel — Valle Oriente',
+    'Av. Lázaro Cárdenas, Valle Oriente, San Pedro Garza García',
+    'https://maps.google.com/?q=Valle+Oriente+San+Pedro+Garza+Garcia',
+    date_trunc('day', now()) + interval '6 days' + interval '19 hours',
+    date_trunc('day', now()) + interval '6 days' + interval '21 hours',
     now(),
-    date_trunc('day', now()) + interval '6 days' + interval '7 hours',
+    date_trunc('day', now()) + interval '6 days' + interval '19 hours',
     8,
     'published',
     false,
-    array['Tabla', 'Remo', 'Chaleco', 'Instrucción inicial'],
-    array['Saber nadar', 'Ropa que pueda mojarse'],
-    array['No recomendado para personas que no saben nadar'],
-    'Llega al muelle principal de Agua Club 15 minutos antes del amanecer.'
+    array['Pala de pádel', 'Pelotas', 'Cancha', 'Explicación inicial para principiantes'],
+    array['Ropa deportiva', 'Tenis de suela lisa'],
+    array['Aforo por cancha limitado a 4 personas'],
+    'Llega 10 minutos antes a la recepción del club y pregunta por el Mix-In de Sunny.'
   ),
   (
     (select id from public.businesses where slug = 'norte-run-club'),
@@ -143,7 +143,7 @@ values
     'Carrera social de 5 km seguida de café y convivencia.',
     'Carrera social de cinco kilómetros seguida de café y convivencia. Experiencia de demostración para Sunny Project.',
     'comunidad',
-    '/demo-assets/run-club.webp',
+    '/media/sunny/originals/original-run-and-coffee-01.webp',
     'Norte Run Club — San Pedro',
     'Parque Fundidora Sur, San Pedro Garza García',
     'https://maps.google.com/?q=San+Pedro+Garza+Garcia',
@@ -166,7 +166,7 @@ values
     'Clase de yoga al atardecer para todos los niveles.',
     'Clase de yoga al atardecer para todos los niveles. Experiencia de demostración para Sunny Project.',
     'movimiento',
-    '/demo-assets/yoga.webp',
+    '/media/sunny/experiences/experience-sunset-yoga-01.webp',
     'Lumen Studio — Monterrey',
     'Av. Chepevera 250, Monterrey',
     'https://maps.google.com/?q=Lumen+Studio+Monterrey',

@@ -1,21 +1,117 @@
 import { NextResponse, type NextRequest } from "next/server";
+import type { EmailOtpType } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
 import { env } from "@/lib/env";
+
+/**
+ * Safe, non-sensitive diagnostics only — never a token, code, cookie, or
+ * email. Added while investigating a real magic-link failure on Vercel
+ * Preview: this route previously logged nothing at all, so there was no
+ * way to tell from Vercel's runtime logs whether it was even being reached,
+ * let alone what Supabase actually sent it. See SUNNY_MVP_1_1_DECISIONS.md /
+ * the MVP 1.1 magic-link investigation for the full writeup.
+ */
+function logCallback(fields: {
+  callbackHost: string;
+  hasCode: boolean;
+  hasTokenHash: boolean;
+  hasErrorCode: boolean;
+  exchangeSucceeded: boolean;
+  sessionUserPresent: boolean;
+  redirectDestination: string;
+}) {
+  console.log("[auth/callback]", JSON.stringify(fields));
+}
 
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
   const nextParam = searchParams.get("next");
-  const next = nextParam && nextParam.startsWith("/") ? nextParam : "/mi-pase";
+  // See the matching comment in app/acceso/page.tsx: also reject
+  // protocol-relative URLs ("//evil.com"), not just anything starting with "/".
+  const next = nextParam && nextParam.startsWith("/") && !nextParam.startsWith("//") ? nextParam : "/mi-pase";
 
   // Supabase redirects here with `error_code`/`error_description` (no `code`)
   // when the link itself is already dead — e.g. expired or already used —
   // rather than a valid code that fails on exchange. Surface that distinction
   // to /acceso instead of a single generic error.
   const errorCode = searchParams.get("error_code");
+  const tokenHash = searchParams.get("token_hash");
+  const otpType = searchParams.get("type");
+  const hasTokenHash = Boolean(tokenHash);
+
+  /**
+   * Camino `token_hash` — el que funciona cuando el enlace se abre en un
+   * navegador distinto al que pidió el acceso.
+   *
+   * `@supabase/ssr` usa PKCE por defecto: al enviar el formulario guarda un
+   * `code_verifier` en una cookie de ESE navegador, y `exchangeCodeForSession`
+   * lo necesita. Pero los enlaces de correo casi nunca se abren en el mismo
+   * navegador: Gmail —y WhatsApp, e Instagram— los abren en su propio
+   * navegador integrado, que tiene su propio almacén de cookies. Sin el
+   * verificador el intercambio falla y la persona vuelve a la pantalla de
+   * acceso sin sesión, que es exactamente como se reportó el fallo.
+   *
+   * `verifyOtp` con `token_hash` no usa verificador: valida el token contra
+   * Supabase desde el servidor y escribe las cookies de sesión aquí. Por eso
+   * funciona abras donde abras el enlace.
+   *
+   * Se comprueba ANTES que `code` a propósito: si llegan los dos, este es el
+   * que no depende del navegador.
+   *
+   * Requiere que la plantilla de correo apunte a esta ruta con `token_hash`
+   * — ver SUNNY_COMO_PROBARLO.md.
+   */
+  if (tokenHash && otpType) {
+    const supabase = await createClient();
+    const { data, error } = await supabase.auth.verifyOtp({
+      type: otpType as EmailOtpType,
+      token_hash: tokenHash,
+    });
+
+    if (!error && data.user) {
+      await bootstrapAdminRole(data.user.id, data.user.email ?? "");
+      const nextUrl = new URL(`${origin}${await destinationAfterLogin(next)}`);
+      nextUrl.searchParams.set("bienvenido", "1");
+      logCallback({
+        callbackHost: origin,
+        hasCode: false,
+        hasTokenHash: true,
+        hasErrorCode: false,
+        exchangeSucceeded: true,
+        sessionUserPresent: true,
+        redirectDestination: nextUrl.toString(),
+      });
+      return NextResponse.redirect(nextUrl);
+    }
+
+    const reason = error?.code === "otp_expired" ? "expired" : "generic";
+    const destination = `${origin}/acceso?error=${reason}`;
+    logCallback({
+      callbackHost: origin,
+      hasCode: false,
+      hasTokenHash: true,
+      hasErrorCode: Boolean(error),
+      exchangeSucceeded: false,
+      sessionUserPresent: false,
+      redirectDestination: destination,
+    });
+    return NextResponse.redirect(destination);
+  }
+
   if (!code) {
     const reason = errorCode === "otp_expired" ? "expired" : errorCode ? "generic" : null;
-    return NextResponse.redirect(reason ? `${origin}/acceso?error=${reason}` : `${origin}/acceso`);
+    const destination = reason ? `${origin}/acceso?error=${reason}` : `${origin}/acceso`;
+    logCallback({
+      callbackHost: origin,
+      hasCode: false,
+      hasTokenHash,
+      hasErrorCode: Boolean(errorCode),
+      exchangeSucceeded: false,
+      sessionUserPresent: false,
+      redirectDestination: destination,
+    });
+    return NextResponse.redirect(destination);
   }
 
   const supabase = await createClient();
@@ -23,21 +119,89 @@ export async function GET(request: NextRequest) {
 
   if (error || !data.user) {
     const reason = error?.code === "otp_expired" ? "expired" : "generic";
-    return NextResponse.redirect(`${origin}/acceso?error=${reason}`);
+    const destination = `${origin}/acceso?error=${reason}`;
+    logCallback({
+      callbackHost: origin,
+      hasCode: true,
+      hasTokenHash,
+      hasErrorCode: Boolean(errorCode),
+      exchangeSucceeded: false,
+      sessionUserPresent: false,
+      redirectDestination: destination,
+    });
+    return NextResponse.redirect(destination);
   }
 
   await bootstrapAdminRole(data.user.id, data.user.email ?? "");
 
-  const nextUrl = new URL(`${origin}${next}`);
+  const nextUrl = new URL(`${origin}${await destinationAfterLogin(next)}`);
   nextUrl.searchParams.set("bienvenido", "1");
+  logCallback({
+    callbackHost: origin,
+    hasCode: true,
+    hasTokenHash,
+    hasErrorCode: Boolean(errorCode),
+    exchangeSucceeded: true,
+    sessionUserPresent: true,
+    redirectDestination: nextUrl.toString(),
+  });
   return NextResponse.redirect(nextUrl);
 }
 
 /**
- * Promotes ADMIN_EMAIL to the admin role on first login. Uses the
- * service-role client server-side only — never exposed to the browser,
- * and the profiles.role column can't be changed by the client anyway
- * (see trg_prevent_role_self_update).
+ * A dónde mandar a alguien recién autenticado.
+ *
+ * Si su perfil está incompleto, a completarlo — no a donde iba.
+ *
+ * El recorrido anterior pedía el perfil al pulsar «reservar», es decir en el
+ * momento de máxima intención, que es el peor sitio posible para plantar un
+ * formulario: la persona ya eligió una experiencia y se encuentra un trámite
+ * entre ella y su lugar. Pedirlo justo después del primer acceso lo pone en el
+ * único momento en que todavía no hay nada que perder, y de paso evita que la
+ * reservación falle por `PROFILE_INCOMPLETE` cuando ya se dio por hecha.
+ *
+ * El destino original viaja en `destino` para poder ofrecer «continuar» al
+ * terminar. Se valida igual que `next`: solo rutas internas.
+ */
+async function destinationAfterLogin(next: string): Promise<string> {
+  try {
+    const { getCurrentUser, isProfileComplete } = await import("@/lib/auth");
+    const user = await getCurrentUser();
+    if (isProfileComplete(user?.profile ?? null)) return next;
+
+    const destino = next && next !== "/mi-cuenta" ? `?destino=${encodeURIComponent(next)}` : "";
+    return `/mi-cuenta${destino}`;
+  } catch {
+    // Si la comprobación falla por cualquier motivo, no bloquear el acceso:
+    // el guardia de la reservación sigue en pie más adelante.
+    return next;
+  }
+}
+
+/**
+ * Promotes ADMIN_EMAIL to the admin role on login, creating the profile row
+ * if it is missing. Uses the service-role client server-side only — never
+ * exposed to the browser, and the profiles.role column can't be changed by
+ * the client anyway (see trg_prevent_role_self_update).
+ *
+ * This used to be a bare UPDATE, guarded by `if (profile && ...)`, which
+ * meant that when the profile row did not exist it silently did nothing —
+ * and the admin never got access no matter how many times they signed in.
+ *
+ * That is not hypothetical: it is exactly what happened on this project.
+ * `public.profiles` normally gets its row from the `on_auth_user_created`
+ * trigger, but the only account in the database was created BEFORE the
+ * migrations that installed that trigger. So the account had a valid
+ * session and four successful logins recorded in the Auth logs, while
+ * `profiles` held zero rows — which made `requireAdmin()` refuse /admin and
+ * `isProfileComplete()` refuse every reservation. From the outside it looked
+ * exactly like "login doesn't work".
+ *
+ * An upsert makes the callback self-healing: any account whose profile row is
+ * missing for any reason gets one on next sign-in. Only `id` and `role` are
+ * written — `full_name` and the two consent timestamps are the user's own
+ * data and are left for them to fill in via ProfileCompletionForm. Filling
+ * those in on their behalf would fabricate a consent.
  */
 async function bootstrapAdminRole(userId: string, email: string) {
   if (!env.adminEmail || !env.supabaseServiceRoleKey) return;
@@ -46,11 +210,10 @@ async function bootstrapAdminRole(userId: string, email: string) {
   try {
     const { createAdminClient } = await import("@/lib/supabase/admin");
     const admin = createAdminClient();
-    const { data: profile } = await admin.from("profiles").select("role").eq("id", userId).maybeSingle();
 
-    if (profile && profile.role !== "admin") {
-      await admin.from("profiles").update({ role: "admin" }).eq("id", userId);
-    }
+    const { error } = await admin.from("profiles").upsert({ id: userId, role: "admin" }, { onConflict: "id" });
+
+    if (error) console.error("[auth/callback] admin bootstrap failed", error.message);
   } catch (err) {
     console.error("[auth/callback] admin bootstrap failed", err);
   }

@@ -3,7 +3,7 @@ import { setExperienceStatusAction, toggleFeaturedAction, duplicateExperienceAct
 import { CancelExperienceButton } from "@/components/admin/CancelExperienceButton";
 import type { Experience } from "@/lib/database.types";
 
-export function ExperienceActions({ experience }: { experience: Experience }) {
+export function ExperienceActions({ experience, affectedPeople }: { experience: Experience; affectedPeople: number }) {
   const publish = setExperienceStatusAction.bind(null, experience.id, "published");
   const unpublish = setExperienceStatusAction.bind(null, experience.id, "draft");
   const toggleFeatured = toggleFeaturedAction.bind(null, experience.id, !experience.featured);
@@ -43,7 +43,7 @@ export function ExperienceActions({ experience }: { experience: Experience }) {
         Vista previa
       </Link>
       {experience.status !== "cancelled" && (
-        <CancelExperienceButton experienceId={experience.id} />
+        <CancelExperienceButton experienceId={experience.id} affectedPeople={affectedPeople} title={experience.title} />
       )}
     </div>
   );

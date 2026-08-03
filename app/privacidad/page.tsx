@@ -7,7 +7,7 @@ export default function PrivacidadPage() {
   return (
     <main className="py-16 sm:py-24">
       <Container className="max-w-2xl">
-        <h1 className="font-serif text-4xl italic">Aviso de privacidad</h1>
+        <h1 className="text-title">Aviso de privacidad</h1>
         <p className="mt-2 text-sm text-gray">Última actualización: proyecto de demostración.</p>
 
         <div className="mt-10 space-y-8 text-carbon">

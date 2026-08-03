@@ -2,6 +2,14 @@ import type { Category } from "@/lib/database.types";
 
 export const TIMEZONE = "America/Monterrey";
 
+/**
+ * Sunny's public handle, kept in one place so the footer and the community
+ * section can't drift apart. Same handle the footer has carried since the
+ * first build — not a new claim about an account.
+ */
+export const INSTAGRAM_HANDLE = "sunnyproject.mx";
+export const INSTAGRAM_URL = `https://instagram.com/${INSTAGRAM_HANDLE}`;
+
 export const CATEGORIES: { value: Category; label: string }[] = [
   { value: "movimiento", label: "Movimiento" },
   { value: "recovery", label: "Recovery" },
@@ -17,6 +25,15 @@ export function categoryLabel(category: Category | string | null | undefined): s
 export const LOW_CAPACITY_THRESHOLD = 3;
 
 export const CANCELLATION_WINDOW_HOURS = 12;
+
+/**
+ * Absolute ceiling on how many people a single reservation may cover in the
+ * MVP — decision 4 / decision 15 in SUNNY_MVP_1_1_DECISIONS.md. Enforced in
+ * three independent places: this clamp on read, the Zod schema on the
+ * claim request, and a CHECK constraint in the migration. The database is
+ * the only one that actually protects capacity.
+ */
+export const MAX_PARTY_SIZE_CEILING = 3;
 
 /** Error codes raised by claim_reservation() / cancel_reservation(), mapped to user-facing copy. */
 export const RESERVATION_ERROR_MESSAGES: Record<string, string> = {
