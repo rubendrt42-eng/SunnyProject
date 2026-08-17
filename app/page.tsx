@@ -1,268 +1,185 @@
+import type { Metadata } from "next";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
-import {
-  getFeaturedExperience,
-  getFeaturedPartners,
-  getPublicExperiences,
-  getActiveWeeklyReservation,
-  getUserReservationHistory,
-} from "@/lib/queries";
-import { getCurrentUser, isProfileComplete } from "@/lib/auth";
-import { determineCta } from "@/lib/experience-cta";
-import { listAvailableDemoAssets } from "@/lib/assets.server";
-import { isOriginal } from "@/lib/experience-flags";
-import { displayTitle } from "@/lib/demo-content";
+// lucide-react ya no incluye iconos de marca (los retiró por licencia),
+// así que Instagram va con `AtSign`, que es el símbolo con el que se nombra
+// una cuenta y se lee igual de claro junto a la palabra «Instagram».
+import { AtSign, Mail, MessageCircle } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { LinkButton } from "@/components/ui/Button";
-import { FaqList } from "@/components/site/FaqList";
-import { Hero } from "@/components/home/Hero";
-import { ExperienceMarquee } from "@/components/home/ExperienceMarquee";
-import { ThisWeekSection } from "@/components/home/ThisWeekSection";
-import { IntentSelector } from "@/components/home/IntentSelector";
-import { WhatIsSunny } from "@/components/home/WhatIsSunny";
-import { HowItWorksNarrative } from "@/components/home/HowItWorksNarrative";
-import { CommunitySection } from "@/components/home/CommunitySection";
-import { OriginalsSection } from "@/components/home/OriginalsSection";
-import { CategoriesSection } from "@/components/home/CategoriesSection";
-import { PartnersSection } from "@/components/home/PartnersSection";
-import { PassShowcase } from "@/components/home/PassShowcase";
-import { ForBusinessSection } from "@/components/home/ForBusinessSection";
 import { InViewReveal } from "@/components/motion/InViewReveal";
-import { isPast } from "@/lib/dates";
-
-export const dynamic = "force-dynamic";
-
-/**
- * Three real questions with real answers. The companion question used to
- * say "No, el pase es individual, personal y no transferible" — that copy
- * is now wrong in two directions (brief §39): companions are a configured
- * per-experience allowance, so the honest answer is "depends on the
- * experience, and it will say so".
- */
-const FAQ_PREVIEW = [
-  {
-    q: "¿Cuánto cuesta?",
-    a: "Nada. Cada semana tienes un pase gratuito para reservar un lugar en una experiencia disponible.",
-  },
-  {
-    q: "¿Puedo llevar a alguien?",
-    a: "Depende de la experiencia. Cada una indica cuántos lugares admite por reservación; cuando permite acompañante lo dice en la tarjeta y en su página. El pase sigue siendo tuyo y respondes por tu grupo.",
-  },
-  {
-    q: "¿Qué pasa si no puedo ir?",
-    a: "Puedes cancelar desde \"Mi pase\" hasta 12 horas antes y recuperas tu pase para reservar otra experiencia esa misma semana.",
-  },
-];
+import { WhatIsSunny } from "@/components/home/WhatIsSunny";
+import { CommunitySection } from "@/components/home/CommunitySection";
+import { FaqList } from "@/components/site/FaqList";
+import { LeanHero } from "@/components/lean/LeanHero";
+import { ExperienceGrid } from "@/components/lean/ExperienceGrid";
+import { HowItWorks } from "@/components/lean/HowItWorks";
+import { getSiteSettings, getUpcomingExperiences } from "@/lib/sanity/queries";
+import { DEFAULT_SETTINGS, whatsappLink } from "@/lib/lean-content";
 
 /**
- * Home section order follows the narrative priority in the brief §11:
- * EMOCIÓN → EXPERIENCIAS → PROPÓSITO → FUNCIONAMIENTO → COMUNIDAD → PARTICIPACIÓN.
+ * Portada del MVP lean.
  *
- * The important structural change from the previous build is that "Cómo
- * funciona" no longer comes before the person has seen anything they could
- * actually do — the same ordering decision Phamily makes (inventory before
- * mechanism). Two sections are conditional on real data and disappear
- * entirely when it is absent: Sunny Originals (needs a flagged experience)
- * and Espacios aliados (needs `featured_as_partner`).
+ * OCHO SECCIONES, NO TRECE
  *
- * No two consecutive sections use the same composition — see
- * SUNNY_VISUAL_DIRECTION_1_0.md §8 for the anti-template rule this enforces.
+ * La versión anterior tenía trece secciones y catorce encabezados compitiendo:
+ * 12.496 px en escritorio y 15.052 px en móvil, casi dieciocho pantallas de
+ * scroll. Medido. En la práctica, todo lo que iba después de la sexta sección
+ * no existía para quien entra desde el teléfono — y ahí vivían el formulario de
+ * negocios y las preguntas frecuentes.
+ *
+ * Esta portada responde las preguntas en el orden en que se hacen —qué es,
+ * qué hay ahora, cómo le hago, con quién, quién más está, dudas— y termina.
+ *
+ * Se revalida cada minuto: lo que Emmy publica en Sanity aparece aquí sin que
+ * nadie toque código ni redespliegue nada.
  */
+/**
+ * 60 segundos. Tiene que ser un número literal: Next analiza esta
+ * configuración de forma estática en el build y una constante importada no la
+ * puede leer — falla con «Invalid segment configuration export». El mismo
+ * valor vive nombrado en SANITY_REVALIDATE_SECONDS para las consultas.
+ */
+export const revalidate = 60;
+
+export const metadata: Metadata = {
+  title: "The Sunny Project — Experiencias en Monterrey",
+  description:
+    "Experiencias locales para salir de la rutina, conocer gente y formar parte de una comunidad que busca crecer.",
+};
+
 export default async function HomePage() {
-  const supabase = await createClient();
-  const user = await getCurrentUser();
-  const availableAssets = listAvailableDemoAssets();
+  // Una sola llamada por dato y en paralelo. Las dos comparten caché con el
+  // resto del sitio a través de sus etiquetas, así que abrir el catálogo
+  // después no vuelve a pedir lo mismo.
+  const [experiences, settings] = await Promise.all([getUpcomingExperiences(), getSiteSettings()]);
 
-  const [featured, { data: all }, activeWeekly, history, partners] = await Promise.all([
-    getFeaturedExperience(supabase),
-    getPublicExperiences(supabase),
-    user ? getActiveWeeklyReservation(supabase, user.id) : Promise.resolve(null),
-    user ? getUserReservationHistory(supabase, user.id) : Promise.resolve([]),
-    getFeaturedPartners(supabase),
-  ]);
-
-  const upcomingPublished = all.filter((e) => e.status === "published" && !isPast(e.starts_at));
-  const weekItems = [...(featured ? [featured] : []), ...upcomingPublished.filter((e) => e.id !== featured?.id)].slice(0, 6);
-  const originals = upcomingPublished.filter(isOriginal);
-
-  const reservedExperienceIds = new Set(
-    history.filter((r) => r.status === "confirmed" || r.status === "attended" || r.status === "no_show").map((r) => r.experience_id),
-  );
-
-  const ctaByExperienceId: Record<string, ReturnType<typeof determineCta>["type"]> = {};
-  for (const experience of weekItems) {
-    ctaByExperienceId[experience.id] = determineCta({
-      experience,
-      isAuthenticated: Boolean(user),
-      isProfileComplete: isProfileComplete(user?.profile ?? null),
-      hasReservationForThisExperience: reservedExperienceIds.has(experience.id),
-      hasActivePassElsewhere: Boolean(activeWeekly) && activeWeekly?.experience_id !== experience.id,
-    }).type;
-  }
+  const s = { ...DEFAULT_SETTINGS, ...(settings ?? {}) };
+  const destacadas = experiences.slice(0, 6);
 
   return (
     <main>
-      {/* 2. Hero — fotografía a sangre completa, contenido anclado abajo.
-          Los dos números son reales: se cuentan de lo que hay publicado, así
-          que una semana floja dice la verdad en vez de presumir. */}
-      <Hero
-        experienceCount={upcomingPublished.length}
-        venueCount={new Set(upcomingPublished.map((e) => e.business_id)).size}
-      />
+      <LeanHero title={s.heroTitle} subtitle={s.heroSubtitle} experienceCount={experiences.length} />
 
-      {/* 3. Cinta de experiencias — real names, slow, pausable */}
-      <ExperienceMarquee items={upcomingPublished.map((e) => ({ slug: e.slug, title: displayTitle(e.title) }))} />
-
-      {/* 4. Esta semana en Sunny — destacada a lo ancho + el resto en fila */}
+      {/* 1. Qué hay ahora. Va antes de explicar nada: primero se ve que hay
+          algo que vale la pena, después se explica el mecanismo. */}
       <section className="py-20 sm:py-28">
         <Container>
-          {/* Centrado y con una medida ancha a propósito. Antes el titular
-              vivía en `max-w-xl` (576 px medidos) alineado a la izquierda,
-              con "Ver todas" empujado al extremo derecho: en una pantalla de
-              escritorio eso dejaba medio ancho vacío arriba de la sección.
-              Centrado a `max-w-4xl` el texto ocupa el espacio en vez de
-              dejarlo colgando. */}
-          <InViewReveal className="text-center">
-            <p className="eyebrow">Esta semana en Sunny</p>
-            <h2 className="mx-auto mt-3 max-w-4xl text-title text-balance">
-              Planes seleccionados para moverte, recuperarte, conectar y probar algo diferente.
+          <InViewReveal>
+            <p className="eyebrow">Esta semana</p>
+            <h2 className="mt-3 max-w-2xl text-title text-balance">
+              Planes para moverte, recuperarte, conectar y probar algo diferente.
             </h2>
-            <Link
-              href="/experiencias"
-              className="mt-5 inline-block text-small font-medium text-carbon underline decoration-carbon/30 underline-offset-4 hover:decoration-carbon"
-            >
-              Ver todas
-            </Link>
           </InViewReveal>
-          {weekItems.length > 0 ? (
-            <div className="mt-10">
-              <ThisWeekSection experiences={weekItems} ctaByExperienceId={ctaByExperienceId} availableAssets={availableAssets} />
+
+          <div className="mt-10">
+            <ExperienceGrid experiences={destacadas} />
+          </div>
+
+          {experiences.length > destacadas.length && (
+            <div className="mt-10 text-center">
+              <LinkButton href="/experiencias" variant="secondary" arrow>
+                Ver las {experiences.length} experiencias
+              </LinkButton>
             </div>
-          ) : (
-            <p className="mt-10 text-gray">Pronto publicaremos nuevas experiencias. Vuelve pronto.</p>
           )}
         </Container>
       </section>
 
-      {/* 5. Selector por intención — interactive chips, warm white */}
-      {upcomingPublished.length > 0 && (
-        <section className="bg-warm-white py-20 sm:py-28">
-          <Container>
-            <InViewReveal>
-              <p className="eyebrow">Navega por lo que quieres</p>
-              <h2 className="mt-3 text-title">¿Qué buscas esta semana?</h2>
-            </InViewReveal>
-            <div className="mt-8">
-              <IntentSelector experiences={upcomingPublished} availableAssets={availableAssets} />
-            </div>
-          </Container>
-        </section>
-      )}
-
-      {/* 6. Qué es Sunny Project — editorial split with Emmy */}
-      <section id="que-es-sunny" className="scroll-mt-24 py-20 sm:py-28">
+      {/* 2. Qué es Sunny. */}
+      <section id="que-es-sunny" className="scroll-mt-24 bg-warm-white py-20 sm:py-28">
         <Container>
           <WhatIsSunny />
         </Container>
       </section>
 
-      {/* 7. Cómo funciona — sticky numbered narrative on desktop, vertical on mobile */}
-      <section className="bg-warm-white py-20 sm:py-28">
-        <Container>
-          <InViewReveal>
-            <p className="eyebrow">El recorrido</p>
-            <h2 className="mt-3 text-title">Salir de la rutina no debería ser complicado.</h2>
-          </InViewReveal>
-        </Container>
-        <div className="mt-14">
-          <HowItWorksNarrative experiences={weekItems.slice(0, 2)} availableAssets={availableAssets} />
-        </div>
-      </section>
-
-      {/* 8. Comunidad — contrast chapter, offset photo pair */}
-      <section id="comunidad" className="scroll-mt-24 bg-carbon py-24 text-warm-white sm:py-32">
-        <Container>
-          <CommunitySection />
-        </Container>
-      </section>
-
-      {/* 9. Sunny Originals — only when a real Original exists */}
-      {originals.length > 0 && (
-        <section className="bg-pine py-20 sm:py-28">
-          <Container>
-            <OriginalsSection experiences={originals} availableAssets={availableAssets} />
-          </Container>
-        </section>
-      )}
-
-      {/* 10. Categorías — photo/copy switch per category */}
-      <section className="bg-ivory py-20 sm:py-28">
-        <Container>
-          <InViewReveal>
-            <p className="eyebrow">Explora según lo que buscas</p>
-            <h2 className="mt-3 text-title">Cinco formas de salir de la rutina.</h2>
-          </InViewReveal>
-          <div className="mt-10">
-            <CategoriesSection experiences={upcomingPublished} availableAssets={availableAssets} />
-          </div>
-        </Container>
-      </section>
-
-      {/* 11. Espacios aliados — only when a business is explicitly featured */}
-      {partners.length > 0 && (
-        <section className="bg-warm-white py-20 sm:py-28">
-          <Container>
-            <PartnersSection businesses={partners} />
-          </Container>
-        </section>
-      )}
-
-      {/* 12. Pase semanal — real session state, contrast panel */}
-      <section className="bg-carbon py-20 text-warm-white sm:py-28">
-        <Container>
-          <PassShowcase user={user} activeWeekly={activeWeekly} />
-        </Container>
-      </section>
-
-      {/* 13. Para negocios — soft orange, opens the real form in a modal */}
-      <section className="bg-orange/10 py-20 sm:py-28">
-        <Container>
-          <ForBusinessSection availableAssets={availableAssets} />
-        </Container>
-      </section>
-
-      {/* 14. FAQ — accordion */}
+      {/* 3. Cómo funciona, en tres pasos. */}
       <section className="py-20 sm:py-28">
-        <Container className="max-w-3xl">
+        <HowItWorks />
+      </section>
+
+      {/* 4. Comunidad. Informativa: no hay grupo privado en esta etapa. */}
+      <section id="comunidad" className="scroll-mt-24 bg-warm-white py-20 sm:py-28">
+        <CommunitySection />
+      </section>
+
+      {/* 5. Para negocios. */}
+      <section className="bg-orange/8 py-20 sm:py-28">
+        <Container className="text-center">
           <InViewReveal>
-            <h2 className="text-title">Preguntas frecuentes</h2>
+            <p className="eyebrow">Para negocios</p>
+            <h2 className="mx-auto mt-3 max-w-2xl text-title text-balance">
+              ¿Quieres crear una experiencia con Sunny?
+            </h2>
+            <p className="mx-auto mt-4 max-w-xl text-body-l text-gray">
+              Si tienes un estudio, un espacio o una clase, te ayudamos a que gente nueva lo conozca.
+            </p>
             <div className="mt-8">
-              <FaqList items={FAQ_PREVIEW} />
+              <LinkButton href="/para-negocios" size="lg" arrow>
+                Cuéntanos de tu espacio
+              </LinkButton>
             </div>
-            <Link
-              href="/preguntas-frecuentes"
-              className="mt-6 inline-block text-small font-medium text-carbon underline decoration-carbon/30 underline-offset-4 hover:decoration-carbon"
-            >
-              Ver todas las preguntas
-            </Link>
           </InViewReveal>
         </Container>
       </section>
 
-      {/* 15. CTA final — one action, centered, flows into the footer */}
-      <section className="bg-carbon py-24 text-warm-white sm:py-32">
-        <Container className="max-w-2xl text-center">
+      {/* 6. Preguntas frecuentes, editables desde Sanity. */}
+      {s.faq.length > 0 && (
+        <section className="py-20 sm:py-28">
+          <Container className="max-w-3xl">
+            <InViewReveal>
+              <p className="eyebrow">Preguntas frecuentes</p>
+              <h2 className="mt-3 text-title">Lo que casi siempre nos preguntan.</h2>
+            </InViewReveal>
+            <div className="mt-8">
+              <FaqList items={s.faq.map((item) => ({ q: item.question, a: item.answer }))} />
+            </div>
+          </Container>
+        </section>
+      )}
+
+      {/* 7. Contacto. */}
+      <section className="border-t border-carbon/10 bg-warm-white py-16 sm:py-20">
+        <Container className="text-center">
           <InViewReveal>
-            <p className="text-title">Cada semana, algo nuevo.</p>
-            <p className="mt-4 text-body-l text-warm-white/70">
-              Experiencias en Monterrey con cupos reales y un pase gratuito, una vez por semana.
+            <h2 className="text-subtitle">¿Nos escribes?</h2>
+            <p className="mx-auto mt-2 max-w-md text-body text-gray">
+              Para dudas, propuestas o para contarnos qué experiencia te gustaría ver.
             </p>
-            <LinkButton href="/experiencias" size="lg" variant="primary" arrow className="mt-8">
-              Ver esta semana
-            </LinkButton>
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
+              {s.whatsapp && (
+                <ContactLink href={whatsappLink(s.whatsapp)} icon={MessageCircle} label="WhatsApp" />
+              )}
+              {s.instagramUrl && <ContactLink href={s.instagramUrl} icon={AtSign} label="Instagram" />}
+              {s.contactEmail && (
+                <ContactLink href={`mailto:${s.contactEmail}`} icon={Mail} label={s.contactEmail} />
+              )}
+            </div>
           </InViewReveal>
         </Container>
       </section>
     </main>
+  );
+}
+
+function ContactLink({
+  href,
+  icon: Icon,
+  label,
+}: {
+  href: string;
+  icon: typeof Mail;
+  label: string;
+}) {
+  const external = href.startsWith("http");
+
+  return (
+    <Link
+      href={href}
+      {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+      className="inline-flex min-h-11 items-center gap-2 text-small font-medium text-carbon underline decoration-carbon/30 underline-offset-4 transition-colors hover:decoration-carbon"
+    >
+      <Icon aria-hidden size={16} strokeWidth={1.75} />
+      {label}
+    </Link>
   );
 }

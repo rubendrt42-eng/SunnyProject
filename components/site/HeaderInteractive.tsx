@@ -29,9 +29,9 @@ interface NavLink {
  * Solo la portada. Cualquier otra ruta arranca sólida: es la única forma de
  * no reintroducir el fallo de contraste que costó arreglar.
  *
- * Account links are passed in rather than derived here, because session
- * state is read on the server (see Header.tsx) — the header must never
- * flash the wrong auth state.
+ * En el MVP lean el encabezado no sabe nada de sesiones: no hay cuentas, así
+ * que no hay estado que reflejar ni que pueda parpadear equivocado. Los
+ * enlaces son los mismos para todo el mundo.
  */
 
 /**
@@ -54,11 +54,9 @@ function notScrolled() {
 }
 export function HeaderInteractive({
   links,
-  accountLinks,
-  ctaLabel = "Explorar esta semana",
+  ctaLabel = "Explorar experiencias",
 }: {
   links: NavLink[];
-  accountLinks: NavLink[];
   ctaLabel?: string;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -110,18 +108,6 @@ export function HeaderInteractive({
         </nav>
 
         <div className="hidden items-center gap-5 lg:flex">
-          {accountLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={clsx(
-                "text-small font-medium transition-colors",
-                floating ? "text-warm-white/85 hover:text-warm-white" : "text-carbon/80 hover:text-carbon",
-              )}
-            >
-              {link.label}
-            </Link>
-          ))}
           <LinkButton href="/experiencias" size="sm" variant="primary">
             {ctaLabel}
           </LinkButton>
@@ -168,11 +154,6 @@ export function HeaderInteractive({
         links={links}
         footer={
           <div className="flex flex-col gap-4">
-            {accountLinks.map((link) => (
-              <Link key={link.href} href={link.href} onClick={() => setMenuOpen(false)} className="font-serif text-3xl italic">
-                {link.label}
-              </Link>
-            ))}
             <LinkButton href="/experiencias" onClick={() => setMenuOpen(false)} className="mt-2 w-fit">
               {ctaLabel}
             </LinkButton>

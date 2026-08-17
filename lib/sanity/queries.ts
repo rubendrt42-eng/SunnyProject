@@ -105,11 +105,44 @@ const SETTINGS_QUERY = `
  */
 export const SANITY_REVALIDATE_SECONDS = 60;
 
+/**
+ * Envoltura tolerante a fallos para toda consulta a Sanity.
+ *
+ * Si el CMS no responde —caída, red, credenciales— el sitio **no revienta**:
+ * registra el error y devuelve el valor de reserva, con lo que la página se
+ * dibuja en su estado vacío («Próximamente nuevas experiencias») en vez de
+ * mostrar un 500.
+ *
+ * También protege el build. `generateStaticParams` consulta Sanity, y sin esto
+ * un CMS inalcanzable en ese momento tumba el despliegue entero — un sitio que
+ * ya funcionaba deja de poder desplegarse por una caída de un tercero. Con la
+ * envoltura, el build sale adelante y las páginas se generan a la primera
+ * visita.
+ *
+ * Se registra el error en vez de tragárselo en silencio: un catálogo vacío
+ * porque Sanity falla y un catálogo vacío porque no hay nada publicado se ven
+ * igual en pantalla, y hace falta poder distinguirlos en los registros.
+ */
+async function safeFetch<T>(label: string, run: () => Promise<T>, fallback: T): Promise<T> {
+  try {
+    return await run();
+  } catch (error) {
+    console.error(`[sanity] falló la consulta «${label}»:`, error);
+    return fallback;
+  }
+}
+
+
 export async function getUpcomingExperiences(): Promise<ExperienceCardData[]> {
-  return sanityClient.fetch<ExperienceCardData[]>(
-    UPCOMING_QUERY,
-    {},
-    { next: { revalidate: SANITY_REVALIDATE_SECONDS, tags: ["experiences"] } },
+  return safeFetch(
+    "experiencias vigentes",
+    () =>
+      sanityClient.fetch<ExperienceCardData[]>(
+        UPCOMING_QUERY,
+        {},
+        { next: { revalidate: SANITY_REVALIDATE_SECONDS, tags: ["experiences"] } },
+      ),
+    [],
   );
 }
 
@@ -122,10 +155,15 @@ export async function getUpcomingExperiences(): Promise<ExperienceCardData[]> {
  * el dato.
  */
 export async function getExperienceBySlug(slug: string): Promise<ExperienceDetail | null> {
-  return sanityClient.fetch<ExperienceDetail | null>(
-    BY_SLUG_QUERY,
-    { slug },
-    { next: { revalidate: SANITY_REVALIDATE_SECONDS, tags: ["experiences", `experience:${slug}`] } },
+  return safeFetch(
+    `experiencia ${slug}`,
+    () =>
+      sanityClient.fetch<ExperienceDetail | null>(
+        BY_SLUG_QUERY,
+        { slug },
+        { next: { revalidate: SANITY_REVALIDATE_SECONDS, tags: ["experiences", `experience:${slug}`] } },
+      ),
+    null,
   );
 }
 
@@ -137,18 +175,28 @@ export async function getExperienceBySlug(slug: string): Promise<ExperienceDetai
  * consumidor usa sus propios textos por defecto.
  */
 export async function getSiteSettings(): Promise<SiteSettings | null> {
-  return sanityClient.fetch<SiteSettings | null>(
-    SETTINGS_QUERY,
-    {},
-    { next: { revalidate: SANITY_REVALIDATE_SECONDS, tags: ["siteSettings"] } },
+  return safeFetch(
+    "textos del sitio",
+    () =>
+      sanityClient.fetch<SiteSettings | null>(
+        SETTINGS_QUERY,
+        {},
+        { next: { revalidate: SANITY_REVALIDATE_SECONDS, tags: ["siteSettings"] } },
+      ),
+    null,
   );
 }
 
 /** Las direcciones de todas las experiencias, para generar las páginas de detalle en el build. */
 export async function getAllExperienceSlugs(): Promise<string[]> {
-  return sanityClient.fetch<string[]>(
-    `*[_type == "experience" && defined(slug.current)].slug.current`,
-    {},
-    { next: { revalidate: SANITY_REVALIDATE_SECONDS, tags: ["experiences"] } },
+  return safeFetch(
+    "direcciones de experiencias",
+    () =>
+      sanityClient.fetch<string[]>(
+        `*[_type == "experience" && defined(slug.current)].slug.current`,
+        {},
+        { next: { revalidate: SANITY_REVALIDATE_SECONDS, tags: ["experiences"] } },
+      ),
+    [],
   );
 }

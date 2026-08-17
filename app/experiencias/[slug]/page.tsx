@@ -1,194 +1,207 @@
 import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
-import { getExperienceBySlug, getExistingReservationForExperience, getActiveWeeklyReservation } from "@/lib/queries";
-import { getCurrentUser, isProfileComplete } from "@/lib/auth";
-import { determineCta } from "@/lib/experience-cta";
-import { listAvailableDemoAssets } from "@/lib/assets.server";
-import { computeExperienceState, spotsLeft } from "@/lib/experience-status";
-import { maxPartySizeOf, socialModesOf } from "@/lib/experience-flags";
-import { formatDateTime, formatTime } from "@/lib/dates";
-import { displayTitle } from "@/lib/demo-content";
-import { CANCELLATION_WINDOW_HOURS } from "@/lib/constants";
+import { ArrowLeft, CalendarDays, Clock, MapPin, User } from "lucide-react";
 import { Container } from "@/components/ui/Container";
-import { SocialModes } from "@/components/ui/SocialModes";
-import { ClaimPanel } from "@/components/experience/ClaimPanel";
-import { DetailHero } from "@/components/experience/DetailHero";
-import { ShareButton } from "@/components/experience/ShareButton";
-import { AnimatedAccordion } from "@/components/experience/AnimatedAccordion";
-import { MobileClaimBar } from "@/components/experience/MobileClaimBar";
-import { InViewReveal } from "@/components/motion/InViewReveal";
+import { Badge } from "@/components/ui/Badge";
+import { LinkButton } from "@/components/ui/Button";
+import { SpotRequestForm } from "@/components/lean/SpotRequestForm";
+import { ExperienceViewTracker } from "@/components/lean/ExperienceViewTracker";
+import { formatDateTime, formatTime, isPast } from "@/lib/dates";
+import { blurProps, sanityImageUrl } from "@/lib/sanity/image";
+import { getAllExperienceSlugs, getExperienceBySlug } from "@/lib/sanity/queries";
 
-export const dynamic = "force-dynamic";
+/**
+ * 60 segundos. Tiene que ser un número literal: Next analiza esta
+ * configuración de forma estática en el build y una constante importada no la
+ * puede leer — falla con «Invalid segment configuration export». El mismo
+ * valor vive nombrado en SANITY_REVALIDATE_SECONDS para las consultas.
+ */
+export const revalidate = 60;
+
+/**
+ * Se generan en el build las páginas de todas las experiencias, incluidas las
+ * pasadas. Las que se creen después se generan a la primera visita y quedan
+ * cacheadas — Next las añade sin necesidad de redesplegar.
+ */
+export async function generateStaticParams() {
+  const slugs = await getAllExperienceSlugs();
+  return slugs.map((slug) => ({ slug }));
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const supabase = await createClient();
-  const experience = await getExperienceBySlug(supabase, slug);
-  if (!experience) return { title: "Experiencia no encontrada — Sunny Project" };
-  return { title: `${experience.title} — Sunny Project` };
+  const experience = await getExperienceBySlug(slug);
+  if (!experience) return { title: "Experiencia no encontrada — The Sunny Project" };
+
+  return {
+    title: `${experience.title} — The Sunny Project`,
+    description: experience.shortDescription,
+    openGraph: {
+      title: experience.title,
+      description: experience.shortDescription,
+      images: experience.image ? [{ url: sanityImageUrl(experience.image, 1200) }] : [],
+    },
+  };
 }
 
-export default async function ExperienceDetailPage({
-  params,
-  searchParams,
-}: {
-  params: Promise<{ slug: string }>;
-  searchParams: Promise<{ source?: string }>;
-}) {
+/**
+ * La página de una experiencia.
+ *
+ * TRES ESTADOS, NO UNO
+ *
+ * 1. **Vigente y disponible** — se puede solicitar lugar.
+ * 2. **Vigente y agotada** — se ve completa, con la insignia, y el formulario
+ *    se sustituye por un aviso. No se deshabilita un botón: se explica.
+ * 3. **Ya pasó** — la página sigue existiendo y lo dice. No devuelve 404
+ *    porque el enlace pudo compartirse por WhatsApp y un 404 seco parece un
+ *    sitio roto; decir «esta experiencia ya ocurrió» y ofrecer las vigentes es
+ *    más útil.
+ *
+ * La expiración se calcula aquí y no en la consulta a propósito: la consulta
+ * por dirección trae la experiencia siempre, y la página decide qué enseñar.
+ */
+export default async function ExperienceDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const { source } = await searchParams;
-  const supabase = await createClient();
+  const experience = await getExperienceBySlug(slug);
 
-  const experience = await getExperienceBySlug(supabase, slug);
   if (!experience) notFound();
 
-  const user = await getCurrentUser();
-
-  const [existingReservation, activeWeekly] = await Promise.all([
-    user ? getExistingReservationForExperience(supabase, user.id, experience.id) : Promise.resolve(null),
-    user ? getActiveWeeklyReservation(supabase, user.id) : Promise.resolve(null),
-  ]);
-
-  const cta = determineCta({
-    experience,
-    isAuthenticated: Boolean(user),
-    isProfileComplete: isProfileComplete(user?.profile ?? null),
-    hasReservationForThisExperience: Boolean(existingReservation),
-    hasActivePassElsewhere: Boolean(activeWeekly) && activeWeekly?.experience_id !== experience.id,
-  });
-
-  const state = computeExperienceState(experience, experience.reserved_count);
-  const left = spotsLeft(experience, experience.reserved_count);
-  const spotsLabel = left > 0 ? `${left} de ${experience.capacity} lugares disponibles` : "Experiencia agotada";
-  const availableAssets = listAvailableDemoAssets();
-  const modes = socialModesOf(experience);
-  const maxParty = maxPartySizeOf(experience);
+  /**
+   * Comparación de dos instantes absolutos: `endDateTime` viene de Sanity en
+   * UTC y la hora actual también lo es. No hay conversión de zona horaria que
+   * hacer aquí — la zona solo importa al FORMATEAR, y de eso se encarga
+   * `lib/dates.ts`, que fija America/Monterrey.
+   *
+   * Se usa el ayudante `isPast` y no `Date.now()` suelto porque la regla
+   * `react-hooks/purity` prohíbe llamar funciones impuras en el cuerpo de un
+   * componente, y tiene razón: haría el render no idempotente. Aquí el valor
+   * se recalcula en cada revalidación de la página, que es cada minuto, y eso
+   * basta de sobra para una experiencia que dura horas.
+   */
+  const yaPaso = isPast(experience.endDateTime);
+  const agotada = experience.status === "sold_out";
+  const sePuedeSolicitar = !yaPaso && !agotada;
 
   return (
-    <main className="pb-24 lg:pb-14">
-      <DetailHero experience={experience} state={state} availableAssets={availableAssets} />
+    <main className="pb-20">
+      <ExperienceViewTracker title={experience.title} />
 
-      <Container className="mt-10 grid gap-10 lg:mt-14 lg:grid-cols-[1.4fr_1fr] lg:items-start">
-        <div>
-          {experience.description && (
-            <InViewReveal>
-              <p className="whitespace-pre-line text-body-l text-carbon">{experience.description}</p>
-            </InViewReveal>
+      {/* Fotografía a lo ancho, como en la versión avanzada. */}
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-carbon/5 sm:aspect-[16/9] lg:aspect-[21/9]">
+        {experience.image && (
+          <Image
+            src={sanityImageUrl(experience.image, 1800)}
+            alt={experience.image.alt}
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+            {...blurProps(experience.image)}
+          />
+        )}
+      </div>
+
+      <Container className="max-w-3xl">
+        <Link
+          href="/experiencias"
+          className="mt-8 inline-flex items-center gap-1.5 text-small font-medium text-gray transition-colors hover:text-carbon"
+        >
+          <ArrowLeft aria-hidden size={15} strokeWidth={1.75} />
+          Todas las experiencias
+        </Link>
+
+        <div className="mt-6 flex flex-wrap items-center gap-2">
+          {yaPaso ? (
+            <Badge tone="neutral">Ya ocurrió</Badge>
+          ) : agotada ? (
+            <Badge tone="neutral">Agotada</Badge>
+          ) : (
+            <Badge tone="success">Disponible</Badge>
           )}
-
-          {modes.length > 0 && (
-            <InViewReveal delay={0.04} className="mt-6">
-              <h2 className="text-label text-gray">Cómo es asistir</h2>
-              <SocialModes modes={modes} max={6} className="mt-2" />
-            </InViewReveal>
-          )}
-
-          {maxParty > 1 && (
-            <InViewReveal delay={0.05} className="mt-6">
-              <div className="rounded-lg bg-sunny/25 p-4">
-                <p className="text-heading">Puedes venir acompañado</p>
-                <p className="mt-1 text-small text-carbon/80">
-                  Esta experiencia admite hasta {maxParty} lugares por reservación. Los eliges al reservar y se descuentan
-                  del cupo. El pase sigue siendo tuyo y respondes por tu grupo.
-                </p>
-              </div>
-            </InViewReveal>
-          )}
-
-          <InViewReveal delay={0.06} className="mt-6">
-            <AnimatedAccordion title="Qué incluye" items={experience.what_is_included} defaultOpen />
-            <AnimatedAccordion title="Qué llevar y requisitos" items={experience.requirements} />
-            <AnimatedAccordion title="Restricciones" items={experience.restrictions} />
-          </InViewReveal>
-
-          {experience.instructions && (
-            <InViewReveal delay={0.08} className="mt-6">
-              <h2 className="text-heading">Instrucciones para llegar</h2>
-              <p className="mt-2 whitespace-pre-line text-body text-carbon/80">{experience.instructions}</p>
-            </InViewReveal>
-          )}
-
-          <InViewReveal delay={0.1} className="mt-8">
-            <h2 className="text-heading">Política de cancelación</h2>
-            <p className="mt-2 text-body text-carbon/80">
-              Puedes cancelar desde &quot;Mi pase&quot; hasta {CANCELLATION_WINDOW_HOURS} horas antes del inicio y
-              recuperas tu pase para reservar otra experiencia esa misma semana. Después de ese momento la reservación ya
-              no se puede cancelar.
-              {maxParty > 1 && " Al cancelar se libera la reservación completa, incluidos los lugares de tus acompañantes."}
-            </p>
-          </InViewReveal>
-
-          <InViewReveal delay={0.12} className="mt-8 border-t border-carbon/10 pt-6">
-            <h2 className="text-heading">Comparte esta experiencia</h2>
-            <p className="mt-1 text-small text-gray">Manda el plan a alguien que quieras invitar.</p>
-            <ShareButton
-              className="mt-3"
-              url={`/experiencias/${experience.slug}`}
-              title={displayTitle(experience.title)}
-            />
-          </InViewReveal>
         </div>
 
-        <aside className="flex flex-col gap-6 lg:sticky lg:top-24">
-          <InViewReveal>
-            <div className="rounded-xl border border-carbon/10 bg-warm-white p-6">
-              <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-3 text-sm">
-                <dt className="font-medium text-gray">Fecha</dt>
-                <dd>{formatDateTime(experience.starts_at)}</dd>
-                <dt className="font-medium text-gray">Termina</dt>
-                <dd>{formatTime(experience.ends_at)}</dd>
-                <dt className="font-medium text-gray">Lugar</dt>
-                <dd>{experience.location_name}</dd>
-                {experience.address && (
-                  <>
-                    <dt className="font-medium text-gray">Dirección</dt>
-                    <dd>{experience.address}</dd>
-                  </>
-                )}
-                <dt className="font-medium text-gray">Cupos</dt>
-                <dd>{left > 0 ? `${left} de ${experience.capacity} disponibles` : "Agotado"}</dd>
-                <dt className="font-medium text-gray">Lugares por reservación</dt>
-                <dd>{maxParty > 1 ? `Hasta ${maxParty}` : "1 (individual)"}</dd>
-                <dt className="font-medium text-gray">Cierre de reservación</dt>
-                <dd>{formatDateTime(experience.claim_closes_at)}</dd>
-              </dl>
-              {experience.maps_url && (
-                <a
-                  href={experience.maps_url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-4 inline-block text-sm font-medium text-orange-ink hover:underline"
-                >
-                  Ver en Google Maps →
-                </a>
-              )}
+        <h1 className="mt-3 text-title text-balance">{experience.title}</h1>
+        <p className="mt-4 text-body-l text-gray">{experience.shortDescription}</p>
+
+        <dl className="mt-8 grid grid-cols-1 gap-4 border-y border-carbon/10 py-6 sm:grid-cols-2">
+          <Dato icon={CalendarDays} label="Cuándo" value={formatDateTime(experience.startDateTime)} />
+          <Dato icon={Clock} label="Termina" value={formatTime(experience.endDateTime)} />
+          <Dato icon={MapPin} label="Dónde" value={experience.locationName} detail={experience.address} />
+          {experience.hostName && <Dato icon={User} label="Con" value={experience.hostName} />}
+        </dl>
+
+        <div className="mt-8">
+          <h2 className="text-subtitle">Sobre esta experiencia</h2>
+          <p className="mt-3 whitespace-pre-line text-body text-carbon/85">{experience.fullDescription}</p>
+        </div>
+
+        {experience.requirements.length > 0 && (
+          <div className="mt-8">
+            <h2 className="text-subtitle">Qué necesitas llevar</h2>
+            <ul className="mt-3 space-y-2">
+              {experience.requirements.map((item) => (
+                <li key={item} className="flex items-start gap-2.5 text-body text-carbon/85">
+                  <span aria-hidden className="mt-2 size-1.5 shrink-0 rounded-full bg-orange" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <div id="solicitar" className="mt-12 scroll-mt-24">
+          {sePuedeSolicitar ? (
+            <>
+              <h2 className="text-subtitle">Solicitar mi lugar</h2>
+              <p className="mt-2 mb-6 text-small text-gray">
+                Déjanos tus datos y revisamos la disponibilidad. Te confirmamos por WhatsApp.
+              </p>
+              <SpotRequestForm experienceId={experience._id} experienceName={experience.title} />
+            </>
+          ) : (
+            <div className="rounded-lg border border-carbon/10 bg-warm-white p-6 text-center">
+              <h2 className="text-subtitle">{yaPaso ? "Esta experiencia ya ocurrió" : "Esta experiencia está agotada"}</h2>
+              <p className="mx-auto mt-2 max-w-sm text-body text-gray">
+                {yaPaso
+                  ? "Publicamos experiencias nuevas cada semana."
+                  : "Se llenaron los lugares. Publicamos experiencias nuevas cada semana."}
+              </p>
+              <div className="mt-6">
+                <LinkButton href="/experiencias" variant="secondary" arrow>
+                  Ver las disponibles
+                </LinkButton>
+              </div>
             </div>
-          </InViewReveal>
-
-          <ClaimPanel
-            experienceId={experience.id}
-            experienceSlug={experience.slug}
-            initialCta={cta.type}
-            source={source ?? null}
-            maxPartySize={maxParty}
-            spotsLeft={left}
-          />
-
-          {/* Was: "El pase es individual, no transferible y no admite
-              acompañantes." That is no longer true — companions are a
-              per-experience allowance Emmy configures — so the copy now
-              states the actual rule for THIS experience (brief §39). */}
-          <p className="text-small text-gray">
-            {maxParty > 1
-              ? `Esta experiencia admite hasta ${maxParty} lugares por reservación. El pase es personal y no transferible: respondes por tu grupo.`
-              : "El pase es personal y no transferible. Esta experiencia es de un lugar por reservación."}{" "}
-            Puedes cancelar hasta {CANCELLATION_WINDOW_HOURS} horas antes del inicio desde &quot;Mi pase&quot;.
-          </p>
-        </aside>
+          )}
+        </div>
       </Container>
-
-      <MobileClaimBar ctaType={cta.type} spotsLabel={spotsLabel} />
     </main>
+  );
+}
+
+function Dato({
+  icon: Icon,
+  label,
+  value,
+  detail,
+}: {
+  icon: typeof MapPin;
+  label: string;
+  value: string;
+  detail?: string;
+}) {
+  return (
+    <div>
+      <dt className="flex items-center gap-1.5 text-xs tracking-wide text-gray uppercase">
+        <Icon aria-hidden size={14} strokeWidth={1.75} />
+        {label}
+      </dt>
+      <dd className="mt-1 text-body text-carbon">
+        {value}
+        {detail && <span className="block text-small text-gray">{detail}</span>}
+      </dd>
+    </div>
   );
 }

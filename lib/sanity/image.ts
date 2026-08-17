@@ -1,8 +1,8 @@
-import imageUrlBuilder from "@sanity/image-url";
+import { createImageUrlBuilder } from "@sanity/image-url";
 import { dataset, projectId } from "@/sanity/env";
 import type { SanityImage } from "./types";
 
-const builder = imageUrlBuilder({ projectId, dataset });
+const builder = createImageUrlBuilder({ projectId, dataset });
 
 /**
  * URL de una imagen de Sanity al ancho que hace falta.
