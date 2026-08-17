@@ -8,9 +8,21 @@ const nextConfig: NextConfig = {
     // Placeholder demo art in /public/images is local SVG we author ourselves.
     dangerouslyAllowSVG: true,
     contentDispositionType: "attachment",
-    remotePatterns: supabaseHostname
-      ? [{ protocol: "https", hostname: supabaseHostname, pathname: "/storage/v1/object/public/**" }]
-      : [],
+    remotePatterns: [
+      /**
+       * Las fotografías que sube Emmy viven en el CDN de Sanity. Es el origen
+       * de imagen del MVP lean.
+       */
+      { protocol: "https", hostname: "cdn.sanity.io", pathname: "/images/**" },
+      /**
+       * Supabase Storage sigue permitido porque las pantallas de la versión
+       * avanzada continúan existiendo en el repositorio. No forma parte del
+       * flujo del MVP lean.
+       */
+      ...(supabaseHostname
+        ? [{ protocol: "https" as const, hostname: supabaseHostname, pathname: "/storage/v1/object/public/**" }]
+        : []),
+    ],
   },
 };
 
