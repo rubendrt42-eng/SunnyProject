@@ -1,13 +1,13 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { appendBusinessRequest, SheetsNotConfiguredError } from "@/lib/sheets";
-import { sendBusinessRequestEmail } from "@/lib/mvp-email";
 import { businessRequestSchema, firstErrorMessage, rateLimit } from "@/lib/mvp-validation";
 
 /**
  * Recibe la solicitud de un negocio que quiere crear una experiencia con Sunny.
  *
- * Mismo orden que `/api/solicitudes`: la hoja primero, el correo después, y un
- * fallo de correo no devuelve error. Ver el razonamiento completo ahí.
+ * Igual que `/api/solicitudes`: se valida y se escribe en la hoja. No hay
+ * correo automático en esta etapa; la pestaña «Negocios» de la hoja es donde
+ * Emmy los revisa.
  *
  * Se llama `negocios-lean` y no `negocios` porque `/api/partner-leads` de la
  * versión avanzada sigue existiendo en el repositorio y escribe en Supabase.
@@ -64,13 +64,5 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const emailSent = await sendBusinessRequestEmail({
-    businessName: data.businessName,
-    contactName: data.contactName,
-    whatsapp: data.whatsapp,
-    email: data.email,
-    message: data.message || undefined,
-  });
-
-  return NextResponse.json({ ok: true, emailSent });
+  return NextResponse.json({ ok: true });
 }

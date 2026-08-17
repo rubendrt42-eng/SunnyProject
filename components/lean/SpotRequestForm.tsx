@@ -15,10 +15,14 @@ import { trackEvent } from "@/lib/analytics";
  *   clic en una conexión lenta manda dos peticiones y Emmy ve la misma
  *   solicitud dos veces en su hoja.
  * - **El éxito solo se muestra si el servidor confirmó** que la solicitud quedó
- *   registrada. Nunca de forma optimista: decirle a alguien «recibimos tu
- *   solicitud» cuando no se guardó lo llevaría a presentarse a una clase donde
- *   nadie lo espera.
+ *   registrada en la hoja de cálculo. Nunca de forma optimista: decirle a
+ *   alguien «recibimos tu solicitud» cuando no se guardó lo llevaría a
+ *   presentarse a una clase donde nadie lo espera.
  * - **El error dice qué hacer**, no solo qué pasó.
+ *
+ * Esta pantalla de éxito es el ÚNICO acuse que recibe la persona: en esta
+ * etapa no se manda ningún correo. Por eso dice con todas sus letras que
+ * alguien la va a contactar, en vez de dar el lugar por confirmado.
  *
  * SOBRE EL LENGUAJE
  *
@@ -92,10 +96,9 @@ export function SpotRequestForm({
         <span className="mx-auto flex size-11 items-center justify-center rounded-full bg-sunny">
           <Check aria-hidden size={20} strokeWidth={2.5} className="text-carbon" />
         </span>
-        <h3 className="mt-4 text-subtitle">Recibimos tu solicitud</h3>
+        <h3 className="mt-4 text-subtitle">¡Recibimos tu solicitud!</h3>
         <p className="mx-auto mt-2 max-w-sm text-small text-gray">
-          Vamos a revisar la disponibilidad para <span className="font-medium text-carbon">{experienceName}</span> y te
-          escribimos por WhatsApp para confirmar tu lugar. Te llegó también un correo de confirmación de recibido.
+          The Sunny Project revisará la disponibilidad y se pondrá en contacto contigo para confirmar tu lugar.
         </p>
       </div>
     );

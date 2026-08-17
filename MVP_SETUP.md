@@ -10,14 +10,22 @@ propio— sigue intacta en las ramas `claude/*` y no se toca desde aquí.
 
 # 1. Cómo está armado
 
-Cuatro piezas, cada una con un trabajo:
+Tres piezas, cada una con un trabajo:
 
 | Pieza | Para qué |
 |---|---|
 | **Sanity** | El contenido público: experiencias y textos del sitio. Lo edita Emmy |
 | **Google Sheets** | Las solicitudes de personas y de negocios. Datos personales |
-| **Resend** | Los correos de aviso cuando entra una solicitud |
 | **Vercel** | Donde vive el sitio |
+
+Tres servicios. **No hay correo automático en esta etapa**, y eso es una
+decisión, no una carencia: quita un servicio que configurar, un dominio que
+verificar y una forma más de que el flujo falle a medias.
+
+La contrapartida hay que tenerla presente: **nadie recibe un aviso empujado.**
+Emmy se entera de una solicitud abriendo la hoja de cálculo. Con el volumen de
+esta etapa eso es suficiente; el día que llegue una solicitud cada hora, habrá
+que revisarlo.
 
 ## Por qué el contenido y las solicitudes van en sitios distintos
 
@@ -122,14 +130,20 @@ El sitio nunca las modifica: solo añade filas nuevas al final.
 
 ## Qué pasa cuando alguien manda una solicitud
 
-1. Se guarda la fila en la hoja.
-2. Te llega un correo con los datos y un enlace directo a su WhatsApp.
-3. A la persona le llega un acuse que dice que **recibimos su solicitud** y que
-   la vas a contactar para confirmar.
+1. El sitio valida los datos.
+2. Se guarda la fila en la hoja, con estado `Nueva`.
+3. La persona ve en pantalla: **«¡Recibimos tu solicitud! The Sunny Project
+   revisará la disponibilidad y se pondrá en contacto contigo para confirmar tu
+   lugar.»**
 
-**El correo automático nunca le dice que su lugar está confirmado.** Eso lo
-dices tú cuando le escribes. Si el correo lo prometiera, alguien se
-presentaría a una clase donde nadie lo espera.
+Y ya. **No se manda ningún correo**, ni a ella ni a ti.
+
+Si la hoja falla, la persona ve *«No pudimos enviar tu solicitud. Inténtalo
+nuevamente en unos minutos»* y **nunca un mensaje de éxito**. Una solicitud que
+no se guardó no puede decirle a nadie que se recibió: alguien se presentaría a
+una clase donde nadie lo espera.
+
+**Revisa la hoja a diario.** Es la única forma de enterarte de que entró algo.
 
 ---
 
@@ -145,15 +159,13 @@ Los nombres están en `.env.example`. Nunca hay valores reales ahí.
 | `GOOGLE_SERVICE_ACCOUNT_EMAIL` | Cuenta de servicio de Google | **Sí** |
 | `GOOGLE_PRIVATE_KEY` | Su llave privada | **Sí** |
 | `GOOGLE_SHEET_ID` | Identificador de la hoja | **Sí** |
-| `MVP_RESEND_API_KEY` | Llave de Resend | **Sí** |
-| `MVP_EMAIL_FROM` | Desde qué dirección salen los correos | No |
-| `MVP_NOTIFY_EMAIL` | La bandeja de Emmy | No |
 | `NEXT_PUBLIC_SITE_URL` | La dirección pública del sitio | No |
 
-Las de correo llevan prefijo `MVP_` a propósito: así este flujo **no puede
-heredar por accidente** la configuración de la versión avanzada.
+Siete variables en total, y solo tres son secretas.
 
-**El MVP no necesita ninguna variable de Supabase para funcionar.**
+**El MVP no necesita variables de Supabase ni de ningún servicio de correo
+para funcionar.** Si falta alguna de las tres de Google, el formulario devuelve
+error y no registra nada — que es el comportamiento correcto.
 
 ---
 
@@ -192,7 +204,7 @@ ciegas.
 
 # 7. ACCIÓN REQUERIDA DE RUBEN
 
-Cinco cosas. Ninguna necesita saber programar.
+Cuatro cosas. Ninguna necesita saber programar.
 
 ## 7.1 Publicar el panel de Emmy (Sanity Studio)
 
@@ -252,18 +264,7 @@ Sin esto, Emmy no tiene dónde entrar.
 > Guarda ese archivo JSON en un lugar seguro y **no lo subas a ningún lado**.
 > Es la llave de acceso a la hoja.
 
-## 7.4 Configurar el correo
-
-1. Entra a **resend.com** con la cuenta del proyecto.
-2. Ve a **API Keys** → **Create API Key**. Cópiala: es tu
-   `MVP_RESEND_API_KEY`.
-3. Ve a **Domains** y verifica el dominio de The Sunny Project.
-   **Hasta que esto esté hecho, los correos solo llegan a tu propia dirección** —
-   ni Emmy ni las personas que soliciten lugar reciben nada.
-4. `MVP_EMAIL_FROM` será algo como `hola@tudominio.com`.
-5. `MVP_NOTIFY_EMAIL` es el correo de Emmy.
-
-## 7.5 Crear el proyecto de Vercel
+## 7.4 Crear el proyecto de Vercel
 
 1. Entra a **vercel.com** → **Add New** → **Project**.
 2. Elige el repositorio **SunnyProject**.
@@ -284,8 +285,8 @@ Sin esto, Emmy no tiene dónde entrar.
       de prueba y están en Sanity para verificar que todo funciona.
 - [ ] Sustituir la fotografía del hero. La actual es de referencia y **no está
       autorizada para producción** (ver `SUNNY_ASSET_MANIFEST.md`).
-- [ ] Hacer una solicitud de prueba de punta a punta y comprobar que aparece la
-      fila en la hoja y llegan los dos correos.
+- [ ] Hacer una solicitud de prueba y comprobar que aparece la fila en la hoja,
+      con la experiencia correcta y estado `Nueva`.
 - [ ] Crear una experiencia real desde el Studio, con foto propia.
 
 ---
@@ -297,3 +298,7 @@ avanzada ya está construida y esperando en `claude/sunny-motion-choreography`:
 cuentas, reservaciones con control de cupo, folios, «Mi pase» y panel propio.
 
 No hay que rehacerla. Hay que decidir cuándo encenderla.
+
+Los avisos automáticos por correo también quedan para entonces. Cuando el
+volumen haga incómodo revisar la hoja a diario, se añaden — y para eso hará
+falta un dominio verificado, que es justo el trámite que esta versión evita.

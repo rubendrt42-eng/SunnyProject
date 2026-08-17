@@ -1,30 +1,25 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { appendSpotRequest, SheetsNotConfiguredError } from "@/lib/sheets";
-import { sendSpotRequestEmails } from "@/lib/mvp-email";
 import { firstErrorMessage, rateLimit, spotRequestSchema } from "@/lib/mvp-validation";
 
 /**
  * Recibe una solicitud de lugar.
  *
- * EL ORDEN DE LAS OPERACIONES ES LA DECISIÓN IMPORTANTE
+ * DOS PASOS, NO TRES: validar y escribir en la hoja de cálculo. No hay correo.
  *
- * 1. Validar.
- * 2. **Escribir en la hoja de cálculo.** Si esto falla, se responde error y no
- *    se manda ningún correo.
- * 3. Mandar los correos. Si esto falla, se responde éxito igualmente.
+ * Esta versión no manda ningún aviso automático — ni a quien solicita ni a
+ * Emmy. La hoja de Google **es** el sistema: ahí caen las solicitudes y ahí las
+ * revisa ella. Quitar el correo quita un servicio que configurar, un dominio
+ * que verificar y una forma más de que el flujo falle a medias.
  *
- * El motivo: la hoja es la única fuente de verdad de una solicitud. Un correo
- * es un aviso de algo que ya pasó.
+ * Consecuencia operativa que conviene tener presente: **nadie recibe una
+ * notificación empujada.** Emmy tiene que abrir la hoja para enterarse de que
+ * entró una solicitud. Es una decisión consciente de esta etapa, no un
+ * descuido.
  *
- * Si se hiciera al revés —correo primero— y la hoja fallara, la persona
- * recibiría «recibimos tu solicitud» por una solicitud que no existe en ninguna
- * parte, y se presentaría a una clase donde nadie la espera.
- *
- * Y si un fallo de correo devolviera error, la persona volvería a enviar el
- * formulario y Emmy tendría la misma solicitud dos veces en su hoja. Entre
- * «Emmy no recibe el aviso pero la fila está» y «hay filas duplicadas», lo
- * primero se arregla mirando la hoja; lo segundo genera dos conversaciones con
- * la misma persona.
+ * La escritura en la hoja es la única operación crítica. Si falla, se responde
+ * error y la persona ve que su solicitud no se envió — nunca un éxito falso,
+ * que la llevaría a presentarse a una clase donde nadie la espera.
  */
 export async function POST(request: NextRequest) {
   // `x-forwarded-for` es lo que pone el proxy de Vercel. En local no existe y
@@ -75,15 +70,5 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // Paso secundario. Un fallo aquí no invalida la solicitud.
-  const emails = await sendSpotRequestEmails({
-    experienceName: data.experienceName,
-    name: data.name,
-    whatsapp: data.whatsapp,
-    email: data.email,
-    numberOfPeople: data.numberOfPeople,
-    comments: data.comments || undefined,
-  });
-
-  return NextResponse.json({ ok: true, emails });
+  return NextResponse.json({ ok: true });
 }
