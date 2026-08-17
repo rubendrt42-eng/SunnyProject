@@ -24,4 +24,16 @@ export const sanityClient = createClient({
   apiVersion,
   useCdn: true,
   perspective: "published",
+
+  /**
+   * Solo para pruebas locales: permite apuntar el cliente a un doble de la API
+   * de Sanity en vez de a la real.
+   *
+   * Existe porque el entorno donde se hace la revisión automatizada no tiene
+   * salida a `*.sanity.io`, y sin esto no se puede comprobar en un navegador
+   * cómo se ve el sitio con contenido. En producción la variable no está
+   * definida y el cliente usa el host real — no hay ninguna ruta por la que
+   * esto pueda apuntar a otro sitio sin que alguien lo configure a propósito.
+   */
+  ...(process.env.SANITY_API_HOST ? { apiHost: process.env.SANITY_API_HOST } : {}),
 });
