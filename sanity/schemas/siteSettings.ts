@@ -35,7 +35,12 @@ export const siteSettings = defineType({
       title: "Titular de la portada",
       type: "string",
       group: "portada",
-      description: "Lo primero que se lee al entrar al sitio. Corto y directo.",
+      description:
+        "Lo primero que se lee al entrar al sitio. Corto y directo. " +
+        "Si lo escribes en DOS frases separadas por un punto, la segunda se " +
+        "dibuja en amarillo Sunny debajo de la primera — que es lo que le da " +
+        "carácter a la portada. Ejemplo: «Descubre algo nuevo. Vívelo con " +
+        "alguien.» Si escribes una sola frase, se ve toda en blanco.",
       validation: (Rule) => Rule.required().max(70),
     }),
 

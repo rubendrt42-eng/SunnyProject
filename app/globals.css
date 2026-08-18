@@ -694,6 +694,38 @@ li {
   text-wrap: pretty;
 }
 
+/*
+  Ninguna palabra suelta puede empujar la página a lo ancho.
+
+  Todo este texto lo escribe Emmy en Sanity: títulos de experiencia, nombres de
+  anfitrión, ubicaciones, titulares. Basta con que pegue un enlace de Instagram
+  en un título —o escriba un nombre compuesto largo— para que esa palabra, al
+  no poder partirse, fije el ancho mínimo de su columna y arrastre la página
+  entera. Medido antes de este arreglo, con un enlace en el título de una
+  tarjeta:
+
+      320px ... 260px de desborde        768px ... 317px
+      390px ... 190px                   1280px ... 195px
+                                        1440px ... 137px
+
+  `anywhere` y no `break-word`: los dos parten la palabra cuando ya no cabe,
+  pero solo `anywhere` reduce también el **ancho mínimo intrínseco** del
+  elemento. Es justo esa medida la que hace crecer la columna, así que con
+  `break-word` la palabra se partiría y la página seguiría desbordada.
+
+  Solo afecta a palabras que no caben. El texto normal se reparte igual.
+*/
+h1,
+h2,
+h3,
+h4,
+p,
+li,
+dd,
+dt {
+  overflow-wrap: anywhere;
+}
+
 
 /*
   Cifras de ancho fijo donde hay fechas y horas.
