@@ -1,0 +1,80 @@
+[
+  {
+    "nombre": "Home",
+    "ruta": "/",
+    "metricas": {
+      "fcp": 1560,
+      "domInteractive": 1544,
+      "recursos": 38,
+      "pesoTotalKB": 1331,
+      "pesoJSKB": 735,
+      "pesoImgKB": 165,
+      "nodos": 283
+    },
+    "violaciones": []
+  },
+  {
+    "nombre": "Experiencias",
+    "ruta": "/experiencias",
+    "metricas": {
+      "fcp": 660,
+      "domInteractive": 521,
+      "recursos": 41,
+      "pesoTotalKB": 1043,
+      "pesoJSKB": 724,
+      "pesoImgKB": 0,
+      "nodos": 120
+    },
+    "violaciones": [
+      {
+        "id": "heading-order",
+        "impacto": "moderate",
+        "n": 1,
+        "descripcion": "Heading levels should only increase by one",
+        "ejemplo": "<h3 class=\"text-heading\"><a class=\"hover:underline\" href=\"/experiencias/test-yoga-coffee\"><span class=\"absolute inset-0\""
+      }
+    ]
+  },
+  {
+    "nombre": "Detalle",
+    "ruta": "/experiencias/test-yoga-coffee",
+    "metricas": {
+      "fcp": 672,
+      "domInteractive": 535,
+      "recursos": 36,
+      "pesoTotalKB": 1052,
+      "pesoJSKB": 754,
+      "pesoImgKB": 0,
+      "nodos": 176
+    },
+    "violaciones": []
+  },
+  {
+    "nombre": "Cómo funciona",
+    "ruta": "/como-funciona",
+    "metricas": {
+      "fcp": 924,
+      "domInteractive": 771,
+      "recursos": 37,
+      "pesoTotalKB": 1166,
+      "pesoJSKB": 735,
+      "pesoImgKB": 134,
+      "nodos": 122
+    },
+    "violaciones": []
+  },
+  {
+    "nombre": "Para negocios",
+    "ruta": "/para-negocios",
+    "metricas": {
+      "fcp": 968,
+      "domInteractive": 876,
+      "recursos": 34,
+      "pesoTotalKB": 1032,
+      "pesoJSKB": 735,
+      "pesoImgKB": 0,
+      "nodos": 120
+    },
+    "violaciones": []
+  }
+]

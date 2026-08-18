@@ -1,0 +1,34 @@
+[
+  {
+    "nombre": "home-mobile-375",
+    "alto": 7298,
+    "desborde": false,
+    "eventos": [
+      {
+        "tipo": "error",
+        "texto": "Failed to load resource: net::ERR_FAILED"
+      }
+    ]
+  },
+  {
+    "nombre": "home-mobile-320",
+    "alto": 7527,
+    "desborde": false,
+    "eventos": [
+      {
+        "tipo": "pageerror",
+        "texto": "Error: Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      }
+    ]
+  },
+  {
+    "nombre": "mobile-menu-open",
+    "abierto": true,
+    "botonesEnHeader": 1
+  },
+  {
+    "nombre": "request-form-error",
+    "alerta": 1,
+    "textoAlerta": ""
+  }
+]

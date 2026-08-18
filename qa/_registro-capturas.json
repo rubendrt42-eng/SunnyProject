@@ -1,0 +1,270 @@
+[
+  {
+    "nombre": "home-desktop-1440",
+    "ruta": "/",
+    "ancho": 1440,
+    "alto": 5775,
+    "scrollWidth": 1440,
+    "vw": 1440,
+    "imgsRotas": 0,
+    "imgs": 4,
+    "desborde": false,
+    "eventos": [
+      "pageerror: Error: Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev en"
+    ]
+  },
+  {
+    "nombre": "home-desktop-1280",
+    "ruta": "/",
+    "ancho": 1280,
+    "alto": 5660,
+    "scrollWidth": 1280,
+    "vw": 1280,
+    "imgsRotas": 0,
+    "imgs": 4,
+    "desborde": false,
+    "eventos": [
+      "pageerror: Error: Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev en"
+    ]
+  },
+  {
+    "nombre": "home-desktop-1024",
+    "ruta": "/",
+    "ancho": 1024,
+    "alto": 5457,
+    "scrollWidth": 1024,
+    "vw": 1024,
+    "imgsRotas": 0,
+    "imgs": 4,
+    "desborde": false,
+    "eventos": [
+      "pageerror: Error: Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev en"
+    ]
+  },
+  {
+    "nombre": "home-tablet-768",
+    "ruta": "/",
+    "ancho": 768,
+    "alto": 6254,
+    "scrollWidth": 809,
+    "vw": 768,
+    "imgsRotas": 0,
+    "imgs": 4,
+    "desborde": true,
+    "eventos": [
+      "pageerror: Error: Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev en"
+    ]
+  },
+  {
+    "nombre": "home-mobile-430",
+    "ruta": "/",
+    "ancho": 430,
+    "alto": 7306,
+    "scrollWidth": 430,
+    "vw": 430,
+    "imgsRotas": 0,
+    "imgs": 4,
+    "desborde": false,
+    "eventos": [
+      "pageerror: Error: Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev en"
+    ]
+  },
+  {
+    "nombre": "home-mobile-390",
+    "ruta": "/",
+    "ancho": 390,
+    "alto": 7263,
+    "scrollWidth": 390,
+    "vw": 390,
+    "imgsRotas": 0,
+    "imgs": 4,
+    "desborde": false,
+    "eventos": [
+      "pageerror: Error: Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev en"
+    ]
+  },
+  {
+    "nombre": "home-mobile-375",
+    "ruta": "/",
+    "ancho": 375,
+    "alto": 7298,
+    "scrollWidth": 375,
+    "vw": 375,
+    "imgsRotas": 0,
+    "imgs": 4,
+    "desborde": false,
+    "eventos": [
+      "pageerror: Error: Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev en"
+    ]
+  },
+  {
+    "nombre": "home-mobile-320",
+    "ruta": "/",
+    "ancho": 320,
+    "alto": 7527,
+    "scrollWidth": 320,
+    "vw": 320,
+    "imgsRotas": 0,
+    "imgs": 4,
+    "desborde": false,
+    "eventos": [
+      "pageerror: Error: Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev en"
+    ]
+  },
+  {
+    "nombre": "experiences-desktop",
+    "ruta": "/experiencias",
+    "ancho": 1440,
+    "alto": 1387,
+    "scrollWidth": 1440,
+    "vw": 1440,
+    "imgsRotas": 0,
+    "imgs": 0,
+    "desborde": false,
+    "eventos": []
+  },
+  {
+    "nombre": "experiences-mobile",
+    "ruta": "/experiencias",
+    "ancho": 390,
+    "alto": 2264,
+    "scrollWidth": 390,
+    "vw": 390,
+    "imgsRotas": 0,
+    "imgs": 0,
+    "desborde": false,
+    "eventos": []
+  },
+  {
+    "nombre": "experience-detail-desktop",
+    "ruta": "/experiencias/test-yoga-coffee",
+    "ancho": 1440,
+    "alto": 2453,
+    "scrollWidth": 1440,
+    "vw": 1440,
+    "imgsRotas": 0,
+    "imgs": 0,
+    "desborde": false,
+    "eventos": []
+  },
+  {
+    "nombre": "experience-detail-mobile",
+    "ruta": "/experiencias/test-yoga-coffee",
+    "ancho": 390,
+    "alto": 2608,
+    "scrollWidth": 390,
+    "vw": 390,
+    "imgsRotas": 0,
+    "imgs": 0,
+    "desborde": false,
+    "eventos": []
+  },
+  {
+    "nombre": "experience-sold-out-desktop",
+    "ruta": "/experiencias/test-sesion-agotada",
+    "ancho": 1440,
+    "alto": 1829,
+    "scrollWidth": 1440,
+    "vw": 1440,
+    "imgsRotas": 0,
+    "imgs": 0,
+    "desborde": false,
+    "eventos": []
+  },
+  {
+    "nombre": "experience-sold-out-mobile",
+    "ruta": "/experiencias/test-sesion-agotada",
+    "ancho": 390,
+    "alto": 1956,
+    "scrollWidth": 390,
+    "vw": 390,
+    "imgsRotas": 0,
+    "imgs": 0,
+    "desborde": false,
+    "eventos": []
+  },
+  {
+    "nombre": "how-it-works-desktop",
+    "ruta": "/como-funciona",
+    "ancho": 1440,
+    "alto": 1672,
+    "scrollWidth": 1440,
+    "vw": 1440,
+    "imgsRotas": 0,
+    "imgs": 3,
+    "desborde": false,
+    "eventos": []
+  },
+  {
+    "nombre": "how-it-works-mobile",
+    "ruta": "/como-funciona",
+    "ancho": 390,
+    "alto": 2899,
+    "scrollWidth": 390,
+    "vw": 390,
+    "imgsRotas": 0,
+    "imgs": 3,
+    "desborde": false,
+    "eventos": []
+  },
+  {
+    "nombre": "business-desktop",
+    "ruta": "/para-negocios",
+    "ancho": 1440,
+    "alto": 1313,
+    "scrollWidth": 1440,
+    "vw": 1440,
+    "imgsRotas": 0,
+    "imgs": 0,
+    "desborde": false,
+    "eventos": []
+  },
+  {
+    "nombre": "business-mobile",
+    "ruta": "/para-negocios",
+    "ancho": 390,
+    "alto": 1892,
+    "scrollWidth": 390,
+    "vw": 390,
+    "imgsRotas": 0,
+    "imgs": 0,
+    "desborde": false,
+    "eventos": []
+  },
+  {
+    "nombre": "faq-desktop",
+    "ruta": "/preguntas-frecuentes",
+    "ancho": 1440,
+    "alto": 1397,
+    "scrollWidth": 1440,
+    "vw": 1440,
+    "imgsRotas": 0,
+    "imgs": 0,
+    "desborde": false,
+    "eventos": []
+  },
+  {
+    "nombre": "terms-desktop",
+    "ruta": "/terminos",
+    "ancho": 1440,
+    "alto": 1407,
+    "scrollWidth": 1440,
+    "vw": 1440,
+    "imgsRotas": 0,
+    "imgs": 0,
+    "desborde": false,
+    "eventos": []
+  },
+  {
+    "nombre": "privacy-desktop",
+    "ruta": "/privacidad",
+    "ancho": 1440,
+    "alto": 1211,
+    "scrollWidth": 1440,
+    "vw": 1440,
+    "imgsRotas": 0,
+    "imgs": 0,
+    "desborde": false,
+    "eventos": []
+  }
+]
