@@ -89,7 +89,10 @@ export function BrandCanvas({
 
   return (
     <div
-      className={`relative overflow-hidden ${className}`}
+      /* `overflow-clip` y no `hidden`: este lienzo lleva `parallax` en las
+         tarjetas, y `hidden` crearía un contenedor de scroll que congelaría
+         cualquier animación ligada al scroll de dentro. */
+      className={`relative overflow-clip ${className}`}
       style={{ background: v.fondo }}
       {...(label ? { role: "img", "aria-label": label } : { "aria-hidden": true })}
     >

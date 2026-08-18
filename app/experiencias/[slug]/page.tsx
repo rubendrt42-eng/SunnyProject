@@ -104,8 +104,10 @@ export default async function ExperienceDetailPage({ params }: { params: Promise
       <div
         className={
           experience.image
-            ? "relative aspect-[4/3] w-full overflow-hidden bg-carbon/5 sm:aspect-[16/9] lg:aspect-[21/9]"
-            : "relative h-40 w-full overflow-hidden sm:h-52 lg:h-60"
+            // `overflow-clip` y no `hidden`: `hidden` haría de esta caja un
+            // contenedor de scroll y congelaría el `parallax` de la fotografía.
+            ? "relative aspect-[4/3] w-full overflow-clip bg-carbon/5 sm:aspect-[16/9] lg:aspect-[21/9]"
+            : "relative h-40 w-full overflow-clip sm:h-52 lg:h-60"
         }
       >
         {experience.image ? (

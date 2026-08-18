@@ -81,7 +81,10 @@ export function WhatIsSunny() {
       <div className="lg:col-span-5">
         <InViewReveal delay={0.12}>
           <figure>
-            <div className="relative aspect-square w-full max-w-sm overflow-hidden rounded-lg bg-carbon/5">
+            {/* `overflow-clip`, no `hidden`: con `hidden` esta caja es
+                contenedor de scroll y el `parallax` de la fotografía de Emmy
+                se quedaba congelado a mitad de recorrido. */}
+            <div className="relative aspect-square w-full max-w-sm overflow-clip rounded-lg bg-carbon/5">
               <Image
                 src={EMMY_PHOTO.src}
                 alt={EMMY_PHOTO.alt}

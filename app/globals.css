@@ -11,13 +11,25 @@
      the hero's second line, the eyebrows, the step numerals, and every form
      error message — failed WCAG AA. Error text was the worst of it: the
      copy a person most needs to read was the hardest to read.
-     #bf4408 keeps the hue and scores 4.60:1 on ivory and 5.12:1 with
-     warm-white on top, so it passes AA for small text in both directions.
      Rule: `orange` fills and outlines, `orange-ink` letters and icons.
-     Verified with axe-core; see SUNNY_DESIGN_QA_REPORT.md. */
-  --color-orange-ink: #bf4408;
+
+     POR QUÉ SE OSCURECIÓ OTRA VEZ
+
+     #bf4408 daba 4.60:1 sobre marfil: pasa AA, pero por 0.10. Ese margen se
+     lo come cualquier fondo tintado. La sección «Para negocios» de la portada
+     usa `bg-orange/8`, que sobre marfil da #f5e7da, y ahí el mismo naranja
+     caía a 4.28:1 — reprobado. Bajar el tinte no lo salvaba: ni al 3% llegaba
+     a 4.5. El problema no era el fondo, era que el token no tenía holgura.
+
+     #b23f07 conserva el tono y da 4.80:1 sobre el fondo tintado, 5.15:1 sobre
+     marfil y 5.74:1 sobre blanco cálido. Ahora aguanta el tinte. */
+  --color-orange-ink: #b23f07;
   --color-warm-white: #fffdfc;
-  --color-gray: #6d6d65;
+  /* Mismo caso que el naranja: #6d6d65 daba 4.62:1 sobre marfil y caía a
+     4.30:1 sobre el fondo tintado de «Para negocios» — y ahí vive un párrafo
+     que la gente sí lee. #65655e sube a 4.84:1 tintado y 5.20:1 sobre marfil,
+     con el mismo tono neutro. */
+  --color-gray: #65655e;
   /* The one deliberately narrow secondary. Two sanctioned uses only:
      the Sunny Original seal and the "Conoce gente nueva" badge.
      See SUNNY_VISUAL_DIRECTION_1_0.md §1. */
@@ -301,16 +313,28 @@ h2 {
 /* Small uppercase label that locates a section above its headline
    (Coda's `eyebrow`). The one sanctioned place all-caps appears in body
    content — headings never use it. */
-.eyebrow {
-  font-size: var(--text-label);
-  /* El antetítulo se leía como texto diminuto en vez de como etiqueta. El
-     interletraje amplio es lo que hace la diferencia a este tamaño. */
-  letter-spacing: 0.13em;
-  line-height: var(--text-label--line-height);
-  letter-spacing: var(--text-label--letter-spacing);
-  font-weight: var(--text-label--font-weight);
-  text-transform: uppercase;
-  color: var(--color-orange-ink);
+/* POR QUÉ ESTO VIVE EN `@layer components`
+
+   Estaba escrito como CSS sin capa. En la cascada, el CSS sin capa le gana
+   SIEMPRE al CSS que sí está en una — y las utilidades de Tailwind viven en
+   `@layer utilities`. Resultado: `color` aquí anulaba cualquier utilidad de
+   color puesta en el marcado, y `class="eyebrow text-sunny"` en la sección de
+   Comunidad se dibujaba naranja tinta sobre carbón: 3.46:1 medido, cuando el
+   amarillo que pedía el marcado da 12.32:1.
+
+   Metido en `components`, las utilidades vuelven a poder ganarle, que es lo
+   que el marcado da por hecho. */
+@layer components {
+  .eyebrow {
+    font-size: var(--text-label);
+    line-height: var(--text-label--line-height);
+    /* 0.14em. El interletraje amplio es lo que hace que a este tamaño se lea
+       como etiqueta y no como texto diminuto. */
+    letter-spacing: var(--text-label--letter-spacing);
+    font-weight: var(--text-label--font-weight);
+    text-transform: uppercase;
+    color: var(--color-orange-ink);
+  }
 }
 
 /* Native horizontal carousels (adopted from Eight Sleep — browser scroll
@@ -484,6 +508,21 @@ h2 {
   Al bajar, el hero se aleja un poco y se oscurece en vez de limitarse a
   desaparecer por arriba. Da la sensación de que la página tiene capas y de que
   la sección siguiente pasa por delante, no detrás.
+
+  LA SECCIÓN USA `overflow-clip`, NO `overflow-hidden`
+
+  No es un detalle de estilo, es lo que hace que esto funcione. `overflow:
+  hidden` convierte al elemento en contenedor de scroll, y
+  `animation-timeline: view()` se mide siempre contra el contenedor de scroll
+  más cercano. Con `hidden`, cualquier línea de tiempo de scroll declarada
+  DENTRO del hero se mide contra una caja que nunca se desplaza y se queda
+  congelada en el fotograma cero — comprobado: la animación se reportaba como
+  «running» con `currentTime` clavado en 0%.
+
+  Hoy eso afectaría al parallax de la fotografía del hero en cuanto Emmy suba
+  una: se quedaría inmóvil sin ningún error visible. `overflow: clip` recorta
+  igual pero no crea contenedor de scroll, así que lo de dentro vuelve a
+  medirse contra la página.
 */
 @keyframes sunny-hero-exit {
   from {

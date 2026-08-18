@@ -36,8 +36,21 @@ export function ExperienceCard({ experience }: { experience: ExperienceCardData 
   return (
     <InViewReveal variant="media">
       <HoverLift lift={4}>
-        <article className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-carbon/10 bg-warm-white transition-shadow duration-[var(--motion-lift)] ease-sunny hover:shadow-[0_18px_40px_-18px_rgba(23,23,20,0.35)]">
-          <div className="relative aspect-4/5 w-full overflow-hidden bg-carbon/5">
+        <article className="group relative flex h-full flex-col overflow-clip rounded-xl border border-carbon/10 bg-warm-white transition-shadow duration-[var(--motion-lift)] ease-sunny hover:shadow-[0_18px_40px_-18px_rgba(23,23,20,0.35)]">
+          {/*
+            `overflow-clip` Y NO `overflow-hidden`
+
+            `overflow: hidden` convierte esta caja en contenedor de scroll, y
+            `animation-timeline: view()` se mide contra el contenedor de scroll
+            más cercano. Con `hidden`, el `parallax` de la fotografía se medía
+            contra una caja que nunca se desplaza: se quedaba clavado en la
+            mitad de su recorrido y no se movía nunca. Medido, no supuesto — la
+            animación se reportaba viva con el tiempo fijo en 50%.
+
+            `overflow: clip` recorta igual, respeta el redondeo y no crea
+            contenedor de scroll.
+          */}
+          <div className="relative aspect-4/5 w-full overflow-clip bg-carbon/5">
             {experience.image ? (
               <Image
                 src={sanityImageUrl(experience.image, 800)}

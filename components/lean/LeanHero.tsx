@@ -33,6 +33,11 @@ import type { SanityImage } from "@/lib/sanity/types";
  * capas y de que la sección siguiente pasa por delante, no detrás. Es CSS
  * ligado al scroll, sin JavaScript.
  *
+ * La sección recorta con `overflow-clip` y no con `overflow-hidden` a
+ * propósito: `hidden` la convertiría en contenedor de scroll y congelaría el
+ * parallax de la fotografía del hero —el de aquí abajo— en cuanto Emmy suba
+ * una. La explicación medida está junto a `.hero-exit` en globals.css.
+ *
  * EL CONTADOR
  *
  * Solo aparece a partir de tres experiencias. Con una o dos, un contador honesto
@@ -57,7 +62,7 @@ export function LeanHero({
   const segunda = resto.join(" ");
 
   return (
-    <section className="hero-exit relative isolate -mt-18 flex min-h-[86svh] flex-col justify-end overflow-hidden bg-carbon lg:min-h-[92svh]">
+    <section className="hero-exit relative isolate -mt-18 flex min-h-[86svh] flex-col justify-end overflow-clip bg-carbon lg:min-h-[92svh]">
       {image ? (
         <>
           <Image
