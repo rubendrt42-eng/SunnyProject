@@ -37,8 +37,8 @@ import { BrandCanvas } from "@/components/lean/BrandCanvas";
 export function CommunitySection({ instagramUrl }: { instagramUrl?: string }) {
   return (
     <div className="bg-carbon py-20 text-warm-white sm:py-28">
-      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 sm:px-8 lg:grid-cols-12 lg:gap-14">
-        <div className="lg:col-span-5">
+      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 sm:px-8 lg:grid-cols-12 lg:gap-[clamp(1.5rem,4vw,3.5rem)]">
+        <div className="min-w-0 lg:col-span-5">
           <InViewReveal variant="lead">
             <p className="eyebrow text-sunny">Comunidad</p>
             <h2 className="mt-4 text-title text-warm-white text-balance">
@@ -106,7 +106,7 @@ export function CommunitySection({ instagramUrl }: { instagramUrl?: string }) {
           Uno solo, más grande y en vertical: ocupa el sitio con intención.
           Cuando haya fotografía real, aquí vuelven las dos.
         */}
-        <div className="lg:col-span-7">
+        <div className="min-w-0 lg:col-span-7">
           <InViewReveal variant="media">
             <BrandCanvas
               seed="comunidad"

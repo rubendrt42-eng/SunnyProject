@@ -84,7 +84,24 @@ export function HeaderInteractive({
         />
       )}
 
-      <Container className="flex h-18 items-center justify-between gap-6 py-4">
+      {/*
+        `flex-wrap` y altura mínima en vez de fija.
+
+        Con el texto al 200% —la ampliación que exige WCAG 1.4.4— la marca pasa
+        de 24 a 48 px, y marca + separación + controles suman 523 px en una
+        pantalla de 320 o de 390. El resultado era scroll horizontal en TODAS
+        las páginas: 259 px de desborde a 320 px de ancho, 189 px a 390 px.
+
+        Encoger la marca no lo arreglaba: a ese tamaño de letra, solo el
+        relleno del contenedor ya se come 80 px de los 320. Lo que sí lo
+        arregla es dejar que la fila se parta: a tamaño normal sigue siendo una
+        sola línea —nada cambia—, y cuando la letra crece los controles bajan a
+        la siguiente en vez de salirse de la pantalla.
+
+        `h-18` era altura FIJA; con dos líneas recortaría el contenido. Pasa a
+        ser altura mínima.
+      */}
+      <Container className="flex min-h-18 flex-wrap items-center justify-between gap-x-6 gap-y-2 py-4">
         {/* `whitespace-nowrap shrink-0`: el nombre no puede partirse. Como hijo
             de un flex se encogía por debajo de su propio ancho y se rompía en
             «Sunny / Project» en toda ventana menor de 640 px. */}

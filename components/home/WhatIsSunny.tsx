@@ -28,8 +28,8 @@ import { EMMY_PHOTO } from "@/lib/media";
  */
 export function WhatIsSunny() {
   return (
-    <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-14">
-      <div className="lg:col-span-7">
+    <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-[clamp(1.5rem,4vw,3.5rem)]">
+      <div className="min-w-0 lg:col-span-7">
         <InViewReveal>
           <p className="eyebrow">Qué es Sunny Project</p>
           {/* The one place on the page a serif accent carries a full
@@ -78,7 +78,7 @@ export function WhatIsSunny() {
         </InViewReveal>
       </div>
 
-      <div className="lg:col-span-5">
+      <div className="min-w-0 lg:col-span-5">
         <InViewReveal delay={0.12}>
           <figure>
             {/* `overflow-clip`, no `hidden`: con `hidden` esta caja es

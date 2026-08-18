@@ -159,8 +159,8 @@ export default async function ExperienceDetailPage({ params }: { params: Promise
           Todas las experiencias
         </Link>
 
-        <div className="mt-6 grid gap-10 lg:grid-cols-12 lg:gap-14">
-          <div className="lg:col-span-7">
+        <div className="mt-6 grid gap-10 lg:grid-cols-12 lg:gap-[clamp(1.5rem,4vw,3.5rem)]">
+          <div className="min-w-0 lg:col-span-7">
             <div className="flex flex-wrap items-center gap-2">
               {yaPaso ? (
                 <Badge tone="neutral">Ya ocurrió</Badge>
@@ -216,7 +216,7 @@ export default async function ExperienceDetailPage({ params }: { params: Promise
             </div>
           </div>
 
-          <div className="lg:col-span-5">
+          <div className="min-w-0 lg:col-span-5">
             <div id="solicitar" className="scroll-mt-24 lg:sticky lg:top-24">
               {sePuedeSolicitar ? (
                 <div className="rounded-xl border border-carbon/10 bg-warm-white p-6">

@@ -133,8 +133,8 @@ export default async function HomePage() {
           un solo botón.
         */}
         <Container>
-          <div className="grid items-center gap-8 lg:grid-cols-12 lg:gap-14">
-            <div className="lg:col-span-7">
+          <div className="grid items-center gap-8 lg:grid-cols-12 lg:gap-[clamp(1.5rem,4vw,3.5rem)]">
+            <div className="min-w-0 lg:col-span-7">
               <InViewReveal variant="lead">
                 <p className="eyebrow">Para negocios</p>
                 <h2 className="mt-3 max-w-xl text-title text-balance">¿Quieres crear una experiencia con Sunny?</h2>
@@ -149,7 +149,7 @@ export default async function HomePage() {
                 </div>
               </InViewReveal>
             </div>
-            <InViewReveal delay={0.08} variant="media" className="lg:col-span-5">
+            <InViewReveal delay={0.08} variant="media" className="min-w-0 lg:col-span-5">
               <BrandCanvas seed="para-negocios" className="aspect-4/3 w-full rounded-xl lg:aspect-square" />
             </InViewReveal>
           </div>

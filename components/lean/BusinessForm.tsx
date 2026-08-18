@@ -188,7 +188,7 @@ function TextField({
   required?: boolean;
 }) {
   return (
-    <div className="flex flex-col gap-1.5">
+    <div className="flex min-w-0 flex-col gap-1.5">
       <label htmlFor={id} className="text-small font-medium text-carbon">
         {label} {required && <span className="text-orange-ink">*</span>}
       </label>
