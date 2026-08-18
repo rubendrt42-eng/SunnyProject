@@ -58,6 +58,45 @@ const nextConfig: NextConfig = {
     ],
   },
 
+  /**
+   * Cabeceras de seguridad.
+   *
+   * Hoy la única que manda Vercel por su cuenta es `Strict-Transport-Security`.
+   * Faltaban las cuatro de abajo, y este sitio pide nombre, WhatsApp y correo
+   * en dos formularios públicos: no es una página de solo lectura.
+   *
+   * `X-Frame-Options: DENY` es la que de verdad importa aquí. Sin ella,
+   * cualquiera puede meter el sitio dentro de un iframe invisible sobre su
+   * propia página y conseguir que alguien pulse «Enviar solicitud» creyendo
+   * que pulsa otra cosa. Con dos formularios que recogen datos personales, esa
+   * puerta no tiene por qué estar abierta: el sitio no necesita incrustarse en
+   * ningún sitio.
+   *
+   * Las otras tres son higiene estándar y no cambian nada de lo que se ve:
+   * `nosniff` impide que el navegador adivine el tipo de un archivo y lo trate
+   * como algo que no es; `Referrer-Policy` evita mandar la dirección completa
+   * a otros dominios; y `Permissions-Policy` apaga cámara, micrófono y
+   * ubicación, que este sitio no usa en ninguna parte.
+   *
+   * NO se añade `Content-Security-Policy`. Una CSP de verdad hay que ajustarla
+   * a cada script y estilo que emite Next, y una mal puesta rompe el sitio en
+   * silencio para parte de la gente. Es un trabajo aparte, no una línea más en
+   * esta lista.
+   */
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), interest-cohort=()" },
+        ],
+      },
+    ];
+  },
+
   async redirects() {
     return RUTAS_FUERA_DEL_MVP.map((source) => ({
       source,
