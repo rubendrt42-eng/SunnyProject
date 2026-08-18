@@ -31,7 +31,12 @@ const nombre = z
   .min(3, "Escribe tu nombre completo.")
   .max(80, "El nombre es demasiado largo.");
 
-const correo = z.string().trim().toLowerCase().email("Revisa tu correo, parece que tiene un error.").max(120);
+const correo = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .email("Revisa tu correo, parece que tiene un error.")
+  .max(120, "El correo es demasiado largo.");
 
 /**
  * Campo trampa para robots.
@@ -44,8 +49,8 @@ const correo = z.string().trim().toLowerCase().email("Revisa tu correo, parece q
 const trampa = z.string().max(0, "Solicitud rechazada.").optional();
 
 export const spotRequestSchema = z.object({
-  experienceId: z.string().trim().min(1),
-  experienceName: z.string().trim().min(1).max(120),
+  experienceId: z.string().trim().min(1, "Falta la experiencia. Vuelve a abrirla desde el listado."),
+  experienceName: z.string().trim().min(1, "Falta la experiencia. Vuelve a abrirla desde el listado.").max(120),
   name: nombre,
   whatsapp,
   email: correo,
@@ -59,14 +64,23 @@ export const spotRequestSchema = z.object({
 });
 
 export const businessRequestSchema = z.object({
-  businessName: z.string().trim().min(2, "Escribe el nombre de tu negocio.").max(80),
+  businessName: z
+    .string({ error: "Escribe el nombre de tu negocio." })
+    .trim()
+    .min(2, "Escribe el nombre de tu negocio.")
+    .max(80, "El nombre del negocio es demasiado largo."),
   contactName: nombre,
   whatsapp,
   email: correo,
-  instagram: z.string().trim().max(80).optional().or(z.literal("")),
-  location: z.string().trim().max(120).optional().or(z.literal("")),
-  experienceType: z.string().trim().max(120).optional().or(z.literal("")),
-  message: z.string().trim().max(700).optional().or(z.literal("")),
+  instagram: z.string().trim().max(80, "El usuario de Instagram es demasiado largo.").optional().or(z.literal("")),
+  location: z.string().trim().max(120, "La zona o dirección es demasiado larga.").optional().or(z.literal("")),
+  experienceType: z
+    .string()
+    .trim()
+    .max(120, "Descríbelo un poco más corto, por favor.")
+    .optional()
+    .or(z.literal("")),
+  message: z.string().trim().max(700, "El mensaje es demasiado largo.").optional().or(z.literal("")),
   website: trampa,
 });
 
@@ -112,6 +126,23 @@ export function rateLimit(ip: string): { ok: boolean } {
 }
 
 /** Primer mensaje de error legible de un fallo de Zod, para mostrárselo a la persona. */
+/**
+ * El mensaje que se le enseña a la persona.
+ *
+ * POR QUÉ TODOS LOS LÍMITES LLEVAN MENSAJE PROPIO
+ *
+ * Esto devuelve el primer error tal cual, así que cualquier regla sin mensaje
+ * propio le enseña a la persona el texto por omisión de la librería — en inglés
+ * y con jerga interna. Medido contra el endpoint de negocios antes de
+ * arreglarlo:
+ *
+ *     sin nombre de negocio -> «Invalid input: expected string, received undefined»
+ *     mensaje muy largo ---> «Too big: expected string to have <=700 characters»
+ *
+ * En un sitio en español, a alguien que solo quiere ofrecer su estudio. Ahora
+ * cada regla de los dos esquemas lleva su mensaje, y hay una prueba que falla
+ * si alguien añade una que no.
+ */
 export function firstErrorMessage(error: z.ZodError): string {
   return error.issues[0]?.message ?? "Revisa los datos del formulario.";
 }
