@@ -71,7 +71,7 @@ export default async function HomePage() {
           algo que vale la pena, después se explica el mecanismo. */}
       <section className="py-14 sm:py-20 lg:py-28">
         <Container>
-          <InViewReveal>
+          <InViewReveal variant="lead">
             <p className="eyebrow">Esta semana</p>
             <h2 className="mt-3 max-w-2xl text-title text-balance">
               Planes para moverte, recuperarte, conectar y probar algo diferente.
@@ -135,7 +135,7 @@ export default async function HomePage() {
         <Container>
           <div className="grid items-center gap-8 lg:grid-cols-12 lg:gap-14">
             <div className="lg:col-span-7">
-              <InViewReveal>
+              <InViewReveal variant="lead">
                 <p className="eyebrow">Para negocios</p>
                 <h2 className="mt-3 max-w-xl text-title text-balance">¿Quieres crear una experiencia con Sunny?</h2>
                 <p className="mt-4 max-w-lg text-body-l text-gray">
@@ -149,7 +149,7 @@ export default async function HomePage() {
                 </div>
               </InViewReveal>
             </div>
-            <InViewReveal delay={0.08} className="lg:col-span-5">
+            <InViewReveal delay={0.08} variant="media" className="lg:col-span-5">
               <BrandCanvas seed="para-negocios" className="aspect-4/3 w-full rounded-xl lg:aspect-square" />
             </InViewReveal>
           </div>
@@ -160,7 +160,7 @@ export default async function HomePage() {
       {s.faq.length > 0 && (
         <section className="py-14 sm:py-20 lg:py-28">
           <Container className="max-w-3xl">
-            <InViewReveal>
+            <InViewReveal variant="lead">
               <p className="eyebrow">Preguntas frecuentes</p>
               <h2 className="mt-3 text-title">Lo que casi siempre nos preguntan.</h2>
             </InViewReveal>

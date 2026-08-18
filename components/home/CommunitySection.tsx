@@ -39,7 +39,7 @@ export function CommunitySection({ instagramUrl }: { instagramUrl?: string }) {
     <div className="bg-carbon py-20 text-warm-white sm:py-28">
       <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 sm:px-8 lg:grid-cols-12 lg:gap-14">
         <div className="lg:col-span-5">
-          <InViewReveal>
+          <InViewReveal variant="lead">
             <p className="eyebrow text-sunny">Comunidad</p>
             <h2 className="mt-4 text-title text-warm-white text-balance">
               Puedes llegar solo.{" "}
@@ -101,10 +101,10 @@ export function CommunitySection({ instagramUrl }: { instagramUrl?: string }) {
           consigue que la segunda quede fuera de vista.
         */}
         <div className="grid grid-cols-2 gap-4 lg:col-span-7 lg:gap-6">
-          <InViewReveal delay={0.06}>
+          <InViewReveal delay={0.06} variant="media">
             <BrandCanvas seed="comunidad-uno" tone="light" className="aspect-4/5 w-full rounded-lg" />
           </InViewReveal>
-          <InViewReveal delay={0.12} className="lg:mt-12">
+          <InViewReveal delay={0.12} variant="media" className="lg:mt-12">
             <BrandCanvas seed="comunidad-dos" tone="light" className="aspect-4/5 w-full rounded-lg" />
           </InViewReveal>
         </div>

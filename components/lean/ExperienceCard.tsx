@@ -33,9 +33,9 @@ export function ExperienceCard({ experience }: { experience: ExperienceCardData 
   const agotada = experience.status === "sold_out";
 
   return (
-    <InViewReveal>
-      <HoverLift lift={3}>
-        <article className="group relative flex h-full flex-col overflow-hidden rounded-lg border border-carbon/10 bg-warm-white transition-shadow hover:shadow-lg">
+    <InViewReveal variant="media">
+      <HoverLift lift={4}>
+        <article className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-carbon/10 bg-warm-white transition-shadow duration-[var(--motion-lift)] ease-sunny hover:shadow-[0_18px_40px_-18px_rgba(23,23,20,0.35)]">
           <div className="relative aspect-4/5 w-full overflow-hidden bg-carbon/5">
             {experience.image ? (
               <Image
@@ -43,14 +43,18 @@ export function ExperienceCard({ experience }: { experience: ExperienceCardData 
                 alt={experience.image.alt}
                 fill
                 sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                className="object-cover transition-transform duration-[var(--motion-enter)] ease-sunny group-hover:scale-[1.02]"
+                /* `parallax` mueve la fotografía un poco más despacio que la
+                   tarjeta al hacer scroll; el zoom al pasar el cursor sigue
+                   siendo el de siempre. Los dos viven en el elemento interior,
+                   nunca en el contenedor, para que el recorte los absorba. */
+                className="parallax object-cover transition-transform duration-[var(--motion-enter)] ease-sunny group-hover:scale-[1.04]"
                 {...blurProps(experience.image)}
               />
             ) : (
               /* Sin fotografía se dibuja el lienzo de marca, no un aviso de
                  error. Ver `BrandCanvas`: la ausencia de foto es un hecho de
                  esta etapa y tiene que parecer una decisión de diseño. */
-              <BrandCanvas seed={experience.title} className="h-full w-full" />
+              <BrandCanvas seed={experience.title} className="parallax h-full w-full" />
             )}
           </div>
 

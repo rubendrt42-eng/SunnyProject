@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Container } from "@/components/ui/Container";
 import { LinkButton } from "@/components/ui/Button";
 import { BrandCanvas } from "@/components/lean/BrandCanvas";
+import { InViewReveal } from "@/components/motion/InViewReveal";
 
 export const metadata: Metadata = {
   title: "Cómo funciona — The Sunny Project",
@@ -90,10 +91,9 @@ export default function ComoFuncionaPage() {
                 <h2 className="mt-4 text-title text-balance">{paso.titulo}</h2>
                 <p className="mt-3 max-w-md text-body-l text-gray">{paso.texto}</p>
               </div>
-              <BrandCanvas
-                seed={paso.titulo}
-                className="aspect-16/10 w-full rounded-xl sm:col-span-5 sm:aspect-4/3"
-              />
+              <InViewReveal variant="media" className="sm:col-span-5">
+                <BrandCanvas seed={paso.titulo} className="aspect-16/10 w-full rounded-xl sm:aspect-4/3" />
+              </InViewReveal>
             </li>
           ))}
         </ol>

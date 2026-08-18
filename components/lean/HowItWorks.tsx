@@ -44,7 +44,7 @@ const PASOS = [
 export function HowItWorks() {
   return (
     <Container>
-      <InViewReveal>
+      <InViewReveal variant="lead">
         <p className="eyebrow">Cómo funciona</p>
         <h2 className="mt-3 max-w-2xl text-title text-balance">Salir de la rutina no debería ser complicado.</h2>
       </InViewReveal>

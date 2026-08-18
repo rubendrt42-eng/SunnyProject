@@ -40,7 +40,7 @@ export default async function ExperienciasPage() {
   return (
     <main className="py-14 sm:py-20">
       <Container>
-        <InViewReveal>
+        <InViewReveal variant="lead">
           <p className="eyebrow">Monterrey</p>
           <h1 className="mt-3 max-w-2xl text-title text-balance">
             {experiences.length > 0

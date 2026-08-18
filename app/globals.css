@@ -44,6 +44,7 @@
   --motion-collapse: 300ms;
   --motion-enter: 500ms;
   --motion-reveal: 600ms;
+  --motion-settle: 800ms;
   --motion-lift: 250ms;
 
   /* Cuánto esperar antes de admitir que algo va lento. Por debajo de este
@@ -124,9 +125,16 @@
   --text-subtitle--letter-spacing: -0.022em;
   --text-subtitle--font-weight: 700;
 
-  --text-heading: 1.125rem;
-  --text-heading--line-height: 1.3;
-  --text-heading--letter-spacing: -0.01em;
+  /* El título de una tarjeta de experiencia.
+     Estaba en 1.125rem fijo con peso 600: prácticamente el mismo tamaño que el
+     párrafo que tenía debajo, así que la tarjeta no tenía jerarquía — el ojo no
+     sabía dónde entrar y todo el bloque se leía como un párrafo. Ahora es
+     fluido, sube hasta 1.5rem y aprieta el interletraje como el resto de la
+     escala. Es el texto que más se repite en el sitio; que tenga presencia
+     cambia la sensación de toda la página. */
+  --text-heading: clamp(1.1875rem, 1.05rem + 0.5vw, 1.5rem);
+  --text-heading--line-height: 1.22;
+  --text-heading--letter-spacing: -0.018em;
   --text-heading--font-weight: 600;
 
   --text-body-l: 1.0625rem;
@@ -289,6 +297,9 @@ h2 {
    content — headings never use it. */
 .eyebrow {
   font-size: var(--text-label);
+  /* El antetítulo se leía como texto diminuto en vez de como etiqueta. El
+     interletraje amplio es lo que hace la diferencia a este tamaño. */
+  letter-spacing: 0.13em;
   line-height: var(--text-label--line-height);
   letter-spacing: var(--text-label--letter-spacing);
   font-weight: var(--text-label--font-weight);
@@ -333,33 +344,65 @@ h2 {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   REVELADO — sin JavaScript
+   MOVIMIENTO — sin JavaScript, y con carácter
 
-   El contenido tiene que ser visible aunque el JavaScript nunca llegue.
+   Dos reglas que no se negocian:
 
-   Antes esto lo hacía la librería de animación: los envoltorios salían del
-   servidor con `opacity:0` en línea y solo se volvían visibles cuando el
-   navegador descargaba, ejecutaba e hidrataba 735 KB de JavaScript. Si algo de
-   eso fallaba —conexión mala, un archivo perdido, un bloqueador— el visitante
-   veía los fondos de las secciones y nada dentro. No es hipotético: la
-   auditoría lo reprodujo y hay capturas.
+   1. **El contenido es visible aunque el JavaScript no llegue.** Todo lo de
+      aquí es CSS y termina en el estado visible con `animation-fill-mode: both`.
+   2. **Cada cosa se mueve como lo que es.** La primera versión de esto tenía un
+      solo revelado: 31 bloques haciendo el mismo desvanecido de 16 px repartido
+      en una ventana larguísima. El resultado era una página donde al bajar no
+      pasaba nada — el movimiento existía pero no se percibía, porque nada
+      llegaba a ningún sitio. Un titular no entra como una fotografía, y una
+      fotografía no entra como una fila de metadatos.
 
-   Ahora el revelado es CSS puro, y termina siempre en el estado visible:
+   TRES PAPELES
 
-   - Sin `animation-timeline`, la animación corre al cargar. Con
-     `animation-fill-mode: both` el elemento acaba visible pase lo que pase.
-   - Con `animation-timeline: view()` —Chrome, Edge, Safari recientes— vuelve a
-     ser coreografía por scroll de verdad, y sin una línea de JavaScript.
-   - Con `prefers-reduced-motion`, no hay animación: el contenido está y ya.
+   - `.reveal`         texto y bloques. Sube y aparece.
+   - `.reveal--media`  fotografía y lienzos. Entra desde una escala mayor y
+                       revelándose desde abajo, que es lo que hace que una
+                       imagen se sienta colocada en vez de encendida.
+   - `.reveal--lead`   el titular de una sección. Sube más y desde más lejos,
+                       para que abra el capítulo en vez de acompañarlo.
 
-   Las tres rutas acaban en lo mismo: contenido a la vista. Ninguna depende de
-   que se ejecute código.
+   LA VENTANA
+
+   `entry 25% → entry 85%`. La versión anterior empezaba en el 5% y acababa en
+   el 45%: el bloque terminaba de aparecer cuando todavía estaba en el borde
+   inferior de la pantalla, o sea fuera de donde se mira. Ahora arranca cuando
+   ya entró un cuarto y acaba justo antes de estar completo, que es cuando la
+   vista está encima.
    ───────────────────────────────────────────────────────────────────────────── */
 
 @keyframes sunny-reveal {
   from {
     opacity: 0;
-    transform: translateY(var(--reveal-y, 1rem));
+    transform: translateY(var(--reveal-y, 1.75rem));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/*
+  Solo `opacity` y `transform`.
+
+  La primera versión de esto añadía un `clip-path: inset()` animado para que la
+  imagen se revelara desde abajo. Se veía bien y costaba caro: `clip-path` obliga
+  al navegador a repintar en cada fotograma en vez de dejárselo al compositor.
+  Medido durante el scroll, el percentil 95 se iba a 33 ms y caían seis
+  fotogramas de cada sesenta y ocho — que es exactamente la sensación de página
+  trabada.
+
+  La entrada desde una escala mayor consigue la misma sensación de «colocada» y
+  no cuesta nada: escala y opacidad las mueve el compositor.
+*/
+@keyframes sunny-reveal-media {
+  from {
+    opacity: 0;
+    transform: translateY(2rem) scale(1.07);
   }
   to {
     opacity: 1;
@@ -372,26 +415,111 @@ h2 {
   animation-delay: var(--reveal-delay, 0s);
 }
 
+.reveal--media {
+  animation-name: sunny-reveal-media;
+  animation-duration: var(--motion-settle, 800ms);
+}
+
+.reveal--lead {
+  --reveal-y: 2.75rem;
+  animation-duration: var(--motion-settle, 800ms);
+}
+
 /*
-  Donde el navegador sabe seguir el scroll, se le devuelve la coreografía: cada
-  bloque entra mientras aparece por abajo, no todos de golpe al cargar.
-  `animation-range` termina antes de que el elemento esté centrado para que la
-  lectura no tenga que esperar a la animación.
+  Donde el navegador sabe seguir el scroll, el revelado deja de correr al cargar
+  y pasa a moverlo la posición del elemento. Es lo que convierte una animación
+  de entrada en coreografía.
+
+  El escalonado se aplica a los DOS extremos del rango, no solo al principio:
+  desplazar únicamente el inicio acorta la ventana y los elementos retrasados
+  entran más rápido que los primeros, que es exactamente al revés de lo que se
+  quiere.
 */
 @supports (animation-timeline: view()) {
   .reveal {
     animation-timeline: view();
-    animation-range: entry 5% entry 45%;
-    /* Con línea de tiempo de scroll el retraso se expresa en avance, no en
-       tiempo: un `animation-delay` en segundos aquí no significa nada. El
-       escalonado se consigue desplazando el rango. */
     animation-delay: 0s;
-    animation-range-start: calc(entry 5% + var(--reveal-shift, 0%));
+    animation-range: calc(entry 25% + var(--reveal-shift, 0%)) calc(entry 85% + var(--reveal-shift, 0%));
   }
 }
 
+/*
+  Paralaje de la media.
+
+  Lo que más se echaba de menos de la versión anterior. Un desplazamiento
+  vertical pequeño, ligado al scroll, sobre las fotografías y los lienzos:
+  basta para que el fondo y el primer plano dejen de moverse como una sola
+  lámina. Va sobre el elemento INTERIOR de un contenedor con `overflow: hidden`,
+  nunca sobre el contenedor, para que el recorte lo absorba.
+
+  ±4%. Más que eso se nota como un truco y descuadra los encuadres.
+*/
+@keyframes sunny-parallax {
+  from {
+    transform: translateY(var(--parallax, 4%)) scale(1.09);
+  }
+  to {
+    transform: translateY(calc(var(--parallax, 4%) * -1)) scale(1.09);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  .parallax {
+    animation: sunny-parallax linear both;
+    animation-timeline: view();
+    animation-range: cover;
+    will-change: transform;
+  }
+}
+
+/*
+  Salida del hero.
+
+  Al bajar, el hero se aleja un poco y se oscurece en vez de limitarse a
+  desaparecer por arriba. Da la sensación de que la página tiene capas y de que
+  la sección siguiente pasa por delante, no detrás.
+*/
+@keyframes sunny-hero-exit {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0.965);
+    opacity: 0.55;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  .hero-exit {
+    animation: sunny-hero-exit linear both;
+    animation-timeline: view();
+    animation-range: exit 0% exit 90%;
+    transform-origin: 50% 30%;
+    will-change: transform, opacity;
+  }
+}
+
+/*
+  Revelado al cargar, no al hacer scroll.
+
+  Para lo que está por encima del pliegue —el hero, el menú móvil—, donde la
+  coreografía tiene que ocurrir al abrir. Anula la línea de tiempo de scroll y
+  devuelve el retraso a segundos.
+*/
+.reveal-on-load {
+  animation-timeline: auto;
+  animation-delay: var(--reveal-delay, 0s);
+  animation-range: normal;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .reveal {
+  .reveal,
+  .reveal--media,
+  .reveal--lead,
+  .reveal-on-load,
+  .parallax,
+  .hero-exit {
     animation: none;
     opacity: 1;
     transform: none;
@@ -426,19 +554,6 @@ h2 {
     transform: none;
     transition: none;
   }
-}
-
-/*
-  Revelado al cargar, no al hacer scroll.
-
-  Para lo que está por encima del pliegue —el hero—, donde la coreografía tiene
-  que ocurrir al abrir la página. Anula la línea de tiempo de scroll y devuelve
-  el retraso a segundos.
-*/
-.reveal-on-load {
-  animation-timeline: auto;
-  animation-delay: var(--reveal-delay, 0s);
-  animation-range: normal;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -519,4 +634,17 @@ h2 {
     animation: none;
     opacity: 0;
   }
+}
+
+
+/*
+  Sin palabras huérfanas al final de un párrafo.
+
+  `text-wrap: pretty` deja que el navegador reparta las últimas líneas para que
+  ninguna quede con una sola palabra. Es de las cosas que no se ven cuando están
+  bien y delatan un sitio cuando faltan.
+*/
+p,
+li {
+  text-wrap: pretty;
 }
