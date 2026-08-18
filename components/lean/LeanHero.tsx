@@ -108,7 +108,7 @@ export function LeanHero({
       )}
       <div aria-hidden className="hero-grain absolute inset-0 -z-10" />
 
-      <Container className="pt-32 pb-14 sm:pb-20">
+      <Container className="hero-caja pt-32 pb-14 sm:pb-20">
         {/*
           SE QUITÓ LA CÁPSULA
 
@@ -135,7 +135,7 @@ export function LeanHero({
         </LineReveal>
 
         <LineReveal delay={0.62}>
-          <div className="mt-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:gap-8">
+          <div className="hero-acciones mt-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:gap-8">
             <LinkButton href="/experiencias" size="lg" variant="primary" arrow>
               Explorar experiencias
             </LinkButton>

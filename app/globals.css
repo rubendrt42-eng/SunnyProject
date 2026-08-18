@@ -531,6 +531,46 @@ h2 {
 }
 
 /*
+  El hero en pantallas bajas.
+
+  `pt-32` son 128 px de aire arriba: en escritorio es lo que separa el titular
+  del encabezado y le da presencia. En un teléfono en horizontal, esos 128 px
+  son un tercio de la pantalla, y el resultado medido era que el botón
+  «Explorar experiencias» quedaba SIEMPRE por debajo del pliegue:
+
+      iPhone apaisado  844×390 ... hero de 529 px
+      Android apaisado 740×360 ... hero de 516 px
+      ventana corta   1280×400 ... hero de 570 px
+
+  En los tres casos hay que hacer scroll para llegar a la única acción de la
+  portada. Nadie pierde nada grave —se baja y ahí está—, pero es aire que no
+  está haciendo ningún trabajo en una pantalla donde el alto es el recurso
+  escaso.
+
+  Se ata a la ALTURA de la ventana, no al ancho: un teléfono en horizontal y una
+  ventana de escritorio a media altura tienen el mismo problema y anchos muy
+  distintos, así que los puntos de corte por ancho no lo resuelven.
+*/
+@media (max-height: 560px) {
+  .hero-caja {
+    padding-top: 5.5rem;
+    padding-bottom: 2rem;
+  }
+
+  /* Los huecos internos también se aprietan: 24 px antes del subtítulo y 40
+     antes del botón son correctos cuando sobra alto, y son lo que deja el
+     botón fuera cuando no. Se recortan a la mitad; el orden de lectura y la
+     jerarquía no cambian. */
+  .hero-caja > :is(h1, div, p) + * {
+    margin-top: 0.75rem;
+  }
+
+  .hero-caja .hero-acciones {
+    margin-top: 1.25rem;
+  }
+}
+
+/*
   Salida del hero.
 
   Al bajar, el hero se aleja un poco y se oscurece en vez de limitarse a
