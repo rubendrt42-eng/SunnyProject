@@ -13,6 +13,30 @@
  * the design can be evaluated against real images instead of empty
  * states. They are NOT cleared for production, and no photo is attributed
  * to a named business as if that business had shot it.
+ *
+ * LA ÚNICA EXCEPCIÓN PUBLICADA: `EMMY_PHOTO`
+ *
+ * El MVP lean publica exactamente **una** fotografía de este archivo, y es
+ * deliberado. Todas las demás se retiraron de las rutas públicas por la
+ * advertencia de arriba; en su lugar va `BrandCanvas`, que dibuja la ausencia
+ * de fotografía a propósito en vez de dejar un hueco.
+ *
+ * `EMMY_PHOTO` se queda porque su procedencia es distinta: venía en la carpeta
+ * `FotoEmmy` de la propia entrega de Emmy, mide 1080×1080 —formato nativo de
+ * Instagram, no los 736 px del feed de Pinterest— y el manifiesto la clasifica
+ * como el «único asset plausiblemente propio». El cliente pidió expresamente
+ * que apareciera en su presentación.
+ *
+ * **Pendiente**: esa clasificación es una inferencia, no una confirmación.
+ * Falta que Emmy diga por escrito que la fotografía es suya y puede
+ * publicarse. Mientras tanto se publica bajo esa presunción, que es lo que el
+ * cliente pidió, y queda anotado aquí para que nadie lo dé por cerrado.
+ *
+ * `tests/unit/solo-fotografia-autorizada.test.ts` recorre lo que alcanzan las
+ * rutas públicas y falla si alguna llega a una fotografía distinta de esta.
+ * Sin esa prueba, añadir un componente de la versión avanzada a la portada
+ * publicaría una imagen de terceros sin que nada fallara: compila, se ve bien,
+ * y el problema es legal, no técnico.
  */
 
 export type SunnyPhoto = { src: string; alt: string; width: number; height: number };
@@ -87,6 +111,10 @@ export const COMMUNITY_PHOTOS: SunnyPhoto[] = [
   },
 ];
 
+/**
+ * Retrato de la fundadora. La única de este archivo que sale en producción —
+ * ver la nota de procedencia de arriba antes de tocarla o de imitarla.
+ */
 export const EMMY_PHOTO: SunnyPhoto = {
   src: "/media/sunny/emmy/emmy-founder-01.webp",
   alt: "Retrato de Emmy, fundadora de Sunny Project, apoyada en un barandal frente a una ladera de pinos",
