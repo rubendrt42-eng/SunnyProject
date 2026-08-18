@@ -50,25 +50,61 @@ export function ExperienceCard({ experience }: { experience: ExperienceCardData 
             `overflow: clip` recorta igual, respeta el redondeo y no crea
             contenedor de scroll.
           */}
-          <div className="relative aspect-4/5 w-full overflow-clip bg-carbon/5">
+          {/*
+            LA PROPORCIÓN DEPENDE DE SI HAY FOTOGRAFÍA
+
+            Con fotografía real, el formato vertical 4:5 es el correcto: la foto
+            es el argumento de la tarjeta y merece el espacio.
+
+            Sin fotografía, ese mismo 4:5 convertía un degradado que no dice
+            nada en el 85% de la tarjeta — cuatro veces en la misma portada. Era
+            el elemento más grande y más llamativo de la página, repetido, y
+            vacío de contenido: justo lo que hace que un sitio parezca generado.
+
+            Sin foto la banda se queda en una franja y **manda el texto**, que en
+            esta etapa es lo único que tiene algo real que decir. Dentro de la
+            franja va el día en serif: un dato verdadero, útil para escanear, y
+            un recurso editorial que ningún degradado puede imitar.
+          */}
+          <div
+            className={
+              experience.image
+                ? "relative aspect-4/5 w-full overflow-clip bg-carbon/5"
+                : "relative aspect-16/6 w-full overflow-clip bg-carbon/5"
+            }
+          >
             {experience.image ? (
-              <Image
-                src={sanityImageUrl(experience.image, 800)}
-                alt={experience.image.alt}
-                fill
-                sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                /* `parallax` mueve la fotografía un poco más despacio que la
-                   tarjeta al hacer scroll; el zoom al pasar el cursor sigue
-                   siendo el de siempre. Los dos viven en el elemento interior,
-                   nunca en el contenedor, para que el recorte los absorba. */
-                className="parallax object-cover transition-transform duration-[var(--motion-enter)] ease-sunny group-hover:scale-[1.04]"
-                {...blurProps(experience.image)}
-              />
+              /*
+                DOS CAPAS, NO UNA
+
+                El envoltorio lleva el `parallax` y la imagen lleva el realce
+                del cursor. Tienen que ir separados: una animación de CSS gana
+                a una declaración normal sobre la misma propiedad, así que con
+                los dos en el mismo elemento el `transform` del parallax
+                anulaba el del hover y el acercamiento no ocurría nunca.
+              */
+              <div className="parallax absolute inset-0">
+                <Image
+                  src={sanityImageUrl(experience.image, 800)}
+                  alt={experience.image.alt}
+                  fill
+                  sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                  className="media-hover object-cover"
+                  {...blurProps(experience.image)}
+                />
+              </div>
             ) : (
-              /* Sin fotografía se dibuja el lienzo de marca, no un aviso de
-                 error. Ver `BrandCanvas`: la ausencia de foto es un hecho de
-                 esta etapa y tiene que parecer una decisión de diseño. */
-              <BrandCanvas seed={experience.title} className="parallax h-full w-full" />
+              <>
+                <BrandCanvas seed={experience.title} className="parallax h-full w-full" />
+                <div className="absolute inset-0 flex items-end justify-between gap-3 p-5">
+                  <p className="font-serif text-3xl leading-none text-carbon/80 italic sm:text-4xl">
+                    {formatDateShort(experience.startDateTime).replace(/\s\d{4}$/, "")}
+                  </p>
+                  <p className="tabular pb-1 text-label text-carbon/55">
+                    {formatTime(experience.startDateTime)}
+                  </p>
+                </div>
+              </>
             )}
           </div>
 

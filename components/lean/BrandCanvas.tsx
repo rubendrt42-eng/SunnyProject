@@ -30,22 +30,39 @@
  */
 
 /** Las cuatro variantes. Todas salen de la paleta; ninguna introduce un color nuevo. */
+/**
+ * Las cuatro variantes.
+ *
+ * POR QUÉ SON MUCHO MÁS SUAVES QUE ANTES
+ *
+ * La versión anterior usaba el amarillo y el naranja de marca casi a plena
+ * saturación. A tamaño de tarjeta eso no leía como textura: leía como un
+ * rectángulo de degradado brillante — el elemento más grande y más llamativo de
+ * la portada, repetido cuatro veces, sin decir nada. Es exactamente la firma
+ * visual que hace que una página parezca generada, y el propio análisis de
+ * referencias lo tenía anotado como la segunda causa del efecto «plantilla».
+ *
+ * Ahora la base es papel cálido y el color entra como un tinte apenas
+ * perceptible. La ausencia de fotografía sigue pareciendo una decisión, pero
+ * deja de competir con el texto — que es lo único que en esta etapa tiene algo
+ * real que decir.
+ */
 const VARIANTES = [
   {
-    fondo: "radial-gradient(120% 90% at 15% 10%, #f8d347 0%, #f4d98a 38%, #f4f1e8 78%)",
-    figura: "conic-gradient(from 210deg at 70% 75%, rgba(255,122,61,.42), rgba(248,211,71,0) 55%)",
+    fondo: "radial-gradient(120% 90% at 15% 10%, #f6ecd6 0%, #f4efe4 45%, #f2efe6 100%)",
+    figura: "conic-gradient(from 210deg at 70% 75%, rgba(255,122,61,.10), rgba(248,211,71,0) 55%)",
   },
   {
-    fondo: "radial-gradient(110% 100% at 85% 15%, #ff7a3d 0%, #f2b183 42%, #f4f1e8 80%)",
-    figura: "conic-gradient(from 30deg at 25% 80%, rgba(248,211,71,.5), rgba(255,122,61,0) 52%)",
+    fondo: "radial-gradient(110% 100% at 85% 15%, #f6e6da 0%, #f4eee5 48%, #f1eee6 100%)",
+    figura: "conic-gradient(from 30deg at 25% 80%, rgba(248,211,71,.14), rgba(255,122,61,0) 52%)",
   },
   {
-    fondo: "radial-gradient(130% 85% at 50% 0%, #23231f 0%, #3d3d34 45%, #6d6d65 100%)",
-    figura: "conic-gradient(from 140deg at 30% 70%, rgba(248,211,71,.34), rgba(23,23,20,0) 58%)",
+    fondo: "radial-gradient(130% 85% at 50% 0%, #23231f 0%, #2c2c26 45%, #3a3a32 100%)",
+    figura: "conic-gradient(from 140deg at 30% 70%, rgba(248,211,71,.12), rgba(23,23,20,0) 58%)",
   },
   {
-    fondo: "radial-gradient(115% 95% at 10% 85%, #f8d347 0%, #f2b183 40%, #fffdfc 82%)",
-    figura: "conic-gradient(from 300deg at 75% 20%, rgba(255,122,61,.38), rgba(255,253,252,0) 50%)",
+    fondo: "radial-gradient(115% 95% at 10% 85%, #f5eddc 0%, #f3eee6 46%, #f5f2ea 100%)",
+    figura: "conic-gradient(from 300deg at 75% 20%, rgba(255,122,61,.09), rgba(255,253,252,0) 50%)",
   },
 ] as const;
 
@@ -115,7 +132,7 @@ export function BrandCanvas({
         aria-hidden
         viewBox="0 0 100 100"
         preserveAspectRatio="xMidYMid slice"
-        className="absolute inset-0 h-full w-full text-carbon opacity-[0.11]"
+        className="absolute inset-0 h-full w-full text-carbon opacity-[0.07]"
       >
         <circle cx="88" cy="14" r="30" fill="none" stroke="currentColor" strokeWidth="0.5" />
         <circle cx="88" cy="14" r="46" fill="none" stroke="currentColor" strokeWidth="0.35" />

@@ -572,6 +572,170 @@ h2 {
 }
 
 /*
+  Ajustes ópticos del texto.
+ 
+  Manrope y Newsreader se cargan como fuentes variables, así que el navegador
+  puede ajustar el trazo al tamaño real en que se dibuja cada palabra
+  (`optical-sizing`). Sin esto, un titular de 76 px usa el mismo grosor relativo
+  que un dato de 11 px y se ve ligeramente basto en grande y ligeramente
+  apretado en pequeño. Es de las cosas que no se saben nombrar al verlas, pero
+  que separan un texto compuesto de un texto colocado.
+ 
+  `kern` y `liga` vienen activadas por omisión en la mayoría de navegadores; se
+  declaran para que no dependa de la omisión.
+*/
+html {
+  font-optical-sizing: auto;
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/*
+  Puntuación colgante en las frases en serif.
+ 
+  Cuando una frase en itálica abre con comillas o guion, ese signo deja un
+  hueco óptico que rompe la alineación del bloque. `hanging-punctuation` lo saca
+  al margen. Donde el navegador no lo soporte no pasa nada: se ve como hasta
+  ahora.
+*/
+.font-serif {
+  hanging-punctuation: first last;
+}
+
+/*
+  Subrayado que se dibuja al pasar el cursor.
+ 
+  Un `text-decoration` que aparece de golpe se lee como un estado; uno que se
+  dibuja se lee como una respuesta. Es la diferencia entre un enlace que
+  funciona y un enlace que se siente vivo, y cuesta dos declaraciones.
+ 
+  Se anima `background-size`, que el compositor resuelve sin repintar el texto.
+*/
+.link-draw {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 1px;
+  transition: background-size var(--motion-lift, 250ms) var(--ease-sunny);
+  padding-bottom: 0.12em;
+}
+
+.link-draw:hover,
+.link-draw:focus-visible {
+  background-size: 100% 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link-draw {
+    transition: none;
+  }
+}
+
+/*
+  Cinta con arrastre nativo en móvil.
+ 
+  Adoptado de Eight Sleep (`grid overflow-x-auto` + `snap`, sin librería) tal
+  como quedó anotado en el análisis de referencias. En un teléfono, dos tarjetas
+  apiladas obligan a hacer scroll vertical para comparar; en cinta se comparan
+  con el pulgar, que es el gesto natural para elegir entre opciones.
+ 
+  Es scroll del navegador: el arrastre real, el impulso y el respeto a
+  `prefers-reduced-motion` vienen de serie, sin una línea de JavaScript. A
+  partir de `sm` vuelve a ser rejilla.
+*/
+.cinta {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 82%;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 1.25rem;
+  padding-inline: 1.25rem;
+  margin-inline: -1.25rem;
+  scrollbar-width: none;
+}
+
+.cinta::-webkit-scrollbar {
+  display: none;
+}
+
+.cinta > * {
+  scroll-snap-align: start;
+}
+
+@media (min-width: 640px) {
+  .cinta {
+    display: grid;
+    grid-auto-flow: row;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-columns: auto;
+    gap: 1.5rem;
+    /* De aquí en adelante deja de ser cinta: sin scroll propio y sin imanes,
+       o el ratón encontraría un carril horizontal donde ya no hay nada que
+       arrastrar. */
+    overflow-x: visible;
+    scroll-snap-type: none;
+    padding-inline: 0;
+    margin-inline: 0;
+  }
+
+  .cinta > * {
+    scroll-snap-align: none;
+  }
+}
+
+/* Tres o más caben en tres columnas a partir de `lg`. */
+@media (min-width: 1024px) {
+  .cinta--tres {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/*
+  Realce de una fotografía al pasar el cursor.
+
+  Lo que había era `group-hover:scale-[1.04]` puesto en el MISMO elemento que
+  lleva el `parallax`. No funcionaba: una animación de CSS gana a una
+  declaración normal sobre la misma propiedad, así que el `transform` del
+  parallax anulaba el del hover. El efecto estaba escrito y no ocurría nunca.
+
+  Ahora el parallax vive en el envoltorio y esto vive en la imagen, así que no
+  compiten. Y el realce no es solo acercar: sube un punto la luz, el contraste
+  y el color. Acercar sin tocar la luz se percibe como que la caja se mueve;
+  con la luz, se percibe como que la fotografía responde — que es lo que se
+  busca.
+
+  `filter` y `transform` son las dos propiedades que el compositor resuelve sin
+  repintar, así que esto no cuesta fotogramas.
+*/
+.media-hover {
+  transition:
+    transform var(--motion-settle, 800ms) var(--ease-sunny),
+    filter var(--motion-settle, 800ms) var(--ease-sunny);
+}
+
+.group:hover .media-hover,
+.group:focus-within .media-hover {
+  transform: scale(1.05);
+  filter: saturate(1.08) contrast(1.03) brightness(1.03);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .media-hover {
+    transition: none;
+  }
+
+  .group:hover .media-hover,
+  .group:focus-within .media-hover {
+    transform: none;
+    /* El realce de luz se queda: no es movimiento, es énfasis, y sigue diciendo
+       que el elemento responde a quien lo está señalando. */
+  }
+}
+
+/*
   Elevación al pasar el cursor, en CSS.
 
   Antes era un componente de cliente con la librería de animación envolviendo

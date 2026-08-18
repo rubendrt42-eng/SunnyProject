@@ -13,7 +13,6 @@ import { FaqList } from "@/components/site/FaqList";
 import { LeanHero } from "@/components/lean/LeanHero";
 import { ExperienceGrid } from "@/components/lean/ExperienceGrid";
 import { HowItWorks } from "@/components/lean/HowItWorks";
-import { BrandCanvas } from "@/components/lean/BrandCanvas";
 import { getSiteSettings, getUpcomingExperiences } from "@/lib/sanity/queries";
 import { DEFAULT_SETTINGS, whatsappLink } from "@/lib/lean-content";
 
@@ -149,8 +148,37 @@ export default async function HomePage() {
                 </div>
               </InViewReveal>
             </div>
-            <InViewReveal delay={0.08} variant="media" className="min-w-0 lg:col-span-5">
-              <BrandCanvas seed="para-negocios" className="aspect-4/3 w-full rounded-xl lg:aspect-square" />
+            {/*
+              QUÉ PASA DESPUÉS, EN VEZ DE UN DEGRADADO
+
+              Aquí había un lienzo de marca cuadrado: el cuarto rectángulo
+              naranja de la misma portada. Un negocio que está decidiendo si
+              escribirnos no necesita una textura, necesita saber en qué se está
+              metiendo. Esto responde eso en tres líneas y de paso le da a la
+              sección una composición que no se repite en ninguna otra parte.
+
+              Las tres líneas no prometen nada que el sistema no cumpla: llega
+              la propuesta, hay una conversación, y publicar es una decisión
+              posterior. Es exactamente lo que hace hoy el formulario.
+            */}
+            <InViewReveal delay={0.08} className="min-w-0 lg:col-span-5">
+              <ol className="divide-y divide-carbon/10 rounded-xl border border-carbon/10 bg-warm-white/70">
+                {[
+                  ["Nos escribes", "Cuéntanos qué haces y dónde. Sin formularios largos."],
+                  ["Platicamos", "Te contactamos para entender tu espacio y ver si encaja."],
+                  ["Lo armamos juntos", "Si tiene sentido para los dos, definimos fecha y cupo."],
+                ].map(([titulo, texto], i) => (
+                  <li key={titulo} className="flex gap-4 p-5">
+                    <span aria-hidden className="shrink-0 font-serif text-2xl leading-none text-orange-ink/70 tabular-nums">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <div className="min-w-0">
+                      <p className="text-heading">{titulo}</p>
+                      <p className="mt-1 text-small text-gray">{texto}</p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
             </InViewReveal>
           </div>
         </Container>

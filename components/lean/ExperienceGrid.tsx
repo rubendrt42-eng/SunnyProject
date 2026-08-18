@@ -63,8 +63,22 @@ export function ExperienceGrid({
         ? "sm:grid-cols-2"
         : "sm:grid-cols-2 lg:grid-cols-3";
 
+  /*
+    EN MÓVIL, CINTA CON ARRASTRE; DE `sm` EN ADELANTE, REJILLA.
+
+    Adoptado de Eight Sleep tal como quedó anotado en el análisis de
+    referencias: `overflow-x-auto` + `snap`, scroll del navegador, cero
+    JavaScript. En un teléfono, comparar dos experiencias apiladas obliga a
+    subir y bajar; en cinta se comparan con el pulgar, que es el gesto con el
+    que de verdad se elige entre opciones.
+
+    Con una sola experiencia no hay nada que comparar, así que no hay cinta: se
+    centra y punto.
+  */
+  const enCinta = experiences.length > 1;
+
   return (
-    <div className={`grid gap-6 ${columnas}`}>
+    <div className={enCinta ? (experiences.length > 2 ? "cinta cinta--tres" : "cinta") : `grid gap-6 ${columnas}`}>
       {experiences.map((experience) => (
         <ExperienceCard key={experience._id} experience={experience} />
       ))}

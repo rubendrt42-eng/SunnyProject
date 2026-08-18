@@ -2,7 +2,6 @@ import Link from "next/link";
 import { AtSign } from "lucide-react";
 import { InViewReveal } from "@/components/motion/InViewReveal";
 import { LinkButton } from "@/components/ui/Button";
-import { BrandCanvas } from "@/components/lean/BrandCanvas";
 
 /**
  * Comunidad — el capítulo oscuro de la portada.
@@ -36,85 +35,83 @@ import { BrandCanvas } from "@/components/lean/BrandCanvas";
  */
 export function CommunitySection({ instagramUrl }: { instagramUrl?: string }) {
   return (
-    <div className="bg-carbon py-20 text-warm-white sm:py-28">
-      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 sm:px-8 lg:grid-cols-12 lg:gap-[clamp(1.5rem,4vw,3.5rem)]">
-        <div className="min-w-0 lg:col-span-5">
-          <InViewReveal variant="lead">
-            <p className="eyebrow text-sunny">Comunidad</p>
-            <h2 className="mt-4 text-title text-warm-white text-balance">
-              Puedes llegar solo.{" "}
-              <span className="font-serif text-sunny italic">Eso no significa que te vas a ir igual.</span>
-            </h2>
-          </InViewReveal>
-
-          <InViewReveal delay={0.08}>
-            <p className="mt-6 max-w-md text-body-l text-warm-white/75">
-              No se trata solamente de probar una actividad. Se trata de encontrar nuevas formas de moverte, aprender,
-              convivir y conectar con personas que tienen las mismas ganas de vivir algo diferente.
-            </p>
-          </InViewReveal>
-
-          <InViewReveal delay={0.14}>
-            <p className="mt-4 max-w-md text-body text-warm-white/60">
-              Una experiencia puede durar una hora. La conexión puede quedarse.
-            </p>
-          </InViewReveal>
-
-          <InViewReveal delay={0.2}>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <LinkButton href="/experiencias" variant="primary" arrow>
-                Ver experiencias
-              </LinkButton>
-
-              {instagramUrl && (
-                <a
-                  href={instagramUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex min-h-11 items-center gap-2 rounded-md border border-warm-white/30 px-5 text-small font-medium text-warm-white transition-colors hover:bg-warm-white/10"
-                >
-                  <AtSign aria-hidden size={16} strokeWidth={1.5} />
-                  Seguir a Sunny
-                  <span className="sr-only"> en Instagram</span>
-                </a>
-              )}
-            </div>
-          </InViewReveal>
-
-          <InViewReveal delay={0.26}>
-            <p className="mt-6 text-small text-warm-white/50">
-              ¿Ya viste algo que le va a alguien?{" "}
-              <Link
-                href="/experiencias"
-                className="underline decoration-warm-white/40 underline-offset-4 hover:decoration-warm-white"
-              >
-                Compártelo desde cualquier experiencia
-              </Link>
-              .
-            </p>
-          </InViewReveal>
-        </div>
+    <div className="bg-carbon py-24 text-warm-white sm:py-32 lg:py-40">
+      <div className="mx-auto w-full max-w-4xl px-5 sm:px-8">
+        <InViewReveal variant="lead">
+          <p className="eyebrow text-sunny">Comunidad</p>
+        </InViewReveal>
 
         {/*
-          UN SOLO LIENZO, NO DOS
+          LA FRASE ES EL ELEMENTO VISUAL
 
-          Eran dos piezas desplazadas entre sí. Con fotografías reales la
-          composición asimétrica funcionaba; con lienzos de marca, dos veces el
-          mismo motivo en la misma pantalla lo delata como relleno. Y en móvil
-          quedaban dos miniaturas donde no se distinguía nada.
+          Aquí había un lienzo de degradado ocupando siete de doce columnas: el
+          tercer rectángulo naranja idéntico de la misma portada, sin nada que
+          decir. El análisis de referencias asigna a esta sección otro papel —
+          la frase-ancla que rompe el ritmo a mitad del scroll— y ese papel lo
+          hace la tipografía, no una imagen de relleno.
 
-          Uno solo, más grande y en vertical: ocupa el sitio con intención.
-          Cuando haya fotografía real, aquí vuelven las dos.
+          Así que la sección se estrecha, se centra y la frase crece hasta
+          ocupar el sitio que ocupaba el degradado. Es el único momento del
+          sitio donde el texto es la ilustración, y por eso funciona: rompe el
+          ritmo de columnas de todo lo demás.
         */}
-        <div className="min-w-0 lg:col-span-7">
-          <InViewReveal variant="media">
-            <BrandCanvas
-              seed="comunidad"
-              tone="light"
-              className="aspect-4/3 w-full rounded-xl lg:aspect-4/5"
-            />
-          </InViewReveal>
-        </div>
+        <InViewReveal delay={0.06}>
+          <h2 className="mt-6 text-display text-balance text-warm-white">
+            Puedes llegar solo.{" "}
+            <span className="font-serif font-normal text-sunny italic">
+              Eso no significa que te vas a ir igual.
+            </span>
+          </h2>
+        </InViewReveal>
+
+        <InViewReveal delay={0.12}>
+          <p className="mt-10 max-w-xl text-body-l text-warm-white/70">
+            No se trata solamente de probar una actividad. Se trata de encontrar nuevas formas de moverte, aprender,
+            convivir y conectar con personas que tienen las mismas ganas de vivir algo diferente.
+          </p>
+        </InViewReveal>
+
+        <InViewReveal delay={0.16}>
+          <p className="mt-5 max-w-xl border-l border-sunny/40 pl-5 font-serif text-body-l text-warm-white/85 italic">
+            Una experiencia puede durar una hora. La conexión puede quedarse.
+          </p>
+        </InViewReveal>
+
+        <InViewReveal delay={0.22}>
+          <div className="mt-12 flex flex-wrap items-center gap-3">
+            <LinkButton href="/experiencias" variant="primary" arrow>
+              Ver experiencias
+            </LinkButton>
+
+            {instagramUrl && (
+              <a
+                href={instagramUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-11 items-center gap-2 rounded-md border border-warm-white/30 px-5 text-small font-medium text-warm-white transition-colors hover:bg-warm-white/10"
+              >
+                <AtSign aria-hidden size={16} strokeWidth={1.5} />
+                Seguir a Sunny
+                <span className="sr-only"> en Instagram</span>
+              </a>
+            )}
+          </div>
+        </InViewReveal>
+
+        <InViewReveal delay={0.28}>
+          <p /* /55 y no /45: a /45 el contraste es 4.43:1 y AA pide 4.5 para
+               texto pequeño. Sigue leyéndose como nota al pie. */
+            className="mt-8 text-small text-warm-white/55">
+            ¿Ya viste algo que le va a alguien?{" "}
+            <Link
+              href="/experiencias"
+              className="underline decoration-warm-white/45 underline-offset-4 transition-colors hover:decoration-warm-white"
+            >
+              Compártelo desde cualquier experiencia
+            </Link>
+            .
+          </p>
+        </InViewReveal>
       </div>
     </div>
   );
