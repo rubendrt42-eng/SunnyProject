@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { CalendarDays } from "lucide-react";
 import { ExperienceCard } from "@/components/lean/ExperienceCard";
+import { Cinta } from "@/components/lean/Cinta";
 import { InViewReveal } from "@/components/motion/InViewReveal";
 import type { ExperienceCardData } from "@/lib/sanity/types";
 
@@ -78,10 +79,18 @@ export function ExperienceGrid({
   const enCinta = experiences.length > 1;
 
   return (
-    <div className={enCinta ? (experiences.length > 2 ? "cinta cinta--tres" : "cinta") : `grid gap-6 ${columnas}`}>
-      {experiences.map((experience) => (
-        <ExperienceCard key={experience._id} experience={experience} />
-      ))}
-    </div>
+    enCinta ? (
+      <Cinta className={experiences.length > 2 ? "cinta cinta--tres" : "cinta"}>
+        {experiences.map((experience) => (
+          <ExperienceCard key={experience._id} experience={experience} />
+        ))}
+      </Cinta>
+    ) : (
+      <div className={`grid gap-6 ${columnas}`}>
+        {experiences.map((experience) => (
+          <ExperienceCard key={experience._id} experience={experience} />
+        ))}
+      </div>
+    )
   );
 }
