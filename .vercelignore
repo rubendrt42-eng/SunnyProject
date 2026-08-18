@@ -1,0 +1,11 @@
+# El Studio de Sanity no se publica desde aquí: vive en sanity.studio, se sube
+# con `pnpm studio:deploy` desde una máquina local. Estos archivos solo sirven
+# para eso, y dejarlos fuera del despliegue evita que Vercel intente deducir que
+# este repositorio es un Studio en vez de un sitio de Next.js.
+sanity.cli.ts
+sanity.config.ts
+
+# Nada de esto se ejecuta en producción.
+tests/
+playwright.config.ts
+vitest.config.ts
