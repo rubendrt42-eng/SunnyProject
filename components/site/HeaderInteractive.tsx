@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { clsx } from "clsx";
@@ -51,6 +51,20 @@ export function HeaderInteractive({
   ctaLabel?: string;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const botonMenu = useRef<HTMLButtonElement>(null);
+
+  /**
+   * Cerrar el menú devuelve el foco al botón que lo abrió.
+   *
+   * Sin esto, al cerrar con Escape el foco cae en el `body` y quien navega con
+   * teclado tiene que recorrer la página entera desde arriba para volver a
+   * donde estaba. La referencia vive aquí y no dentro del menú porque cuando el
+   * menú se monta, `autoFocus` ya se ha llevado el foco a su botón de cerrar.
+   */
+  const cerrarMenu = () => {
+    setMenuOpen(false);
+    botonMenu.current?.focus();
+  };
   const pathname = usePathname();
 
   // `usePathname` devuelve el mismo valor en servidor y cliente, así que esto
@@ -102,6 +116,7 @@ export function HeaderInteractive({
             </LinkButton>
           </div>
           <button
+            ref={botonMenu}
             type="button"
             onClick={() => setMenuOpen(true)}
             aria-haspopup="dialog"
@@ -119,11 +134,11 @@ export function HeaderInteractive({
 
       <FullscreenMenu
         open={menuOpen}
-        onClose={() => setMenuOpen(false)}
+        onClose={cerrarMenu}
         links={links}
         footer={
           <div className="flex flex-col gap-4">
-            <LinkButton href="/experiencias" onClick={() => setMenuOpen(false)} className="mt-2 w-fit">
+            <LinkButton href="/experiencias" onClick={cerrarMenu} className="mt-2 w-fit">
               {ctaLabel}
             </LinkButton>
           </div>

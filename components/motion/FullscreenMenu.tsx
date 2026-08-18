@@ -42,7 +42,6 @@ export function FullscreenMenu({
   useEffect(() => {
     if (!open) return;
 
-    const disparador = document.activeElement as HTMLElement | null;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
@@ -80,8 +79,10 @@ export function FullscreenMenu({
     return () => {
       document.body.style.overflow = previousOverflow;
       document.removeEventListener("keydown", handleKeyDown);
-      // Devolver el foco a quien abrió el menú, no al principio del documento.
-      disparador?.focus?.();
+      // El foco lo devuelve quien abrió el menú: aquí `document.activeElement`
+      // ya es el botón de cerrar —`autoFocus` se le adelanta al efecto— y
+      // devolvérselo a un elemento que está a punto de desaparecer deja el
+      // foco en el `body`. Ver `HeaderInteractive`.
     };
   }, [open, onClose]);
 
