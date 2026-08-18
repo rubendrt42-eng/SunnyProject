@@ -217,7 +217,35 @@ export default async function ExperienceDetailPage({ params }: { params: Promise
           </div>
 
           <div className="min-w-0 lg:col-span-5">
-            <div id="solicitar" className="scroll-mt-24 lg:sticky lg:top-24">
+            {/*
+              EL FORMULARIO SE FIJA SOLO SI CABE
+
+              Un elemento `sticky` más alto que la ventana se queda clavado: al
+              bajar, su parte inferior no entra nunca en pantalla. Aquí abajo
+              está el botón de enviar, así que en una ventana baja la persona
+              rellena los campos, busca el botón, hace scroll... y el formulario
+              no se mueve. El botón solo reaparece cuando termina la columna de
+              al lado.
+
+              El formulario mide unos 763 px. Medido cuánto hay que bajar antes
+              de que el botón se vea, según el alto de ventana y la longitud de
+              la descripción:
+
+                  ventana 900 px ......  200 px, con cualquier descripción
+                  ventana 640 px ......  480 px con la descripción de hoy
+                  ventana 640 px ...... 2560 px con una descripción larga
+                                        (el 71% de una página de 3610 px)
+
+              Hoy no falla porque las descripciones son cortas, pero
+              `fullDescription` no tiene límite superior en el esquema: la
+              gravedad crece con lo que Emmy escriba, sin que nada avise.
+
+              Así que se fija solo cuando la ventana tiene alto suficiente para
+              contenerlo entero. Por debajo de eso sigue en su columna, al lado
+              del contenido, pero acompañando el scroll — que es lo que hace que
+              su botón siempre se alcance.
+            */}
+            <div id="solicitar" className="form-solicitud scroll-mt-24">
               {sePuedeSolicitar ? (
                 <div className="rounded-xl border border-carbon/10 bg-warm-white p-6">
                   <h2 className="text-subtitle">Solicitar mi lugar</h2>

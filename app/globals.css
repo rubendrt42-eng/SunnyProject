@@ -531,6 +531,21 @@ h2 {
 }
 
 /*
+  El panel de solicitud se fija solo si cabe entero en la ventana.
+
+  Ver la nota junto a `.form-solicitud` en la página de experiencia: un `sticky`
+  más alto que la ventana atrapa su propia parte inferior, y ahí vive el botón
+  de enviar. 880 px = los 763 del formulario + los 96 del desplazamiento
+  superior + un margen.
+*/
+@media (min-width: 1024px) and (min-height: 880px) {
+  .form-solicitud {
+    position: sticky;
+    top: 6rem;
+  }
+}
+
+/*
   El hero en pantallas bajas.
 
   `pt-32` son 128 px de aire arriba: en escritorio es lo que separa el titular
