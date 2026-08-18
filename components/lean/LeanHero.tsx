@@ -109,10 +109,20 @@ export function LeanHero({
       <div aria-hidden className="hero-grain absolute inset-0 -z-10" />
 
       <Container className="pt-32 pb-14 sm:pb-20">
+        {/*
+          SE QUITÓ LA CÁPSULA
+
+          Era una píldora con borde fino, fondo translúcido, desenfoque detrás y
+          versalitas muy espaciadas. Es el elemento más repetido de las portadas
+          generadas: prácticamente todas abren con una etiqueta así, y a este
+          público le va a resultar familiar por las razones equivocadas.
+
+          Además no informaba: «Monterrey · Cada semana» ya lo dicen el
+          subtítulo y el pie. Ahora es una línea de texto sin chrome — la misma
+          información, sin el disfraz de insignia.
+        */}
         <LineReveal>
-          <p className="inline-flex rounded-full border border-white/25 bg-carbon/55 px-4 py-1.5 text-label text-warm-white backdrop-blur-sm">
-            Monterrey · Cada semana
-          </p>
+          <p className="text-small font-medium tracking-wide text-warm-white/70">Monterrey · Cada semana</p>
         </LineReveal>
 
         <h1 className="mt-6 max-w-3xl text-display text-warm-white">

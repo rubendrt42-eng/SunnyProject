@@ -336,36 +336,32 @@ h2 {
    Metido en `components`, las utilidades vuelven a poder ganarle, que es lo
    que el marcado da por hecho. */
 @layer components {
-  /* La línea corta antes del antetítulo.
-     Es el recurso editorial más barato que existe y el que más rápido dice que
-     alguien compuso la página: ancla la etiqueta al margen y separa un capítulo
-     del anterior sin gastar un solo píxel de color ni de peso. Se dibuja con un
-     pseudoelemento, así que no añade marcado ni cambia el texto que lee un
-     lector de pantalla. */
+  /*
+    EL ANTETÍTULO, CORREGIDO — Y POR QUÉ SE QUITÓ EL FILETE
+ 
+    Ayer le puse una línea corta delante, con el argumento de que era un recurso
+    editorial barato. El cliente señaló el resultado y dijo que se veía hecho
+    con IA. Tenía razón, y el argumento estaba mal: filete + versalitas
+    diminutas + interletraje muy abierto + color de marca, repetido en las seis
+    secciones de la página, ES la firma de una plantilla generada. No importa
+    que cada pieza por separado sea un recurso legítimo; lo que delata es el
+    conjunto repetido sin que aporte nada.
+ 
+    Ahora la etiqueta se comporta como lo que es: un pie de sección discreto.
+    Caja alta y baja en vez de versalitas, interletraje normal, gris en vez de
+    naranja, y peso medio en vez de semibold. Deja de pedir atención y de
+    competir con el titular que va justo debajo — que es quien la merece.
+ 
+    Se conserva `@layer components` para que una utilidad de color del marcado
+    pueda seguir ganándole (la sección oscura la pinta en amarillo).
+  */
   .eyebrow {
-    display: flex;
-    align-items: center;
-    gap: 0.625rem;
-  }
-
-  .eyebrow::before {
-    content: "";
-    width: 1.75rem;
-    height: 1px;
-    flex: none;
-    background-color: currentColor;
-    opacity: 0.45;
-  }
-
-  .eyebrow {
-    font-size: var(--text-label);
-    line-height: var(--text-label--line-height);
-    /* 0.14em. El interletraje amplio es lo que hace que a este tamaño se lea
-       como etiqueta y no como texto diminuto. */
-    letter-spacing: var(--text-label--letter-spacing);
-    font-weight: var(--text-label--font-weight);
-    text-transform: uppercase;
-    color: var(--color-orange-ink);
+    font-size: var(--text-small);
+    line-height: var(--text-small--line-height);
+    letter-spacing: 0;
+    font-weight: 500;
+    text-transform: none;
+    color: var(--color-gray);
   }
 }
 
