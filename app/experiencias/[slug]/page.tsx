@@ -44,7 +44,19 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     openGraph: {
       title: experience.title,
       description: experience.shortDescription,
-      images: experience.image ? [{ url: sanityImageUrl(experience.image, 1200) }] : [],
+      /**
+       * Solo se declara `images` cuando hay fotografía real.
+       *
+       * Antes decía `: []`, y un array vacío es una imagen declarada: como los
+       * metadatos de Next se combinan de forma superficial, este bloque
+       * `openGraph` reemplaza entero el del layout raíz, así que el `[]` no
+       * heredaba nada — dejaba la tarjeta de WhatsApp sin ninguna imagen.
+       * Justo la página que el botón «Compartir» está hecho para mandar.
+       *
+       * Omitiéndolo, entra en su lugar `opengraph-image.tsx` de esta misma
+       * carpeta, que dibuja una tarjeta con el título y la fecha.
+       */
+      ...(experience.image ? { images: [{ url: sanityImageUrl(experience.image, 1200) }] } : {}),
     },
   };
 }
