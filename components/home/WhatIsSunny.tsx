@@ -42,7 +42,7 @@ export function WhatIsSunny() {
         </InViewReveal>
 
         <InViewReveal delay={0.1}>
-          <p className="mt-6 max-w-xl text-body-l text-gray">
+          <p className="mt-6 max-w-[54ch] text-lead text-carbon/80">
             Sunny Project nace para reunir a personas que quieren mejorar, descubrir y salir de su zona de confort.
             Conectamos esa energía con experiencias y espacios locales que quieren construir una comunidad más activa,
             curiosa y cercana.

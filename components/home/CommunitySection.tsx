@@ -65,7 +65,7 @@ export function CommunitySection({ instagramUrl }: { instagramUrl?: string }) {
         </InViewReveal>
 
         <InViewReveal delay={0.12}>
-          <p className="mt-10 max-w-xl text-body-l text-warm-white/70">
+          <p className="mt-10 max-w-[54ch] text-lead text-warm-white/75">
             No se trata solamente de probar una actividad. Se trata de encontrar nuevas formas de moverte, aprender,
             convivir y conectar con personas que tienen las mismas ganas de vivir algo diferente.
           </p>

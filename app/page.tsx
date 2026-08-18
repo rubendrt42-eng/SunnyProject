@@ -137,7 +137,7 @@ export default async function HomePage() {
               <InViewReveal variant="lead">
                 <p className="eyebrow">Para negocios</p>
                 <h2 className="mt-3 max-w-xl text-title text-balance">¿Quieres crear una experiencia con Sunny?</h2>
-                <p className="mt-4 max-w-lg text-body-l text-gray">
+                <p className="mt-5 max-w-[52ch] text-lead text-carbon/80">
                   Si tienes un estudio, un espacio o una clase, te ayudamos a que gente nueva lo conozca. Nos cuentas
                   qué haces y platicamos cómo podría funcionar.
                 </p>

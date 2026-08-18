@@ -62,7 +62,7 @@ export default function ComoFuncionaPage() {
         <div className="max-w-3xl">
           <p className="eyebrow">El recorrido</p>
           <h1 className="mt-3 text-display text-balance">Cómo funciona</h1>
-          <p className="mt-5 max-w-xl text-body-l text-gray">
+          <p className="mt-5 max-w-[52ch] text-lead text-carbon/80">
             Tres pasos. Sin cuentas, sin pagos y sin letra chica.
           </p>
         </div>

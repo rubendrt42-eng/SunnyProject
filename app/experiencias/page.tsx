@@ -64,7 +64,7 @@ export default async function ExperienciasPage() {
               : "Aquí van a estar las próximas experiencias."}
           </h1>
           {experiences.length > 0 && (
-            <p className="mt-4 max-w-lg text-body-l text-gray">
+            <p className="mt-5 max-w-[52ch] text-lead text-carbon/80">
               {experiences.length} {experiences.length === 1 ? "experiencia disponible" : "experiencias disponibles"}, de
               la más próxima a la más lejana.
             </p>

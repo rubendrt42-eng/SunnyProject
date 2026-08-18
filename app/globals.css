@@ -155,6 +155,17 @@
   --text-heading--letter-spacing: -0.018em;
   --text-heading--font-weight: 600;
 
+  /* LA VOZ DE ENTRADA DE UN CAPÍTULO
+     Faltaba un escalón. El párrafo que abre una sección y el que la acompaña
+     usaban los dos `body-l` en gris, así que la página tenía dos voces —titular
+     y todo lo demás— y el ojo no distinguía qué leer primero dentro del bloque.
+     Este escalón intermedio es más grande, más oscuro y con la línea algo más
+     suelta: se lee como la frase que resume el capítulo, y deja el gris para lo
+     que de verdad es secundario. */
+  --text-lead: clamp(1.1875rem, 1.05rem + 0.55vw, 1.375rem);
+  --text-lead--line-height: 1.5;
+  --text-lead--letter-spacing: -0.012em;
+
   --text-body-l: 1.0625rem;
   --text-body-l--line-height: 1.6;
 
@@ -325,6 +336,27 @@ h2 {
    Metido en `components`, las utilidades vuelven a poder ganarle, que es lo
    que el marcado da por hecho. */
 @layer components {
+  /* La línea corta antes del antetítulo.
+     Es el recurso editorial más barato que existe y el que más rápido dice que
+     alguien compuso la página: ancla la etiqueta al margen y separa un capítulo
+     del anterior sin gastar un solo píxel de color ni de peso. Se dibuja con un
+     pseudoelemento, así que no añade marcado ni cambia el texto que lee un
+     lector de pantalla. */
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+  }
+
+  .eyebrow::before {
+    content: "";
+    width: 1.75rem;
+    height: 1px;
+    flex: none;
+    background-color: currentColor;
+    opacity: 0.45;
+  }
+
   .eyebrow {
     font-size: var(--text-label);
     line-height: var(--text-label--line-height);
