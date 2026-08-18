@@ -26,21 +26,36 @@ export const DEFAULT_SETTINGS: SiteSettings = {
     },
     {
       question: "¿Necesito crear una cuenta?",
-      answer: "No. Solo dejas tu nombre y tu WhatsApp al solicitar un lugar.",
+      answer: "No. Solo dejas tu nombre, tu WhatsApp y tu correo al solicitar un lugar.",
     },
     {
-      question: "¿Solicitar un lugar es lo mismo que reservarlo?",
+      question: "¿Solicitar un lugar significa que ya estoy confirmado?",
       answer:
-        "No. Al enviar el formulario nos llega tu solicitud y revisamos la disponibilidad. Tu lugar queda confirmado cuando te escribimos, no antes.",
+        "No. Al enviar el formulario nos llega tu solicitud y revisamos la disponibilidad del espacio. Tu lugar queda confirmado cuando te escribimos, no antes.",
+    },
+    {
+      question: "¿Cómo sé si mi lugar fue confirmado?",
+      answer:
+        "Te escribimos por WhatsApp al número que dejaste en el formulario. Si no hay cupo, también te avisamos.",
+    },
+    {
+      question: "¿Qué pasa si una experiencia está agotada?",
+      answer:
+        "La experiencia sigue visible pero ya no admite nuevas solicitudes. Puedes revisar las demás experiencias disponibles.",
+    },
+    {
+      question: "¿Dónde veo nuevas experiencias?",
+      answer:
+        "En la sección de experiencias. Se actualiza cuando publicamos algo nuevo, y las que ya ocurrieron desaparecen solas.",
     },
     {
       question: "¿Puedo llevar a alguien?",
       answer: "Sí. Al solicitar tu lugar indicas cuántas personas van, y lo confirmamos según el cupo del espacio.",
     },
     {
-      question: "Tengo un estudio o un espacio, ¿cómo participo?",
+      question: "¿Puedo proponer mi negocio o espacio?",
       answer:
-        "Déjanos tus datos en la sección para negocios. Revisamos cada propuesta y te escribimos para platicar cómo podría funcionar.",
+        "Sí. Déjanos tus datos en la sección para negocios. Revisamos cada propuesta y te escribimos para platicar cómo podría funcionar.",
     },
   ],
 };

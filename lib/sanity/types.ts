@@ -52,6 +52,8 @@ export interface FaqItem {
 
 export interface SiteSettings {
   heroTitle: string;
+  /** Opcional. Sin ella la portada dibuja la composición de marca. */
+  heroImage?: SanityImage | null;
   heroSubtitle: string;
   aboutShortText: string;
   instagramUrl?: string;

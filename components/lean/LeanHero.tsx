@@ -3,53 +3,97 @@ import { WordReveal } from "@/components/motion/WordReveal";
 import { LineReveal } from "@/components/motion/LineReveal";
 import { LinkButton } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
-import { HERO_TOGETHER } from "@/lib/media";
+import { blurProps, sanityImageUrl } from "@/lib/sanity/image";
+import type { SanityImage } from "@/lib/sanity/types";
 
 /**
  * Hero del MVP lean.
  *
- * Conserva la composición aprobada de la versión avanzada —fotografía a sangre
- * completa, contenido anclado abajo a la izquierda, velo en dos capas, grano
- * para compensar el escalado— y cambia dos cosas:
+ * POR QUÉ YA NO HAY FOTOGRAFÍA FIJA
  *
- * 1. **El titular viene de Sanity**, así que Emmy lo puede cambiar sin tocar
- *    código. Si el documento de textos todavía no existe, se usan los valores
- *    por defecto: el sitio tiene que poder desplegarse antes de que ella haya
- *    escrito nada.
- * 2. **Un solo botón.** El segundo («Conoce Sunny») llevaba a una sección de la
- *    misma página, que en un hero es una manera elegante de repartir la
- *    atención sin ganar nada. La única acción es explorar experiencias.
+ * Antes usaba `HERO_TOGETHER` de `lib/media.ts`. Esa imagen es de referencia
+ * —descargada de contenido publicado por otra marca— y el propio manifiesto del
+ * proyecto marca su uso en producción como bloqueado. Estaba publicada en una
+ * URL abierta e indexable.
  *
- * Sobre la fotografía: sigue siendo de referencia y no está autorizada para
- * producción. Ver SUNNY_ASSET_MANIFEST.md y MVP_SETUP.md.
+ * Se sustituye por una composición de marca hecha solo con CSS: carbón de base,
+ * un sol de amarillo Sunny arriba a la izquierda, un barrido de naranja abajo a
+ * la derecha y el mismo grano de antes. Cero archivos, cero licencias, cero
+ * peticiones de red — y el texto queda en blanco cálido sobre carbón, que es
+ * más contraste del que tenía sobre la fotografía.
+ *
+ * **En cuanto Emmy suba una fotografía** al campo «Fotografía del hero» del
+ * documento de contenido, el hero la usa y la composición desaparece. No hace
+ * falta tocar código: por eso el campo existe.
+ *
+ * EL CONTADOR
+ *
+ * Solo aparece a partir de tres experiencias. Con una o dos, un contador honesto
+ * dice en voz alta que el sitio está casi vacío — y eso es peor que no decir
+ * nada. No se inventa un número: se calla.
  */
 export function LeanHero({
   title,
   subtitle,
   experienceCount,
+  image,
 }: {
   title: string;
   subtitle: string;
   experienceCount: number;
+  image?: SanityImage | null;
 }) {
-  // Se parte el titular en dos frases para poder darle a la segunda el color
-  // de marca, que es lo que hace que el hero se lea como Sunny y no como una
+  // Se parte el titular en dos frases para darle a la segunda el color de
+  // marca, que es lo que hace que el hero se lea como Sunny y no como una
   // plantilla. Si Emmy escribe una sola frase, se muestra una sola.
   const [primera, ...resto] = title.split(/(?<=\.)\s+/);
   const segunda = resto.join(" ");
 
   return (
-    <section className="relative isolate -mt-18 flex min-h-[88svh] flex-col justify-end overflow-hidden lg:min-h-[92svh]">
-      <Image
-        src={HERO_TOGETHER.src}
-        alt={HERO_TOGETHER.alt}
-        fill
-        priority
-        sizes="100vw"
-        className="-z-20 object-cover object-[center_72%]"
-      />
-      <div aria-hidden className="absolute inset-0 -z-10 bg-carbon/45" />
-      <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-t from-carbon/90 via-carbon/60 to-carbon/25" />
+    <section className="relative isolate -mt-18 flex min-h-[86svh] flex-col justify-end overflow-hidden bg-carbon lg:min-h-[92svh]">
+      {image ? (
+        <>
+          <Image
+            src={sanityImageUrl(image, 1920)}
+            alt={image.alt}
+            fill
+            priority
+            sizes="100vw"
+            className="-z-20 object-cover object-[center_65%]"
+            {...blurProps(image)}
+          />
+          <div aria-hidden className="absolute inset-0 -z-10 bg-carbon/45" />
+          <div
+            aria-hidden
+            className="absolute inset-0 -z-10 bg-gradient-to-t from-carbon/90 via-carbon/60 to-carbon/25"
+          />
+        </>
+      ) : (
+        <>
+          {/* Composición de marca. Ver la nota de arriba: sustituye a una
+              fotografía sin licencia, no a una fotografía que falte por error. */}
+          <div
+            aria-hidden
+            className="absolute inset-0 -z-20"
+            style={{
+              background:
+                "radial-gradient(85% 70% at 12% 8%, rgba(248,211,71,.55) 0%, rgba(248,211,71,.12) 42%, rgba(23,23,20,0) 72%)," +
+                "radial-gradient(75% 65% at 92% 88%, rgba(255,122,61,.42) 0%, rgba(255,122,61,.08) 46%, rgba(23,23,20,0) 74%)," +
+                "linear-gradient(160deg, #1d1d19 0%, #171714 55%, #221f1a 100%)",
+            }}
+          />
+          <svg
+            aria-hidden
+            viewBox="0 0 100 100"
+            preserveAspectRatio="xMidYMid slice"
+            className="absolute inset-0 -z-10 h-full w-full text-warm-white opacity-[0.07]"
+          >
+            <circle cx="18" cy="22" r="30" fill="none" stroke="currentColor" strokeWidth="0.35" />
+            <circle cx="18" cy="22" r="46" fill="none" stroke="currentColor" strokeWidth="0.25" />
+            <circle cx="88" cy="86" r="26" fill="none" stroke="currentColor" strokeWidth="0.35" />
+          </svg>
+        </>
+      )}
       <div aria-hidden className="hero-grain absolute inset-0 -z-10" />
 
       <Container className="pt-32 pb-14 sm:pb-20">
@@ -74,12 +118,9 @@ export function LeanHero({
               Explorar experiencias
             </LinkButton>
 
-            {/* El número es real: sale de contar lo que Emmy tiene publicado y
-                vigente. Una semana con dos experiencias dice dos. */}
-            {experienceCount > 0 && (
+            {experienceCount >= 3 && (
               <p className="text-small text-warm-white/85">
-                <span className="font-bold text-warm-white">{experienceCount}</span>{" "}
-                {experienceCount === 1 ? "experiencia disponible" : "experiencias disponibles"}
+                <span className="font-bold text-warm-white">{experienceCount}</span> experiencias disponibles
               </p>
             )}
           </div>

@@ -20,6 +20,14 @@ const supabaseHostname = supabaseUrl ? new URL(supabaseUrl).hostname : undefined
  */
 const RUTAS_FUERA_DEL_MVP = [
   "/acceso",
+  /**
+   * `/terminos` describe reglas que no existen —pase semanal, cancelación a 12
+   * horas, folios, número de reservas por semana— y no hay una política real
+   * definida por la clienta que ponga en su lugar. Se retira del sitio en vez
+   * de publicar un documento inventado: un texto legal falso es peor que no
+   * tener página. Vuelve en cuanto exista una versión validada.
+   */
+  "/terminos",
   "/mi-pase",
   "/mi-cuenta",
   "/historial",

@@ -55,10 +55,16 @@ export default async function HomePage() {
 
   const s = { ...DEFAULT_SETTINGS, ...(settings ?? {}) };
   const destacadas = experiences.slice(0, 6);
+  const hayContacto = Boolean(s.whatsapp?.trim() || s.instagramUrl?.trim() || s.contactEmail?.trim());
 
   return (
     <main>
-      <LeanHero title={s.heroTitle} subtitle={s.heroSubtitle} experienceCount={experiences.length} />
+      <LeanHero
+        title={s.heroTitle}
+        subtitle={s.heroSubtitle}
+        experienceCount={experiences.length}
+        image={settings?.heroImage ?? null}
+      />
 
       {/* 1. Qué hay ahora. Va antes de explicar nada: primero se ve que hay
           algo que vale la pena, después se explica el mecanismo. */}
@@ -137,26 +143,33 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* 7. Contacto. */}
-      <section className="border-t border-carbon/10 bg-warm-white py-16 sm:py-20">
-        <Container className="text-center">
-          <InViewReveal>
-            <h2 className="text-subtitle">¿Nos escribes?</h2>
-            <p className="mx-auto mt-2 max-w-md text-body text-gray">
-              Para dudas, propuestas o para contarnos qué experiencia te gustaría ver.
-            </p>
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
-              {s.whatsapp && (
-                <ContactLink href={whatsappLink(s.whatsapp)} icon={MessageCircle} label="WhatsApp" />
-              )}
-              {s.instagramUrl && <ContactLink href={s.instagramUrl} icon={AtSign} label="Instagram" />}
-              {s.contactEmail && (
-                <ContactLink href={`mailto:${s.contactEmail}`} icon={Mail} label={s.contactEmail} />
-              )}
-            </div>
-          </InViewReveal>
-        </Container>
-      </section>
+      {/*
+        7. Contacto — solo si existe al menos un canal real.
+
+        Antes esta sección se dibujaba siempre, y como los tres campos están
+        vacíos en Sanity, el resultado publicado era un «¿Nos escribes?»
+        seguido de nada. Invitar a escribir sin decir a dónde es peor que no
+        invitar. Si no hay ningún canal, la sección entera no existe.
+      */}
+      {hayContacto && (
+        <section className="border-t border-carbon/10 bg-warm-white py-16 sm:py-20">
+          <Container className="text-center">
+            <InViewReveal>
+              <h2 className="text-subtitle">¿Nos escribes?</h2>
+              <p className="mx-auto mt-2 max-w-md text-body text-gray">
+                Para dudas, propuestas o para contarnos qué experiencia te gustaría ver.
+              </p>
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
+                {s.whatsapp && <ContactLink href={whatsappLink(s.whatsapp)} icon={MessageCircle} label="WhatsApp" />}
+                {s.instagramUrl && <ContactLink href={s.instagramUrl} icon={AtSign} label="Instagram" />}
+                {s.contactEmail && (
+                  <ContactLink href={`mailto:${s.contactEmail}`} icon={Mail} label={s.contactEmail} />
+                )}
+              </div>
+            </InViewReveal>
+          </Container>
+        </section>
+      )}
     </main>
   );
 }

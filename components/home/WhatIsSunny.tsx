@@ -44,7 +44,7 @@ export function WhatIsSunny() {
             <div>
               <dt className="text-heading">Para quien busca</dt>
               <dd className="mt-1 text-small text-gray">
-                Un lugar donde probar algo distinto cada semana sin comprometerte con una membresía.
+                Un lugar donde probar algo distinto cada semana, sin cuentas y sin pagar nada.
               </dd>
             </div>
             <div>
@@ -62,7 +62,7 @@ export function WhatIsSunny() {
             href="/como-funciona"
             className="mt-8 inline-flex items-center gap-1.5 text-small font-semibold text-carbon underline decoration-carbon/30 underline-offset-4 hover:decoration-carbon"
           >
-            Cómo funciona el pase
+            Cómo funciona
             <ArrowRight aria-hidden size={14} className="transition-transform group-hover:translate-x-1" />
           </Link>
         </InViewReveal>

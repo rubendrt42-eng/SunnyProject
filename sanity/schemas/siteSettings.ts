@@ -40,6 +40,27 @@ export const siteSettings = defineType({
     }),
 
     defineField({
+      name: "heroImage",
+      title: "Fotografía de la portada",
+      description:
+        "Opcional. Si la dejas vacía, la portada usa una composición gráfica de Sunny. En cuanto subas una foto, se usa esa.",
+      type: "image",
+      group: "portada",
+      options: { hotspot: true },
+      fields: [
+        defineField({
+          name: "alt",
+          title: "Texto alternativo de la fotografía",
+          description:
+            "Describe brevemente lo que aparece en la foto. Ayuda a personas que utilizan lectores de pantalla.",
+          type: "string",
+          validation: (Rule) =>
+            Rule.required().warning("Sin esta descripción, quien use un lector de pantalla no sabrá qué se ve."),
+        }),
+      ],
+    }),
+
+    defineField({
       name: "heroSubtitle",
       title: "Subtítulo de la portada",
       type: "text",

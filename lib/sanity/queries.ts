@@ -86,6 +86,12 @@ const BY_SLUG_QUERY = `
 const SETTINGS_QUERY = `
   *[_type == "siteSettings"][0]{
     heroTitle,
+    "heroImage": heroImage{
+      "url": asset->url,
+      "alt": coalesce(alt, ""),
+      "aspectRatio": asset->metadata.dimensions.aspectRatio,
+      "lqip": asset->metadata.lqip
+    },
     heroSubtitle,
     aboutShortText,
     instagramUrl,

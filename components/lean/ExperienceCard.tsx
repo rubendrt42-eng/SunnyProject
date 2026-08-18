@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Badge } from "@/components/ui/Badge";
+import { BrandCanvas } from "@/components/lean/BrandCanvas";
 import { InViewReveal } from "@/components/motion/InViewReveal";
 import { HoverLift } from "@/components/motion/HoverLift";
 import { formatDateShort, formatTime } from "@/lib/dates";
@@ -46,10 +47,10 @@ export function ExperienceCard({ experience }: { experience: ExperienceCardData 
                 {...blurProps(experience.image)}
               />
             ) : (
-              /* Sin fotografía no se puede publicar, pero si un documento
-                 llegara sin ella por la API, la tarjeta se dibuja igual en vez
-                 de reventar la página entera. */
-              <div className="flex h-full items-center justify-center text-small text-gray">Sin fotografía</div>
+              /* Sin fotografía se dibuja el lienzo de marca, no un aviso de
+                 error. Ver `BrandCanvas`: la ausencia de foto es un hecho de
+                 esta etapa y tiene que parecer una decisión de diseño. */
+              <BrandCanvas seed={experience.title} className="h-full w-full" />
             )}
           </div>
 
