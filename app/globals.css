@@ -110,14 +110,20 @@
      tracking in costs nothing at load time and makes the headline dense and
      poster-like instead of merely large. Leading tightens with it, otherwise
      heavier type at the old 0.98 drifts apart. */
+  /* Peso 750 y no 800, interletraje -0.035 y no -0.045.
+     Manrope en 800 con el apretado al máximo es la firma tipográfica de
+     cualquier producto de software de 2021; el peso justo por debajo tiene la
+     misma fuerza y deja de sonar a plantilla. Y la altura de línea sube de 0.92
+     a 0.98: con «Descubre algo nuevo» 0.92 va perfecto, pero el titular lo
+     escribe Emmy desde Sanity y el día que ponga tres líneas se tocaban. */
   --text-display: clamp(2.5rem, 6.5vw, 4.75rem);
-  --text-display--line-height: 0.92;
-  --text-display--letter-spacing: -0.045em;
-  --text-display--font-weight: 800;
+  --text-display--line-height: 0.98;
+  --text-display--letter-spacing: -0.035em;
+  --text-display--font-weight: 750;
 
   --text-title: clamp(1.875rem, 3.6vw, 3rem);
-  --text-title--line-height: 1.02;
-  --text-title--letter-spacing: -0.032em;
+  --text-title--line-height: 1.06;
+  --text-title--letter-spacing: -0.026em;
   --text-title--font-weight: 700;
 
   --text-subtitle: clamp(1.375rem, 2.2vw, 1.875rem);
@@ -647,4 +653,83 @@ h2 {
 p,
 li {
   text-wrap: pretty;
+}
+
+
+/*
+  Cifras de ancho fijo donde hay fechas y horas.
+
+  «14 sep 2026 · 7:00 PM» junto a «9 oct 2026 · 11:00 AM» con cifras
+  proporcionales desalinea las columnas de una tarjeta a otra. Es un detalle
+  que nadie nombra y que separa un sitio cuidado de uno que no.
+*/
+.tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/*
+  Enlace para saltar al contenido.
+
+  Invisible hasta que recibe el foco. Sin él, quien navega con teclado recorre
+  el logotipo, los cuatro enlaces del menú y el botón en CADA página antes de
+  llegar a lo que vino a leer.
+*/
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 100;
+  transform: translateY(-150%);
+  transition: transform var(--motion-nudge) var(--ease-sunny);
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+/*
+  Respuesta al pulsar.
+
+  En escritorio hay hover; en un teléfono no hay nada entre tocar y que la
+  página cambie, así que el botón se siente muerto durante ese medio segundo.
+  Un hundido de 1 px devuelve la sensación física de haber pulsado.
+*/
+.press:active {
+  transform: translateY(1px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .press:active {
+    transform: none;
+  }
+}
+
+/*
+  Entrada de página.
+
+  Se ejecuta en cada navegación porque `app/template.tsx` recibe una clave nueva
+  cada vez. Corta a propósito: 320 ms y ocho píxeles. Una transición entre
+  páginas que se nota es una transición que estorba — lo que tiene que
+  desaparecer es la sensación de corte, no llamar la atención.
+*/
+@keyframes sunny-page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.page-enter {
+  animation: sunny-page-enter var(--motion-collapse) var(--ease-sunny) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-enter {
+    animation: none;
+  }
 }

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { BrandCanvas } from "@/components/lean/BrandCanvas";
 import { InViewReveal } from "@/components/motion/InViewReveal";
@@ -58,12 +59,24 @@ export function ExperienceCard({ experience }: { experience: ExperienceCardData 
             )}
           </div>
 
-          <div className="flex flex-1 flex-col gap-2 p-5">
-            <Badge tone={agotada ? "neutral" : "success"} className="w-fit">
-              {agotada ? "Agotada" : "Disponible"}
-            </Badge>
+          <div className="flex flex-1 flex-col p-5">
+            {/*
+              JERARQUÍA, NO CINCO RENGLONES IGUALES
 
-            <h3 className="text-heading">
+              Antes esto era insignia, título, anfitrión, descripción y tres
+              datos en gris — todo del mismo peso y del mismo tamaño, así que el
+              ojo no sabía por dónde entrar y el bloque entero se leía como un
+              párrafo. Ahora hay tres niveles claros: el título manda, el
+              anfitrión lo acompaña en serif, y los datos prácticos viven en una
+              línea propia separada por una regla.
+            */}
+            <div className="flex items-center gap-2">
+              <Badge tone={agotada ? "neutral" : "success"} className="w-fit">
+                {agotada ? "Agotada" : "Disponible"}
+              </Badge>
+            </div>
+
+            <h3 className="mt-3 text-heading text-balance">
               <Link href={`/experiencias/${experience.slug}`} className="hover:underline">
                 {/* Área de clic extendida: toda la tarjeta lleva al detalle. */}
                 <span className="absolute inset-0" aria-hidden />
@@ -71,14 +84,32 @@ export function ExperienceCard({ experience }: { experience: ExperienceCardData 
               </Link>
             </h3>
 
-            {experience.hostName && <p className="text-small text-gray">{experience.hostName}</p>}
+            {/* El anfitrión en serif itálica. Es quien imparte la experiencia y
+                merece una voz distinta de la del dato práctico — y de paso pone
+                a trabajar la serif, que estaba usada en dos frases de todo el
+                sitio. */}
+            {experience.hostName && (
+              <p className="mt-1.5 font-serif text-body text-orange-ink italic">{experience.hostName}</p>
+            )}
 
-            <p className="text-small text-carbon/80">{experience.shortDescription}</p>
+            <p className="mt-3 text-small text-carbon/75">{experience.shortDescription}</p>
 
-            <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-1 pt-3 text-small text-gray">
-              <span>{formatDateShort(experience.startDateTime)}</span>
-              <span>{formatTime(experience.startDateTime)}</span>
-              <span>{experience.locationName}</span>
+            <div className="mt-auto flex items-center justify-between gap-3 border-t border-carbon/10 pt-4">
+              <div className="min-w-0">
+                <p className="tabular text-small font-medium text-carbon">
+                  {formatDateShort(experience.startDateTime)} · {formatTime(experience.startDateTime)}
+                </p>
+                <p className="truncate text-small text-gray">{experience.locationName}</p>
+              </div>
+              {/* La flecha dice a dónde lleva la tarjeta. La versión avanzada la
+                  tenía y se perdió; sin ella la tarjeta se eleva al pasar el
+                  cursor pero no señala ningún destino. */}
+              <ArrowRight
+                aria-hidden
+                size={18}
+                strokeWidth={1.75}
+                className="shrink-0 text-carbon/35 transition-transform duration-[var(--motion-nudge)] ease-sunny group-hover:translate-x-1 group-hover:text-carbon"
+              />
             </div>
           </div>
         </article>

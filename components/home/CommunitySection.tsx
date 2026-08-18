@@ -96,16 +96,23 @@ export function CommunitySection({ instagramUrl }: { instagramUrl?: string }) {
         </div>
 
         {/*
-          Par asimétrico, no una tercera rejilla. `lg:mt-12` desplaza la segunda
-          pieza; en móvil no se desplaza nada, porque a 320 px un desfase solo
-          consigue que la segunda quede fuera de vista.
+          UN SOLO LIENZO, NO DOS
+
+          Eran dos piezas desplazadas entre sí. Con fotografías reales la
+          composición asimétrica funcionaba; con lienzos de marca, dos veces el
+          mismo motivo en la misma pantalla lo delata como relleno. Y en móvil
+          quedaban dos miniaturas donde no se distinguía nada.
+
+          Uno solo, más grande y en vertical: ocupa el sitio con intención.
+          Cuando haya fotografía real, aquí vuelven las dos.
         */}
-        <div className="grid grid-cols-2 gap-4 lg:col-span-7 lg:gap-6">
-          <InViewReveal delay={0.06} variant="media">
-            <BrandCanvas seed="comunidad-uno" tone="light" className="aspect-4/5 w-full rounded-lg" />
-          </InViewReveal>
-          <InViewReveal delay={0.12} variant="media" className="lg:mt-12">
-            <BrandCanvas seed="comunidad-dos" tone="light" className="aspect-4/5 w-full rounded-lg" />
+        <div className="lg:col-span-7">
+          <InViewReveal variant="media">
+            <BrandCanvas
+              seed="comunidad"
+              tone="light"
+              className="aspect-4/3 w-full rounded-xl lg:aspect-4/5"
+            />
           </InViewReveal>
         </div>
       </div>

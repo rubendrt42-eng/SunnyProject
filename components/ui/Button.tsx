@@ -33,7 +33,10 @@ const containedSizeClasses: Record<Size, string> = {
 };
 
 const base =
-  "group inline-flex items-center justify-center gap-2 font-medium transition-colors duration-[var(--motion-tint)] disabled:opacity-40 disabled:pointer-events-none";
+  /* `press` añade el hundido de 1 px al pulsar. En escritorio hay hover; en un
+     teléfono no hay ninguna respuesta entre tocar y que la página cambie, y ese
+     medio segundo hace que el botón se sienta muerto. */
+  "press group inline-flex items-center justify-center gap-2 font-medium transition-[colors,transform] duration-[var(--motion-tint)] disabled:opacity-40 disabled:pointer-events-none";
 
 function sizeClassesFor(variant: Variant, size: Size) {
   return variant === "ghost" ? "text-sm" : containedSizeClasses[size];

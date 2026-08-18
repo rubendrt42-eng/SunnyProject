@@ -30,7 +30,15 @@ export type LeanEvent =
   /** Alguien envió el formulario de solicitud. */
   | "request_spot_submit"
   /** Un negocio envió el formulario de «crear una experiencia con Sunny». */
-  | "business_form_submit";
+  | "business_form_submit"
+  /**
+   * Alguien compartió una experiencia.
+   *
+   * En Monterrey, para este público, compartir por WhatsApp es el canal de
+   * crecimiento real. Sin este evento no hay forma de saber si funciona, y
+   * decidir a ciegas sobre lo que más puede mover la aguja no tiene sentido.
+   */
+  | "share_experience";
 
 type EventProps = Record<string, string | number | boolean | null>;
 

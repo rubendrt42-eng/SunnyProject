@@ -20,6 +20,19 @@ export const metadata: Metadata = {
   title: "The Sunny Project — Experiencias en Monterrey",
   description:
     "Experiencias de bienestar, movimiento y comunidad en Monterrey. Solicitas tu lugar, nosotros te confirmamos. Sin cuentas y sin pagar nada.",
+  /**
+   * Lo que se ve cuando alguien pega el enlace en WhatsApp. La imagen la genera
+   * `app/opengraph-image.tsx`; aquí solo va el texto que la acompaña.
+   */
+  openGraph: {
+    title: "The Sunny Project — Experiencias en Monterrey",
+    description:
+      "Cada semana publicamos experiencias de bienestar, movimiento y comunidad. Solicitas tu lugar y nosotros te confirmamos.",
+    locale: "es_MX",
+    type: "website",
+    siteName: "The Sunny Project",
+  },
+  twitter: { card: "summary_large_image" },
 };
 
 /**
@@ -48,9 +61,18 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   return (
     <html lang="es" className={`${manrope.variable} ${newsreader.variable} h-full antialiased`}>
       <body className="flex min-h-screen flex-col bg-ivory text-carbon">
+        {/* Primero en el orden de tabulación, invisible hasta que recibe el
+            foco. Sin él, quien navega con teclado recorre el logotipo, los
+            cuatro enlaces y el botón en CADA página antes de llegar al texto. */}
+        <a
+          href="#contenido"
+          className="skip-link rounded-md bg-carbon px-4 py-2.5 text-small font-medium text-warm-white"
+        >
+          Saltar al contenido
+        </a>
         <Header />
         <AppChrome>
-          <div className="flex flex-1 flex-col">{children}</div>
+          <div id="contenido" className="flex flex-1 flex-col">{children}</div>
         </AppChrome>
         <Footer />
       </body>

@@ -54,3 +54,18 @@ export function hoursUntil(iso: string | Date): number {
 export function isPast(iso: string | Date): boolean {
   return new Date(iso).getTime() <= Date.now();
 }
+
+/**
+ * ¿Empieza dentro de los próximos `dias` días?
+ *
+ * Vive aquí y no en la página por una razón concreta: la regla
+ * `react-hooks/purity` de ESLint prohíbe llamar a `Date.now()` en el cuerpo de
+ * un componente, porque devuelve algo distinto en cada render y eso rompe las
+ * garantías de React. Envuelto en una función con nombre, la comparación con
+ * «ahora» es una consulta al reloj y no un valor que cambia bajo los pies del
+ * render — que es exactamente lo que ya hacen `isPast` y `hoursUntil`.
+ */
+export function empiezaEnLosProximos(iso: string | Date, dias: number): boolean {
+  const inicio = new Date(iso).getTime();
+  return inicio <= Date.now() + dias * 24 * 60 * 60 * 1000;
+}

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Container } from "@/components/ui/Container";
 import { InViewReveal } from "@/components/motion/InViewReveal";
 import { ExperienceGrid } from "@/components/lean/ExperienceGrid";
+import { empiezaEnLosProximos } from "@/lib/dates";
 import { getUpcomingExperiences } from "@/lib/sanity/queries";
 
 /**
@@ -37,6 +38,21 @@ export const metadata: Metadata = {
 export default async function ExperienciasPage() {
   const experiences = await getUpcomingExperiences();
 
+  /**
+   * «Próximos días» son los siete siguientes. El resto va a «Más adelante».
+   *
+   * Se calcula aquí y no en la consulta porque la consulta ya filtra lo que
+   * está vigente y volver a preguntarle a Sanity por lo mismo con otro corte
+   * serían dos viajes para un dato que ya está en memoria.
+   */
+  const pronto = experiences.filter((e) => empiezaEnLosProximos(e.startDateTime, 7));
+  const despues = experiences.filter((e) => !empiezaEnLosProximos(e.startDateTime, 7));
+
+  const grupos = [
+    { titulo: "Próximos días", items: pronto },
+    { titulo: "Más adelante", items: despues },
+  ].filter((g) => g.items.length > 0);
+
   return (
     <main className="py-14 sm:py-20">
       <Container>
@@ -65,13 +81,44 @@ export default async function ExperienciasPage() {
           no aporta nada a quien ve la pantalla —el h1 ya lo dijo— así que va
           oculto visualmente y presente para la tecnología asistiva.
         */}
-        <h2 className="sr-only">
-          {experiences.length > 0 ? "Experiencias disponibles" : "Sin experiencias por ahora"}
-        </h2>
+        {/*
+          AGRUPADO POR TIEMPO, NO UNA LISTA PLANA
 
-        <div className="mt-10">
-          <ExperienceGrid experiences={experiences} />
-        </div>
+          Con dos experiencias da lo mismo. Con quince es un muro donde nada
+          orienta: la primera y la décima se ven iguales aunque una sea el
+          viernes y la otra dentro de un mes. La pregunta que trae a alguien
+          aquí es «¿qué puedo hacer pronto?», así que el catálogo la responde
+          antes de que la formule.
+
+          El corte son siete días desde ahora. No es una categoría que Emmy
+          tenga que mantener: se calcula solo a partir de la fecha.
+        */}
+        {experiences.length === 0 ? (
+          <>
+            <h2 className="sr-only">Sin experiencias por ahora</h2>
+            <div className="mt-10">
+              <ExperienceGrid experiences={experiences} />
+            </div>
+          </>
+        ) : (
+          <div className="mt-12 flex flex-col gap-14 sm:gap-20">
+            {grupos.map((grupo) => (
+              <section key={grupo.titulo}>
+                <InViewReveal>
+                  <h2 className="flex items-baseline gap-3 text-subtitle">
+                    {grupo.titulo}
+                    <span className="tabular text-small font-normal text-gray">
+                      {grupo.items.length}
+                    </span>
+                  </h2>
+                </InViewReveal>
+                <div className="mt-6">
+                  <ExperienceGrid experiences={grupo.items} />
+                </div>
+              </section>
+            ))}
+          </div>
+        )}
       </Container>
     </main>
   );

@@ -7,6 +7,9 @@ import { Container } from "@/components/ui/Container";
 import { Badge } from "@/components/ui/Badge";
 import { LinkButton } from "@/components/ui/Button";
 import { SpotRequestForm } from "@/components/lean/SpotRequestForm";
+import { ShareExperience } from "@/components/lean/ShareExperience";
+import { BrandCanvas } from "@/components/lean/BrandCanvas";
+import { env } from "@/lib/env";
 import { ExperienceViewTracker } from "@/components/lean/ExperienceViewTracker";
 import { formatDateTime, formatTime, isPast } from "@/lib/dates";
 import { blurProps, sanityImageUrl } from "@/lib/sanity/image";
@@ -88,22 +91,52 @@ export default async function ExperienceDetailPage({ params }: { params: Promise
     <main className="pb-20">
       <ExperienceViewTracker title={experience.title} />
 
-      {/* Fotografía a lo ancho, como en la versión avanzada. */}
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-carbon/5 sm:aspect-[16/9] lg:aspect-[21/9]">
-        {experience.image && (
+      {/*
+        Cabecera a lo ancho.
+
+        Cuando la experiencia no tiene fotografía —hoy, ninguna la tiene— esto
+        dibujaba un rectángulo gris de más de seiscientos píxeles: lo primero
+        que veía alguien al abrir una experiencia era un hueco del alto de media
+        pantalla. Ahora, sin foto, la franja se reduce a un tercio y lleva el
+        lienzo de marca, que ocupa el sitio con intención en vez de anunciar que
+        algo falta.
+      */}
+      <div
+        className={
+          experience.image
+            ? "relative aspect-[4/3] w-full overflow-hidden bg-carbon/5 sm:aspect-[16/9] lg:aspect-[21/9]"
+            : "relative h-40 w-full overflow-hidden sm:h-52 lg:h-60"
+        }
+      >
+        {experience.image ? (
           <Image
             src={sanityImageUrl(experience.image, 1800)}
             alt={experience.image.alt}
             fill
             priority
             sizes="100vw"
-            className="object-cover"
+            className="parallax object-cover"
             {...blurProps(experience.image)}
           />
+        ) : (
+          <BrandCanvas seed={experience.title} className="h-full w-full" />
         )}
       </div>
 
-      <Container className="max-w-3xl">
+      {/*
+        DOS COLUMNAS EN ESCRITORIO, UNA EN MÓVIL
+
+        El formulario estaba al final, después de la descripción y los
+        requisitos, en una sola columna. Quien ya había decidido que quería ir
+        tenía que bajar la página entera para pedirlo — en la única página del
+        sitio que existe para convertir.
+
+        Ahora en escritorio vive en una columna propia que se queda fija
+        mientras se lee lo demás. En móvil vuelve a ser una sola columna y el
+        formulario va abajo: ahí una columna fija ocuparía media pantalla y
+        estorbaría en vez de ayudar. Nada de formularios pegados en móvil.
+      */}
+      <Container>
         <Link
           href="/experiencias"
           className="mt-8 inline-flex items-center gap-1.5 text-small font-medium text-gray transition-colors hover:text-carbon"
@@ -112,73 +145,100 @@ export default async function ExperienceDetailPage({ params }: { params: Promise
           Todas las experiencias
         </Link>
 
-        <div className="mt-6 flex flex-wrap items-center gap-2">
-          {yaPaso ? (
-            <Badge tone="neutral">Ya ocurrió</Badge>
-          ) : agotada ? (
-            <Badge tone="neutral">Agotada</Badge>
-          ) : (
-            <Badge tone="success">Disponible</Badge>
-          )}
-        </div>
+        <div className="mt-6 grid gap-10 lg:grid-cols-12 lg:gap-14">
+          <div className="lg:col-span-7">
+            <div className="flex flex-wrap items-center gap-2">
+              {yaPaso ? (
+                <Badge tone="neutral">Ya ocurrió</Badge>
+              ) : agotada ? (
+                <Badge tone="neutral">Agotada</Badge>
+              ) : (
+                <Badge tone="success">Disponible</Badge>
+              )}
+            </div>
 
-        <h1 className="mt-3 text-title text-balance">{experience.title}</h1>
-        <p className="mt-4 text-body-l text-gray">{experience.shortDescription}</p>
+            <h1 className="mt-3 text-title text-balance">{experience.title}</h1>
+            <p className="mt-4 text-body-l text-gray">{experience.shortDescription}</p>
 
-        <dl className="mt-8 grid grid-cols-1 gap-4 border-y border-carbon/10 py-6 sm:grid-cols-2">
-          <Dato icon={CalendarDays} label="Cuándo" value={formatDateTime(experience.startDateTime)} />
-          <Dato icon={Clock} label="Termina" value={formatTime(experience.endDateTime)} />
-          <Dato icon={MapPin} label="Dónde" value={experience.locationName} detail={experience.address} />
-          {experience.hostName && <Dato icon={User} label="Con" value={experience.hostName} />}
-        </dl>
+            <dl className="mt-8 grid grid-cols-1 gap-4 border-y border-carbon/10 py-6 sm:grid-cols-2">
+              <Dato icon={CalendarDays} label="Cuándo" value={formatDateTime(experience.startDateTime)} />
+              <Dato icon={Clock} label="Termina" value={formatTime(experience.endDateTime)} />
+              <Dato icon={MapPin} label="Dónde" value={experience.locationName} detail={experience.address} />
+              {experience.hostName && <Dato icon={User} label="Con" value={experience.hostName} />}
+            </dl>
 
-        <div className="mt-8">
-          <h2 className="text-subtitle">Sobre esta experiencia</h2>
-          <p className="mt-3 whitespace-pre-line text-body text-carbon/85">{experience.fullDescription}</p>
-        </div>
+            <div className="mt-8">
+              <h2 className="text-subtitle">Sobre esta experiencia</h2>
+              <p className="mt-3 text-body whitespace-pre-line text-carbon/85">{experience.fullDescription}</p>
+            </div>
 
-        {experience.requirements.length > 0 && (
-          <div className="mt-8">
-            <h2 className="text-subtitle">Qué necesitas llevar</h2>
-            <ul className="mt-3 space-y-2">
-              {experience.requirements.map((item) => (
-                <li key={item} className="flex items-start gap-2.5 text-body text-carbon/85">
-                  <span aria-hidden className="mt-2 size-1.5 shrink-0 rounded-full bg-orange" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+            {experience.requirements.length > 0 && (
+              <div className="mt-8">
+                <h2 className="text-subtitle">Qué necesitas llevar</h2>
+                <ul className="mt-3 space-y-2">
+                  {experience.requirements.map((item) => (
+                    <li key={item} className="flex items-start gap-2.5 text-body text-carbon/85">
+                      <span aria-hidden className="mt-2 size-1.5 shrink-0 rounded-full bg-orange" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
-        <div id="solicitar" className="mt-12 scroll-mt-24">
-          {sePuedeSolicitar ? (
-            <>
-              <h2 className="text-subtitle">Solicitar mi lugar</h2>
-              <p className="mt-2 mb-6 text-small text-gray">
-                Déjanos tus datos y revisamos la disponibilidad. Te confirmamos por WhatsApp.
-              </p>
-              <SpotRequestForm experienceId={experience._id} experienceName={experience.title} />
-            </>
-          ) : (
-            <div className="rounded-lg border border-carbon/10 bg-warm-white p-6 text-center">
-              <h2 className="text-subtitle">{yaPaso ? "Esta experiencia ya ocurrió" : "Esta experiencia está agotada"}</h2>
-              <p className="mx-auto mt-2 max-w-sm text-body text-gray">
-                {yaPaso
-                  ? "Publicamos experiencias nuevas cada semana."
-                  : "Se llenaron los lugares. Publicamos experiencias nuevas cada semana."}
-              </p>
-              <div className="mt-6">
-                {/* El texto cambia según por qué no se puede solicitar: quien
-                    llega a una experiencia agotada busca otra parecida; quien
-                    llega a una que ya pasó, por un enlace viejo, necesita saber
-                    que hay cosas nuevas. */}
-                <LinkButton href="/experiencias" variant="secondary" arrow>
-                  {yaPaso ? "Ver experiencias actuales" : "Ver otras experiencias"}
-                </LinkButton>
+            {/* Compartir. En Monterrey, para este público, WhatsApp es el canal
+                de crecimiento — más que Instagram. Va después de leer de qué va
+                la experiencia, que es cuando alguien decide que le sirve a otra
+                persona. */}
+            <div className="mt-10 border-t border-carbon/10 pt-6">
+              <p className="text-small text-gray">¿Le va a alguien que conoces?</p>
+              <div className="mt-3">
+                <ShareExperience
+                  title={experience.title}
+                  fecha={formatDateTime(experience.startDateTime)}
+                  url={`${env.siteUrl}/experiencias/${experience.slug}`}
+                />
               </div>
             </div>
-          )}
+          </div>
+
+          <div className="lg:col-span-5">
+            <div id="solicitar" className="scroll-mt-24 lg:sticky lg:top-24">
+              {sePuedeSolicitar ? (
+                <div className="rounded-xl border border-carbon/10 bg-warm-white p-6">
+                  <h2 className="text-subtitle">Solicitar mi lugar</h2>
+                  <p className="mt-2 mb-6 text-small text-gray">
+                    Déjanos tus datos y revisamos la disponibilidad. Te confirmamos por WhatsApp.
+                  </p>
+                  <SpotRequestForm
+                    experienceId={experience._id}
+                    experienceName={experience.title}
+                    experienceDate={formatDateTime(experience.startDateTime)}
+                  />
+                </div>
+              ) : (
+                <div className="rounded-xl border border-carbon/10 bg-warm-white p-6 text-center">
+                  <h2 className="text-subtitle">
+                    {yaPaso ? "Esta experiencia ya ocurrió" : "Esta experiencia está agotada"}
+                  </h2>
+                  <p className="mx-auto mt-2 max-w-sm text-body text-gray">
+                    {yaPaso
+                      ? "Publicamos experiencias nuevas cada semana."
+                      : "Se llenaron los lugares. Publicamos experiencias nuevas cada semana."}
+                  </p>
+                  <div className="mt-6">
+                    {/* El texto cambia según por qué no se puede solicitar: quien
+                        llega a una experiencia agotada busca otra parecida; quien
+                        llega a una que ya pasó, por un enlace viejo, necesita saber
+                        que hay cosas nuevas. */}
+                    <LinkButton href="/experiencias" variant="secondary" arrow>
+                      {yaPaso ? "Ver experiencias actuales" : "Ver otras experiencias"}
+                    </LinkButton>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </Container>
     </main>

@@ -96,15 +96,27 @@ export function BrandCanvas({
       <div className="absolute inset-0" style={{ background: v.figura }} />
       {/* El mismo grano del hero: quita el aspecto de degradado plano de plantilla. */}
       <div className="hero-grain absolute inset-0" />
-      {/* Arco fino de marca. Da un punto de foco sin llegar a ser un logotipo. */}
+      {/*
+        Arcos de marca, descentrados y cortados por el borde.
+
+        La primera versión eran dos círculos concéntricos centrados y bien
+        visibles. A tamaño de tarjeta —donde este lienzo ocupa la mitad
+        superior— eso se leía como una diana: el elemento más grande de la
+        página era un símbolo que no significa nada.
+
+        Ahora salen por la esquina, tienen la mitad de peso y se cortan contra
+        el borde. Leen como textura, que es lo que tienen que hacer mientras no
+        haya fotografía.
+      */}
       <svg
         aria-hidden
         viewBox="0 0 100 100"
         preserveAspectRatio="xMidYMid slice"
-        className="absolute inset-0 h-full w-full opacity-[0.22]"
+        className="absolute inset-0 h-full w-full text-carbon opacity-[0.11]"
       >
-        <circle cx="50" cy="52" r="26" fill="none" stroke="currentColor" strokeWidth="0.6" className="text-carbon" />
-        <circle cx="50" cy="52" r="38" fill="none" stroke="currentColor" strokeWidth="0.4" className="text-carbon" />
+        <circle cx="88" cy="14" r="30" fill="none" stroke="currentColor" strokeWidth="0.5" />
+        <circle cx="88" cy="14" r="46" fill="none" stroke="currentColor" strokeWidth="0.35" />
+        <circle cx="10" cy="92" r="22" fill="none" stroke="currentColor" strokeWidth="0.45" />
       </svg>
     </div>
   );

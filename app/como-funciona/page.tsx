@@ -91,9 +91,17 @@ export default function ComoFuncionaPage() {
                 <h2 className="mt-4 text-title text-balance">{paso.titulo}</h2>
                 <p className="mt-3 max-w-md text-body-l text-gray">{paso.texto}</p>
               </div>
-              <InViewReveal variant="media" className="sm:col-span-5">
-                <BrandCanvas seed={paso.titulo} className="aspect-16/10 w-full rounded-xl sm:aspect-4/3" />
-              </InViewReveal>
+              {/* Solo el primer paso lleva lienzo. Tres seguidos, uno por
+                  paso, era donde más se notaba que el mismo motivo se estaba
+                  repitiendo para rellenar. Los otros dos se sostienen con el
+                  número grande, que es lo que de verdad estructura la lectura. */}
+              {i === 0 ? (
+                <InViewReveal variant="media" className="sm:col-span-5">
+                  <BrandCanvas seed={paso.titulo} className="aspect-16/10 w-full rounded-xl sm:aspect-4/3" />
+                </InViewReveal>
+              ) : (
+                <div aria-hidden className="hidden sm:col-span-5 sm:block" />
+              )}
             </li>
           ))}
         </ol>
