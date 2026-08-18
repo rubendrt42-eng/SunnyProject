@@ -17,6 +17,35 @@ import { CogIcon } from "@sanity/icons";
  * edición libre es una manera nueva de que la portada quede rota sin que nadie
  * lo haya querido.
  */
+/**
+ * Revisa el número de WhatsApp que se guarda en los ajustes del sitio.
+ *
+ * POR QUÉ NO BASTA CON «ENTRE 10 Y 15 DÍGITOS»
+ *
+ * `wa.me` exige el número **con código de país**. Sin él, WhatsApp abre con un
+ * contacto vacío o con el aviso de que el número no es correcto — y ese enlace
+ * sale en el pie de TODAS las páginas.
+ *
+ * La regla anterior aceptaba 10 dígitos. Un número mexicano se escribe con 10
+ * dígitos: 8112345678. Es exactamente lo que cualquiera teclea, pasaba la
+ * validación sin una sola queja, y dejaba el enlace roto en todo el sitio. La
+ * descripción del campo sí pedía el código de país; la regla no lo exigía, y
+ * lo que manda es la regla.
+ *
+ * Ahora el mínimo son 11 dígitos, que es lo menos que suma cualquier código de
+ * país más su número nacional (México 52+10=12, Estados Unidos 1+10=11,
+ * España 34+9=11). Y cuando llegan exactamente 10 se dice qué falta y cómo
+ * arreglarlo, en vez de repetir el formato.
+ */
+export function revisarWhatsapp(valor: string): true | string {
+  if (!/^\d+$/.test(valor)) return "Solo números: sin espacios, guiones, paréntesis ni el signo +.";
+  if (valor.length === 10) return `Falta el código de país. Para México va 52 delante: 52${valor}`;
+  if (valor.length < 11 || valor.length > 15) {
+    return "Entre 11 y 15 dígitos, contando el código de país (52 para México).";
+  }
+  return true;
+}
+
 export const siteSettings = defineType({
   name: "siteSettings",
   title: "Textos del sitio",
@@ -101,13 +130,7 @@ export const siteSettings = defineType({
       group: "contacto",
       description:
         "Número con código de país y sin espacios ni signos. Por ejemplo: 528112345678. Se usa para armar el enlace de WhatsApp.",
-      validation: (Rule) =>
-        Rule.custom((value) => {
-          if (!value) return true;
-          return /^\d{10,15}$/.test(value)
-            ? true
-            : "Solo números, entre 10 y 15 dígitos, incluyendo el código de país (52 para México).";
-        }),
+      validation: (Rule) => Rule.custom((value) => (value ? revisarWhatsapp(value) : true)),
     }),
 
     defineField({
