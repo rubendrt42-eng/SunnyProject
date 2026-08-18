@@ -22,11 +22,54 @@ export function BusinessForm() {
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
 
+  /**
+   * Revisión antes de enviar.
+   *
+   * El formulario lleva `noValidate` para poder dar mensajes propios en vez de
+   * los del navegador, así que sin esto pulsar «Enviar propuesta» en blanco
+   * mandaba una petición real que el servidor rechazaba con un 400. La persona
+   * veía un aviso genérico después de esperar, y cada intento gastaba cuota
+   * del límite de peticiones.
+   *
+   * Se revisan los cuatro campos obligatorios con las mismas reglas mínimas
+   * que usa el servidor. Si algo falta, no sale ninguna petición y el foco
+   * salta al primer campo incompleto — que es lo que hace que quien navega con
+   * teclado o lector de pantalla sepa dónde está el problema.
+   *
+   * A diferencia del formulario de solicitudes, aquí el mensaje sale en el
+   * aviso general y no junto a cada campo: `TextField` todavía no tiene sitio
+   * para un error propio. Mover el foco ya resuelve lo importante; marcar cada
+   * campo sería la siguiente vuelta.
+   */
+  function revisarObligatorios(form: HTMLFormElement): { campo: string; mensaje: string } | null {
+    const data = new FormData(form);
+    const v = (n: string) => String(data.get(n) ?? "").trim();
+
+    if (v("businessName").length < 2) return { campo: "businessName", mensaje: "Escribe el nombre del negocio." };
+    if (v("contactName").length < 3) return { campo: "contactName", mensaje: "Escribe tu nombre completo." };
+    if (!/^\d{10,15}$/.test(v("whatsapp").replace(/[\s\-().+]/g, "")))
+      return { campo: "whatsapp", mensaje: "Escribe tu WhatsApp a diez dígitos, como 81 1234 5678." };
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v("email")))
+      return { campo: "email", mensaje: "Revisa el correo, parece incompleto." };
+
+    return null;
+  }
+
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (sending) return;
 
-    const data = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+
+    const falta = revisarObligatorios(form);
+    if (falta) {
+      setError(falta.mensaje);
+      const campo = form.elements.namedItem(falta.campo);
+      if (campo instanceof HTMLElement) campo.focus();
+      return;
+    }
+
+    const data = new FormData(form);
     setSending(true);
     setError(null);
     trackEvent("business_form_submit");

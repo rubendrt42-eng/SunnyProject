@@ -83,11 +83,56 @@ export function SpotRequestForm({
     }
   }
 
+  /**
+   * Revisión completa antes de enviar.
+   *
+   * POR QUÉ HACE FALTA, SI YA SE VALIDA AL SALIR DE CADA CAMPO
+   *
+   * Porque salir de un campo requiere haber entrado. Quien pulsa «Enviar
+   * solicitud» sin tocar nada nunca dispara esa revisión: el formulario lleva
+   * `noValidate` —para poder dar mensajes propios en vez de los del
+   * navegador— así que tampoco hay red de seguridad nativa.
+   *
+   * Medido antes de este arreglo: pulsar «Enviar solicitud» con el formulario
+   * vacío mandaba una petición real al servidor, que respondía 400, y el único
+   * aviso aparecía en un recuadro global. En un teléfono ese recuadro puede
+   * quedar fuera de pantalla, así que la persona ve que no pasó nada y no sabe
+   * por qué. Y cada intento consume su cuota del límite de peticiones.
+   *
+   * Ahora no sale ninguna petición hasta que los datos están completos, el
+   * error se marca en el campo que lo tiene, y el foco salta al primero — que
+   * es lo que permite a quien navega con teclado o lector de pantalla
+   * enterarse de qué falta.
+   *
+   * Esto **no** sustituye a la validación del servidor, que sigue siendo la
+   * que manda. Solo evita el viaje de ida y vuelta cuando ya se sabe la
+   * respuesta.
+   */
+  function revisarTodo(form: HTMLFormElement): Record<string, string> {
+    const data = new FormData(form);
+    const encontrados: Record<string, string> = {};
+    for (const campo of ["name", "whatsapp", "email"]) {
+      const msg = validar(campo, String(data.get(campo) ?? ""));
+      if (msg) encontrados[campo] = msg;
+    }
+    return encontrados;
+  }
+
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (sending) return;
 
     const form = event.currentTarget;
+
+    const fallos = revisarTodo(form);
+    if (Object.keys(fallos).length > 0) {
+      setErrores(fallos);
+      setError(null);
+      const primero = form.elements.namedItem(Object.keys(fallos)[0]);
+      if (primero instanceof HTMLElement) primero.focus();
+      return;
+    }
+
     const data = new FormData(form);
 
     setSending(true);
