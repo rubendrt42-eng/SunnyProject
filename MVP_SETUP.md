@@ -266,13 +266,37 @@ Sin esto, Emmy no tiene dónde entrar.
 
 ## 7.4 Crear el proyecto de Vercel
 
+**Tiene que ser un proyecto nuevo, no el que ya existe.** No es manía de orden:
+el proyecto `sunny-project` tiene enganchada una **integración de Supabase**, y
+Vercel la conecta *antes* de compilar. Si esa base de datos está pausada —los
+proyectos gratuitos de Supabase se duermen a los siete días sin uso— el
+despliegue muere en un segundo con `Provisioning integrations failed`, sin
+registro de build y sin decir por qué. El MVP lean no usa Supabase para nada,
+así que en un proyecto limpio ese fallo no puede ocurrir.
+
 1. Entra a **vercel.com** → **Add New** → **Project**.
 2. Elige el repositorio **SunnyProject**.
-3. En **Branch**, escoge **`mvp-lean`**. *(No `main` ni las `claude/*`.)*
-4. Antes de pulsar Deploy, abre **Environment Variables** y pega todas las de
-   la tabla de §4.
-5. Pulsa **Deploy**.
-6. Al terminar te da una dirección `.vercel.app`. **Esa es la del MVP.**
+3. Ponle un nombre propio. De ahí sale la dirección, así que conviene que se
+   entienda: `sunny-mvp` da `sunny-mvp.vercel.app`.
+4. **Application Preset** debe decir **Next.js** y **Root Directory** `./`.
+5. Abre **Environment Variables**. Vercel precarga las que encuentra en el
+   `.env.example` de la rama principal del repositorio, que es la de la versión
+   avanzada: aparecerán unas diez, de Supabase y de correo. **Bórralas todas** y
+   deja solo las de la tabla de §4.
+6. Si en algún momento ofrece añadir integraciones, **dile que no a todas**.
+7. Pulsa **Deploy**.
+
+Ese primer despliegue construye la rama principal del repositorio, no
+`mvp-lean`: la pantalla de importación de Vercel no deja elegir rama. Es
+esperado, y se corrige a continuación.
+
+8. **Settings → Environments → Production** → cambia la rama a **`mvp-lean`** →
+   **Save**.
+9. Empuja cualquier commit a `mvp-lean`. Eso es lo que dispara el despliegue de
+   la rama nueva — **«Redeploy» no sirve aquí**, porque reconstruye el mismo
+   commit de antes, que es de la rama vieja.
+10. Al terminar te da una dirección `.vercel.app`. **Esa es la del MVP**, y es
+    pública: se abre desde cualquier teléfono, sin cuenta de Vercel.
 
 > **No cambies el dominio oficial todavía.** La idea es revisar el MVP en esa
 > dirección primero.
