@@ -67,6 +67,8 @@ const PROHIBIDO = [
   /proyecto de demostraci[oó]n/i,
   /12 horas antes/i,
   /lugares disponibles/i,
+  /un pase gratuito/i,
+  /cupos limitados/i,
 ];
 
 /** Datos de contacto inventados que llegaron a estar publicados. */

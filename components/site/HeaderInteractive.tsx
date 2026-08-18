@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { clsx } from "clsx";
@@ -14,44 +14,35 @@ interface NavLink {
 }
 
 /**
- * Sólido en todas partes menos sobre el hero de la portada, donde flota.
+ * El encabezado del sitio.
  *
- * El comentario anterior aquí decía que el header era sólido siempre «porque
- * el hero es una división editorial sobre marfil, y blanco sobre marfil sería
- * invisible». Era correcto entonces. Ahora el hero es una fotografía a sangre
- * completa con un velo oscuro encima, así que la premisa cambió y el header
- * puede volver a flotar — que es lo que hace la referencia.
+ * QUÉ SE ARREGLÓ
  *
- * Lo que NO se repite del intento anterior: no se confía en que la foto sea
- * oscura. El header dibuja su propio degradado, y en cuanto se hace scroll
- * pasa a sólido. Así el texto blanco nunca depende de qué haya debajo.
+ * Decidía si flotar leyendo `window.scrollY` con `useSyncExternalStore`. El
+ * servidor no puede saber dónde está el scroll, así que su instantánea era
+ * siempre «arriba del todo»; cuando el navegador restauraba la posición al
+ * recargar, cliente y servidor dibujaban encabezados distintos y React lanzaba
+ * el error de hidratación #418. La auditoría lo encontró reproducible en la
+ * portada.
  *
- * Solo la portada. Cualquier otra ruta arranca sólida: es la única forma de
- * no reintroducir el fallo de contraste que costó arreglar.
+ * Ahora el estado visual lo decide **el CSS** (ver `.site-header` en
+ * globals.css): sólido por defecto, translúcido sobre el hero de la portada, y
+ * se solidifica en los primeros 64 px con una línea de tiempo de scroll. El
+ * servidor y el cliente emiten el mismo HTML, así que el desajuste ya no puede
+ * ocurrir — y donde el navegador no soporte esa línea de tiempo, el encabezado
+ * se queda sólido, que es el estado que siempre se lee.
  *
- * En el MVP lean el encabezado no sabe nada de sesiones: no hay cuentas, así
- * que no hay estado que reflejar ni que pueda parpadear equivocado. Los
- * enlaces son los mismos para todo el mundo.
+ * Lo único que sigue siendo estado de React es si el menú móvil está abierto,
+ * que empieza cerrado en los dos lados.
+ *
+ * SOBRE EL BOTÓN DUPLICADO
+ *
+ * En escritorio había un enlace «Experiencias» y, a treinta píxeles, un botón
+ * «Explorar experiencias» que llevaba exactamente al mismo sitio. Dos controles
+ * para lo mismo no dan a elegir: obligan a decidir si son distintos. El botón
+ * se queda solo en móvil, donde la navegación está detrás del menú y es la
+ * única acción visible.
  */
-
-/**
- * ¿Se ha bajado de los primeros 64 px?
- *
- * `useSyncExternalStore` y no `useEffect` + `setState`: el proyecto ya usa
- * este patrón en `useIsDesktop` y en `ReturnDomainHint`, y la regla
- * `react-hooks/set-state-in-effect` rechaza la otra forma. El snapshot del
- * servidor es `false` — arriba del todo, que es donde empieza la página.
- */
-function subscribeToScroll(callback: () => void) {
-  window.addEventListener("scroll", callback, { passive: true });
-  return () => window.removeEventListener("scroll", callback);
-}
-function isScrolled() {
-  return window.scrollY > 64;
-}
-function notScrolled() {
-  return false;
-}
 export function HeaderInteractive({
   links,
   ctaLabel = "Explorar experiencias",
@@ -61,35 +52,33 @@ export function HeaderInteractive({
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
-  const scrolled = useSyncExternalStore(subscribeToScroll, isScrolled, notScrolled);
-  const floating = pathname === "/" && !scrolled;
+
+  // `usePathname` devuelve el mismo valor en servidor y cliente, así que esto
+  // no reintroduce el desajuste: no depende del navegador, depende de la URL.
+  const sobreElHero = pathname === "/";
 
   return (
     <header
-      className={clsx(
-        "sticky inset-x-0 top-0 z-50 transition-colors",
-        floating ? "border-b border-transparent bg-transparent" : "border-b border-carbon/10 bg-warm-white",
-      )}
+      className={clsx("site-header sticky inset-x-0 top-0 z-50", sobreElHero && "site-header--over-hero")}
     >
-      {/* El degradado propio del header. Sin esto, la legibilidad del menú
-          dependería de qué zona de la fotografía le tocara debajo. */}
-      {floating && (
-        <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-32 bg-gradient-to-b from-carbon/70 to-transparent" />
+      {/* Velo propio del encabezado. Sin él, la legibilidad del menú dependería
+          de qué zona del hero le tocara debajo. Se desvanece con el scroll. */}
+      {sobreElHero && (
+        <div
+          aria-hidden
+          className="site-header__scrim pointer-events-none absolute inset-x-0 top-0 -z-10 h-32 bg-gradient-to-b from-carbon/70 to-transparent"
+        />
       )}
+
       <Container className="flex h-18 items-center justify-between gap-6 py-4">
-        {/* `whitespace-nowrap shrink-0`: the brand name must never break. As
-            a flex child it was shrinking below its own content width and
-            wrapping to "Sunny / Project" on every viewport under 640px —
-            two lines of a 32px line-height inside a 72px header, on every
-            page of the site. */}
+        {/* `whitespace-nowrap shrink-0`: el nombre no puede partirse. Como hijo
+            de un flex se encogía por debajo de su propio ancho y se rompía en
+            «Sunny / Project» en toda ventana menor de 640 px. */}
         <Link
           href="/"
-          className={clsx(
-            "shrink-0 font-serif text-2xl font-medium italic tracking-tight whitespace-nowrap transition-colors",
-            floating ? "text-warm-white" : "text-carbon",
-          )}
+          className="shrink-0 font-serif text-2xl font-medium tracking-tight text-current italic whitespace-nowrap"
         >
-          Sunny Project
+          The Sunny Project
         </Link>
 
         <nav className="hidden items-center gap-7 lg:flex" aria-label="Principal">
@@ -97,33 +86,16 @@ export function HeaderInteractive({
             <Link
               key={link.href}
               href={link.href}
-              className={clsx(
-                "text-small font-medium transition-colors",
-                floating ? "text-warm-white/85 hover:text-warm-white" : "text-carbon/80 hover:text-carbon",
-              )}
+              className="text-small font-medium text-current opacity-80 transition-opacity hover:opacity-100"
             >
               {link.label}
             </Link>
           ))}
         </nav>
 
-        <div className="hidden items-center gap-5 lg:flex">
-          <LinkButton href="/experiencias" size="sm" variant="primary">
-            {ctaLabel}
-          </LinkButton>
-        </div>
-
-        {/* Below lg the CTA stays visible next to the menu button — the
-            brief is explicit that mobile must not hide the main action
-            behind the menu. */}
+        {/* En móvil el botón sí aporta: la navegación está detrás del menú y
+            esta es la única acción a la vista. */}
         <div className="flex items-center gap-2 lg:hidden">
-          {/* The responsive hide lives on a WRAPPER, not on the button.
-              `className="hidden sm:inline-flex"` on LinkButton did nothing:
-              its own base classes already declare `inline-flex`, and between
-              two display utilities of equal specificity the stylesheet's
-              source order decides — so the button stayed visible at every
-              width and crowded the wordmark off its line. Wrapping moves the
-              display switch onto an element that isn't fighting anyone. */}
           <div className="hidden sm:block">
             <LinkButton href="/experiencias" size="sm" variant="primary">
               {ctaLabel}
@@ -135,10 +107,7 @@ export function HeaderInteractive({
             aria-haspopup="dialog"
             aria-expanded={menuOpen}
             aria-label="Abrir menú"
-            className={clsx(
-              "flex size-11 items-center justify-center rounded-md border transition-colors",
-              floating ? "border-white/30 text-warm-white" : "border-carbon/15 text-carbon",
-            )}
+            className="flex size-11 items-center justify-center rounded-md border border-current/25 text-current"
           >
             <div className="flex flex-col gap-1.5">
               <span className="h-0.5 w-5 bg-current" />

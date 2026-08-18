@@ -1,19 +1,30 @@
-"use client";
+import type { CSSProperties } from "react";
+import { STAGGER } from "@/lib/motion";
 
-import { motion, useReducedMotion } from "motion/react";
-import { EASE, MOTION, STAGGER } from "@/lib/motion";
-
-const TAGS = {
-  span: motion.span,
-  h1: motion.h1,
-  h2: motion.h2,
-  p: motion.p,
-} as const;
+const TAGS = { span: "span", h1: "h1", h2: "h2", p: "p" } as const;
 
 /**
- * Reveals text word-by-word with a short stagger. Used sparingly (hero
- * titles only) — see INTERACTION_ADAPTATION_PLAN.md for the "don't animate
- * everything" rule.
+ * Titular que entra palabra a palabra. Solo en el hero.
+ *
+ * CSS puro: cada palabra lleva su propio `animation-delay`. Antes esto eran
+ * tantos componentes de cliente como palabras tuviera el titular, cada uno
+ * server-renderizado con `opacity:0` — o sea que la promesa entera de la
+ * portada dependía de que el JavaScript llegara.
+ *
+ * SOBRE EL TEXTO PARA LECTORES DE PANTALLA
+ *
+ * El texto completo va en un nodo `sr-only` y cada palabra visible lleva
+ * `aria-hidden`. No es adorno: antes esto era un `aria-label` en el envoltorio,
+ * que en un `span` sin rol está prohibido y se ignora — y como todas las
+ * palabras estaban ocultas, el `h1` de la portada acababa **sin texto
+ * accesible ninguno**. Lo detectó axe-core como `aria-prohibited-attr`,
+ * gravedad seria.
+ *
+ * SOBRE EL ESPACIO ENTRE PALABRAS
+ *
+ * `whitespace-pre` es obligatorio: el espacio final vive dentro del `span`, y
+ * en un `inline-block` un espacio final se colapsa. Sin esto el hero decía
+ * «Descubre algonuevo. Vívelocon alguien.» Detectado en capturas de QA.
  */
 export function WordReveal({
   text,
@@ -28,54 +39,28 @@ export function WordReveal({
   delay?: number;
   wordDelay?: number;
 }) {
-  const prefersReducedMotion = useReducedMotion();
+  const Tag = TAGS[as];
   const words = text.split(" ");
-  const MotionTag = TAGS[as];
-
-  if (prefersReducedMotion) {
-    return (
-      <MotionTag className={className} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: MOTION.collapse, ease: EASE }}>
-        {text}
-      </MotionTag>
-    );
-  }
 
   return (
-    <MotionTag className={className}>
-      {/*
-       * This used to be `aria-label={text}` on the wrapper. That silently
-       * did nothing: `aria-label` is prohibited on a `span` with no role, so
-       * assistive technology ignored it — and because every word below is
-       * `aria-hidden`, the element ended up with NO accessible text at all.
-       * On the Home hero that meant the h1 — the page's whole promise —
-       * was invisible to a screen reader. Caught by axe-core
-       * (aria-prohibited-attr, serious).
-       *
-       * A real visually-hidden text node is read verbatim regardless of the
-       * wrapper's element type, so it works for every `as` value.
-       */}
+    <Tag className={className}>
       <span className="sr-only">{text}</span>
       {words.map((word, i) => (
-        <motion.span
+        <span
           key={`${word}-${i}`}
           aria-hidden
-          /**
-           * `whitespace-pre` is required, not cosmetic. The trailing space
-           * lives inside this span, and on an `inline-block` a trailing
-           * space is collapsed away — which ran the hero words together
-           * ("Descubre algonuevo. Vívelocon alguien."). Preserving
-           * whitespace here keeps the words apart while each one still
-           * animates as its own block. Caught in QA screenshots.
-           */
-          className="inline-block whitespace-pre"
-          initial={{ opacity: 0, y: "0.6em" }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: MOTION.enter, delay: delay + i * wordDelay, ease: EASE }}
+          className="reveal reveal-on-load inline-block whitespace-pre"
+          style={
+            {
+              "--reveal-delay": `${delay + i * wordDelay}s`,
+              "--reveal-y": "0.6em",
+            } as CSSProperties
+          }
         >
           {word}
           {i < words.length - 1 ? " " : ""}
-        </motion.span>
+        </span>
       ))}
-    </MotionTag>
+    </Tag>
   );
 }

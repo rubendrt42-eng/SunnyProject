@@ -43,6 +43,8 @@
   --motion-nudge: 250ms;
   --motion-collapse: 300ms;
   --motion-enter: 500ms;
+  --motion-reveal: 600ms;
+  --motion-lift: 250ms;
 
   /* Cuánto esperar antes de admitir que algo va lento. Por debajo de este
      umbral, un indicador de carga aparece y desaparece en un parpadeo y lo
@@ -328,4 +330,193 @@ h2 {
   border-color: rgb(23 23 23);
   outline: 2px solid rgb(23 23 23 / 0.2);
   outline-offset: 1px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   REVELADO — sin JavaScript
+
+   El contenido tiene que ser visible aunque el JavaScript nunca llegue.
+
+   Antes esto lo hacía la librería de animación: los envoltorios salían del
+   servidor con `opacity:0` en línea y solo se volvían visibles cuando el
+   navegador descargaba, ejecutaba e hidrataba 735 KB de JavaScript. Si algo de
+   eso fallaba —conexión mala, un archivo perdido, un bloqueador— el visitante
+   veía los fondos de las secciones y nada dentro. No es hipotético: la
+   auditoría lo reprodujo y hay capturas.
+
+   Ahora el revelado es CSS puro, y termina siempre en el estado visible:
+
+   - Sin `animation-timeline`, la animación corre al cargar. Con
+     `animation-fill-mode: both` el elemento acaba visible pase lo que pase.
+   - Con `animation-timeline: view()` —Chrome, Edge, Safari recientes— vuelve a
+     ser coreografía por scroll de verdad, y sin una línea de JavaScript.
+   - Con `prefers-reduced-motion`, no hay animación: el contenido está y ya.
+
+   Las tres rutas acaban en lo mismo: contenido a la vista. Ninguna depende de
+   que se ejecute código.
+   ───────────────────────────────────────────────────────────────────────────── */
+
+@keyframes sunny-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(var(--reveal-y, 1rem));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.reveal {
+  animation: sunny-reveal var(--motion-reveal, 600ms) var(--ease-sunny) both;
+  animation-delay: var(--reveal-delay, 0s);
+}
+
+/*
+  Donde el navegador sabe seguir el scroll, se le devuelve la coreografía: cada
+  bloque entra mientras aparece por abajo, no todos de golpe al cargar.
+  `animation-range` termina antes de que el elemento esté centrado para que la
+  lectura no tenga que esperar a la animación.
+*/
+@supports (animation-timeline: view()) {
+  .reveal {
+    animation-timeline: view();
+    animation-range: entry 5% entry 45%;
+    /* Con línea de tiempo de scroll el retraso se expresa en avance, no en
+       tiempo: un `animation-delay` en segundos aquí no significa nada. El
+       escalonado se consigue desplazando el rango. */
+    animation-delay: 0s;
+    animation-range-start: calc(entry 5% + var(--reveal-shift, 0%));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/*
+  Elevación al pasar el cursor, en CSS.
+
+  Antes era un componente de cliente con la librería de animación envolviendo
+  **cada tarjeta de experiencia** — el elemento que más se repite del sitio.
+  Como efecto es idéntico; como coste, este no carga nada.
+
+  `@media (hover: hover)` deja fuera las pantallas táctiles, donde «hover» se
+  queda pegado después de tocar.
+*/
+.hover-lift {
+  transition:
+    transform var(--motion-lift, 250ms) var(--ease-sunny),
+    box-shadow var(--motion-lift, 250ms) var(--ease-sunny);
+}
+
+@media (hover: hover) {
+  .hover-lift:hover {
+    transform: translateY(calc(-1 * var(--lift, 6px)));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hover-lift,
+  .hover-lift:hover {
+    transform: none;
+    transition: none;
+  }
+}
+
+/*
+  Revelado al cargar, no al hacer scroll.
+
+  Para lo que está por encima del pliegue —el hero—, donde la coreografía tiene
+  que ocurrir al abrir la página. Anula la línea de tiempo de scroll y devuelve
+  el retraso a segundos.
+*/
+.reveal-on-load {
+  animation-timeline: auto;
+  animation-delay: var(--reveal-delay, 0s);
+  animation-range: normal;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   ENCABEZADO — sólido por defecto, translúcido sobre el hero, sin JavaScript
+
+   Antes esto lo decidía `useSyncExternalStore` leyendo `window.scrollY`. El
+   servidor no puede saber la posición del scroll, así que su instantánea era
+   siempre «arriba del todo»; si el navegador restauraba la posición al
+   recargar, cliente y servidor dibujaban encabezados distintos y React lanzaba
+   el error de hidratación #418 que encontró la auditoría.
+
+   Ahora lo decide el CSS. El estado por defecto es **sólido**, que es el que
+   siempre se lee bien: si el navegador no soporta líneas de tiempo de scroll,
+   el encabezado se queda sólido y nadie pierde nada. Donde sí las soporta, en
+   la portada se vuelve translúcido sobre el hero y se solidifica en los
+   primeros 64 px.
+
+   El servidor y el cliente dibujan exactamente el mismo HTML. No hay estado
+   que sincronizar, así que no hay desajuste posible.
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.site-header {
+  background-color: var(--color-warm-white);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-carbon) 10%, transparent);
+  color: var(--color-carbon);
+}
+
+.site-header__scrim {
+  opacity: 0;
+}
+
+@supports (animation-timeline: scroll()) {
+  @keyframes header-solidify {
+    from {
+      background-color: transparent;
+      border-bottom-color: transparent;
+      color: var(--color-warm-white);
+    }
+    to {
+      background-color: var(--color-warm-white);
+      border-bottom-color: color-mix(in srgb, var(--color-carbon) 10%, transparent);
+      color: var(--color-carbon);
+    }
+  }
+
+  @keyframes header-scrim-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+  .site-header--over-hero {
+    animation: header-solidify linear both;
+    animation-timeline: scroll();
+    animation-range: 0 64px;
+  }
+
+  .site-header--over-hero .site-header__scrim {
+    animation: header-scrim-out linear both;
+    animation-timeline: scroll();
+    animation-range: 0 64px;
+  }
+}
+
+/*
+  Con movimiento reducido el encabezado se queda sólido desde el principio. No
+  es una animación decorativa que se pueda simplemente acelerar: lo que cambia
+  es el color del texto, y dejarlo a medias sería ilegible.
+*/
+@media (prefers-reduced-motion: reduce) {
+  .site-header--over-hero {
+    animation: none;
+  }
+  .site-header--over-hero .site-header__scrim {
+    animation: none;
+    opacity: 0;
+  }
 }

@@ -1,19 +1,25 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
 import { Manrope, Newsreader } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { AppChrome } from "@/components/motion/AppChrome";
-import { SessionWelcomeToast } from "@/components/site/SessionWelcomeToast";
 
 const manrope = Manrope({ variable: "--font-manrope", subsets: ["latin"] });
 const newsreader = Newsreader({ variable: "--font-newsreader", subsets: ["latin"], style: ["italic", "normal"] });
 
+/**
+ * Los metadatos del sitio entero: lo que sale en Google y en el enlace que
+ * alguien pega en WhatsApp.
+ *
+ * Decían «cupos limitados» y «un pase gratuito por semana» — el producto
+ * anterior, en el único texto que se propaga fuera del sitio y que nadie
+ * revisa porque no se ve en pantalla.
+ */
 export const metadata: Metadata = {
-  title: "Sunny Project — Descubre algo nuevo para sentirte bien",
+  title: "The Sunny Project — Experiencias en Monterrey",
   description:
-    "Experiencias de wellness, movimiento, cafés y recovery con cupos limitados en Monterrey. Un pase gratuito por semana.",
+    "Experiencias de bienestar, movimiento y comunidad en Monterrey. Solicitas tu lugar, nosotros te confirmamos. Sin cuentas y sin pagar nada.",
 };
 
 /**
@@ -32,14 +38,16 @@ export const metadata: Metadata = {
  * La lección para quien venga: lo que se pone en el layout raíz corre en
  * **todas** las rutas. Una condición aquí no es una precaución local, es una
  * llave de paso de todo el sitio.
+ *
+ * También se retiró `SessionWelcomeToast`, el aviso de «sesión iniciada» que
+ * aparecía al volver del callback de autenticación. En este MVP no hay
+ * autenticación, así que nunca podía dispararse — pero sí cargaba la librería
+ * de animación en todas las páginas del sitio para no hacer nada.
  */
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="es" className={`${manrope.variable} ${newsreader.variable} h-full antialiased`}>
       <body className="flex min-h-screen flex-col bg-ivory text-carbon">
-        <Suspense fallback={null}>
-          <SessionWelcomeToast />
-        </Suspense>
         <Header />
         <AppChrome>
           <div className="flex flex-1 flex-col">{children}</div>
