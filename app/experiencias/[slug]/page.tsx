@@ -169,8 +169,12 @@ export default async function ExperienceDetailPage({ params }: { params: Promise
                   : "Se llenaron los lugares. Publicamos experiencias nuevas cada semana."}
               </p>
               <div className="mt-6">
+                {/* El texto cambia según por qué no se puede solicitar: quien
+                    llega a una experiencia agotada busca otra parecida; quien
+                    llega a una que ya pasó, por un enlace viejo, necesita saber
+                    que hay cosas nuevas. */}
                 <LinkButton href="/experiencias" variant="secondary" arrow>
-                  Ver las disponibles
+                  {yaPaso ? "Ver experiencias actuales" : "Ver otras experiencias"}
                 </LinkButton>
               </div>
             </div>

@@ -55,6 +55,20 @@ export default async function ExperienciasPage() {
           )}
         </InViewReveal>
 
+        {/*
+          Encabezado de la lista, invisible pero real.
+
+          axe-core marcaba `heading-order` aquí: la página iba de `h1` a los
+          `h3` de las tarjetas sin nada en medio. Para quien navega saltando
+          entre encabezados con un lector de pantalla, ese salto significa que
+          la estructura de la página miente sobre su propia jerarquía. El texto
+          no aporta nada a quien ve la pantalla —el h1 ya lo dijo— así que va
+          oculto visualmente y presente para la tecnología asistiva.
+        */}
+        <h2 className="sr-only">
+          {experiences.length > 0 ? "Experiencias disponibles" : "Sin experiencias por ahora"}
+        </h2>
+
         <div className="mt-10">
           <ExperienceGrid experiences={experiences} />
         </div>

@@ -13,6 +13,7 @@ import { FaqList } from "@/components/site/FaqList";
 import { LeanHero } from "@/components/lean/LeanHero";
 import { ExperienceGrid } from "@/components/lean/ExperienceGrid";
 import { HowItWorks } from "@/components/lean/HowItWorks";
+import { BrandCanvas } from "@/components/lean/BrandCanvas";
 import { getSiteSettings, getUpcomingExperiences } from "@/lib/sanity/queries";
 import { DEFAULT_SETTINGS, whatsappLink } from "@/lib/lean-content";
 
@@ -68,7 +69,7 @@ export default async function HomePage() {
 
       {/* 1. Qué hay ahora. Va antes de explicar nada: primero se ve que hay
           algo que vale la pena, después se explica el mecanismo. */}
-      <section className="py-20 sm:py-28">
+      <section className="py-14 sm:py-20 lg:py-28">
         <Container>
           <InViewReveal>
             <p className="eyebrow">Esta semana</p>
@@ -92,45 +93,72 @@ export default async function HomePage() {
       </section>
 
       {/* 2. Qué es Sunny. */}
-      <section id="que-es-sunny" className="scroll-mt-24 bg-warm-white py-20 sm:py-28">
+      <section id="que-es-sunny" className="scroll-mt-24 bg-warm-white py-14 sm:py-20 lg:py-28">
         <Container>
           <WhatIsSunny />
         </Container>
       </section>
 
       {/* 3. Cómo funciona, en tres pasos. */}
-      <section className="py-20 sm:py-28">
+      <section className="py-14 sm:py-20 lg:py-28">
         <HowItWorks />
       </section>
 
-      {/* 4. Comunidad. Informativa: no hay grupo privado en esta etapa. */}
-      <section id="comunidad" className="scroll-mt-24 bg-warm-white py-20 sm:py-28">
-        <CommunitySection />
+      {/*
+        4. Comunidad — el capítulo oscuro.
+
+        La sección pone su propio fondo carbón: está escrita con texto en blanco
+        cálido, y cuando el fondo lo decidía la portada acabó montada sobre
+        `bg-warm-white`, o sea texto blanco sobre casi blanco. En las capturas
+        de la auditoría el párrafo era invisible.
+
+        Es además la única sección oscura entre el hero y el pie, que es lo que
+        devuelve el ritmo a una portada donde todo lo demás vive entre marfil y
+        blanco cálido.
+      */}
+      <section id="comunidad" className="scroll-mt-24">
+        <CommunitySection instagramUrl={s.instagramUrl} />
       </section>
 
       {/* 5. Para negocios. */}
-      <section className="bg-orange/8 py-20 sm:py-28">
-        <Container className="text-center">
-          <InViewReveal>
-            <p className="eyebrow">Para negocios</p>
-            <h2 className="mx-auto mt-3 max-w-2xl text-title text-balance">
-              ¿Quieres crear una experiencia con Sunny?
-            </h2>
-            <p className="mx-auto mt-4 max-w-xl text-body-l text-gray">
-              Si tienes un estudio, un espacio o una clase, te ayudamos a que gente nueva lo conozca.
-            </p>
-            <div className="mt-8">
-              <LinkButton href="/para-negocios" size="lg" arrow>
-                Cuéntanos de tu espacio
-              </LinkButton>
+      <section className="bg-orange/8 py-14 sm:py-20 lg:py-28">
+        {/*
+          Composición propia, no un cartel centrado.
+
+          Era un titular, un párrafo y un botón, los tres centrados sobre el
+          fondo durazno: leído seguido después de la sección de comunidad, se
+          notaba que aquí la página dejaba de componer y se ponía a anunciar.
+          Ahora el texto ocupa su columna y el lienzo de marca la otra, con la
+          misma estructura editorial que el resto de la portada. Sigue habiendo
+          un solo botón.
+        */}
+        <Container>
+          <div className="grid items-center gap-8 lg:grid-cols-12 lg:gap-14">
+            <div className="lg:col-span-7">
+              <InViewReveal>
+                <p className="eyebrow">Para negocios</p>
+                <h2 className="mt-3 max-w-xl text-title text-balance">¿Quieres crear una experiencia con Sunny?</h2>
+                <p className="mt-4 max-w-lg text-body-l text-gray">
+                  Si tienes un estudio, un espacio o una clase, te ayudamos a que gente nueva lo conozca. Nos cuentas
+                  qué haces y platicamos cómo podría funcionar.
+                </p>
+                <div className="mt-8">
+                  <LinkButton href="/para-negocios" size="lg" arrow>
+                    Cuéntanos de tu espacio
+                  </LinkButton>
+                </div>
+              </InViewReveal>
             </div>
-          </InViewReveal>
+            <InViewReveal delay={0.08} className="lg:col-span-5">
+              <BrandCanvas seed="para-negocios" className="aspect-4/3 w-full rounded-xl lg:aspect-square" />
+            </InViewReveal>
+          </div>
         </Container>
       </section>
 
       {/* 6. Preguntas frecuentes, editables desde Sanity. */}
       {s.faq.length > 0 && (
-        <section className="py-20 sm:py-28">
+        <section className="py-14 sm:py-20 lg:py-28">
           <Container className="max-w-3xl">
             <InViewReveal>
               <p className="eyebrow">Preguntas frecuentes</p>
@@ -152,7 +180,7 @@ export default async function HomePage() {
         invitar. Si no hay ningún canal, la sección entera no existe.
       */}
       {hayContacto && (
-        <section className="border-t border-carbon/10 bg-warm-white py-16 sm:py-20">
+        <section className="border-t border-carbon/10 bg-warm-white py-12 sm:py-16 lg:py-20">
           <Container className="text-center">
             <InViewReveal>
               <h2 className="text-subtitle">¿Nos escribes?</h2>

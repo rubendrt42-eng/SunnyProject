@@ -41,8 +41,30 @@ export function ExperienceGrid({
     );
   }
 
+  /**
+   * La rejilla reacciona a cuántas experiencias hay, no solo al ancho.
+   *
+   * Con tres columnas fijas y dos experiencias publicadas, el tercio derecho
+   * quedaba vacío: la fila no se leía como una decisión sino como algo que
+   * faltaba por cargar. Y con una sola, dos huecos.
+   *
+   * - **Una**: columna centrada y estrecha, para que la tarjeta tenga un ancho
+   *   deliberado en vez de estirarse a lo ancho de la pantalla.
+   * - **Dos**: dos columnas, la fila queda completa a cualquier ancho.
+   * - **Tres o más**: hasta tres columnas, que es donde la tarjeta mantiene una
+   *   proporción legible.
+   *
+   * En móvil siempre una columna.
+   */
+  const columnas =
+    experiences.length === 1
+      ? "mx-auto max-w-md"
+      : experiences.length === 2
+        ? "sm:grid-cols-2"
+        : "sm:grid-cols-2 lg:grid-cols-3";
+
   return (
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <div className={`grid gap-6 ${columnas}`}>
       {experiences.map((experience) => (
         <ExperienceCard key={experience._id} experience={experience} />
       ))}

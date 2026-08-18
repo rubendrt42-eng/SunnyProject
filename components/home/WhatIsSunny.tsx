@@ -1,13 +1,21 @@
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { InViewReveal } from "@/components/motion/InViewReveal";
-import { EMMY_PHOTO } from "@/lib/media";
+import { BrandCanvas } from "@/components/lean/BrandCanvas";
 
 /**
  * "Qué es Sunny Project" (brief §17). Purpose, community, and the
  * relationship with local spaces — plus a deliberately short presence for
  * Emmy.
+ *
+ * SOBRE EL RETRATO
+ *
+ * Aquí iba una fotografía de Emmy. Es el único asset del proyecto que
+ * `SUNNY_ASSET_MANIFEST.md` describe como «plausiblemente propio», pero
+ * plausible no es confirmado, y publicar la cara de una persona sin tener claro
+ * de dónde salió la imagen no es una decisión que se pueda tomar por ella.
+ * Hasta que Emmy confirme que es suya —o mande otra—, va el lienzo de marca.
+ * Recuperarla es cambiar esta línea.
  *
  * Emmy gets one paragraph and one photograph, not a biography: the brief's
  * narrative rule is "Emmy impulsa Sunny, la comunidad protagoniza Sunny".
@@ -72,13 +80,7 @@ export function WhatIsSunny() {
         <InViewReveal delay={0.12}>
           <figure>
             <div className="relative aspect-square w-full max-w-sm overflow-hidden rounded-lg bg-carbon/5">
-              <Image
-                src={EMMY_PHOTO.src}
-                alt={EMMY_PHOTO.alt}
-                fill
-                sizes="(min-width: 1024px) 34vw, 90vw"
-                className="object-cover"
-              />
+              <BrandCanvas seed="emmy-retrato" className="h-full w-full" />
             </div>
             <figcaption className="mt-4 max-w-sm">
               <p className="text-heading">Emmy · Fundadora y curadora</p>

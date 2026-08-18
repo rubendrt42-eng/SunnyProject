@@ -56,10 +56,19 @@ function variantePara(seed: string): (typeof VARIANTES)[number] {
   return VARIANTES[n % VARIANTES.length];
 }
 
+/** Igual que `variantePara`, saltándose la variante oscura. */
+function varianteClara(seed: string): (typeof VARIANTES)[number] {
+  const claras = VARIANTES.filter((_, i) => i !== 2);
+  let n = 0;
+  for (let i = 0; i < seed.length; i++) n = (n + seed.charCodeAt(i)) % 997;
+  return claras[n % claras.length];
+}
+
 export function BrandCanvas({
   seed,
   className = "",
   label,
+  tone = "auto",
 }: {
   /** Texto estable —normalmente el título— del que sale la variante. */
   seed: string;
@@ -70,8 +79,13 @@ export function BrandCanvas({
    * experiencia. El título ya está en el encabezado, a un elemento de distancia.
    */
   label?: string;
+  /**
+   * `"light"` excluye la variante oscura. Sobre un fondo carbón, un lienzo
+   * carbón se lee como un hueco, no como una pieza.
+   */
+  tone?: "auto" | "light";
 }) {
-  const v = variantePara(seed);
+  const v = tone === "light" ? varianteClara(seed) : variantePara(seed);
 
   return (
     <div
