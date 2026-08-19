@@ -30,6 +30,20 @@ import { businessRequestSchema, firstErrorMessage, spotRequestSchema } from "@/l
  * ausente. Y los campos opcionales se prueban además con `null`, que es lo que
  * devuelve `FormData.get` cuando el campo no está en el formulario.
  *
+ * EL TERCER HUECO: EL ENVOLTORIO
+ *
+ * Con cada regla y cada tipo base ya en español, seguía faltando el `z.object`
+ * que los envuelve. Si el cuerpo de la petición no era un objeto, el error lo
+ * daba el envoltorio y volvía a salir en inglés. Medido contra las dos rutas
+ * públicas:
+ *
+ *     [1,2,3]  -> «Invalid input: expected object, received array»
+ *     null     -> «Invalid input: expected object, received null»
+ *     "hola"   -> «Invalid input: expected object, received string»
+ *
+ * Los casos de abajo mandaban siempre un objeto, así que nunca tocaban esa
+ * comprobación.
+ *
  * QUÉ PROTEGE
  *
  * Que el mensaje esté en español, no su redacción exacta. Se recorren casos que
@@ -146,4 +160,33 @@ describe("los campos opcionales aceptan venir en blanco", () => {
     expect(r.success, r.success ? "" : firstErrorMessage(r.error!)).toBe(true);
     expect(r.data?.instagram).toBeUndefined();
   });
+});
+
+/**
+ * El cuerpo entero, no solo sus campos. Las rutas son públicas: cualquiera
+ * puede mandar algo que no sea un objeto, y la respuesta la lee una persona.
+ */
+describe("un cuerpo que no es un objeto también responde en español", () => {
+  const cuerpos: Array<[string, unknown]> = [
+    ["un array", [1, 2, 3]],
+    ["null", null],
+    ["una cadena", "hola"],
+    ["un número", 42],
+    ["un booleano", true],
+  ];
+
+  for (const [nombre, cuerpo] of cuerpos) {
+    for (const [donde, schema] of [
+      ["solicitud", spotRequestSchema],
+      ["negocios", businessRequestSchema],
+    ] as const) {
+      it(`${donde} con ${nombre}: mensaje en español`, () => {
+        const msg = mensajeDe(schema, cuerpo);
+        for (const j of JERGA) {
+          expect(msg.toLowerCase(), `«${msg}» contiene jerga de Zod`).not.toContain(j.toLowerCase());
+        }
+        expect(msg, `«${msg}» no parece una frase escrita para una persona`).toMatch(/^[¿¡A-ZÁÉÍÓÚÑ].*[.?]$/);
+      });
+    }
+  }
 });

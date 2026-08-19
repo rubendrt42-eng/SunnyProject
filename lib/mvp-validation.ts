@@ -73,6 +73,28 @@ const correo = z
  */
 const trampa = opcional(z.string().max(0, "Solicitud rechazada."));
 
+/**
+ * El mensaje del objeto entero, no solo el de cada campo.
+ *
+ * Los dos esquemas tenían mensaje propio en cada regla y en cada tipo base,
+ * pero no en el `z.object` que los envuelve. Si el cuerpo de la petición no era
+ * un objeto —un array, `null`, una cadena, un número, `true`— el error lo daba
+ * el envoltorio, que no tenía mensaje, y salía en inglés. Medido contra las dos
+ * rutas públicas:
+ *
+ *     [1,2,3]  -> «Invalid input: expected object, received array»
+ *     null     -> «Invalid input: expected object, received null»
+ *     "hola"   -> «Invalid input: expected object, received string»
+ *     42       -> «Invalid input: expected object, received number»
+ *     true     -> «Invalid input: expected object, received boolean»
+ *
+ * Desde el formulario no es alcanzable —siempre manda un objeto— pero las rutas
+ * son públicas, y esta es la tercera vez que aparece el mismo hueco: primero las
+ * reglas, luego los tipos base de cada campo, ahora el envoltorio. La prueba
+ * pasa a recorrer también cuerpos que no son objetos.
+ */
+const CUERPO_INVALIDO = "No pudimos leer los datos del formulario.";
+
 export const spotRequestSchema = z.object({
   experienceId: z
     .string({ error: FALTA_EXPERIENCIA })
@@ -110,7 +132,7 @@ export const spotRequestSchema = z.object({
     .max(10, "Para grupos de más de 10 personas, escríbelo en «¿Algo que debamos saber?» y lo vemos contigo."),
   comments: opcional(z.string().trim().max(500, "El comentario es demasiado largo.")),
   website: trampa,
-});
+}, { error: CUERPO_INVALIDO });
 
 export const businessRequestSchema = z.object({
   businessName: z
@@ -126,7 +148,7 @@ export const businessRequestSchema = z.object({
   experienceType: opcional(z.string().trim().max(120, "Descríbelo un poco más corto, por favor.")),
   message: opcional(z.string().trim().max(700, "El mensaje es demasiado largo.")),
   website: trampa,
-});
+}, { error: CUERPO_INVALIDO });
 
 export type SpotRequestInput = z.infer<typeof spotRequestSchema>;
 export type BusinessRequestInput = z.infer<typeof businessRequestSchema>;
