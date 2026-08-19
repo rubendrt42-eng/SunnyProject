@@ -59,11 +59,31 @@ export async function POST(request: NextRequest) {
       comments: data.comments || undefined,
     });
   } catch (err) {
+    /**
+     * DOS FALLOS DISTINTOS, DOS MENSAJES DISTINTOS
+     *
+     * «Inténtalo nuevamente en unos minutos» es verdad cuando la hoja está
+     * configurada y el fallo es pasajero. Es mentira cuando la hoja **no** está
+     * configurada: por muchos minutos que espere, nunca va a funcionar.
+     *
+     * Y esa es exactamente la situación de hoy — el sitio está publicado y
+     * `GOOGLE_SHEET_ID` todavía no existe, así que cualquiera que entre, llene
+     * el formulario y pulse enviar recibe una promesa que el sistema no puede
+     * cumplir. El aviso se guarda bien, se lee y se anuncia; lo que estaba mal
+     * era lo que decía.
+     *
+     * En cuanto la hoja esté configurada este camino deja de ocurrir y vuelve a
+     * mandar el mensaje de reintento, que entonces sí es cierto.
+     */
     if (err instanceof SheetsNotConfiguredError) {
       console.error("[solicitudes] Google Sheets sin configurar:", err.message);
-    } else {
-      console.error("[solicitudes] falló el registro en la hoja:", err);
+      return NextResponse.json(
+        { error: "El formulario todavía no está disponible. Vuelve en unos días." },
+        { status: 503 },
+      );
     }
+
+    console.error("[solicitudes] falló el registro en la hoja:", err);
     return NextResponse.json(
       { error: "No pudimos enviar tu solicitud. Inténtalo nuevamente en unos minutos." },
       { status: 502 },
