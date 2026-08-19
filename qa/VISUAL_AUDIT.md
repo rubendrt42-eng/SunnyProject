@@ -1,5 +1,20 @@
 # Auditoría visual — MVP Lean
 
+> **Nota de vigencia — 19 de agosto de 2026**
+>
+> Auditoría del 18 de agosto. Desde entonces hay 32 commits en `mvp-lean` y
+> **cuatro de estos hallazgos están cerrados**. Se corrigen aquí las
+> afirmaciones que ya no describen el sitio; el resto del juicio visual se deja
+> como estaba, que es para lo que sirve el documento.
+>
+> | Lo que decía | Lo que se mide hoy |
+> |---|---|
+> | Hero con fotografía a sangre completa | **No hay fotografía.** La de referencia no estaba autorizada y se sustituyó por una composición de marca hecha solo con CSS. El hero vuelve a ser fotográfico en cuanto se suba una al campo del gestor de contenido |
+> | Contador «2 experiencias disponibles» | **cerrado** (`dd36edd`): contaba también las agotadas. El del hero solo aparece a partir de tres y ya cuenta las solicitables; el del catálogo dejó de prometer disponibilidad |
+> | `heading-order` en `/experiencias` | **cerrado**: axe-core da **0 violaciones** en las siete rutas públicas, a 390, 768 y 1280 |
+> | MOTION-01, el contenido nace invisible | **cerrado**: 0 apariciones de `opacity:0` en el HTML del servidor de las siete rutas |
+
+
 **Rama:** `mvp-lean` · **Commit:** `8b58d6e` · **Fecha:** 17 de agosto de 2026
 **Sitio:** https://sunny-mvp.vercel.app
 
@@ -60,15 +75,26 @@ En móvil colapsa a un botón de menú que abre 20 enlaces visibles.
 
 ### 2. Hero
 
-**Funciona:** es lo mejor del sitio. Fotografía a sangre completa, doble capa de
-oscurecimiento, titular en dos colores con la segunda línea en amarillo. La
-jerarquía es clara y la promesa se lee en tres segundos. El grano sobre la
-fotografía evita el aspecto de banco de imágenes.
+**Funciona:** es lo mejor del sitio. Titular en dos colores con la segunda línea
+en amarillo, sobre una capa oscura que sostiene el texto.
+
+> Cuando se escribió esto el fondo era una fotografía a sangre completa. Esa
+> imagen no estaba autorizada para producción —lo dice esta misma auditoría dos
+> puntos más abajo— y se retiró. Hoy el fondo es una composición de marca hecha
+> solo con CSS, y el hero vuelve a ser fotográfico en cuanto Emmy suba una imagen
+> al campo del gestor de contenido, sin tocar código. Medido con una fotografía
+> de prueba: el peor píxel del titular da 8.19:1 de contraste incluso sobre una
+> imagen blanca pura.
+
+La jerarquía es clara y la promesa se lee en tres segundos. El grano evita el
+aspecto de banco de imágenes.
 
 **Qué revisar:**
-- El contador **«2 experiencias disponibles»** junto al botón es honesto, pero
-  con dos experiencias de prueba dice en voz alta que el sitio está vacío. Con
-  números bajos conviene omitirlo.
+- ~~El contador **«2 experiencias disponibles»** junto al botón es honesto, pero
+  con dos experiencias de prueba dice en voz alta que el sitio está vacío.~~
+  ✅ **Cerrado.** Solo aparece a partir de tres experiencias, y desde `dd36edd`
+  cuenta las que se pueden solicitar: no era honesto, contaba también las
+  agotadas.
 - La fotografía **no está autorizada para producción** (ver sección de assets).
 - Composición: en escritorio el texto ocupa el tercio izquierdo y el derecho queda
   con la fotografía sin nada encima. Se sostiene, pero es el punto donde cabría
@@ -211,13 +237,15 @@ aproximada. Nada indica «esto es más importante que aquello».
 `experiences-desktop.png` · `experiences-mobile.png`
 
 - Encabezado correcto: antetítulo «Monterrey», titular «Todo lo que puedes hacer
-  estos días», y una línea que dice «2 experiencias disponibles, de la más próxima
-  a la más lejana».
+  estos días», y una línea que hoy dice «2 experiencias, de la más próxima a la
+  más lejana». Decía «2 experiencias **disponibles**» contando también la
+  agotada, que se anunciaba como tal en la tarjeta de al lado (`dd36edd`).
 - Mismo problema de tarjetas sin fotografía, agravado: aquí las tarjetas **son**
   la página. Dos rectángulos grises en 1.387 px de alto.
-- **Violación de accesibilidad detectada** (axe): salto en el orden de
-  encabezados (`heading-order`, impacto moderado). Un `<h3>` aparece sin `<h2>`
-  intermedio.
+- ~~**Violación de accesibilidad detectada** (axe): salto en el orden de
+  encabezados (`heading-order`, impacto moderado).~~ ✅ **Cerrado**: se añadió el
+  encabezado de la lista, visualmente oculto y presente para la tecnología
+  asistiva. axe-core da hoy **0 violaciones** en las siete rutas públicas.
 - No hay filtros, búsqueda ni ordenación. Con dos experiencias no hace falta;
   conviene anotarlo para cuando haya quince.
 
@@ -273,7 +301,13 @@ semanal del pase. Ninguna de esas cosas existe en el MVP.
 
 ### MOTION-01 · CRÍTICO — el contenido nace invisible y depende del JavaScript
 
-El HTML que envía el servidor trae `opacity:0; transform:translateY(16px)` **en
+> ✅ **CERRADO.** Medido en las siete rutas públicas de producción: **0**
+> apariciones de `opacity:0` en el HTML del servidor, y la portada llega con 3838
+> caracteres de texto sin ejecutar nada. El revelado pasó a animación ligada al
+> scroll, que arranca visible. Lo de abajo queda como registro de lo que se
+> encontró.
+
+El HTML que enviaba el servidor traía `opacity:0; transform:translateY(16px)` **en
 línea** sobre los envoltorios de revelado. El contenido solo se hace visible
 cuando el JavaScript hidrata y el observador de intersección dispara la
 animación.

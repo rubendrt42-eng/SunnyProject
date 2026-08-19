@@ -1,5 +1,23 @@
 # Paquete de auditoría — The Sunny Project, MVP Lean
 
+> **Nota de vigencia — 19 de agosto de 2026**
+>
+> Este documento es el registro de la auditoría del 18 de agosto. Desde entonces
+> hay 32 commits en `mvp-lean` y **dos de sus hallazgos ya están cerrados**. Las
+> afirmaciones que dejaron de ser ciertas están corregidas en su sitio, con el
+> commit que las cerró; lo demás se deja tal cual, porque el valor de este
+> documento es ser el registro de lo que se encontró.
+>
+> | Lo que decía | Lo que se mide hoy |
+> |---|---|
+> | `/api/solicitudes` responde **502** | responde **503**, con un mensaje que no promete un reintento que no puede funcionar (`7c6c58c`) |
+> | El HTML del servidor nace con `opacity:0` (MOTION-01, P1) | **cerrado**: 0 apariciones en las siete rutas públicas, y la portada trae 3838 caracteres de texto sin JavaScript |
+> | **155 pruebas** | **282 pruebas** |
+>
+> Los dos bloqueos que este documento marca como críticos —Google Sheets y el
+> despliegue del Studio— **siguen abiertos**.
+
+
 **Fecha:** 17–18 de agosto de 2026
 **Rama:** `mvp-lean`
 **Commit auditado:** `8b58d6e`
@@ -77,7 +95,7 @@ NEXT_PUBLIC_SITE_URL
 |---|---|---|
 | **Supabase** | **NO** | Ninguna. Se eliminaron las diez que Vercel precargó del `.env.example` de la rama principal |
 | **Sanity** | **SÍ** — las tres | El sitio muestra contenido real del dataset de producción |
-| **Google Sheets** | **NO** — faltan las tres | `POST /api/solicitudes` responde 502 con `SheetsNotConfiguredError` |
+| **Google Sheets** | **NO** — faltan las tres | `POST /api/solicitudes` responde 503 con `SheetsNotConfiguredError` |
 
 Las tres de Sanity llevan prefijo `NEXT_PUBLIC_` y no son secretas: viajan en cada
 petición que el navegador hace a Sanity. Las tres de Google que faltan
@@ -145,8 +163,14 @@ nombres, teléfonos y correos).
 
 ### C2 · El formulario no puede recibir ninguna solicitud
 
-Google Sheets no está configurado. `POST /api/solicitudes` responde **502**.
+Google Sheets no está configurado. `POST /api/solicitudes` responde **503**.
 Verificado en la URL publicada con un envío real.
+
+> Era 502 cuando se escribió esto. Un 502 anuncia un fallo pasajero, y el mensaje
+> invitaba a reintentar en unos minutos — un reintento que no podía funcionar
+> nunca. Desde `7c6c58c` responde 503 con «El formulario todavía no está
+> disponible. Vuelve en unos días», y el 502 se reserva para los fallos que sí
+> son pasajeros.
 
 El comportamiento del código es correcto —nunca muestra éxito falso, y los datos
 del formulario se conservan para reintentar— pero el resultado operativo es que
@@ -223,7 +247,12 @@ Detalle en `qa/RESPONSIVE_AUDIT.md`. Ocho anchos medidos: 320, 375, 390, 430, 76
 
 Cinco hallazgos en `qa/VISUAL_AUDIT.md`. El importante:
 
-**MOTION-01 · CRÍTICO — el contenido nace invisible.** El HTML del servidor trae
+**MOTION-01 · CRÍTICO — el contenido nace invisible.** ✅ **CERRADO.** Hoy el
+HTML del servidor no trae ni una sola aparición de `opacity:0` en las siete rutas
+públicas, y la portada llega con 3838 caracteres de texto sin ejecutar nada. El
+revelado pasó a animación ligada al scroll, que arranca visible.
+
+Lo que se encontró entonces, y que ya no ocurre: el HTML del servidor traía
 `opacity:0` en línea sobre los envoltorios de revelado. Todo lo que está por debajo
 del hero solo se vuelve visible cuando el JavaScript hidrata. Si el JavaScript
 tarda, falla o se bloquea, el visitante ve los fondos de las secciones y nada más.
@@ -403,7 +432,7 @@ Verificado archivo por archivo:
 | Header, Footer, AppChrome, SessionWelcomeToast | Solo mencionan Supabase en comentarios |
 
 **Comprobado en ejecución, no solo leyendo:** se retiró el `.env.local` del
-proyecto (`env | grep SUPABASE` en cero) y con ello lint, tipos, **155 pruebas** y
+proyecto (`env | grep SUPABASE` en cero) y con ello lint, tipos, **155 pruebas** (282 hoy) y
 build de producción pasaron, y las cuatro rutas públicas respondieron 200 sin
 rastro de la pantalla de configuración.
 
@@ -454,12 +483,12 @@ pueda volver a desplegarse hasta que se reactive.
 | Campo trampa anti-robots relleno | **OK** → 400 |
 | Estado de carga | **OK** — el botón se bloquea desde el primer clic |
 | Doble clic | **OK** — `sending` impide la segunda petición |
-| Envío válido con Sheets sin configurar | **502**, mensaje de error correcto, **los datos escritos se conservan** — `qa/screenshots/request-form-error.png` |
+| Envío válido con Sheets sin configurar | **503** (era 502 al auditar), mensaje de error correcto, **los datos escritos se conservan** — `qa/screenshots/request-form-error.png` |
 | Mensaje de éxito | `qa/screenshots/request-form-success.png` |
 | Límite de frecuencia | 5 envíos por minuto y por IP |
 
 **Sobre la captura de éxito:** no se puede alcanzar en el sitio publicado, porque
-sin Google Sheets el servidor siempre responde 502. Para capturarla se simuló
+sin Google Sheets el servidor siempre responde 503. Para capturarla se simuló
 **únicamente la respuesta del servidor**; el componente que aparece en la imagen es
 el del sitio publicado, con su texto real:
 
@@ -475,7 +504,7 @@ a verlo en la hoja real**.
 
 ## Formulario de negocios
 
-Mismo estado: la ruta responde, valida, y devuelve **502** al intentar escribir.
+Mismo estado: la ruta responde, valida, y devuelve **503** al intentar escribir.
 **No se pudo verificar que llegue a la pestaña `Negocios`** porque la hoja no
 existe.
 
@@ -569,7 +598,7 @@ Ese bloqueo sigue vigente y **el sitio ya está publicado en una URL pública**.
 | Todas | Sin errores 4xx/5xx | — | — |
 | Todas | Sin imágenes fallidas (0 de 4 rotas en los ocho anchos) | — | — |
 | Sanity | Sin errores de consulta en producción | — | El sitio muestra datos reales |
-| `/api/solicitudes` | **502** en cada envío | **Crítica** (C2) | Google Sheets sin configurar |
+| `/api/solicitudes` | **503** en cada envío | **Crítica** (C2) | Google Sheets sin configurar |
 
 ---
 
@@ -616,7 +645,7 @@ Ese bloqueo sigue vigente y **el sitio ya está publicado en una URL pública**.
 | 8 | **Quitar «pase» del vocabulario visible**: pie («Un pase gratuito por semana»), enlace de `WhatIsSunny` («Cómo funciona el pase») | **P1** |
 | 9 | **Hacer que la rejilla se adapte al número de experiencias.** Con dos, la fila de tres columnas queda con un hueco que se lee como error | **P1** |
 | 10 | **Resolver el desborde de 41 px a 768 px** — el ancho exacto de un iPad en vertical | **P1** |
-| 11 | **Revisar la dependencia del JavaScript para mostrar contenido** (MOTION-01). Que el contenido nazca con `opacity:0` significa que una carga fallida deja la página en blanco | **P1** |
+| 11 | ~~**Revisar la dependencia del JavaScript para mostrar contenido** (MOTION-01)~~ — ✅ cerrado: 0 `opacity:0` en el HTML del servidor de las siete rutas | ~~**P1**~~ |
 | 12 | **Dar salida a la experiencia agotada.** Hoy la página simplemente termina, sin ofrecer alternativa | **P1** |
 | 13 | **Corregir el error de hidratación (#418)** en la portada y la violación `heading-order` en `/experiencias` | **P1** |
 | 14 | **Devolver contraste al ritmo de la portada.** Nueve secciones entre marfil y blanco cálido, sin ninguna sección oscura entre el hero y el pie. Es lo que más se perdió al simplificar | **P2** |

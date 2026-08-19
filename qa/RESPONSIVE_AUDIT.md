@@ -1,5 +1,26 @@
 # Auditoría responsive — MVP Lean
 
+> **Nota de vigencia — 19 de agosto de 2026**
+>
+> Auditoría del 18 de agosto. **RESP-01 está cerrado.** Vuelto a medir con la
+> misma métrica —`scrollWidth` del documento contra `clientWidth`, tras recorrer
+> la página entera y volver arriba— en los ocho anchos:
+>
+> | Ancho | clientWidth | scrollWidth | Desborde | Alto de la portada |
+> |---|---|---|---|---|
+> | 320 | 320 | 320 | no | 6.537 px |
+> | 375 | 375 | 375 | no | 6.124 px |
+> | 390 | 390 | 390 | no | 6.122 px |
+> | 430 | 430 | 430 | no | 6.103 px |
+> | **768** | **768** | **768** | **no** | 5.501 px |
+> | 1024 | 1024 | 1024 | no | 5.402 px |
+> | 1280 | 1280 | 1280 | no | 5.580 px |
+> | 1440 | 1440 | 1440 | no | 5.657 px |
+>
+> Ocho de ocho sin desborde, y la portada es entre 400 y 1.000 px más corta en
+> cada ancho. Se deja abajo la medición original como registro.
+
+
 **Rama:** `mvp-lean` · **Commit:** `8b58d6e` · **Sitio:** https://sunny-mvp.vercel.app
 
 Medido sobre el mismo commit desplegado, con datos reales de Sanity. Capturas de
@@ -22,10 +43,21 @@ página completa en `qa/screenshots/`.
 
 ---
 
-## RESP-01 · El único desborde real: 768 px
+## RESP-01 · El único desborde real: 768 px — ✅ CERRADO
 
-A 768 px el documento mide **809 px de ancho** contra una ventana de 768. Son
-**41 px** que se pueden desplazar lateralmente.
+> Vuelto a medir: a 768 px el documento mide **768 px**, igual que la ventana.
+> Cero desplazamiento lateral, en los ocho anchos. Lo de abajo queda como
+> registro de lo que se encontró.
+>
+> Sobre el «culpable sin identificar»: el recorrido de elementos que se usó
+> entonces mide **cajas**, y hay dos cosas que se le escapan por diseño —los
+> hijos de un `<svg>`, que reportan coordenadas del lienzo y no de la página, y
+> el texto que se sale de su caja sin que la caja se mueva—. Las dos aparecieron
+> después en otras mediciones y las dos explican desbordes que ningún elemento
+> parecía causar.
+
+A 768 px el documento medía **809 px de ancho** contra una ventana de 768. Eran
+**41 px** que se podían desplazar lateralmente.
 
 Lo que hace este hallazgo incómodo: al recorrer todos los elementos del `<body>`
 buscando cuál sobresale, **ninguno lo hace**. Ningún rectángulo de ningún elemento
@@ -79,7 +111,7 @@ Igual que 390. El titular del hero pasa a tres líneas y respira mejor.
 
 ### 768 px — tablet vertical
 
-- **El desborde de 41 px** (RESP-01).
+- ~~**El desborde de 41 px** (RESP-01).~~ ✅ cerrado.
 - **La rejilla de experiencias pasa a dos columnas** — y como solo hay dos
   experiencias, aquí es el único ancho donde la fila queda completa y se ve
   deliberada.
@@ -145,7 +177,7 @@ adaptado.
 
 ### Lo que está bien y conviene no romper
 
-- **Cero desbordes** en siete de los ocho anchos medidos.
+- **Cero desbordes** en los ocho anchos medidos (eran siete de ocho; RESP-01 cerrado).
 - **Cero imágenes rotas** en todos los anchos.
 - Todos los formularios funcionan en todos los anchos, con etiquetas asociadas y
   alturas táctiles correctas.
