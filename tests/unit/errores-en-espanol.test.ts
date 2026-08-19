@@ -17,6 +17,19 @@ import { businessRequestSchema, firstErrorMessage, spotRequestSchema } from "@/l
  * alcanzable desde el formulario: los campos opcionales no tienen `maxLength`
  * en el marcado, así que escribir 150 caracteres en «Zona o dirección» bastaba.
  *
+ * EL HUECO QUE DEJÓ LA PRIMERA PASADA
+ *
+ * Todos los casos de abajo mandaban el campo como cadena vacía, así que siempre
+ * fallaba un `min` o un `max` —que sí tenían mensaje— y nunca la comprobación
+ * de tipo. Con el campo **ausente** o en `null` el error lo daba el tipo base,
+ * que no tenía mensaje propio, y volvía a salir en inglés:
+ *
+ *     spotRequestSchema.safeParse({}) -> «Invalid input: expected string, received undefined»
+ *
+ * Por eso ahora cada caso se prueba de tres formas: vacío, pasado de largo y
+ * ausente. Y los campos opcionales se prueban además con `null`, que es lo que
+ * devuelve `FormData.get` cuando el campo no está en el formulario.
+ *
  * QUÉ PROTEGE
  *
  * Que el mensaje esté en español, no su redacción exacta. Se recorren casos que
@@ -78,6 +91,22 @@ describe("los errores de formulario están en español", () => {
     ["negocio tipo larguísimo", businessRequestSchema, { ...NEGOCIO_OK, experienceType: "a".repeat(200) }],
     ["negocio mensaje larguísimo", businessRequestSchema, { ...NEGOCIO_OK, message: "a".repeat(900) }],
     ["negocio con trampa", businessRequestSchema, { ...NEGOCIO_OK, website: "spam" }],
+    // Campos que no llegan. Antes salían en inglés porque el error lo producía
+    // la comprobación de tipo, no una regla con mensaje.
+    ["solicitud completamente vacía", spotRequestSchema, {}],
+    ["solicitud sin experienceId", spotRequestSchema, { ...SOLICITUD_OK, experienceId: undefined }],
+    ["solicitud sin experienceName", spotRequestSchema, { ...SOLICITUD_OK, experienceName: undefined }],
+    ["solicitud sin nombre del todo", spotRequestSchema, { ...SOLICITUD_OK, name: undefined }],
+    ["solicitud sin whatsapp del todo", spotRequestSchema, { ...SOLICITUD_OK, whatsapp: undefined }],
+    ["solicitud sin correo del todo", spotRequestSchema, { ...SOLICITUD_OK, email: undefined }],
+    ["solicitud sin número de personas", spotRequestSchema, { ...SOLICITUD_OK, numberOfPeople: undefined }],
+    ["solicitud con experiencia en null", spotRequestSchema, { ...SOLICITUD_OK, experienceId: null }],
+    ["solicitud con nombre en null", spotRequestSchema, { ...SOLICITUD_OK, name: null }],
+    ["negocio vacío del todo", businessRequestSchema, {}],
+    ["negocio sin contacto", businessRequestSchema, { ...NEGOCIO_OK, contactName: undefined }],
+    ["negocio sin whatsapp del todo", businessRequestSchema, { ...NEGOCIO_OK, whatsapp: undefined }],
+    ["negocio sin correo del todo", businessRequestSchema, { ...NEGOCIO_OK, email: undefined }],
+    ["negocio con correo en null", businessRequestSchema, { ...NEGOCIO_OK, email: null }],
   ];
 
   for (const [nombre, schema, entrada] of casos) {
@@ -90,4 +119,31 @@ describe("los errores de formulario están en español", () => {
       expect(msg, `«${msg}» no parece una frase escrita para una persona`).toMatch(/^[¿¡A-ZÁÉÍÓÚÑ].*[.?]$/);
     });
   }
+});
+
+/**
+ * El otro lado de lo mismo: un campo opcional que llega como `null` no es un
+ * error, es un campo en blanco. `FormData.get` devuelve `null` —no `undefined`—
+ * para un campo que no está en el formulario, y rechazarlo obligaría a la
+ * persona a corregir algo que nunca escribió.
+ */
+describe("los campos opcionales aceptan venir en blanco", () => {
+  it("una solicitud sin comentario ni trampa se acepta", () => {
+    const r = spotRequestSchema.safeParse({ ...SOLICITUD_OK, comments: null, website: null });
+    expect(r.success, r.success ? "" : firstErrorMessage(r.error!)).toBe(true);
+    expect(r.data?.comments).toBeUndefined();
+  });
+
+  it("un negocio sin instagram, zona, tipo ni mensaje se acepta", () => {
+    const r = businessRequestSchema.safeParse({
+      ...NEGOCIO_OK,
+      instagram: null,
+      location: null,
+      experienceType: null,
+      message: null,
+      website: null,
+    });
+    expect(r.success, r.success ? "" : firstErrorMessage(r.error!)).toBe(true);
+    expect(r.data?.instagram).toBeUndefined();
+  });
 });

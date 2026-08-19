@@ -10,6 +10,31 @@ import { z } from "zod";
  */
 
 /**
+ * Un campo que la persona puede dejar en blanco.
+ *
+ * POR QUÉ ACEPTA `null` Y NO SOLO `undefined`
+ *
+ * Los dos formularios arman su cuerpo con `data.get("campo")`, y `FormData.get`
+ * devuelve **`null`** —no `undefined`— cuando ese campo no está en el formulario.
+ * Hoy todos los campos existen siempre en el marcado, así que nunca llega
+ * `null`; el día que uno se vuelva condicional, `.optional()` a secas lo
+ * rechazaría con el texto por omisión de la librería, en inglés. Aceptar `null`
+ * y tratarlo como vacío es lo que ya significa en el formulario.
+ */
+function opcional<T extends z.ZodType<string>>(regla: T) {
+  return regla
+    .or(z.literal(""))
+    .nullish()
+    .transform((v) => v ?? undefined);
+}
+
+/**
+ * El mismo texto para las dos formas de perder la experiencia —que no venga y
+ * que venga vacía—, porque para quien lo lee es el mismo problema.
+ */
+const FALTA_EXPERIENCIA = "Falta la experiencia. Vuelve a abrirla desde el listado.";
+
+/**
  * WhatsApp: dígitos, entre 10 y 15.
  *
  * Se limpian espacios, guiones y paréntesis antes de validar porque la gente
@@ -18,7 +43,7 @@ import { z } from "zod";
  * versión limpia, que es la que sirve para armar el enlace de WhatsApp.
  */
 const whatsapp = z
-  .string()
+  .string({ error: "Escribe tu WhatsApp." })
   .trim()
   .transform((v) => v.replace(/[\s\-().+]/g, ""))
   .refine((v) => /^\d{10,15}$/.test(v), {
@@ -26,13 +51,13 @@ const whatsapp = z
   });
 
 const nombre = z
-  .string()
+  .string({ error: "Escribe tu nombre completo." })
   .trim()
   .min(3, "Escribe tu nombre completo.")
   .max(80, "El nombre es demasiado largo.");
 
 const correo = z
-  .string()
+  .string({ error: "Escribe tu correo." })
   .trim()
   .toLowerCase()
   .email("Revisa tu correo, parece que tiene un error.")
@@ -46,20 +71,27 @@ const correo = z
  * protección antispam más barata que existe y no molesta a nadie: no hay
  * captcha, no hay que resolver nada.
  */
-const trampa = z.string().max(0, "Solicitud rechazada.").optional();
+const trampa = opcional(z.string().max(0, "Solicitud rechazada."));
 
 export const spotRequestSchema = z.object({
-  experienceId: z.string().trim().min(1, "Falta la experiencia. Vuelve a abrirla desde el listado."),
-  experienceName: z.string().trim().min(1, "Falta la experiencia. Vuelve a abrirla desde el listado.").max(120),
+  experienceId: z
+    .string({ error: FALTA_EXPERIENCIA })
+    .trim()
+    .min(1, FALTA_EXPERIENCIA),
+  experienceName: z
+    .string({ error: FALTA_EXPERIENCIA })
+    .trim()
+    .min(1, FALTA_EXPERIENCIA)
+    .max(120, "El nombre de la experiencia es demasiado largo."),
   name: nombre,
   whatsapp,
   email: correo,
   numberOfPeople: z.coerce
-    .number()
+    .number({ error: "Dinos cuántas personas van." })
     .int("Escribe un número entero.")
     .min(1, "Al menos una persona.")
     .max(10, "Para grupos de más de 10 personas, escríbenos directamente."),
-  comments: z.string().trim().max(500, "El comentario es demasiado largo.").optional().or(z.literal("")),
+  comments: opcional(z.string().trim().max(500, "El comentario es demasiado largo.")),
   website: trampa,
 });
 
@@ -72,15 +104,10 @@ export const businessRequestSchema = z.object({
   contactName: nombre,
   whatsapp,
   email: correo,
-  instagram: z.string().trim().max(80, "El usuario de Instagram es demasiado largo.").optional().or(z.literal("")),
-  location: z.string().trim().max(120, "La zona o dirección es demasiado larga.").optional().or(z.literal("")),
-  experienceType: z
-    .string()
-    .trim()
-    .max(120, "Descríbelo un poco más corto, por favor.")
-    .optional()
-    .or(z.literal("")),
-  message: z.string().trim().max(700, "El mensaje es demasiado largo.").optional().or(z.literal("")),
+  instagram: opcional(z.string().trim().max(80, "El usuario de Instagram es demasiado largo.")),
+  location: opcional(z.string().trim().max(120, "La zona o dirección es demasiado larga.")),
+  experienceType: opcional(z.string().trim().max(120, "Descríbelo un poco más corto, por favor.")),
+  message: opcional(z.string().trim().max(700, "El mensaje es demasiado largo.")),
   website: trampa,
 });
 
@@ -139,9 +166,20 @@ export function rateLimit(ip: string): { ok: boolean } {
  *     sin nombre de negocio -> «Invalid input: expected string, received undefined»
  *     mensaje muy largo ---> «Too big: expected string to have <=700 characters»
  *
- * En un sitio en español, a alguien que solo quiere ofrecer su estudio. Ahora
- * cada regla de los dos esquemas lleva su mensaje, y hay una prueba que falla
- * si alguien añade una que no.
+ * En un sitio en español, a alguien que solo quiere ofrecer su estudio.
+ *
+ * LO QUE FALTABA
+ *
+ * La primera pasada le puso mensaje a cada `min`, `max` y `email`, pero no al
+ * **tipo base**: si un campo no llegaba —o llegaba como `null`— el error no lo
+ * producía ninguna de esas reglas sino la comprobación de tipo, que seguía
+ * respondiendo «Invalid input: expected string, received undefined». Los casos
+ * de la prueba usaban cadenas vacías, así que ese hueco no se veía.
+ *
+ * Ahora cada tipo base lleva su propio mensaje y los campos opcionales aceptan
+ * `null`, que es lo que devuelve `FormData.get` para un campo ausente. La
+ * prueba recorre las tres formas de romper cada regla: vacío, demasiado largo
+ * y ausente.
  */
 export function firstErrorMessage(error: z.ZodError): string {
   return error.issues[0]?.message ?? "Revisa los datos del formulario.";
