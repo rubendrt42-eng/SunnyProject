@@ -134,7 +134,21 @@ export function BusinessForm() {
         <span className="mx-auto flex size-11 items-center justify-center rounded-full bg-sunny">
           <Check aria-hidden size={20} strokeWidth={2.5} className="text-carbon" />
         </span>
-        <h3 className="mt-4 text-subtitle">Recibimos tus datos</h3>
+        {/*
+          H2 Y NO H3
+
+          `/para-negocios` no tiene ningún `h2`: va del `h1` de la página a este
+          bloque. Con `h3` la jerarquía saltaba un nivel y axe-core lo marcaba
+          como `heading-order` — pero solo **después de enviar**, porque este
+          encabezado no existe hasta entonces. Por eso no salía en los barridos:
+          medían la página en reposo.
+
+          En el formulario hermano el mismo bloque sí es `h3`, y ahí es correcto:
+          la página de la experiencia tiene «Solicitar mi lugar» como `h2` justo
+          encima. El nivel depende de dónde vive el formulario, y este solo se
+          usa en una página.
+        */}
+        <h2 className="mt-4 text-subtitle">Recibimos tus datos</h2>
         <p className="mx-auto mt-2 max-w-sm text-small text-gray">
           Vamos a revisar tu propuesta y te escribimos para platicar cómo podría funcionar una experiencia juntos.
         </p>
