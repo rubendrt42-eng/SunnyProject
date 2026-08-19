@@ -149,10 +149,24 @@ El sitio nunca las modifica: solo añade filas nuevas al final.
 
 Y ya. **No se manda ningún correo**, ni a ella ni a ti.
 
-Si la hoja falla, la persona ve *«No pudimos enviar tu solicitud. Inténtalo
-nuevamente en unos minutos»* y **nunca un mensaje de éxito**. Una solicitud que
+Si la hoja falla, la persona **nunca ve un mensaje de éxito**. Una solicitud que
 no se guardó no puede decirle a nadie que se recibió: alguien se presentaría a
 una clase donde nadie lo espera.
+
+Y el mensaje distingue entre dos cosas distintas, porque no piden lo mismo de
+quien las lee:
+
+| Qué pasa | Qué ve la persona | Código |
+|---|---|---|
+| **Falta configurar la hoja** — no están las tres variables de Google | «El formulario todavía no está disponible. Vuelve en unos días.» | 503 |
+| **Fallo pasajero** — la hoja está configurada pero Google no respondió | «No pudimos enviar tu solicitud. Inténtalo nuevamente en unos minutos.» | 502 |
+
+La diferencia importa: invitar a reintentar «en unos minutos» cuando lo que
+falta es una configuración es pedirle a alguien que repita algo que no puede
+funcionar hasta que tú hagas otra cosa.
+
+**Hoy el sitio responde lo primero**, porque las tres variables de Google
+todavía no están puestas. En cuanto lo estén, ese mensaje desaparece solo.
 
 **Revisa la hoja a diario.** Es la única forma de enterarte de que entró algo.
 
@@ -318,8 +332,16 @@ esperado, y se corrige a continuación.
 
 - [ ] Borrar o despublicar las experiencias que empiezan con **`TEST —`**. Son
       de prueba y están en Sanity para verificar que todo funciona.
-- [ ] Sustituir la fotografía del hero. La actual es de referencia y **no está
-      autorizada para producción** (ver `SUNNY_ASSET_MANIFEST.md`).
+- [ ] **Confirmar por escrito que la fotografía de Emmy se puede publicar.** Es
+      la **única** fotografía que el sitio sirve hoy —comprobado: la portada
+      carga `emmy/emmy-founder-01.webp` y ninguna otra ruta carga ninguna
+      imagen—. El manifiesto la clasifica como «plausiblemente material propio»,
+      que no es lo mismo que una autorización. Basta una frase tuya.
+
+      > El hero **ya no lleva fotografía**. La de referencia que había —y que no
+      > estaba autorizada— se retiró: hoy el fondo es una composición de marca
+      > hecha solo con CSS, y vuelve a ser fotográfico en cuanto Emmy suba una
+      > imagen desde el Studio.
 - [ ] Hacer una solicitud de prueba y comprobar que aparece la fila en la hoja,
       con la experiencia correcta y estado `Nueva`.
 - [ ] Crear una experiencia real desde el Studio, con foto propia.
