@@ -28,6 +28,12 @@ Las capturas de `qa/screenshots/` se tomaron contra un **servidor local que corr
 el mismo commit desplegado**, con los **datos reales de Sanity** (producción)
 servidos a través de un proxy local.
 
+> Estas capturas son del 18 de agosto y **no muestran el sitio actual**: llevan
+> datos de contacto inventados, vocabulario retirado y el hero fotográfico que
+> se quitó por licencia. El detalle de qué cambió, y capturas fechadas del sitio
+> de hoy, están en `qa/screenshots/README.md`.
+
+
 No se tomaron directamente contra la URL de Vercel, y la razón es un hallazgo en
 sí misma:
 

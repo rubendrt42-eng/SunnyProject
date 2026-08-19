@@ -26,6 +26,12 @@
 Medido sobre el mismo commit desplegado, con datos reales de Sanity. Capturas de
 página completa en `qa/screenshots/`.
 
+> Estas capturas son del 18 de agosto y **no muestran el sitio actual**: llevan
+> datos de contacto inventados, vocabulario retirado y el hero fotográfico que
+> se quitó por licencia. El detalle de qué cambió, y capturas fechadas del sitio
+> de hoy, están en `qa/screenshots/README.md`.
+
+
 ---
 
 ## Medidas
