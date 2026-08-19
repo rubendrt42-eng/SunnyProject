@@ -25,6 +25,20 @@ import { describe, expect, it } from "vitest";
  *    archivo. Sin el `await`, `params.slug` sale `undefined`, todas las
  *    experiencias comparten la misma tarjeta genérica y no falla nada: se ve
  *    igual de bien, solo que dice lo que no es.
+ * 4. Que el título y el anfitrión lleven tope. Son texto que escribe Emmy y el
+ *    esquema no los limita; renderizados tal cual se comían la tarjeta entera.
+ *
+ * EL DESBORDE DE LA TARJETA
+ *
+ * Renderizada con un título de 130 caracteres que incluía una palabra de 63
+ * letras, la tarjeta salía rota de dos maneras a la vez: la palabra larga se
+ * cortaba contra el borde derecho a media palabra, y las cinco líneas de título
+ * empujaban la fecha contra el borde de arriba y la línea del anfitrión contra
+ * el de abajo, donde también se cortaba.
+ *
+ * Un título de 96 caracteres con palabras normales cabe de sobra —tres líneas—
+ * y su tarjeta sale byte a byte idéntica antes y después del arreglo. Esto es
+ * robustez para el caso raro, no un cambio de aspecto.
  */
 const TARJETA = "app/experiencias/[slug]/opengraph-image.tsx";
 const PAGINA = "app/experiencias/[slug]/page.tsx";
@@ -58,5 +72,37 @@ describe("la tarjeta que se manda al compartir una experiencia", () => {
       /params\.slug/.test(fuente.replace(/const\s*\{\s*slug\s*\}\s*=\s*await\s+params/, "")),
       "no leas `params.slug` directamente; desestructura tras el `await`",
     ).toBe(false);
+  });
+});
+
+describe("un título larguísimo no rompe la tarjeta", () => {
+  const fuente = readFileSync(TARJETA, "utf8");
+
+  it("el título y el anfitrión se recortan antes de dibujarse", () => {
+    const codigo = fuente.replace(/\/\*[\s\S]*?\*\//g, " ").replace(/\/\/[^\n]*/g, " ");
+
+    expect(codigo, "el título vuelve a dibujarse sin tope de longitud").toMatch(
+      /const titulo = recortar\(/,
+    );
+    expect(codigo, "el anfitrión vuelve a dibujarse sin tope de longitud").toMatch(
+      /const anfitrion = .*recortar\(/,
+    );
+  });
+
+  it("una palabra más ancha que la caja se parte en vez de salirse", () => {
+    const codigo = fuente.replace(/\/\*[\s\S]*?\*\//g, " ").replace(/\/\/[^\n]*/g, " ");
+    const veces = codigo.match(/wordBreak:\s*"break-word"/g) ?? [];
+
+    // Los dos bloques de texto variable: el título y la línea del anfitrión.
+    expect(veces.length, "falta el corte de palabra en alguno de los textos variables").toBe(2);
+  });
+
+  it("el tamaño del título baja cuando el texto es largo", () => {
+    const codigo = fuente.replace(/\/\*[\s\S]*?\*\//g, " ").replace(/\/\/[^\n]*/g, " ");
+
+    // Al menos dos cortes: si solo hay uno, un título largo vuelve a ocupar
+    // cinco líneas antes de que el tamaño reaccione.
+    const cortes = codigo.match(/titulo\.length > \d+/g) ?? [];
+    expect(cortes.length, `solo hay ${cortes.length} escalón de tamaño`).toBeGreaterThanOrEqual(2);
   });
 });
