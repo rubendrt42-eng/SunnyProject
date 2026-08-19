@@ -174,7 +174,17 @@ todavía no están puestas. En cuanto lo estén, ese mensaje desaparece solo.
 
 # 4. Variables de entorno
 
-Los nombres están en `.env.example`. Nunca hay valores reales ahí.
+Los nombres están en `.env.example`. **Las tres secretas están ahí vacías, y así se
+quedan**: ese archivo está versionado en Git. Los valores reales van en `.env.local`
+—que Git ignora— y en el panel de Vercel.
+
+> Las tres de Sanity sí llevan valor en el ejemplo, a propósito: el id de proyecto y
+> el dataset viajan en cada petición que el navegador hace a Sanity, así que no son
+> secretos.
+>
+> Si alguna vez pegas una llave privada en `.env.example` y se sube, **no basta con
+> borrarla**: queda en el historial. Hay que revocarla en Google y generar otra. Hay
+> una prueba que falla si eso pasa, para que se note antes de empujar.
 
 | Variable | Qué es | ¿Secreta? |
 |---|---|---|
