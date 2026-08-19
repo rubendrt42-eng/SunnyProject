@@ -102,12 +102,24 @@ export function HeaderInteractive({
         ser altura mínima.
       */}
       <Container className="flex min-h-18 flex-wrap items-center justify-between gap-x-6 gap-y-2 py-4">
-        {/* `whitespace-nowrap shrink-0`: el nombre no puede partirse. Como hijo
-            de un flex se encogía por debajo de su propio ancho y se rompía en
-            «Sunny / Project» en toda ventana menor de 640 px. */}
+        {/* `shrink-0`: como hijo de un flex se encogía por debajo de su propio
+            ancho y se rompía en «Sunny / Project» en toda ventana menor de
+            640 px. Eso lo arregla no dejar que lo aplasten sus hermanos.
+
+            `max-w-full` en vez de `whitespace-nowrap`: prohibir el ajuste
+            además de la compresión dejaba al nombre sin ninguna salida cuando
+            el texto crecía más que la ventana. Con el tamaño de texto del
+            navegador al 200% —que es un ajuste de accesibilidad, no un caso
+            raro— la marca medía 347px dentro de 320px y empujaba el documento
+            entero a 387px: barra de scroll horizontal en las siete rutas.
+            Medido con la raíz a 32px.
+
+            El tope al 100% del contenedor solo actúa cuando el texto de verdad
+            no cabe: a tamaño normal y 320px ocupa 173px de los 280 que hay, así
+            que sigue en una línea igual que antes. */}
         <Link
           href="/"
-          className="shrink-0 font-serif text-2xl font-medium tracking-tight text-current italic whitespace-nowrap"
+          className="max-w-full shrink-0 font-serif text-2xl font-medium tracking-tight text-current italic"
         >
           The Sunny Project
         </Link>

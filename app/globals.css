@@ -962,6 +962,19 @@ li {
 
   Solo afecta a palabras que no caben. El texto normal se reparte igual.
 */
+/*
+  POR QUÉ ESTÁ TAMBIÉN `a`
+
+  `overflow-wrap` se hereda, así que un enlace dentro de un `p` o un `li` ya lo
+  tenía. Los del pie no: son hijos directos de una columna de rejilla, sin
+  párrafo de por medio.
+
+  Con el tamaño de texto del navegador al 200% esa columna mide 88px y
+  «Preguntas frecuentes» no cabe. El texto se salía de su caja —la caja seguía
+  dentro de la pantalla, por eso los barridos que miden cajas no lo veían— y
+  empujaba el documento a 335px dentro de una ventana de 320px. Medido
+  quitando el enlace del DOM: el desborde bajaba de 335 a 325.
+*/
 h1,
 h2,
 h3,
@@ -969,7 +982,8 @@ h4,
 p,
 li,
 dd,
-dt {
+dt,
+a {
   overflow-wrap: anywhere;
 }
 

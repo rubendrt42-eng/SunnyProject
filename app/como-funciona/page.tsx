@@ -77,7 +77,21 @@ export default function ComoFuncionaPage() {
           {PASOS.map((paso, i) => (
             <li
               key={paso.numero}
-              className={`grid items-center gap-6 sm:grid-cols-12 sm:gap-10 ${
+              /*
+                EL HUECO VA EN PÍXELES, NO EN REM
+
+                Es una rejilla de 12 columnas con dos bloques, así que separa
+                once veces aunque solo haya dos cosas que separar. Con el hueco
+                en rem y el tamaño de texto del navegador al 200%, esos once
+                huecos pasaban de 40 a 80px: 880px de hueco dentro de un
+                contenedor de 640px, y las doce columnas calculadas a 0px. La
+                página se iba a 944px de ancho en una ventana de 768.
+
+                En píxeles el hueco es el mismo a cualquier tamaño de texto y
+                el aspecto no cambia en ningún ancho — es separación
+                estructural, no texto.
+              */
+              className={`grid items-center gap-6 sm:grid-cols-12 sm:gap-[40px] ${
                 i % 2 === 1 ? "sm:[&>*:first-child]:order-2" : ""
               }`}
             >

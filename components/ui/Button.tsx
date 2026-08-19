@@ -27,16 +27,29 @@ const variantClasses: Record<Variant, string> = {
  * communicates "selectable". Heights keep a 44px touch target at `md`.
  */
 const containedSizeClasses: Record<Size, string> = {
-  sm: "h-9 px-4 text-small rounded-md",
-  md: "h-11 px-5 text-small rounded-md",
-  lg: "h-[50px] px-6 text-body rounded-md",
+  /*
+    ALTURA MÍNIMA, NO FIJA
+
+    Con el tamaño de texto del navegador al 200% la etiqueta necesita dos
+    líneas, y una altura fija se las corta. `min-h-*` deja el botón exactamente
+    igual de alto mientras quepa en una línea —el relleno vertical suma menos
+    que el mínimo— y solo crece cuando de verdad hace falta.
+  */
+  sm: "min-h-9 px-4 py-2 text-small rounded-md",
+  md: "min-h-11 px-5 py-2 text-small rounded-md",
+  lg: "min-h-[50px] px-6 py-2.5 text-body rounded-md",
 };
 
 const base =
   /* `press` añade el hundido de 1 px al pulsar. En escritorio hay hover; en un
      teléfono no hay ninguna respuesta entre tocar y que la página cambie, y ese
      medio segundo hace que el botón se sienta muerto. */
-  "press group inline-flex items-center justify-center gap-2 font-medium transition-[colors,transform] duration-[var(--motion-tint)] disabled:opacity-40 disabled:pointer-events-none";
+  /* `max-w-full` y `text-center`: el botón se dimensiona a su contenido, así
+     que con el texto al 200% «Explorar experiencias» medía 319px dentro de los
+     280 disponibles y empujaba el documento a 359px — barra de scroll
+     horizontal. El tope solo actúa cuando la etiqueta no cabe; a tamaño normal
+     el botón mide lo mismo que antes. */
+  "press group inline-flex max-w-full items-center justify-center gap-2 text-center font-medium transition-[colors,transform] duration-[var(--motion-tint)] disabled:opacity-40 disabled:pointer-events-none";
 
 function sizeClassesFor(variant: Variant, size: Size) {
   return variant === "ghost" ? "text-sm" : containedSizeClasses[size];
