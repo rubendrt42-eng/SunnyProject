@@ -22,9 +22,28 @@ const TAGS = { span: "span", h1: "h1", h2: "h2", p: "p" } as const;
  *
  * SOBRE EL ESPACIO ENTRE PALABRAS
  *
- * `whitespace-pre` es obligatorio: el espacio final vive dentro del `span`, y
- * en un `inline-block` un espacio final se colapsa. Sin esto el hero decía
+ * El espacio final vive dentro del `span`, y en un `inline-block` un espacio
+ * final se colapsa con el ajuste de línea normal. Sin conservarlo el hero decía
  * «Descubre algonuevo. Vívelocon alguien.» Detectado en capturas de QA.
+ *
+ * POR QUÉ `pre-wrap` Y NO `pre`
+ *
+ * `whitespace-pre` conserva el espacio pero **prohíbe partir dentro de la
+ * palabra**, y `overflow-wrap` no se aplica donde no se permite ajustar. Con
+ * una palabra más ancha que la pantalla el `inline-block` crecía hasta su ancho
+ * natural y el hero —que recorta con `overflow-clip`— se la comía sin que nada
+ * lo delatara: no hay barra de scroll horizontal, solo texto que desaparece.
+ *
+ * Medido en la portada, con el titular escrito desde el gestor de contenido:
+ *
+ *     320px  caben ~12 letras   «profundamente» 286px > 280px disponibles
+ *                               «acompañamiento» 322px
+ *                               «autoconocimiento» 337px
+ *     390px  caben ~16 letras   «extraordinariamente» 377px > 350px
+ *
+ * O sea palabras normales en español, no casos rebuscados. `pre-wrap` conserva
+ * el espacio igual que `pre` y además permite ajustar, que es lo que deja
+ * actuar al `overflow-wrap: anywhere` que ya llevan los titulares.
  */
 export function WordReveal({
   text,
@@ -49,7 +68,7 @@ export function WordReveal({
         <span
           key={`${word}-${i}`}
           aria-hidden
-          className="reveal reveal-on-load inline-block whitespace-pre"
+          className="reveal reveal-on-load inline-block whitespace-pre-wrap"
           style={
             {
               "--reveal-delay": `${delay + i * wordDelay}s`,
