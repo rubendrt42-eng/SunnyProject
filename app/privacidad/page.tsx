@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/ui/Container";
+import { getSiteSettings } from "@/lib/sanity/queries";
+import { whatsappLink } from "@/lib/lean-content";
 
 export const metadata: Metadata = {
   title: "Privacidad — The Sunny Project",
@@ -32,7 +34,16 @@ export const metadata: Metadata = {
  * Y no mencionaba lo único que sí ocurre: que los datos se escriben en una hoja
  * de cálculo de Google.
  */
-export default function PrivacidadPage() {
+/**
+ * Se revalida como el resto del sitio: el canal para ejercer derechos sale del
+ * documento de contenido, así que tiene que reflejarse sin volver a desplegar.
+ */
+export const revalidate = 60;
+
+export default async function PrivacidadPage() {
+  const settings = await getSiteSettings();
+  const whatsapp = settings?.whatsapp?.trim();
+  const correo = settings?.contactEmail?.trim();
   return (
     <main className="py-14 sm:py-24">
       <Container className="max-w-2xl">
@@ -90,9 +101,42 @@ export default function PrivacidadPage() {
 
           <section>
             <h2 className="text-subtitle">Tus derechos</h2>
+            {/*
+              EL CANAL SALE DEL CONTENIDO, NO ESTÁ ESCRITO AQUÍ
+
+              Decía «escríbenos por el mismo WhatsApp por el que te contactamos».
+              Eso solo sirve para quien ya recibió respuesta: alguien que mandó
+              una solicitud y nunca tuvo contestación —o cuya solicitud se perdió
+              porque la hoja no estaba configurada— se queda sin ninguna vía para
+              pedir sus datos, corregirlos o borrarlos.
+
+              No se inventa un contacto. Se lee el del documento de contenido, el
+              mismo que usa el pie, y en cuanto Emmy llene el campo de WhatsApp o
+              el de correo esta página deja de tener el hueco sola. Mientras no
+              haya ninguno, se dice la verdad —la conversación existente— en vez
+              de prometer un canal que no existe.
+            */}
             <p className="mt-3 text-gray">
-              Puedes pedirnos que te digamos qué datos tuyos tenemos, que los corrijamos o que los borremos. Escríbenos
-              por el mismo WhatsApp por el que te contactamos y lo resolvemos.
+              Puedes pedirnos que te digamos qué datos tuyos tenemos, que los corrijamos o que los borremos.{" "}
+              {whatsapp || correo ? (
+                <>
+                  Escríbenos{" "}
+                  {whatsapp && (
+                    <a className="link-draw font-medium text-carbon" href={whatsappLink(whatsapp)}>
+                      por WhatsApp
+                    </a>
+                  )}
+                  {whatsapp && correo ? " o " : null}
+                  {correo && (
+                    <a className="link-draw font-medium text-carbon" href={`mailto:${correo}`}>
+                      a {correo}
+                    </a>
+                  )}{" "}
+                  y lo resolvemos.
+                </>
+              ) : (
+                <>Escríbenos por el mismo WhatsApp por el que te contactamos y lo resolvemos.</>
+              )}
             </p>
           </section>
 

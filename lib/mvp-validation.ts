@@ -117,12 +117,36 @@ export type BusinessRequestInput = z.infer<typeof businessRequestSchema>;
 /**
  * Límite de frecuencia por IP, en memoria.
  *
- * Honesto sobre lo que es: en un entorno sin servidor cada instancia tiene su
- * propia memoria, así que esto **no es un límite global**. Frena el caso real
- * —alguien pulsando enviar veinte veces, o un script simple— y no pretende
- * frenar un ataque distribuido. Para eso haría falta un almacén compartido, y
- * meterlo ahora sería sobreingeniería para un sitio que todavía no tiene
- * tráfico.
+ * QUÉ HACE DE VERDAD, MEDIDO
+ *
+ * En un proceso solo funciona exactamente como está escrito: con la misma IP,
+ * las cinco primeras pasan y la sexta responde 429.
+ *
+ *     local, un proceso ..... 1-5 pasan, 6 y 7 -> 429
+ *
+ * En producción **no limita nada**. Ocho peticiones seguidas desde la misma IP,
+ * enviadas uno detrás de otro contra el sitio publicado, pasaron las ocho sin
+ * un solo 429. Cada instancia sin servidor tiene su propia memoria y las
+ * peticiones no se quedan en la misma.
+ *
+ *     producción, misma IP .. 8 de 8 pasan, ningún 429
+ *
+ * Esto ya decía que «no es un límite global», que es cierto, pero también que
+ * «frena el caso real —alguien pulsando enviar veinte veces, o un script
+ * simple—», y eso no se sostiene: ese caso es justo el que se midió y pasó
+ * entero. Confiar en esta función como protección real sería creerse algo que
+ * no ocurre.
+ *
+ * QUÉ SÍ PROTEGE HOY
+ *
+ * El campo trampa, que descarta los robots que rellenan todos los campos, y la
+ * validación del navegador, que evita el reenvío por accidente. Contra alguien
+ * decidido no hay nada, y no lo habrá sin un almacén compartido —Vercel KV,
+ * Upstash o similar—, que es infraestructura nueva y una decisión de producto,
+ * no un ajuste de esta función.
+ *
+ * Se deja puesta porque no cuesta nada y sí ayuda cuando dos envíos seguidos
+ * caen en la misma instancia caliente, que es el caso del doble clic.
  */
 const attempts = new Map<string, number[]>();
 const WINDOW_MS = 60_000;
