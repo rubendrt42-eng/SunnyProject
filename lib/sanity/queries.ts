@@ -138,6 +138,55 @@ async function safeFetch<T>(label: string, run: () => Promise<T>, fallback: T): 
   }
 }
 
+/**
+ * La excepción a la regla de arriba: cuando el valor de reserva mentiría.
+ *
+ * Para una lista, devolver `[]` cuando Sanity falla es una degradación honesta:
+ * la página dice «Próximamente nuevas experiencias» y nadie se lleva una idea
+ * falsa. Para **una** experiencia no: el `null` de reserva es indistinguible de
+ * «este documento no existe», y la página lo convierte en `notFound()`.
+ *
+ * Medido sirviendo el sitio contra un Sanity que responde 500: cada URL de
+ * experiencia devolvía **404**. O sea que una caída de un tercero le decía al
+ * visitante que su enlace está roto —cuando la experiencia existe y sigue en
+ * pie— y a los buscadores que retiren esa dirección. Un enlace compartido por
+ * WhatsApp, que es como se mueve este sitio, quedaba marcado como muerto por
+ * unos minutos de caída ajena.
+ *
+ * Así que aquí el error sube, y la respuesta pasa a ser un 500. No es bonito
+ * —medido: 21 bytes, sin la pantalla de error con estilo, porque el fallo
+ * ocurre generando la página bajo demanda y no llega a la frontera de
+ * `app/error.tsx`— pero es cierto, y un 500 le dice al buscador que vuelva a
+ * intentarlo en vez de retirar la dirección.
+ *
+ * El alcance es estrecho: las experiencias ya pregeneradas se siguen sirviendo
+ * de caché durante la caída. Medido con Sanity devolviendo 500, una experiencia
+ * pregenerada respondía 200 con su contenido completo. Solo cae en el 500 una
+ * dirección que todavía no esté en caché.
+ *
+ * DURANTE EL BUILD NO SUBE
+ *
+ * `generateStaticParams` devuelve los slugs y Next **pregenera cada uno**, así
+ * que esta consulta también corre al compilar. Dejar subir el error ahí tumba
+ * el despliegue entero: medido, `Export encountered an error on
+ * /experiencias/[slug]/page … exiting the build`. Un sitio que ya funcionaba
+ * dejaría de poder desplegarse por unos minutos de caída ajena, que es peor que
+ * el problema que se está arreglando.
+ *
+ * Así que al compilar se devuelve el valor de reserva —la página no se
+ * pregenera y se construye en la primera visita, cuando Sanity ya responda— y
+ * en una petición real el error sube.
+ */
+async function fetchOrThrow<T>(label: string, run: () => Promise<T>, duranteElBuild: T): Promise<T> {
+  try {
+    return await run();
+  } catch (error) {
+    console.error(`[sanity] falló la consulta «${label}»:`, error);
+    if (process.env.NEXT_PHASE === "phase-production-build") return duranteElBuild;
+    throw error;
+  }
+}
+
 
 export async function getUpcomingExperiences(): Promise<ExperienceCardData[]> {
   return safeFetch(
@@ -161,7 +210,9 @@ export async function getUpcomingExperiences(): Promise<ExperienceCardData[]> {
  * el dato.
  */
 export async function getExperienceBySlug(slug: string): Promise<ExperienceDetail | null> {
-  return safeFetch(
+  // `null` aquí significa una sola cosa: la consulta funcionó y no hay tal
+  // documento. Si la consulta falla, sube el error — ver `fetchOrThrow`.
+  return fetchOrThrow(
     `experiencia ${slug}`,
     () =>
       sanityClient.fetch<ExperienceDetail | null>(
