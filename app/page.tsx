@@ -62,7 +62,7 @@ export default async function HomePage() {
       <LeanHero
         title={s.heroTitle}
         subtitle={s.heroSubtitle}
-        experienceCount={experiences.length}
+        experienceCount={experiences.filter((e) => e.status !== "sold_out").length}
         image={settings?.heroImage ?? null}
       />
 

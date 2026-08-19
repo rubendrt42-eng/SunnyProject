@@ -43,6 +43,11 @@ import type { SanityImage } from "@/lib/sanity/types";
  * Solo aparece a partir de tres experiencias. Con una o dos, un contador honesto
  * dice en voz alta que el sitio está casi vacío — y eso es peor que no decir
  * nada. No se inventa un número: se calla.
+ *
+ * Cuenta las que se pueden solicitar, no las publicadas: decir «disponibles»
+ * incluyendo las agotadas es la clase de número que se desmiente solo en
+ * cuanto la persona llega al catálogo y ve la etiqueta «Agotada». Por eso el
+ * filtro está en quien llama, no aquí: el hero solo pinta el número que le den.
  */
 export function LeanHero({
   title,

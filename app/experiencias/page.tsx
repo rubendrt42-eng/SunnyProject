@@ -32,7 +32,7 @@ export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Experiencias — The Sunny Project",
-  description: "Todas las experiencias disponibles esta semana en Monterrey.",
+  description: "Las experiencias publicadas en Monterrey, de la más próxima a la más lejana.",
 };
 
 export default async function ExperienciasPage() {
@@ -63,10 +63,23 @@ export default async function ExperienciasPage() {
               ? "Todo lo que puedes hacer estos días."
               : "Aquí van a estar las próximas experiencias."}
           </h1>
+          {/*
+            EL TOTAL NO DICE «DISPONIBLES»
+
+            Decía «2 experiencias disponibles» contando también las agotadas, y
+            justo debajo se veía una tarjeta con la etiqueta «Agotada». La
+            página se contradecía a sí misma en la misma pantalla.
+
+            La disponibilidad ya la lleva cada tarjeta, que es donde importa y
+            donde es exacta. Aquí el total solo orienta: cuánto hay y en qué
+            orden. Con una sola experiencia se calla el orden, porque ordenar un
+            elemento no significa nada.
+          */}
           {experiences.length > 0 && (
             <p className="mt-5 max-w-[52ch] text-lead text-carbon/80">
-              {experiences.length} {experiences.length === 1 ? "experiencia disponible" : "experiencias disponibles"}, de
-              la más próxima a la más lejana.
+              {experiences.length === 1
+                ? "Una experiencia publicada por ahora."
+                : `${experiences.length} experiencias, de la más próxima a la más lejana.`}
             </p>
           )}
         </InViewReveal>
