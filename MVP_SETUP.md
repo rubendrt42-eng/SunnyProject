@@ -69,7 +69,18 @@ Al abrir hay solo dos cosas:
    - **Descripción completa**
 4. Pulsa **Publish** abajo a la derecha.
 
-En menos de un minuto aparece en el sitio. No hay que avisar a nadie.
+Aparece en el sitio en poco más de un minuto, y no hay que avisar a nadie.
+
+> **Refresca dos veces.** El sitio guarda cada página durante un minuto para
+> abrir rápido en un celular con mala señal. Pasado ese minuto, la **primera**
+> visita todavía ve la versión anterior —y es la que dispara la actualización—;
+> la **segunda** ya ve lo nuevo. Como normalmente la primera persona en abrir el
+> sitio después de publicar eres tú, lo más probable es que veas tu propio
+> cambio en el segundo refresco, no en el primero. No está roto.
+>
+> Medido en el sitio publicado: dentro del minuto, `HIT` con la versión
+> guardada; pasado el minuto, la primera petición responde `STALE` con la
+> versión vieja y la siguiente ya responde `HIT` con la nueva.
 
 > Si el botón de publicar no deja, es porque falta un campo obligatorio. Sanity
 > marca en rojo cuál es.
