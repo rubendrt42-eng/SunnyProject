@@ -203,17 +203,31 @@ export default async function ExperienceDetailPage({ params }: { params: Promise
             {/* Compartir. En Monterrey, para este público, WhatsApp es el canal
                 de crecimiento — más que Instagram. Va después de leer de qué va
                 la experiencia, que es cuando alguien decide que le sirve a otra
-                persona. */}
-            <div className="mt-10 border-t border-carbon/10 pt-6">
-              <p className="text-small text-gray">¿Le va a alguien que conoces?</p>
-              <div className="mt-3">
-                <ShareExperience
-                  title={experience.title}
-                  fecha={formatDateTime(experience.startDateTime)}
-                  url={`${env.siteUrl}/experiencias/${experience.slug}`}
-                />
+                persona.
+
+                NO SE OFRECE SI YA PASÓ
+
+                La página de una experiencia vencida decía «Esta experiencia ya
+                ocurrió» y, unos centímetros más arriba, «¿Le va a alguien que
+                conoces?» con un botón de WhatsApp. Recomendar a un amigo una
+                fecha de hace siete semanas no le sirve a nadie, y el canal por
+                el que crece Sunny acabaría repartiendo enlaces muertos.
+
+                Agotada sí se puede compartir: sigue siendo una experiencia
+                vigente, con su fecha por delante, y quien la reciba ve el
+                estado real. Lo que no tiene arreglo es la fecha pasada. */}
+            {!yaPaso && (
+              <div className="mt-10 border-t border-carbon/10 pt-6">
+                <p className="text-small text-gray">¿Le va a alguien que conoces?</p>
+                <div className="mt-3">
+                  <ShareExperience
+                    title={experience.title}
+                    fecha={formatDateTime(experience.startDateTime)}
+                    url={`${env.siteUrl}/experiencias/${experience.slug}`}
+                  />
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           <div className="min-w-0 lg:col-span-5">
