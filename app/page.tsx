@@ -71,7 +71,21 @@ export default async function HomePage() {
       <section className="py-14 sm:py-20 lg:py-28">
         <Container>
           <InViewReveal variant="lead">
-            <p className="eyebrow">Esta semana</p>
+            {/*
+              «Esta semana» solo si de verdad hay algo esta semana.
+
+              Con el catálogo vacío la sección quedaba anunciando «Esta semana»
+              justo encima de «Vuelve en unos días»: el antetítulo prometía
+              inventario y el bloque de abajo lo desmentía en la misma pantalla.
+              El catálogo ya condicionaba su titular por esto mismo; la portada
+              no lo hacía.
+
+              Cambia solo el antetítulo. El titular describe qué publica Sunny,
+              no qué hay hoy, así que sigue siendo cierto con la lista vacía —y
+              repetir ahí el aviso de «próximamente» lo diría tres veces
+              seguidas, contando el bloque de abajo.
+            */}
+            <p className="eyebrow">{experiences.length > 0 ? "Esta semana" : "Próximas fechas"}</p>
             <h2 className="mt-3 max-w-2xl text-title text-balance">
               Planes para moverte, recuperarte, conectar y probar algo diferente.
             </h2>
