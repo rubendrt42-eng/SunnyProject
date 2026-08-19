@@ -90,7 +90,24 @@ export const spotRequestSchema = z.object({
     .number({ error: "Dinos cuántas personas van." })
     .int("Escribe un número entero.")
     .min(1, "Al menos una persona.")
-    .max(10, "Para grupos de más de 10 personas, escríbenos directamente."),
+    /*
+      EL MENSAJE NO PUEDE MANDAR A UN SITIO QUE NO EXISTE
+
+      Decía «escríbenos directamente». Medido: en la página de la experiencia no
+      hay ningún canal de contacto —el único `wa.me` que aparece es el de
+      compartir, un enlace sin número—, y el documento de contenido tiene los
+      tres canales vacíos. Se mandaba a la persona a escribir a ninguna parte.
+
+      El campo de comentarios sí existe siempre y está en el mismo formulario,
+      así que es lo que se ofrece. Cuando haya un canal publicado, este mensaje
+      podrá volver a nombrarlo.
+
+      Hoy esto no lo ve nadie desde el formulario: el selector llega hasta 5,
+      así que el tope de 10 solo lo puede tocar quien mande la petición a mano.
+      Se corrige ahora porque subir el selector a 10 —que es la decisión que
+      está sobre la mesa— haría este mensaje alcanzable de inmediato.
+    */
+    .max(10, "Para grupos de más de 10 personas, escríbelo en «¿Algo que debamos saber?» y lo vemos contigo."),
   comments: opcional(z.string().trim().max(500, "El comentario es demasiado largo.")),
   website: trampa,
 });
