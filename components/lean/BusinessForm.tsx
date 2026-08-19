@@ -20,6 +20,18 @@ export function BusinessForm() {
   const formId = useId();
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  /**
+   * Qué campo concreto falló, además del aviso general.
+   *
+   * POR QUÉ HACEN FALTA LOS DOS
+   *
+   * El aviso general se anuncia solo —`role="alert"`— y eso ya sirve a quien
+   * usa un lector de pantalla. Pero para quien mira la pantalla, medido en un
+   * teléfono de 390px: al rechazarse el envío el foco salta al campo, el campo
+   * queda a la vista... y el aviso que explica qué pasa se queda a 484px, fuera
+   * de la ventana. Se veía un campo de aspecto normal y ninguna explicación.
+   */
+  const [campoConError, setCampoConError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
 
   /**
@@ -36,11 +48,18 @@ export function BusinessForm() {
    * salta al primer campo incompleto — que es lo que hace que quien navega con
    * teclado o lector de pantalla sepa dónde está el problema.
    *
-   * A diferencia del formulario de solicitudes, aquí el mensaje sale en el
-   * aviso general y no junto a cada campo: `TextField` todavía no tiene sitio
-   * para un error propio. Mover el foco ya resuelve lo importante; marcar cada
-   * campo sería la siguiente vuelta.
+   * El mensaje sale en los dos sitios: en el aviso general, que se anuncia
+   * solo, y junto al campo que falla, que es lo único que se ve en un teléfono
+   * cuando el aviso queda fuera de la ventana.
    */
+  /** Al escribir en el campo señalado, se retira la marca y el aviso. */
+  function limpiarError(e: React.ChangeEvent<HTMLInputElement>) {
+    if (campoConError === e.target.name) {
+      setCampoConError(null);
+      setError(null);
+    }
+  }
+
   function revisarObligatorios(form: HTMLFormElement): { campo: string; mensaje: string } | null {
     const data = new FormData(form);
     const v = (n: string) => String(data.get(n) ?? "").trim();
@@ -64,10 +83,12 @@ export function BusinessForm() {
     const falta = revisarObligatorios(form);
     if (falta) {
       setError(falta.mensaje);
+      setCampoConError(falta.campo);
       const campo = form.elements.namedItem(falta.campo);
       if (campo instanceof HTMLElement) campo.focus();
       return;
     }
+    setCampoConError(null);
 
     const data = new FormData(form);
     setSending(true);
@@ -123,11 +144,47 @@ export function BusinessForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
+      {/* El error solo lo llevan los cuatro obligatorios, que son los únicos que
+          `revisarObligatorios` puede rechazar. Se borra en cuanto la persona
+          escribe: dejarlo puesto mientras corrige es regañar dos veces. */}
       <div className="grid gap-4 sm:grid-cols-2">
-        <TextField id={`${formId}-business`} name="businessName" label="Nombre del negocio" required />
-        <TextField id={`${formId}-contact`} name="contactName" label="Tu nombre" autoComplete="name" required />
-        <TextField id={`${formId}-whatsapp`} name="whatsapp" label="WhatsApp" type="tel" autoComplete="tel" required />
-        <TextField id={`${formId}-email`} name="email" label="Correo" type="email" autoComplete="email" required />
+        <TextField
+          id={`${formId}-business`}
+          name="businessName"
+          label="Nombre del negocio"
+          required
+          error={campoConError === "businessName" ? (error ?? undefined) : undefined}
+          onChange={limpiarError}
+        />
+        <TextField
+          id={`${formId}-contact`}
+          name="contactName"
+          label="Tu nombre"
+          autoComplete="name"
+          required
+          error={campoConError === "contactName" ? (error ?? undefined) : undefined}
+          onChange={limpiarError}
+        />
+        <TextField
+          id={`${formId}-whatsapp`}
+          name="whatsapp"
+          label="WhatsApp"
+          type="tel"
+          autoComplete="tel"
+          required
+          error={campoConError === "whatsapp" ? (error ?? undefined) : undefined}
+          onChange={limpiarError}
+        />
+        <TextField
+          id={`${formId}-email`}
+          name="email"
+          label="Correo"
+          type="email"
+          autoComplete="email"
+          required
+          error={campoConError === "email" ? (error ?? undefined) : undefined}
+          onChange={limpiarError}
+        />
         <TextField id={`${formId}-instagram`} name="instagram" label="Instagram" placeholder="@tunegocio" />
         <TextField id={`${formId}-location`} name="location" label="Zona o dirección" />
       </div>
@@ -178,6 +235,8 @@ function TextField({
   autoComplete,
   placeholder,
   required,
+  error,
+  onChange,
 }: {
   id: string;
   name: string;
@@ -186,7 +245,12 @@ function TextField({
   autoComplete?: string;
   placeholder?: string;
   required?: boolean;
+  error?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
+  const errorId = `${id}-error`;
+  const hayError = Boolean(error);
+
   return (
     <div className="flex min-w-0 flex-col gap-1.5">
       <label htmlFor={id} className="text-small font-medium text-carbon">
@@ -199,8 +263,20 @@ function TextField({
         autoComplete={autoComplete}
         placeholder={placeholder}
         required={required}
-        className="h-11 rounded-md border border-carbon/20 bg-warm-white px-3 text-body transition-colors focus:border-carbon focus:outline-none focus-visible:ring-2 focus-visible:ring-carbon/20"
+        onChange={onChange}
+        aria-invalid={hayError || undefined}
+        aria-describedby={hayError ? errorId : undefined}
+        className={
+          hayError
+            ? "h-11 rounded-md border border-orange-ink bg-warm-white px-3 text-body transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-orange/40"
+            : "h-11 rounded-md border border-carbon/20 bg-warm-white px-3 text-body transition-colors focus:border-carbon focus:outline-none focus-visible:ring-2 focus-visible:ring-carbon/20"
+        }
       />
+      {hayError && (
+        <p id={errorId} className="text-xs text-orange-ink">
+          {error}
+        </p>
+      )}
     </div>
   );
 }
