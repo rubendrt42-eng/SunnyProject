@@ -14,7 +14,7 @@ import { LeanHero } from "@/components/lean/LeanHero";
 import { ExperienceGrid } from "@/components/lean/ExperienceGrid";
 import { HowItWorks } from "@/components/lean/HowItWorks";
 import { getSiteSettings, getUpcomingExperiences } from "@/lib/sanity/queries";
-import { DEFAULT_SETTINGS, whatsappLink } from "@/lib/lean-content";
+import { antetituloDeLaLista, DEFAULT_SETTINGS, whatsappLink } from "@/lib/lean-content";
 
 /**
  * Portada del MVP lean.
@@ -72,7 +72,9 @@ export default async function HomePage() {
         <Container>
           <InViewReveal variant="lead">
             {/*
-              «Esta semana» solo si de verdad hay algo esta semana.
+              «Esta semana» solo si de verdad hay algo esta semana —la
+              condición vive en `antetituloDeLaLista` y mira las fechas, no
+              solo si la lista trae algo.
 
               Con el catálogo vacío la sección quedaba anunciando «Esta semana»
               justo encima de «Vuelve en unos días»: el antetítulo prometía
@@ -85,7 +87,7 @@ export default async function HomePage() {
               repetir ahí el aviso de «próximamente» lo diría tres veces
               seguidas, contando el bloque de abajo.
             */}
-            <p className="eyebrow">{experiences.length > 0 ? "Esta semana" : "Próximas fechas"}</p>
+            <p className="eyebrow">{antetituloDeLaLista(experiences)}</p>
             <h2 className="mt-3 max-w-2xl text-title text-balance">
               Planes para moverte, recuperarte, conectar y probar algo diferente.
             </h2>

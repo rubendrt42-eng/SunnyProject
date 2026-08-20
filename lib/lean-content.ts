@@ -73,3 +73,34 @@ export function whatsappLink(whatsapp: string, message?: string): string {
   const text = message ? `?text=${encodeURIComponent(message)}` : "";
   return `https://wa.me/${digits}${text}`;
 }
+
+/**
+ * El antetítulo de la lista de la portada.
+ *
+ * Decía «Esta semana» siempre que hubiera algo publicado, sin mirar la fecha.
+ * Medido en producción el 20 de agosto de 2026: la experiencia más próxima
+ * empezaba el 14 de septiembre —25 días después— y la portada seguía
+ * anunciando «Esta semana» encima de dos tarjetas fechadas en septiembre. El
+ * comentario del código ya decía «solo si de verdad hay algo esta semana»; la
+ * condición no lo hacía.
+ *
+ * Importa porque el sitio promete cadencia semanal en la marca («Monterrey ·
+ * Cada semana») y en el paso 01. Si el antetítulo la afirma cuando el catálogo
+ * no la sostiene, la primera vez que alguien compare la etiqueta con la fecha
+ * de la tarjeta deja de creerse las dos.
+ *
+ * Siete días desde ahora, no la semana del calendario: quien lee «esta semana»
+ * un domingo no se refiere a que quedan unas horas de domingo.
+ */
+export function antetituloDeLaLista(
+  experiencias: readonly { startDateTime: string }[],
+  ahora: Date = new Date(),
+): "Esta semana" | "Próximas fechas" {
+  const limite = ahora.getTime() + 7 * 24 * 60 * 60 * 1000;
+  const hayAlgoEstaSemana = experiencias.some((e) => {
+    const inicio = new Date(e.startDateTime).getTime();
+    // Una fecha ilegible no puede sostener la promesa, así que no la cuenta.
+    return Number.isFinite(inicio) && inicio <= limite;
+  });
+  return hayAlgoEstaSemana ? "Esta semana" : "Próximas fechas";
+}

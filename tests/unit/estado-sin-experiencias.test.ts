@@ -40,10 +40,12 @@ describe("sin experiencias, nadie promete que las hay", () => {
     const linea = fuente.split("\n").find((l) => l.includes('className="eyebrow"'));
 
     expect(linea, "ya no se encuentra el antetítulo de la sección semanal").toBeDefined();
+    // El texto lo decide `antetituloDeLaLista`, que mira la lista y además las
+    // fechas; lo que se protege aquí es que no vuelva a ser una constante.
     expect(
       linea,
       `«${linea?.trim()}» anuncia la semana sin mirar si hay algo publicado`,
-    ).toMatch(/experiences\.length/);
+    ).toMatch(/antetituloDeLaLista\(experiences\)/);
   });
 
   it("el titular del catálogo depende de que haya lista", () => {
