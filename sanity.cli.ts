@@ -16,6 +16,18 @@ import { dataset, projectId } from "./sanity/env";
 export default defineCliConfig({
   api: { projectId, dataset },
   studioHost: "the-sunny-project",
-  /** El Studio se despliega aparte; no forma parte del build de Next. */
-  autoUpdates: true,
+  /**
+   * El Studio se despliega aparte; no forma parte del build de Next.
+   *
+   * `autoUpdates` vive dentro de `deployment` desde Sanity 6: en la raíz
+   * sigue funcionando pero el CLI avisa de que está obsoleto.
+   */
+  deployment: {
+    autoUpdates: true,
+    /**
+     * Identidad del Studio ya desplegado. Sin ella el CLI la pregunta en cada
+     * despliegue, y este proyecto se despliega desde scripts.
+     */
+    appId: "oawhh49w5o3sch8yhgge8fbr",
+  },
 });

@@ -20,6 +20,10 @@
 # production
 /build
 
+# sanity studio — salida de `sanity build`/`sanity deploy` y caché del CLI
+/dist/
+/.sanity/
+
 # misc
 .DS_Store
 *.pem

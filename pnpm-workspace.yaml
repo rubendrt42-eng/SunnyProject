@@ -1,3 +1,11 @@
+allowBuilds:
+  # Ninguna de estas tres necesita su script de instalación aquí: esbuild
+  # trae ya su binario de plataforma, y sharp y unrs-resolver son opcionales
+  # para lo que este proyecto hace. Declararlas en falso evita que `pnpm`
+  # pare cada comando pidiendo que se decida.
+  esbuild: false
+  sharp: false
+  unrs-resolver: false
 ignoredBuiltDependencies:
   - sharp
   - unrs-resolver

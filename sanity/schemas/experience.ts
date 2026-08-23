@@ -1,5 +1,7 @@
 import { defineField, defineType } from "sanity";
-import { CalendarIcon } from "@sanity/icons";
+// Desde @sanity/icons v5 cada icono se importa de su propia subruta: el
+// índice raíz ya no los reexporta y el build falla si se pide ahí.
+import { CalendarIcon } from "@sanity/icons/Calendar";
 
 /**
  * Una experiencia: la clase, sesión o plan que un negocio aliado ofrece.

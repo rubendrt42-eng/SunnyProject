@@ -1,5 +1,7 @@
 import { defineField, defineType } from "sanity";
-import { CogIcon } from "@sanity/icons";
+// Ver la nota en experience.ts: en @sanity/icons v5 el icono viene de su
+// propia subruta, no del índice raíz.
+import { CogIcon } from "@sanity/icons/Cog";
 
 /**
  * Los textos del sitio que Emmy puede cambiar sin tocar código.
