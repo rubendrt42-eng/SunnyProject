@@ -51,20 +51,31 @@ import type { SanityImage } from "@/lib/sanity/types";
  */
 export function LeanHero({
   title,
+  titleAccent,
   subtitle,
   experienceCount,
   image,
 }: {
   title: string;
+  titleAccent?: string | null;
   subtitle: string;
   experienceCount: number;
   image?: SanityImage | null;
 }) {
-  // Se parte el titular en dos frases para darle a la segunda el color de
-  // marca, que es lo que hace que el hero se lea como Sunny y no como una
-  // plantilla. Si Emmy escribe una sola frase, se muestra una sola.
-  const [primera, ...resto] = title.split(/(?<=\.)\s+/);
-  const segunda = resto.join(" ");
+  /*
+    EL COLOR YA NO SALE DE LA PUNTUACIÓN
+
+    Antes esto era `title.split(/(?<=\.)\s+/)`: la segunda frase del titular se
+    pintaba en amarillo. O sea que una decisión de diseño dependía de dónde
+    pusiera Emmy un punto, sin que nada se lo dijera. El copy publicado hoy es
+    una sola frase, así que el amarillo llevaba apagado desde el principio y
+    nadie podía verlo en el Studio.
+
+    Ahora son dos campos distintos y visibles: «Título principal» y «Frase
+    destacada en amarillo». Vacía la segunda, el titular sale entero en blanco
+    porque así se ha decidido, no porque falte un punto.
+  */
+  const destacada = titleAccent?.trim();
 
   return (
     <section className="hero-exit relative isolate -mt-18 flex min-h-[86svh] flex-col justify-end overflow-clip bg-carbon lg:min-h-[92svh]">
@@ -130,9 +141,9 @@ export function LeanHero({
           <p className="text-small font-medium tracking-wide text-warm-white/70">Monterrey · Cada semana</p>
         </LineReveal>
 
-        <h1 className="mt-6 max-w-3xl text-display text-warm-white">
-          <WordReveal as="span" text={primera} className="block" />
-          {segunda && <WordReveal as="span" text={segunda} delay={0.22} className="block text-sunny" />}
+        <h1 className="hero-titular mt-6 max-w-3xl text-display text-warm-white">
+          <WordReveal as="span" text={title} className="block" />
+          {destacada && <WordReveal as="span" text={destacada} delay={0.22} className="block text-sunny" />}
         </h1>
 
         <LineReveal delay={0.5}>

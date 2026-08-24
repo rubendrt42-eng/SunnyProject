@@ -63,16 +63,48 @@ export const siteSettings = defineType({
   fields: [
     defineField({
       name: "heroTitle",
-      title: "Titular de la portada",
+      title: "Título principal",
       type: "string",
       group: "portada",
       description:
-        "Lo primero que se lee al entrar al sitio. Corto y directo. " +
-        "Si lo escribes en DOS frases separadas por un punto, la segunda se " +
-        "dibuja en amarillo Sunny debajo de la primera — que es lo que le da " +
-        "carácter a la portada. Ejemplo: «Descubre algo nuevo. Vívelo con " +
-        "alguien.» Si escribes una sola frase, se ve toda en blanco.",
-      validation: (Rule) => Rule.required().max(70),
+        "Lo primero que se lee al entrar al sitio. Se dibuja en blanco. " +
+        "Funciona mejor entre 30 y 70 caracteres: a partir de ahí ocupa " +
+        "tantas líneas que el botón «Explorar experiencias» empieza a quedar " +
+        "fuera de la primera pantalla en algunos teléfonos.",
+      /**
+       * El máximo avisa, no prohíbe.
+       *
+       * Un tope duro obliga a reescribir un titular que quizá se lea perfecto,
+       * y nadie puede juzgar eso desde el esquema. La portada ya está preparada
+       * para titulares largos (ver `--paso-display` en globals.css); esto solo
+       * le dice a Emmy dónde empieza el terreno incómodo.
+       */
+      validation: (Rule) =>
+        Rule.required().max(70).warning("A partir de 70 caracteres el titular ocupa mucho y el botón puede quedar fuera de la primera pantalla."),
+    }),
+
+    defineField({
+      name: "heroTitleAccent",
+      title: "Frase destacada en amarillo",
+      type: "string",
+      group: "portada",
+      description:
+        "Opcional. Se dibuja en amarillo Sunny, en su propia línea, justo " +
+        "debajo del título principal. Es lo que hace que la portada se lea " +
+        "como Sunny. Ejemplo: título «Descubre algo nuevo.» y destacada " +
+        "«Vívelo con alguien.» Si la dejas vacía, el titular sale entero en " +
+        "blanco y no pasa nada más.",
+      /**
+       * POR QUÉ ESTE CAMPO EXISTE
+       *
+       * Antes el color salía de partir el título por el primer punto. O sea que
+       * una decisión de diseño dependía de un signo de puntuación: escribir el
+       * titular en una sola frase apagaba el amarillo sin avisar, y así estuvo
+       * publicado. Un campo propio hace la regla visible en el Studio y
+       * devuelve a Emmy el control de las dos cosas por separado.
+       */
+      validation: (Rule) =>
+        Rule.max(45).warning("Una frase destacada muy larga compite con el título en vez de rematarlo."),
     }),
 
     defineField({

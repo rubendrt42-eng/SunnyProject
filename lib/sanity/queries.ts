@@ -86,6 +86,7 @@ const BY_SLUG_QUERY = `
 const SETTINGS_QUERY = `
   *[_type == "siteSettings"][0]{
     heroTitle,
+    heroTitleAccent,
     "heroImage": heroImage{
       "url": asset->url,
       "alt": coalesce(alt, ""),

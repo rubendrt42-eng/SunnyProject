@@ -52,6 +52,12 @@ export interface FaqItem {
 
 export interface SiteSettings {
   heroTitle: string;
+  /**
+   * Opcional. La frase que la portada dibuja en amarillo, en su propia línea,
+   * debajo del título. Vacía significa titular entero en blanco, y eso es una
+   * decisión válida — no un error.
+   */
+  heroTitleAccent?: string | null;
   /** Opcional. Sin ella la portada dibuja la composición de marca. */
   heroImage?: SanityImage | null;
   heroSubtitle: string;

@@ -2,8 +2,6 @@
 
 import { useRef, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { clsx } from "clsx";
 import { Container } from "@/components/ui/Container";
 import { LinkButton } from "@/components/ui/Button";
 import { FullscreenMenu } from "@/components/motion/FullscreenMenu";
@@ -65,24 +63,32 @@ export function HeaderInteractive({
     setMenuOpen(false);
     botonMenu.current?.focus();
   };
-  const pathname = usePathname();
+  /*
+    AQUÍ NO SE DECIDE SI ESTAMOS SOBRE EL HERO.
 
-  // `usePathname` devuelve el mismo valor en servidor y cliente, así que esto
-  // no reintroduce el desajuste: no depende del navegador, depende de la URL.
-  const sobreElHero = pathname === "/";
+    Antes se decidía con `usePathname() === "/"`, y un comentario afirmaba que
+    eso da el mismo valor en servidor y cliente. **No es cierto cuando la página
+    se prerrenderiza estáticamente.** Medido: el HTML que sirve Vercel para la
+    portada sale sin la clase `--over-hero` y sin este velo, el navegador los
+    añade al hidratar, y React aborta la hidratación con el error #418 y vuelve
+    a construir el árbol entero. En un `next start` local no pasa, porque ahí el
+    prerenderizado sí resuelve la ruta — por eso el fallo solo se veía publicado.
 
+    La condición «hay un hero a pantalla completa debajo» ahora se resuelve en
+    CSS con `body:has(.hero-exit)`, que es un hecho del documento y no un estado
+    que sincronizar. El velo se pinta siempre y es CSS quien lo muestra: así el
+    servidor y el cliente emiten exactamente el mismo HTML, que era lo que este
+    encabezado decía hacer y no hacía.
+  */
   return (
-    <header
-      className={clsx("site-header sticky inset-x-0 top-0 z-50", sobreElHero && "site-header--over-hero")}
-    >
+    <header className="site-header sticky inset-x-0 top-0 z-50">
       {/* Velo propio del encabezado. Sin él, la legibilidad del menú dependería
-          de qué zona del hero le tocara debajo. Se desvanece con el scroll. */}
-      {sobreElHero && (
-        <div
-          aria-hidden
-          className="site-header__scrim pointer-events-none absolute inset-x-0 top-0 -z-10 h-32 bg-gradient-to-b from-carbon/70 to-transparent"
-        />
-      )}
+          de qué zona del hero le tocara debajo. Nace invisible (`opacity: 0` en
+          globals.css) y solo la portada lo enciende; se desvanece con el scroll. */}
+      <div
+        aria-hidden
+        className="site-header__scrim pointer-events-none absolute inset-x-0 top-0 -z-10 h-32 bg-gradient-to-b from-carbon/70 to-transparent"
+      />
 
       {/*
         `flex-wrap` y altura mínima en vez de fija.

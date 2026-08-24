@@ -80,7 +80,18 @@ export function ExperienceGrid({
 
   return (
     enCinta ? (
-      <Cinta className={experiences.length > 2 ? "cinta cinta--tres" : "cinta"}>
+      /*
+        Los puntos de posición solo a partir de TRES tarjetas.
+
+        Con dos, el trozo de la segunda que asoma por el borde ya cuenta que hay
+        más y cuántas: dos puntos no añadirían información, solo ruido. A partir
+        de tres deja de poder deducirse, y ahí sí trabajan. (La cinta los
+        esconde además de `sm` en adelante, donde esto es una rejilla.)
+      */
+      <Cinta
+        className={experiences.length > 2 ? "cinta cinta--tres" : "cinta"}
+        puntos={experiences.length >= 3 ? experiences.length : 0}
+      >
         {experiences.map((experience) => (
           <ExperienceCard key={experience._id} experience={experience} />
         ))}

@@ -546,6 +546,51 @@ h2 {
 }
 
 /*
+  El titular de la portada, preparado para textos largos.
+
+  QUÉ SE MIDIÓ
+
+  El titular usaba el mismo `--text-display` que el resto de las portadas de
+  sección, pensado para una o dos líneas. Con un título largo escrito desde
+  Sanity, el `h1` medía **670 px de alto a 1440×900** y **392 px a 390×844**: el
+  subtítulo quedaba cortado por el borde inferior y «Explorar experiencias»
+  —la única acción de la portada— salía de la primera pantalla.
+
+  QUÉ SE HACE, Y QUÉ NO
+
+  No se corta el texto. Nada de `line-clamp` ni de puntos suspensivos: un
+  titular a medias es peor que un titular largo, y quien escribe merece ver lo
+  que escribió. Lo que se hace es que la tipografía ceda antes que la
+  composición.
+
+  1. El tamaño se mide contra el ALTO además del ancho (`min(6.5vw, 8vh)`). El
+     fallo se midió a 1440×900, donde manda el ancho y el titular llegaba al
+     máximo; atándolo también al alto, una ventana baja deja de pagar con el
+     botón. En un teléfono en vertical no cambia nada: ahí manda el mínimo.
+
+  2. El máximo baja de 4.75rem a 4.375rem, lo justo para que el interlineado
+     nuevo no engorde el bloque. Tres líneas ocupaban 223 px y ahora ocupan
+     222: el titular respira más y mide lo mismo.
+
+  Para lo que la tipografía ya no puede arreglar —un titular de doce palabras—
+  el aviso está donde se escribe: el campo «Título principal» del Studio avisa
+  a partir de 70 caracteres. Avisa, no prohíbe: quién sabe si ese titular de 72
+  se lee perfecto.
+
+  Va sobre `.hero-titular` y no sobre el token `--text-display` a propósito: ese
+  token lo comparten «Cómo funciona», «Preguntas frecuentes», «Privacidad», la
+  ficha de experiencia y la sección de comunidad, y ninguna tiene este problema.
+*/
+.hero-titular {
+  font-size: clamp(2.5rem, min(6.5vw, 8vh), 4.375rem);
+
+  /* 0.98 es un interlineado de titular de una línea. Con tres o cuatro, los
+     rasgos descendentes de una línea casi tocan la siguiente — se ve apretado
+     justo cuando más texto hay que leer. */
+  line-height: 1.06;
+}
+
+/*
   El hero en pantallas bajas.
 
   `pt-32` son 128 px de aire arriba: en escritorio es lo que separa el titular
@@ -900,13 +945,27 @@ html {
     }
   }
 
-  .site-header--over-hero {
+  /*
+    «Estamos sobre el hero» se deduce del documento, no de JavaScript.
+
+    `.hero-exit` solo existe en el hero de la portada. Preguntarle al documento
+    si lo tiene (`body:has(...)`) da la misma respuesta en el servidor y en el
+    navegador **siempre**, que es justo lo que la versión anterior no conseguía:
+    lo decidía `usePathname()` en el cliente, y en el HTML prerrenderizado de
+    Vercel esa clase no llegaba a escribirse. Resultado, error #418 en cada
+    visita a la portada.
+
+    Todo navegador que entienda `animation-timeline: scroll()` entiende `:has()`,
+    así que esto no estrecha el soporte: donde no haya ninguno de los dos, el
+    encabezado se queda sólido desde el principio, que ya era el respaldo.
+  */
+  body:has(.hero-exit) .site-header {
     animation: header-solidify linear both;
     animation-timeline: scroll();
     animation-range: 0 64px;
   }
 
-  .site-header--over-hero .site-header__scrim {
+  body:has(.hero-exit) .site-header__scrim {
     animation: header-scrim-out linear both;
     animation-timeline: scroll();
     animation-range: 0 64px;
@@ -919,10 +978,10 @@ html {
   es el color del texto, y dejarlo a medias sería ilegible.
 */
 @media (prefers-reduced-motion: reduce) {
-  .site-header--over-hero {
+  body:has(.hero-exit) .site-header {
     animation: none;
   }
-  .site-header--over-hero .site-header__scrim {
+  body:has(.hero-exit) .site-header__scrim {
     animation: none;
     opacity: 0;
   }

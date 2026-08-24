@@ -61,6 +61,7 @@ export default async function HomePage() {
     <main>
       <LeanHero
         title={s.heroTitle}
+        titleAccent={s.heroTitleAccent}
         subtitle={s.heroSubtitle}
         experienceCount={experiences.filter((e) => e.status !== "sold_out").length}
         image={settings?.heroImage ?? null}

@@ -13,7 +13,8 @@ import type { SiteSettings } from "@/lib/sanity/types";
  * ipsum» esperando a que alguien lo arregle.
  */
 export const DEFAULT_SETTINGS: SiteSettings = {
-  heroTitle: "Descubre algo nuevo. Vívelo con alguien.",
+  heroTitle: "Descubre algo nuevo.",
+  heroTitleAccent: "Vívelo con alguien.",
   heroSubtitle:
     "Experiencias locales para salir de la rutina, conectar y formar parte de una comunidad que busca crecer.",
   aboutShortText:
