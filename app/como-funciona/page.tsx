@@ -1,140 +1,142 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/ui/Container";
 import { LinkButton } from "@/components/ui/Button";
-import { BrandCanvas } from "@/components/lean/BrandCanvas";
 import { InViewReveal } from "@/components/motion/InViewReveal";
+import { RECORRIDO } from "@/lib/lean-content";
 
 export const metadata: Metadata = {
   title: "Cómo funciona — The Sunny Project",
   description:
-    "Tres pasos: descubre una experiencia, solicita tu lugar y nosotros te confirmamos. Sin cuentas y sin pagar nada.",
+    "Cinco pasos: encuentras una experiencia, solicitas tu lugar, Sunny revisa disponibilidad y te confirma por WhatsApp. Sin cuentas y sin pagar nada.",
 };
 
 /**
- * Cómo funciona, reescrita.
+ * Cómo funciona — la página del menú.
  *
- * QUÉ DECÍA ANTES
+ * POR QUÉ SE REHIZO
  *
- * Esta página describía el producto anterior: un pase semanal gratuito, un
- * folio que presentar al llegar, una sola reservación activa por semana y
- * cancelación hasta 12 horas antes. Nada de eso existe. Y como está enlazada
- * desde el menú, era el segundo destino más accesible del sitio: quien leía
- * en la portada «solicita tu lugar y te confirmamos» y entraba aquí, se
- * encontraba con otro producto.
+ * Contaba TRES pasos mientras la portada contaba cinco. El sitio se contradecía
+ * según por dónde entraras: quien bajaba por la portada leía el recorrido real
+ * —con el momento en que Sunny revisa disponibilidad y el aviso de que
+ * solicitar no es estar confirmado— y quien llegaba por el menú leía una
+ * versión resumida donde ese momento no existía.
  *
- * LA DISTINCIÓN QUE ESTA PÁGINA TIENE QUE DEJAR CLARA
+ * Los pasos ya no se escriben aquí: vienen de `RECORRIDO` en lib/lean-content,
+ * que es la misma lista que compone la portada. Es lo único que impide que
+ * vuelvan a separarse.
  *
- * **Solicitar no es confirmar.** El sitio recibe una solicitud; la confirmación
- * la da una persona después, por WhatsApp. Si alguien se va de aquí creyendo
- * que ya tiene lugar, se presenta a una clase donde no lo esperan. Por eso el
- * tercer paso lo dice con esas palabras y hay una nota aparte que lo repite.
+ * POR QUÉ NO SE PARECE A LA PORTADA
  *
- * SOBRE LAS IMÁGENES
+ * Cuenta lo mismo y se compone distinto, que es la regla del sitio. La portada
+ * lo dispone en zigzag, alternando mitades. Aquí es un **índice**: el número
+ * vive en una columna fija a la izquierda y el texto en la de al lado, con una
+ * regla fina entre pasos. Se lee como el sumario de un documento — que es lo
+ * que esta página es.
  *
- * La versión anterior ilustraba cada paso con fotografías de `lib/media.ts`.
- * Son imágenes de referencia sin licencia para publicarse, así que aquí se usa
- * el lienzo de marca. Cuando existan fotografías propias, sustituir el
- * `BrandCanvas` por la imagen es un cambio de una línea por paso.
+ * SIN LIENZOS DE MARCA
+ *
+ * La versión anterior ilustraba el primer paso con un `BrandCanvas`: un
+ * degradado ocupando el sitio de una fotografía que no existe. Se retiró, como
+ * en el resto del sitio. Esta página no lleva imágenes y no las echa de menos:
+ * es un procedimiento de cinco pasos, y lo que tiene que hacer es leerse claro.
  */
-const PASOS = [
-  {
-    numero: "01",
-    titulo: "Descubre",
-    texto: "Explora las experiencias disponibles en Sunny.",
-  },
-  {
-    numero: "02",
-    titulo: "Solicita tu lugar",
-    texto: "Elige una experiencia y deja tus datos. No necesitas crear cuenta.",
-  },
-  {
-    numero: "03",
-    titulo: "Confirmamos contigo",
-    texto:
-      "The Sunny Project revisa disponibilidad y se pone en contacto contigo para confirmar.",
-  },
-];
-
 export default function ComoFuncionaPage() {
   return (
-    <main className="py-14 sm:py-24">
+    <main className="py-16 sm:py-24 lg:py-32">
       <Container>
+        {/*
+          Sin antetítulo. «El recorrido» encima de «Cómo funciona» decía dos
+          veces lo mismo, y era la fórmula que el resto del sitio dejó de
+          repetir.
+        */}
         <div className="max-w-3xl">
-          <p className="eyebrow">El recorrido</p>
-          <h1 className="mt-3 text-display text-balance">Cómo funciona</h1>
-          <p className="mt-5 max-w-[52ch] text-lead text-carbon/80">
-            Tres pasos. Sin cuentas, sin pagos y sin letra chica.
+          <h1 className="text-display text-balance">Cómo funciona</h1>
+          <p className="mt-6 max-w-[46ch] text-lead text-carbon/75">
+            Cinco pasos. Sin cuentas, sin pagos y sin letra chica.
           </p>
         </div>
+      </Container>
 
-        {/*
-          Composición editorial, no tres cajas iguales: el número manda, ocupa
-          su propia columna y el texto vive al lado. Cada paso se alterna con
-          un lienzo de marca para que la página tenga textura sin depender de
-          fotografías que todavía no existen.
-        */}
-        <ol className="mt-14 flex flex-col gap-14 sm:mt-20 sm:gap-20">
-          {PASOS.map((paso, i) => (
-            <li
-              key={paso.numero}
-              /*
-                EL HUECO VA EN PÍXELES, NO EN REM
+      {/*
+        El índice. `<ol>` a ancho completo con un `Container` dentro de cada
+        `<li>`, para que el paso de la ruptura pueda pintar su banda de borde a
+        borde sin sacar el documento de su ancho — y sin perder que sea una
+        lista para quien la escucha.
+      */}
+      <ol className="mt-16 sm:mt-24">
+        {RECORRIDO.map((paso) =>
+          paso.ruptura ? (
+            <li key={paso.numero} className="ruptura my-8 py-16 sm:my-12 sm:py-24">
+              <Container>
+                {/*
+                  EL HUECO VA EN PÍXELES, NO EN REM.
 
-                Es una rejilla de 12 columnas con dos bloques, así que separa
-                once veces aunque solo haya dos cosas que separar. Con el hueco
-                en rem y el tamaño de texto del navegador al 200%, esos once
-                huecos pasaban de 40 a 80px: 880px de hueco dentro de un
-                contenedor de 640px, y las doce columnas calculadas a 0px. La
-                página se iba a 944px de ancho en una ventana de 768.
+                  Es una rejilla de 12 columnas con dos bloques, así que separa
+                  once veces aunque solo haya dos cosas que separar. Con el
+                  hueco en rem y el texto del navegador al 200%, esos once
+                  huecos pasan de 32 a 64 px: 704 px de hueco dentro de un
+                  contenedor de 640, y las doce columnas calculadas a 0. La
+                  página se iba de ancho — está medido y documentado.
 
-                En píxeles el hueco es el mismo a cualquier tamaño de texto y
-                el aspecto no cambia en ningún ancho — es separación
-                estructural, no texto.
-              */
-              className={`grid items-center gap-6 sm:grid-cols-12 sm:gap-[40px] ${
-                i % 2 === 1 ? "sm:[&>*:first-child]:order-2" : ""
-              }`}
-            >
-              <div className="sm:col-span-7">
-                <span
-                  aria-hidden
-                  className="block font-serif text-6xl leading-none text-orange-ink/85 tabular-nums sm:text-7xl"
-                >
-                  {paso.numero}
-                </span>
-                <h2 className="mt-4 text-title text-balance">{paso.titulo}</h2>
-                <p className="mt-3 max-w-md text-body-l text-gray">{paso.texto}</p>
-              </div>
-              {/* Solo el primer paso lleva lienzo. Tres seguidos, uno por
-                  paso, era donde más se notaba que el mismo motivo se estaba
-                  repitiendo para rellenar. Los otros dos se sostienen con el
-                  número grande, que es lo que de verdad estructura la lectura. */}
-              {i === 0 ? (
-                <InViewReveal variant="media" className="sm:col-span-5">
-                  <BrandCanvas seed={paso.titulo} className="aspect-16/10 w-full rounded-xl sm:aspect-4/3" />
-                </InViewReveal>
-              ) : (
-                <div aria-hidden className="hidden sm:col-span-5 sm:block" />
-              )}
+                  En píxeles el hueco mide lo mismo a cualquier tamaño de texto,
+                  porque es separación estructural y no texto. Hay una prueba
+                  que lo vigila y me lo acaba de reprobar.
+                */}
+                <div className="sm:grid sm:grid-cols-12 sm:gap-[32px]">
+                  <InViewReveal className="sm:col-span-7">
+                    <p className="text-title text-balance text-carbon">
+                      Solicitar <span className="font-serif font-normal italic">no es</span> estar confirmado.
+                    </p>
+                    <p className="mt-6 max-w-[46ch] text-body-l text-carbon/75">
+                      Al enviar el formulario nos llega tu solicitud y revisamos la disponibilidad del espacio. Tu
+                      lugar queda confirmado cuando te escribimos por WhatsApp, no antes. Si no hay cupo, también te
+                      avisamos.
+                    </p>
+                  </InViewReveal>
+
+                  <InViewReveal delay={0.08} className="mt-10 sm:col-span-4 sm:col-start-9 sm:mt-0">
+                    <div className="border-t border-carbon/25 pt-5">
+                      <span aria-hidden className="recorrido-num block font-serif text-carbon/40">
+                        {paso.numero}
+                      </span>
+                      <h2 className="mt-5 text-heading text-carbon">{paso.titulo}</h2>
+                      <p className="mt-2 text-body text-carbon/75">{paso.texto}</p>
+                    </div>
+                  </InViewReveal>
+                </div>
+              </Container>
             </li>
-          ))}
-        </ol>
+          ) : (
+            <li key={paso.numero}>
+              <Container>
+                <InViewReveal delay={0.05}>
+                  {/*
+                    El número en su propia columna, alineado con la regla. Es
+                    lo que hace que esto se lea como un índice y no como una
+                    lista de párrafos con una cifra delante.
+                  */}
+                  <div className="grid grid-cols-[3.5rem_1fr] items-start gap-x-6 border-t border-carbon/15 py-10 sm:grid-cols-[7rem_1fr] sm:gap-x-10 sm:py-14">
+                    <span
+                      aria-hidden
+                      className="font-serif text-[clamp(2.5rem,5vw,4rem)] leading-[0.85] text-orange-ink/35 tabular-nums"
+                    >
+                      {paso.numero}
+                    </span>
+                    <div className="min-w-0">
+                      <h2 className="max-w-[22ch] text-subtitle text-balance">{paso.titulo}</h2>
+                      <p className="mt-3 max-w-[42ch] text-body-l text-gray">{paso.texto}</p>
+                    </div>
+                  </div>
+                </InViewReveal>
+              </Container>
+            </li>
+          ),
+        )}
+      </ol>
 
-        {/*
-          La aclaración que evita el malentendido caro. Va en su propio bloque
-          y con contraste, no como una nota al pie: es la diferencia entre
-          presentarse a una clase donde te esperan y a una donde no.
-        */}
-        <section className="mt-16 rounded-xl bg-carbon p-8 text-warm-white sm:mt-24 sm:p-10">
-          <h2 className="text-subtitle">Solicitar no es lo mismo que tener lugar</h2>
-          <p className="mt-3 max-w-2xl text-body-l text-warm-white/75">
-            Al enviar el formulario nos llega tu solicitud y revisamos la disponibilidad del espacio. Tu lugar queda
-            confirmado cuando te escribimos por WhatsApp, no antes. Si no hay cupo, también te avisamos.
-          </p>
-        </section>
-
-        <div className="mt-12">
-          <LinkButton href="/experiencias" size="lg" arrow>
+      <Container>
+        <div className="mt-16 border-t border-carbon/15 pt-10 sm:mt-20">
+          <LinkButton href="/experiencias" size="lg" variant="secondary" arrow>
             Explorar experiencias
           </LinkButton>
         </div>

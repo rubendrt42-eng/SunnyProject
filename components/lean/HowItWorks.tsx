@@ -1,5 +1,6 @@
 import { Container } from "@/components/ui/Container";
 import { InViewReveal } from "@/components/motion/InViewReveal";
+import { RECORRIDO } from "@/lib/lean-content";
 
 /**
  * Capítulo 04 — el recorrido.
@@ -37,34 +38,6 @@ import { InViewReveal } from "@/components/motion/InViewReveal";
  * scroll y devuelve scroll horizontal— y la lista sigue siendo una lista para
  * quien la escucha: «elemento 3 de 5» se sigue anunciando.
  */
-const PASOS = [
-  {
-    numero: "01",
-    titulo: "Encuentra algo que quieras vivir",
-    texto: "Explora las experiencias disponibles.",
-  },
-  {
-    numero: "02",
-    titulo: "Solicita tu lugar",
-    texto: "Deja tus datos. No necesitas crear una cuenta.",
-  },
-  {
-    numero: "03",
-    titulo: "Sunny revisa disponibilidad",
-    texto: "La solicitud llega y se revisa si todavía existe lugar.",
-    ruptura: true,
-  },
-  {
-    numero: "04",
-    titulo: "Recibe tu confirmación",
-    texto: "Sunny se comunica por WhatsApp.",
-  },
-  {
-    numero: "05",
-    titulo: "Vive la experiencia",
-    texto: "Llegas al espacio y formas parte de la experiencia.",
-  },
-];
 
 export function HowItWorks() {
   return (
@@ -90,7 +63,7 @@ export function HowItWorks() {
       </Container>
 
       <ol className="mt-14 sm:mt-20">
-        {PASOS.map((paso, i) => {
+        {RECORRIDO.map((paso, i) => {
           const derecha = i % 2 === 1;
 
           if (paso.ruptura) {

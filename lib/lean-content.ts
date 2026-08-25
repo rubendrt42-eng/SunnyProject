@@ -105,3 +105,56 @@ export function antetituloDeLaLista(
   });
   return hayAlgoEstaSemana ? "Esta semana" : "Próximas fechas";
 }
+
+/**
+ * EL RECORRIDO, EN UN SOLO SITIO.
+ *
+ * Estos cinco pasos los cuentan dos pantallas: el capítulo «Cómo funciona» de
+ * la portada y la página `/como-funciona` que cuelga del menú. Estaban escritos
+ * dos veces, y pasó lo que pasa siempre: la portada se actualizó a cinco pasos
+ * y la página se quedó en tres. Durante un rato el sitio se contradijo a sí
+ * mismo según por dónde entraras.
+ *
+ * Ahora hay una sola lista. Cada pantalla la compone a su manera —la portada en
+ * zigzag, la página como índice— pero las dos leen de aquí.
+ *
+ * `ruptura` marca el paso donde el recorrido se detiene a decir que solicitar
+ * no es estar confirmado. Es el único punto donde alguien puede llevarse una
+ * idea equivocada y presentarse a una clase donde no lo esperan, así que va
+ * señalado en los datos y no en cada maquetación.
+ */
+export interface PasoDelRecorrido {
+  numero: string;
+  titulo: string;
+  texto: string;
+  ruptura?: boolean;
+}
+
+export const RECORRIDO: PasoDelRecorrido[] = [
+  {
+    numero: "01",
+    titulo: "Encuentra algo que quieras vivir",
+    texto: "Explora las experiencias disponibles.",
+  },
+  {
+    numero: "02",
+    titulo: "Solicita tu lugar",
+    texto: "Deja tus datos. No necesitas crear una cuenta.",
+  },
+  {
+    numero: "03",
+    titulo: "Sunny revisa disponibilidad",
+    texto: "La solicitud llega y se revisa si todavía existe lugar.",
+    ruptura: true,
+  },
+  {
+    numero: "04",
+    titulo: "Recibe tu confirmación",
+    texto: "Sunny se comunica por WhatsApp.",
+  },
+  {
+    numero: "05",
+    titulo: "Vive la experiencia",
+    texto: "Llegas al espacio y formas parte de la experiencia.",
+  },
+];
