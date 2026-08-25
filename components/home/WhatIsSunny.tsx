@@ -1,107 +1,146 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { InViewReveal } from "@/components/motion/InViewReveal";
 import Image from "next/image";
+import { InViewReveal } from "@/components/motion/InViewReveal";
 import { EMMY_PHOTO } from "@/lib/media";
 
 /**
- * "Qué es Sunny Project" (brief §17). Purpose, community, and the
- * relationship with local spaces — plus a deliberately short presence for
- * Emmy.
+ * Capítulo 03 — el propósito.
  *
- * SOBRE EL RETRATO
+ * QUÉ CAMBIÓ EN LA COMPOSICIÓN
  *
- * La fotografía de Emmy vuelve por decisión del cliente. `SUNNY_ASSET_MANIFEST.md`
- * la describe como el único asset «plausiblemente propio» del proyecto; queda
- * anotado que su procedencia sigue sin confirmarse por escrito.
+ * Era texto a la izquierda y fotografía a la derecha, las dos columnas del
+ * mismo alto y centradas entre sí: la composición por defecto de cualquier
+ * sección «sobre nosotros». Y llegaba justo después de un capítulo de dos
+ * columnas, así que dos capítulos seguidos se leían igual.
  *
- * Lleva `parallax`: se desplaza un poco más despacio que la columna de texto
- * mientras se hace scroll. Es lo que hace que la sección tenga profundidad en
- * vez de leerse como una lámina plana.
+ * Ahora el statement va primero y solo, a ancho casi completo — es el capítulo
+ * donde la idea manda, así que la idea ocupa la primera pantalla del bloque. El
+ * texto de apoyo baja a una columna estrecha a la izquierda y la fotografía de
+ * Emmy sube desplazada a la derecha, más pequeña que antes y sin alinearse con
+ * nada: rompe la retícula a propósito. La asimetría es lo que impide que esto
+ * se lea como el bloque de arriba.
  *
- * Emmy gets one paragraph and one photograph, not a biography: the brief's
- * narrative rule is "Emmy impulsa Sunny, la comunidad protagoniza Sunny".
- * Nothing here invents her history — no home town, no founding anecdote, no
- * dates. The provisional line is flagged in
- * SUNNY_MVP_1_1_RELEASE_REPORT.md so it can be replaced with her own words
- * rather than quietly shipping as if she had written it.
+ * EMMY PRESENTE, SUNNY PROTAGONISTA
+ *
+ * La fotografía se hizo más pequeña, no más grande. La regla narrativa del
+ * proyecto es que Emmy impulsa Sunny y la comunidad lo protagoniza; un retrato
+ * a media sección decía otra cosa. Sigue teniendo su párrafo y su pie, que es
+ * exactamente la presencia que le toca.
+ *
+ * Lleva `parallax`: se desplaza algo más despacio que la columna de texto al
+ * hacer scroll. Es el único parallax del capítulo y es lo que le da profundidad
+ * sin añadir ninguna animación nueva.
  */
 export function WhatIsSunny() {
   return (
-    <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-[clamp(1.5rem,4vw,3.5rem)]">
-      <div className="min-w-0 lg:col-span-7">
-        <InViewReveal>
-          <p className="eyebrow">Qué es Sunny Project</p>
-          {/* The one place on the page a serif accent carries a full
-              statement — an anchor phrase between chapters, adopted from
-              Phamily's mid-scroll rhythm break. */}
-          <h2 className="mt-4 text-title">
-            No se trata solo de encontrar planes.{" "}
-            <span className="font-serif italic text-orange-ink">Se trata de encontrar nuevas formas de vivir.</span>
-          </h2>
-        </InViewReveal>
+    <div>
+      {/* El statement, solo y a ancho casi completo. */}
+      <InViewReveal variant="lead">
+        <p className="eyebrow">Qué es Sunny Project</p>
+        {/*
+          La medida se ESTRECHA en pantalla ancha, no se ensancha.
 
-        <InViewReveal delay={0.1}>
-          <p className="mt-6 max-w-[54ch] text-lead text-carbon/80">
-            Sunny Project nace para reunir a personas que quieren mejorar, descubrir y salir de su zona de confort.
-            Conectamos esa energía con experiencias y espacios locales que quieren construir una comunidad más activa,
-            curiosa y cercana.
-          </p>
-        </InViewReveal>
+          A 22ch el statement llegaba hasta la columna 9, que es justo donde
+          entra la fotografía desplazada: el retrato se comía la última palabra
+          («vivir») y no había forma de leerla. Con 17ch el texto termina antes
+          de la columna 9 y las dos piezas pueden superponerse en vertical sin
+          tocarse nunca. La asimetría se mantiene; la colisión desaparece.
+        */}
+        <h2 className="mt-5 max-w-[19ch] text-display text-balance lg:max-w-[17ch]">
+          No se trata solo de encontrar planes.{" "}
+          <span className="font-serif font-normal text-orange-ink italic">
+            Se trata de encontrar nuevas formas de vivir.
+          </span>
+        </h2>
+      </InViewReveal>
 
-        <InViewReveal delay={0.16}>
-          <dl className="mt-8 grid gap-6 sm:grid-cols-2">
-            <div>
-              <dt className="text-heading">Para quien busca</dt>
-              <dd className="mt-1 text-small text-gray">
-                Un lugar donde probar algo distinto cada semana, sin cuentas y sin pagar nada.
-              </dd>
-            </div>
-            <div>
-              <dt className="text-heading">Para los espacios</dt>
-              <dd className="mt-1 text-small text-gray">
-                Estudios, cafés y clubes locales abren lugares y conocen personas que llegan por curiosidad, no por
-                descuento.
-              </dd>
-            </div>
-          </dl>
-        </InViewReveal>
+      <div className="mt-14 grid gap-12 lg:mt-20 lg:grid-cols-12 lg:gap-x-12">
+        {/* Columna estrecha de texto: deliberadamente más angosta que el
+            statement de arriba, para que se lea como la nota al pie de una idea
+            grande y no como otro bloque del mismo peso. */}
+        <div className="min-w-0 lg:col-span-5">
+          <InViewReveal delay={0.06}>
+            <p className="max-w-[46ch] text-lead text-carbon/80">
+              Sunny Project nace para reunir a personas que quieren mejorar, descubrir y salir de su zona de confort.
+              Conectamos esa energía con experiencias y espacios locales que quieren construir una comunidad más
+              activa, curiosa y cercana.
+            </p>
+          </InViewReveal>
 
-        <InViewReveal delay={0.22}>
-          <Link
-            href="/como-funciona"
-            className="mt-8 inline-flex items-center gap-1.5 text-small font-semibold text-carbon underline decoration-carbon/30 underline-offset-4 hover:decoration-carbon"
-          >
-            Cómo funciona
-            <ArrowRight aria-hidden size={14} className="transition-transform group-hover:translate-x-1" />
-          </Link>
-        </InViewReveal>
-      </div>
+          {/*
+            Dos notas con la etiqueta colgada, no dos tarjetas en rejilla.
 
-      <div className="min-w-0 lg:col-span-5">
-        <InViewReveal delay={0.12}>
-          <figure>
-            {/* `overflow-clip`, no `hidden`: con `hidden` esta caja es
-                contenedor de scroll y el `parallax` de la fotografía de Emmy
-                se quedaba congelado a mitad de recorrido. */}
-            <div className="relative aspect-square w-full max-w-sm overflow-clip rounded-lg bg-carbon/5">
-              <Image
-                src={EMMY_PHOTO.src}
-                alt={EMMY_PHOTO.alt}
-                fill
-                sizes="(min-width: 1024px) 34vw, 100vw"
-                className="parallax object-cover"
+            Misma información que antes; lo que cambia es que la etiqueta se
+            sale a la izquierda en pantalla ancha, así que el bloque se lee como
+            una ficha editorial y no como dos cajas gemelas — que es justo la
+            forma que había que evitar.
+          */}
+          <InViewReveal delay={0.12}>
+            <dl className="mt-10 space-y-6 border-t border-carbon/15 pt-6">
+              <div className="sm:grid sm:grid-cols-[10rem_1fr] sm:gap-5">
+                <dt className="text-small font-semibold tracking-[0.1em] text-carbon uppercase">Para quien busca</dt>
+                <dd className="mt-1.5 max-w-[42ch] text-body text-gray sm:mt-0">
+                  Un lugar donde probar algo distinto cada semana, sin cuentas y sin pagar nada.
+                </dd>
+              </div>
+              <div className="sm:grid sm:grid-cols-[10rem_1fr] sm:gap-5">
+                <dt className="text-small font-semibold tracking-[0.1em] text-carbon uppercase">Para los espacios</dt>
+                <dd className="mt-1.5 max-w-[42ch] text-body text-gray sm:mt-0">
+                  Estudios, cafés y clubes locales abren lugares y conocen personas que llegan por curiosidad, no por
+                  descuento.
+                </dd>
+              </div>
+            </dl>
+          </InViewReveal>
+
+          <InViewReveal delay={0.18}>
+            <Link
+              href="/como-funciona"
+              className="group mt-10 inline-flex min-h-11 items-center gap-1.5 text-small font-semibold text-carbon underline decoration-carbon/30 underline-offset-4 hover:decoration-carbon"
+            >
+              Cómo funciona
+              <ArrowRight
+                aria-hidden
+                size={14}
+                className="transition-transform duration-[var(--motion-nudge)] ease-sunny group-hover:translate-x-1"
               />
-            </div>
-            <figcaption className="mt-4 max-w-sm">
-              <p className="text-heading">Emmy · Fundadora y curadora</p>
-              <p className="mt-1 text-small text-gray">
-                Emmy selecciona cada experiencia y conecta a la comunidad con los espacios que la reciben. También
-                organiza los Sunny Originals.
-              </p>
-            </figcaption>
-          </figure>
-        </InViewReveal>
+            </Link>
+          </InViewReveal>
+        </div>
+
+        {/*
+          La fotografía, desplazada.
+
+          Ni centrada con el texto ni pegada al borde: entra por la columna 8 y
+          sube por encima de la línea del párrafo en pantalla ancha. Es lo único
+          de la portada que no se alinea con la retícula, y por eso funciona.
+        */}
+        <div className="min-w-0 lg:col-span-4 lg:col-start-9 lg:-mt-32">
+          <InViewReveal variant="media" delay={0.1}>
+            <figure>
+              {/* `overflow-clip`, no `hidden`: con `hidden` esta caja es
+                  contenedor de scroll y el `parallax` del retrato se queda
+                  congelado a mitad de recorrido. */}
+              <div className="relative aspect-[4/5] w-full max-w-[19rem] overflow-clip bg-carbon/5">
+                <Image
+                  src={EMMY_PHOTO.src}
+                  alt={EMMY_PHOTO.alt}
+                  fill
+                  sizes="(min-width: 1024px) 20vw, 60vw"
+                  className="parallax object-cover"
+                />
+              </div>
+              <figcaption className="mt-5 max-w-[19rem] border-t border-carbon/15 pt-4">
+                <p className="text-small font-semibold tracking-[0.1em] text-carbon uppercase">Emmy</p>
+                <p className="mt-2 text-small text-gray">
+                  Fundadora y curadora. Selecciona cada experiencia y conecta a la comunidad con los espacios que la
+                  reciben. También organiza los Sunny Originals.
+                </p>
+              </figcaption>
+            </figure>
+          </InViewReveal>
+        </div>
       </div>
     </div>
   );

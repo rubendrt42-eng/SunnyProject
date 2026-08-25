@@ -1,53 +1,55 @@
 import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { WordReveal } from "@/components/motion/WordReveal";
 import { LineReveal } from "@/components/motion/LineReveal";
-import { LinkButton } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { blurProps, sanityImageUrl } from "@/lib/sanity/image";
 import type { SanityImage } from "@/lib/sanity/types";
 
 /**
- * Hero del MVP lean.
+ * Capítulo 01 — el manifiesto.
  *
- * POR QUÉ YA NO HAY FOTOGRAFÍA FIJA
+ * QUÉ SE QUITÓ, Y POR QUÉ ESO ES EL DISEÑO
  *
- * Antes usaba `HERO_TOGETHER` de `lib/media.ts`. Esa imagen es de referencia
- * —descargada de contenido publicado por otra marca— y el propio manifiesto del
- * proyecto marca su uso en producción como bloqueado. Estaba publicada en una
- * URL abierta e indexable.
+ * La versión anterior tenía siete elementos compitiendo en la primera pantalla:
+ * línea de contexto, titular, frase destacada, subtítulo, botón, guía y
+ * contador. Y detrás, dos degradados de color y tres arcos.
  *
- * Se sustituye por una composición de marca hecha solo con CSS: carbón de base,
- * un sol de amarillo Sunny arriba a la izquierda, un barrido de naranja abajo a
- * la derecha y el mismo grano de antes. Cero archivos, cero licencias, cero
- * peticiones de red — y el texto queda en blanco cálido sobre carbón, que es
- * más contraste del que tenía sobre la fotografía.
+ * Ahora hay cinco, y ninguno decorativo. **Se cayeron los dos degradados y los
+ * arcos**: eran una fotografía que no existe, dibujada con CSS. Un degradado
+ * naranja no es una imagen de una experiencia; es el hueco de la imagen pintado
+ * de un color bonito, y a los tres capítulos ya se notaba que era relleno. El
+ * fondo es carbón plano con el mismo grano de papel de siempre. Si el hero se
+ * sostiene, se sostiene por la tipografía y por el aire.
  *
- * **En cuanto Emmy suba una fotografía** al campo «Fotografía del hero» del
- * documento de contenido, el hero la usa y la composición desaparece. No hace
- * falta tocar código: por eso el campo existe.
+ * **El subtítulo se fue al capítulo siguiente.** No se borró: abre «Experiencias»
+ * como párrafo de entrada. Así la frase que explica Sunny cruza el pliegue —
+ * termina en carbón y continúa en marfil— y el hero se queda con una sola cosa
+ * que decir, que es lo que le da autoridad.
  *
- * LA SALIDA
+ * LA ESTRUCTURA
  *
- * `hero-exit`: al bajar, el hero se aleja un poco y se oscurece en vez de
- * limitarse a desaparecer por arriba. Da la sensación de que la página tiene
- * capas y de que la sección siguiente pasa por delante, no detrás. Es CSS
- * ligado al scroll, sin JavaScript.
+ * Tres bandas y una regla. Arriba, el dato de contexto pegado al margen
+ * izquierdo. En el centro óptico, el manifiesto. Abajo, una línea de un pixel
+ * de lado a lado y, colgando de ella, la acción a la izquierda y el recuento a
+ * la derecha. La regla no adorna: es lo que convierte tres cosas sueltas en una
+ * composición, y es la única «caja» de todo el capítulo.
  *
- * La sección recorta con `overflow-clip` y no con `overflow-hidden` a
- * propósito: `hidden` la convertiría en contenedor de scroll y congelaría el
- * parallax de la fotografía del hero —el de aquí abajo— en cuanto Emmy suba
- * una. La explicación medida está junto a `.hero-exit` en globals.css.
+ * LAS DOS FAMILIAS
  *
- * EL CONTADOR
+ * Manrope enuncia el hecho, en peso 500 y casi sin apretar — el peso 750 que
+ * había antes es la firma de un panel de control. Newsreader en cursiva y
+ * amarillo Sunny dice lo que ese hecho significa. Las dos partes vienen de
+ * campos separados de Sanity; si Emmy deja la segunda vacía, el manifiesto es
+ * de una sola voz y la composición no se entera.
  *
- * Solo aparece a partir de tres experiencias. Con una o dos, un contador honesto
- * dice en voz alta que el sitio está casi vacío — y eso es peor que no decir
- * nada. No se inventa un número: se calla.
+ * EL SITIO DE LA FOTOGRAFÍA
  *
- * Cuenta las que se pueden solicitar, no las publicadas: decir «disponibles»
- * incluyendo las agotadas es la clase de número que se desmiente solo en
- * cuanto la persona llega al catálogo y ve la etiqueta «Agotada». Por eso el
- * filtro está en quien llama, no aquí: el hero solo pinta el número que le den.
+ * `heroImage` ya tiene su lugar: entra a sangre completa detrás del texto, con
+ * un solo velo de carbón para que el statement siga legible. No hay que
+ * rehacer nada el día que Emmy suba una — el hueco está diseñado, no
+ * improvisado.
  */
 export function LeanHero({
   title,
@@ -58,28 +60,16 @@ export function LeanHero({
 }: {
   title: string;
   titleAccent?: string | null;
-  subtitle: string;
+  /** Se acepta por compatibilidad; la portada lo dibuja en el capítulo 02. */
+  subtitle?: string;
   experienceCount: number;
   image?: SanityImage | null;
 }) {
-  /*
-    EL COLOR YA NO SALE DE LA PUNTUACIÓN
-
-    Antes esto era `title.split(/(?<=\.)\s+/)`: la segunda frase del titular se
-    pintaba en amarillo. O sea que una decisión de diseño dependía de dónde
-    pusiera Emmy un punto, sin que nada se lo dijera. El copy publicado hoy es
-    una sola frase, así que el amarillo llevaba apagado desde el principio y
-    nadie podía verlo en el Studio.
-
-    Ahora son dos campos distintos y visibles: «Título principal» y «Frase
-    destacada en amarillo». Vacía la segunda, el titular sale entero en blanco
-    porque así se ha decidido, no porque falte un punto.
-  */
   const destacada = titleAccent?.trim();
 
   return (
-    <section className="hero-exit relative isolate -mt-18 flex min-h-[86svh] flex-col justify-end overflow-clip bg-carbon lg:min-h-[92svh]">
-      {image ? (
+    <section className="hero-exit relative isolate -mt-18 flex min-h-[100svh] flex-col overflow-clip bg-carbon">
+      {image && (
         <>
           <Image
             src={sanityImageUrl(image, 1920)}
@@ -87,80 +77,68 @@ export function LeanHero({
             fill
             priority
             sizes="100vw"
-            className="parallax -z-20 object-cover object-[center_65%]"
+            className="parallax -z-20 object-cover object-[center_45%]"
             {...blurProps(image)}
           />
-          <div aria-hidden className="absolute inset-0 -z-10 bg-carbon/45" />
-          <div
-            aria-hidden
-            className="absolute inset-0 -z-10 bg-gradient-to-t from-carbon/90 via-carbon/60 to-carbon/25"
-          />
-        </>
-      ) : (
-        <>
-          {/* Composición de marca. Ver la nota de arriba: sustituye a una
-              fotografía sin licencia, no a una fotografía que falte por error. */}
-          <div
-            aria-hidden
-            className="absolute inset-0 -z-20"
-            style={{
-              background:
-                "radial-gradient(85% 70% at 12% 8%, rgba(248,211,71,.55) 0%, rgba(248,211,71,.12) 42%, rgba(23,23,20,0) 72%)," +
-                "radial-gradient(75% 65% at 92% 88%, rgba(255,122,61,.42) 0%, rgba(255,122,61,.08) 46%, rgba(23,23,20,0) 74%)," +
-                "linear-gradient(160deg, #1d1d19 0%, #171714 55%, #221f1a 100%)",
-            }}
-          />
-          <svg
-            aria-hidden
-            viewBox="0 0 100 100"
-            preserveAspectRatio="xMidYMid slice"
-            className="absolute inset-0 -z-10 h-full w-full text-warm-white opacity-[0.07]"
-          >
-            <circle cx="18" cy="22" r="30" fill="none" stroke="currentColor" strokeWidth="0.35" />
-            <circle cx="18" cy="22" r="46" fill="none" stroke="currentColor" strokeWidth="0.25" />
-            <circle cx="88" cy="86" r="26" fill="none" stroke="currentColor" strokeWidth="0.35" />
-          </svg>
+          {/* Un velo, no dos. Con la fotografía real el degradado sobra: lo que
+              hace falta es bajar la foto lo justo para que el texto se lea. */}
+          <div aria-hidden className="absolute inset-0 -z-10 bg-carbon/60" />
         </>
       )}
+      {/* Grano de papel, no degradado. Es textura de superficie: se ve igual
+          con fotografía y sin ella, y no finge ser una imagen. */}
       <div aria-hidden className="hero-grain absolute inset-0 -z-10" />
 
-      <Container className="hero-caja pt-32 pb-14 sm:pb-20">
-        {/*
-          SE QUITÓ LA CÁPSULA
-
-          Era una píldora con borde fino, fondo translúcido, desenfoque detrás y
-          versalitas muy espaciadas. Es el elemento más repetido de las portadas
-          generadas: prácticamente todas abren con una etiqueta así, y a este
-          público le va a resultar familiar por las razones equivocadas.
-
-          Además no informaba: «Monterrey · Cada semana» ya lo dicen el
-          subtítulo y el pie. Ahora es una línea de texto sin chrome — la misma
-          información, sin el disfraz de insignia.
-        */}
+      <Container className="hero-caja relative flex min-h-[100svh] flex-col justify-between pt-28 pb-8 sm:pt-32 sm:pb-10">
         <LineReveal>
-          <p className="text-small font-medium tracking-wide text-warm-white/70">Monterrey · Cada semana</p>
+          <p className="text-small tracking-[0.18em] text-warm-white/50 uppercase">Monterrey · Cada semana</p>
         </LineReveal>
 
-        <h1 className="hero-titular mt-6 max-w-3xl text-display text-warm-white">
-          <WordReveal as="span" text={title} className="block" />
-          {destacada && <WordReveal as="span" text={destacada} delay={0.22} className="block text-sunny" />}
-        </h1>
-
-        <LineReveal delay={0.5}>
-          <p className="mt-6 max-w-lg text-body-l text-warm-white/85">{subtitle}</p>
-        </LineReveal>
-
-        <LineReveal delay={0.62}>
-          <div className="hero-acciones mt-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:gap-8">
-            <LinkButton href="/experiencias" size="lg" variant="primary" arrow>
-              Explorar experiencias
-            </LinkButton>
-
-            {experienceCount >= 3 && (
-              <p className="text-small text-warm-white/85">
-                <span className="font-bold text-warm-white">{experienceCount}</span> experiencias disponibles
-              </p>
+        {/* El manifiesto, centrado y solo. */}
+        <div className="flex flex-1 items-center justify-center py-12">
+          <h1 className="manifiesto max-w-[15ch] text-center text-warm-white">
+            <WordReveal as="span" text={title} className="block" />
+            {destacada && (
+              <WordReveal
+                as="span"
+                text={destacada}
+                delay={0.26}
+                className="manifiesto__acento mt-2 block font-serif text-sunny"
+              />
             )}
+          </h1>
+        </div>
+
+        {/*
+          La regla y lo que cuelga de ella.
+
+          Acción a la izquierda, dato a la derecha, separados por todo el ancho
+          del contenedor. Es la estructura que sostiene el capítulo: sin la
+          línea, el botón y el recuento serían dos elementos flotando en el
+          borde inferior.
+        */}
+        <LineReveal delay={0.72}>
+          <div className="border-t border-warm-white/20 pt-5">
+            <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4">
+              <Link
+                href="/experiencias"
+                className="hero-accion press group inline-flex min-h-11 max-w-full items-center gap-2.5 text-body font-medium"
+              >
+                Explorar experiencias
+                <ArrowRight
+                  aria-hidden
+                  size={17}
+                  strokeWidth={1.5}
+                  className="transition-transform duration-[var(--motion-nudge)] ease-sunny group-hover:translate-x-1"
+                />
+              </Link>
+
+              {experienceCount >= 3 && (
+                <p className="text-small text-warm-white/55">
+                  <span className="font-serif text-body-l text-warm-white">{experienceCount}</span> disponibles ahora
+                </p>
+              )}
+            </div>
           </div>
         </LineReveal>
       </Container>

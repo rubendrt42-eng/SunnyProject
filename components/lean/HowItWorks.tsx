@@ -2,79 +2,159 @@ import { Container } from "@/components/ui/Container";
 import { InViewReveal } from "@/components/motion/InViewReveal";
 
 /**
- * Los tres pasos, en el lenguaje correcto para esta etapa.
+ * Capítulo 04 — el recorrido.
  *
- * El tercero es el importante y por eso está redactado con cuidado: **el sitio
- * no confirma nada**. Recibe una solicitud y Emmy contesta. Decir «reserva tu
- * lugar» aquí sería prometer algo que el sistema no hace, y quien lo leyera se
- * presentaría a una clase creyendo que tiene lugar apartado.
+ * QUÉ SE TIRÓ
  *
- * POR QUÉ CAMBIÓ LA COMPOSICIÓN
+ * Tres columnas escalonadas con un número naranja encima. Era la composición
+ * más reconocible de la portada y la que más delataba de dónde venía: tres
+ * elementos, tres columnas, porque eran tres. Además el recorrido que contaba
+ * estaba de más simplificado —descubrir, solicitar, confirmar— y se saltaba el
+ * único punto donde alguien puede llevarse una idea equivocada.
  *
- * Eran tres cajas blancas idénticas, del mismo tamaño y sin ninguna textura:
- * 300 px de alto que no aportaban nada visual en la sección que explica el
- * producto. La auditoría la marcó como la más plana del sitio.
+ * QUÉ HAY AHORA
  *
- * Ahora el número manda —grande, en serif, con el naranja de marca— y las tres
- * columnas se escalonan verticalmente en escritorio, de forma que la lectura
- * baja en diagonal en vez de recorrer tres rectángulos alineados. Ninguna caja,
- * ningún borde: solo una línea fina arriba que las separa.
+ * Cinco pasos en vertical, alternando lado en escritorio. El número deja de
+ * acompañar y pasa a encabezar: Newsreader a cuerpo grande, con una regla fina
+ * debajo. La lectura baja en zigzag en pantalla ancha y en columna única en
+ * teléfono, que es la misma narrativa contada al ancho que toca — no una
+ * rejilla apilada.
  *
- * Sigue siendo texto y CSS. No se volvió interactivo, no se convirtió en
- * carrusel y no ganó un cuarto paso.
+ * EL PASO 03 ES UNA PANTALLA, NO UNA NOTA
+ *
+ * «Solicitar no es estar confirmado» era la letra pequeña de un párrafo. Es la
+ * única frase de la portada que evita que alguien se presente a una clase
+ * creyendo que tiene lugar, así que deja de ser una advertencia escondida y
+ * pasa a ser el momento en que el recorrido se detiene: banda de amarillo Sunny
+ * a todo el ancho, carbón encima, y el paso contado dentro. Es el único bloque
+ * de la portada que toca los dos bordes, y por eso corta.
+ *
+ * ESTRUCTURA
+ *
+ * `<ol>` a ancho completo y un `Container` DENTRO de cada `<li>`. Así el paso
+ * de la ruptura puede pintar su fondo de borde a borde sin salirse del
+ * documento —nada de `100vw`, que en escritorio suma el ancho de la barra de
+ * scroll y devuelve scroll horizontal— y la lista sigue siendo una lista para
+ * quien la escucha: «elemento 3 de 5» se sigue anunciando.
  */
 const PASOS = [
   {
     numero: "01",
-    titulo: "Descubre una experiencia",
-    texto: "Mira lo que hay disponible esta semana en los espacios aliados de Monterrey.",
+    titulo: "Encuentra algo que quieras vivir",
+    texto: "Explora las experiencias disponibles.",
   },
   {
     numero: "02",
     titulo: "Solicita tu lugar",
-    texto: "Déjanos tu nombre y tu WhatsApp. Sin crear cuenta y sin pagar nada.",
+    texto: "Deja tus datos. No necesitas crear una cuenta.",
   },
   {
     numero: "03",
-    titulo: "Confirmamos contigo",
-    texto: "Revisamos la disponibilidad y te escribimos por WhatsApp para confirmar tu lugar.",
+    titulo: "Sunny revisa disponibilidad",
+    texto: "La solicitud llega y se revisa si todavía existe lugar.",
+    ruptura: true,
+  },
+  {
+    numero: "04",
+    titulo: "Recibe tu confirmación",
+    texto: "Sunny se comunica por WhatsApp.",
+  },
+  {
+    numero: "05",
+    titulo: "Vive la experiencia",
+    texto: "Llegas al espacio y formas parte de la experiencia.",
   },
 ];
 
 export function HowItWorks() {
   return (
-    <Container>
-      <InViewReveal variant="lead">
-        <p className="eyebrow">Cómo funciona</p>
-        <h2 className="mt-3 max-w-2xl text-title text-balance">Salir de la rutina no debería ser complicado.</h2>
-      </InViewReveal>
+    <>
+      <Container>
+        <InViewReveal variant="lead">
+          {/*
+            Sin antetítulo. «Cómo funciona» encima de «Cinco pasos» decía dos
+            veces lo mismo, y era la fórmula —antetítulo, titular, párrafo— que
+            esta portada dejó de repetir. El titular se basta.
 
-      {/*
-        El `<li>` va POR FUERA de la animación, no por dentro.
+            Las dos voces van en dos líneas y no en línea corrida: mezcladas en
+            el mismo renglón la conjunción quedaba huérfana al final y el giro
+            se leía como un tropiezo.
+          */}
+          <h2 className="max-w-[16ch] text-title">
+            <span className="block">Cinco pasos,</span>
+            <span className="mt-1 block font-serif text-[1.06em] leading-[1.06] font-normal tracking-normal text-orange-ink italic">
+              y ninguna cuenta que crear.
+            </span>
+          </h2>
+        </InViewReveal>
+      </Container>
 
-        Envolver cada elemento en el div que anima rompe la relación directa
-        entre `<ol>` y `<li>` que exige HTML, y un lector de pantalla deja de
-        anunciar «lista de 3 elementos, elemento 1 de 3» — que es justo la
-        información que hace entendible una secuencia de pasos. axe-core lo
-        marcó como `list` y `listitem`, gravedad seria, con 8 incidencias.
-      */}
-      <ol className="mt-12 grid gap-10 sm:mt-16 sm:grid-cols-3 sm:gap-8">
-        {PASOS.map((paso, i) => (
-          <li key={paso.numero} className={i === 1 ? "sm:mt-10" : i === 2 ? "sm:mt-20" : ""}>
-            <InViewReveal delay={i * 0.08}>
-              <div className="border-t border-carbon/15 pt-5">
-                {/* El número es el orden real de una secuencia, no una
-                    decoración: estos pasos ocurren uno después de otro. */}
-                <span aria-hidden className="block font-serif text-5xl leading-none text-orange-ink/80 tabular-nums">
-                  {paso.numero}
-                </span>
-                <h3 className="mt-4 text-heading text-balance">{paso.titulo}</h3>
-                <p className="mt-2 max-w-xs text-body text-gray">{paso.texto}</p>
-              </div>
-            </InViewReveal>
-          </li>
-        ))}
+      <ol className="mt-14 sm:mt-20">
+        {PASOS.map((paso, i) => {
+          const derecha = i % 2 === 1;
+
+          if (paso.ruptura) {
+            return (
+              <li key={paso.numero} className="ruptura my-10 py-16 sm:my-14 sm:py-24">
+                <Container>
+                  <div className="lg:grid lg:grid-cols-12 lg:items-end lg:gap-8">
+                    <InViewReveal className="lg:col-span-7">
+                      {/*
+                        El statement de la ruptura. La conjunción va en la otra
+                        familia porque es donde está el giro: lo que se hace
+                        (solicitar) y lo que todavía no se es (confirmado).
+                      */}
+                      <p className="text-display text-balance text-carbon">
+                        Solicitar{" "}
+                        <span className="font-serif font-normal italic">no es</span>{" "}
+                        estar confirmado.
+                      </p>
+                    </InViewReveal>
+
+                    <InViewReveal delay={0.1} className="mt-8 lg:col-span-5 lg:mt-0">
+                      <div className="border-t border-carbon/25 pt-5">
+                        <span aria-hidden className="recorrido-num block font-serif text-carbon/45">
+                          {paso.numero}
+                        </span>
+                        <h3 className="mt-5 text-heading text-carbon">{paso.titulo}</h3>
+                        <p className="mt-2 max-w-[36ch] text-body text-carbon/75">{paso.texto}</p>
+                      </div>
+                    </InViewReveal>
+                  </div>
+                </Container>
+              </li>
+            );
+          }
+
+          return (
+            <li key={paso.numero} className={derecha && i === 1 ? "py-6 sm:py-8 lg:-mt-28" : "py-6 sm:py-8"}>
+              <Container>
+                {/*
+                  Alternancia. En escritorio los pasos impares ocupan la mitad
+                  izquierda y los pares la derecha, así que la mirada zigzaguea
+                  en vez de recorrer una columna. Por debajo de `lg` el zigzag
+                  desaparece —en 390 px no hay dos mitades— y queda una sola
+                  narrativa vertical.
+                */}
+                <div className="lg:grid lg:grid-cols-12">
+                  <InViewReveal
+                    delay={0.06}
+                    className={derecha ? "lg:col-span-5 lg:col-start-8" : "lg:col-span-5 lg:col-start-1"}
+                  >
+                    <div className="border-t border-carbon/15 pt-5">
+                      <span aria-hidden className="recorrido-num block font-serif text-orange-ink/35">
+                        {paso.numero}
+                      </span>
+                      <h3 className="mt-5 max-w-[18ch] text-subtitle text-balance">{paso.titulo}</h3>
+                      <p className="mt-3 max-w-[38ch] text-body-l text-gray">{paso.texto}</p>
+                    </div>
+                  </InViewReveal>
+                </div>
+              </Container>
+            </li>
+          );
+        })}
       </ol>
-    </Container>
+    </>
   );
 }

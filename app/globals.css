@@ -128,20 +128,38 @@
      misma fuerza y deja de sonar a plantilla. Y la altura de línea sube de 0.92
      a 0.98: con «Descubre algo nuevo» 0.92 va perfecto, pero el titular lo
      escribe Emmy desde Sanity y el día que ponga tres líneas se tocaban. */
-  --text-display: clamp(2.5rem, 6.5vw, 4.75rem);
-  --text-display--line-height: 0.98;
-  --text-display--letter-spacing: -0.035em;
-  --text-display--font-weight: 750;
+  /* ─────────────────────────────────────────────────────────────────────
+     LA VOZ SE CONTUVO.
 
-  --text-title: clamp(1.875rem, 3.6vw, 3rem);
-  --text-title--line-height: 1.06;
-  --text-title--letter-spacing: -0.026em;
-  --text-title--font-weight: 700;
+     Estaba en peso 750 con el interletraje a -0.035em. Esa pareja —grotesca
+     muy gruesa y muy apretada— es la firma tipográfica del software: es lo que
+     usan los paneles, los productos SaaS y las portadas generadas, y era la
+     razón de fondo por la que Sunny se leía como producto y no como marca. No
+     era el color ni la retícula: era el peso.
 
-  --text-subtitle: clamp(1.375rem, 2.2vw, 1.875rem);
-  --text-subtitle--line-height: 1.12;
-  --text-subtitle--letter-spacing: -0.022em;
-  --text-subtitle--font-weight: 700;
+     Medido en la referencia editorial que se tomó como norte: peso 500 en toda
+     la página, interletraje sin apretar, y dos tamaños reales. Ni un 600, ni un
+     700, ni una sola letra comprimida. La autoridad no venía del grosor.
+
+     Aquí se baja a 500 y el apretado casi desaparece. Manrope es variable, así
+     que 500 no es otra fuente: es la misma con menos peso, y a cuerpo grande
+     gana aire dentro de cada letra. El titular deja de gritar y empieza a
+     componer.
+     ───────────────────────────────────────────────────────────────────────── */
+  --text-display: clamp(2.5rem, 6.4vw, 4.75rem);
+  --text-display--line-height: 1.03;
+  --text-display--letter-spacing: -0.012em;
+  --text-display--font-weight: 500;
+
+  --text-title: clamp(1.875rem, 3.5vw, 2.875rem);
+  --text-title--line-height: 1.1;
+  --text-title--letter-spacing: -0.008em;
+  --text-title--font-weight: 500;
+
+  --text-subtitle: clamp(1.3125rem, 2.1vw, 1.75rem);
+  --text-subtitle--line-height: 1.18;
+  --text-subtitle--letter-spacing: -0.004em;
+  --text-subtitle--font-weight: 600;
 
   /* El título de una tarjeta de experiencia.
      Estaba en 1.125rem fijo con peso 600: prácticamente el mismo tamaño que el
@@ -224,7 +242,11 @@
  */
 .hero-grain {
   pointer-events: none;
-  opacity: 0.16;
+  /* 0.16 estaba calibrado para sentarse sobre una fotografía. Sobre el carbón
+     plano del hero sin foto, el mosaico de 140 px del ruido se hacía visible
+     como un bandeado horizontal. A 0.10 sigue quitándole el plano al fondo y
+     deja de dibujar su propia trama. */
+  opacity: 0.1;
   mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
 }
@@ -545,50 +567,6 @@ h2 {
   }
 }
 
-/*
-  El titular de la portada, preparado para textos largos.
-
-  QUÉ SE MIDIÓ
-
-  El titular usaba el mismo `--text-display` que el resto de las portadas de
-  sección, pensado para una o dos líneas. Con un título largo escrito desde
-  Sanity, el `h1` medía **670 px de alto a 1440×900** y **392 px a 390×844**: el
-  subtítulo quedaba cortado por el borde inferior y «Explorar experiencias»
-  —la única acción de la portada— salía de la primera pantalla.
-
-  QUÉ SE HACE, Y QUÉ NO
-
-  No se corta el texto. Nada de `line-clamp` ni de puntos suspensivos: un
-  titular a medias es peor que un titular largo, y quien escribe merece ver lo
-  que escribió. Lo que se hace es que la tipografía ceda antes que la
-  composición.
-
-  1. El tamaño se mide contra el ALTO además del ancho (`min(6.5vw, 8vh)`). El
-     fallo se midió a 1440×900, donde manda el ancho y el titular llegaba al
-     máximo; atándolo también al alto, una ventana baja deja de pagar con el
-     botón. En un teléfono en vertical no cambia nada: ahí manda el mínimo.
-
-  2. El máximo baja de 4.75rem a 4.375rem, lo justo para que el interlineado
-     nuevo no engorde el bloque. Tres líneas ocupaban 223 px y ahora ocupan
-     222: el titular respira más y mide lo mismo.
-
-  Para lo que la tipografía ya no puede arreglar —un titular de doce palabras—
-  el aviso está donde se escribe: el campo «Título principal» del Studio avisa
-  a partir de 70 caracteres. Avisa, no prohíbe: quién sabe si ese titular de 72
-  se lee perfecto.
-
-  Va sobre `.hero-titular` y no sobre el token `--text-display` a propósito: ese
-  token lo comparten «Cómo funciona», «Preguntas frecuentes», «Privacidad», la
-  ficha de experiencia y la sección de comunidad, y ninguna tiene este problema.
-*/
-.hero-titular {
-  font-size: clamp(2.5rem, min(6.5vw, 8vh), 4.375rem);
-
-  /* 0.98 es un interlineado de titular de una línea. Con tres o cuatro, los
-     rasgos descendentes de una línea casi tocan la siguiente — se ve apretado
-     justo cuando más texto hay que leer. */
-  line-height: 1.06;
-}
 
 /*
   El hero en pantallas bajas.
@@ -1122,5 +1100,156 @@ a {
 @media (prefers-reduced-motion: reduce) {
   .page-enter {
     animation: none;
+  }
+}
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   DIRECCIÓN VISUAL DE LA PORTADA — CAPÍTULOS
+
+   La portada dejó de ser una pila de secciones para ser una secuencia de
+   capítulos. La regla que la gobierna: **dos capítulos seguidos no comparten
+   composición**. Cambia el fondo, la alineación, la escala y quién manda —a
+   veces el titular, a veces un número, a veces una fotografía desplazada—, de
+   forma que bajar por la página se sienta como avanzar y no como desplazarse.
+
+   Lo que sigue son las piezas tipográficas que ese ritmo necesita y que la
+   escala general no cubría. Todo es CSS: no entra ninguna librería.
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+/*
+  LA ESCALA DEL MANIFIESTO
+
+  Un escalón por encima de `--text-display`, reservado a los dos momentos donde
+  la tipografía ES la composición: la entrada y el cierre. `display` es el
+  titular de un capítulo; esto es el capítulo entero.
+
+  Se mide contra el ancho y contra el ALTO. Un manifiesto centrado a pantalla
+  completa vive o muere por el alto disponible: en una ventana baja, atarlo solo
+  al ancho lo empuja todo fuera. Con `min(8.2vw, 10.5vh)` el statement encoge
+  antes de que el subtítulo y el botón paguen la factura.
+*/
+.manifiesto {
+  /* El suelo sube de 2.5 a 2.75rem: en 390 px el manifiesto pasa a ocupar casi
+     de margen a margen. En pantalla pequeña el titular no debe encogerse hasta
+     desaparecer — ahí es donde más tiene que sostener la composición. */
+  font-size: clamp(2.75rem, min(8.2vw, 10.5vh), 5.75rem);
+  line-height: 1.04;
+  /* Misma disciplina que la escala general: sin el apretado de software y con
+     el peso justo para que una letra de 92 px respire por dentro. */
+  letter-spacing: -0.015em;
+  font-weight: 500;
+  text-wrap: balance;
+}
+
+/*
+  LA FRASE DESTACADA, EN LA OTRA VOZ
+
+  Aquí es donde las dos familias dialogan de verdad. Manrope dice el hecho;
+  Newsreader en cursiva dice lo que ese hecho significa. Cambiar de familia a
+  mitad del statement es lo que convierte un titular en una composición — y es
+  el único sitio de la portada donde el amarillo Sunny escribe en grande.
+
+  Va un punto por encima en tamaño óptico (`1.06em`) porque la cursiva de una
+  serif tiene menos peso visual que una sans de 750 al mismo cuerpo: igualadas
+  al milímetro, la segunda línea se leería como una nota a pie.
+
+  El interletraje se suelta: lo apretado es un recurso de la sans; en la
+  cursiva, apretar cierra las contraformas y la vuelve ilegible en grande.
+*/
+.manifiesto__acento {
+  font-size: 1.06em;
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: -0.018em;
+  line-height: 1.06;
+}
+
+/*
+  EL PIE DEL HERO
+
+  Una regla de un pixel y un dato. Sustituye al indicador de scroll animado que
+  no se pidió: la línea vertical dice «esto sigue hacia abajo» sin moverse, y el
+  número dice cuántas experiencias hay ahora mismo. Si no hay al menos tres, no
+  se dice nada — un contador honesto de «1» grita que el sitio está vacío.
+*/
+.hero-guia {
+  width: 1px;
+  height: clamp(2rem, 5vh, 3.5rem);
+  background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--color-warm-white) 55%, transparent));
+}
+
+/*
+  LA ACCIÓN DEL HERO NO ES UNA CAJA.
+
+  Primero fue un botón amarillo relleno: competía con la frase destacada, que
+  también es amarilla. Después un contorno claro: mejor, pero seguía siendo un
+  rectángulo dibujado en una composición donde la única línea es la regla de
+  abajo, y un borde más la contradecía.
+
+  Ahora es texto que cuelga de esa regla, con la línea apareciendo al pasar por
+  encima. Sigue siendo evidente —está solo, en el borde inferior, con una
+  flecha— y deja de disputarle el sitio al statement.
+*/
+.hero-accion {
+  color: var(--color-warm-white);
+  box-shadow: inset 0 -1px 0 0 transparent;
+  transition: box-shadow var(--motion-tint, 150ms);
+}
+.hero-accion:hover {
+  box-shadow: inset 0 -1px 0 0 var(--color-sunny);
+}
+
+/*
+  EL NÚMERO DEL RECORRIDO
+
+  En «Cómo funciona» el número no acompaña al paso: lo encabeza y ocupa sitio
+  real. Es la pieza que hace que el capítulo se lea como un recorrido y no como
+  una lista — y la que permite que el mismo bloque funcione en una columna
+  estrecha de teléfono y en media pantalla de escritorio sin cambiar de idea.
+
+  Newsreader, no Manrope: el número es una cifra que se lee, no un dato de
+  interfaz, y la serif le da edad. `tabular-nums` para que 01 y 05 midan igual y
+  el recorrido no se descuadre línea a línea.
+*/
+.recorrido-num {
+  font-size: clamp(3.5rem, 7vw, 6rem);
+  line-height: 0.82;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+
+/*
+  LA RUPTURA
+
+  El momento en que el recorrido se detiene a decir que solicitar no es estar
+  confirmado. No es un aviso al pie: es el paso 03 convertido en pantalla, con
+  el amarillo de marca de fondo y el carbón encima.
+
+  Se sale del contenedor a propósito (`--ancho-total`). Es el único bloque de la
+  portada que toca los dos bordes, y por eso corta: el ojo entiende que aquí
+  pasa algo distinto antes de leer una palabra.
+*/
+.ruptura {
+  background: var(--color-sunny);
+  color: var(--color-carbon);
+}
+
+/*
+  MEDIDAS DE LECTURA
+
+  Un párrafo centrado necesita una medida más corta que uno alineado a la
+  izquierda: sin un borde fijo donde volver, el ojo se pierde al saltar de línea
+  mucho antes. 46 caracteres en el hero, 54 en los capítulos alineados.
+*/
+.medida-centro {
+  max-width: 46ch;
+  margin-inline: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-accion {
+    transition: none;
   }
 }

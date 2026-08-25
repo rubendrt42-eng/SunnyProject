@@ -37,15 +37,29 @@ function soloCodigo(fuente: string) {
 describe("sin experiencias, nadie promete que las hay", () => {
   it("el antetítulo de la portada depende de que haya lista", () => {
     const fuente = soloCodigo(leer("app/page.tsx"));
-    const linea = fuente.split("\n").find((l) => l.includes('className="eyebrow"'));
 
-    expect(linea, "ya no se encuentra el antetítulo de la sección semanal").toBeDefined();
-    // El texto lo decide `antetituloDeLaLista`, que mira la lista y además las
-    // fechas; lo que se protege aquí es que no vuelva a ser una constante.
+    /*
+      SE BUSCA POR LO QUE HACE, NO POR CÓMO SE VE.
+
+      Antes esta prueba localizaba la línea por `className="eyebrow"`. El
+      rediseño de la portada en capítulos retiró esa clase justo de aquí: la
+      cabecera del capítulo de experiencias dejó de repetir la fórmula
+      «antetítulo sobre titular» y el contexto se mudó al extremo derecho con
+      otro estilo. La prueba se caía por un cambio de clase, no por una promesa
+      rota — o sea que estaba atada a la decoración.
+
+      Lo que importa es el invariante, y es doble: que el texto lo calcule
+      `antetituloDeLaLista` mirando la lista, y que no vuelva a existir un
+      «Esta semana» escrito a mano en la portada.
+    */
+    expect(fuente, "la portada dejó de calcular el antetítulo de la lista").toMatch(
+      /antetituloDeLaLista\(experiences\)/,
+    );
+
     expect(
-      linea,
-      `«${linea?.trim()}» anuncia la semana sin mirar si hay algo publicado`,
-    ).toMatch(/antetituloDeLaLista\(experiences\)/);
+      fuente,
+      "hay un «esta semana» escrito a mano: promete inventario sin mirar si lo hay",
+    ).not.toMatch(/["'>]\s*Esta semana/i);
   });
 
   it("el titular del catálogo depende de que haya lista", () => {
