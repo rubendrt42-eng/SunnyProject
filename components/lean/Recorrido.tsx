@@ -1,0 +1,131 @@
+import { Container } from "@/components/ui/Container";
+import { InViewReveal } from "@/components/motion/InViewReveal";
+import { RECORRIDO, type PasoDelRecorrido } from "@/lib/lean-content";
+
+/**
+ * El recorrido, con lámina fija.
+ *
+ * QUÉ ESTABA MAL
+ *
+ * El recorrido era texto quieto: mucho aire para muy poca información, y nada
+ * ocurría al bajar. Lo que le faltaba no eran cosas que picar — era que el acto
+ * de recorrerlo se sintiera.
+ *
+ * CÓMO FUNCIONA AHORA
+ *
+ * Cada paso ocupa una pantalla y se parte en dos: una **lámina que se queda
+ * fija** mientras lees el texto de al lado, y que sale cuando el paso termina
+ * para dejar entrar la del paso siguiente. Si subes, vuelve la anterior. Es el
+ * scroll del navegador el que manda: no hay nada que lo intercepte, ni saltos,
+ * ni pantallas robadas.
+ *
+ * Se hace con `position: sticky`, que existe desde siempre y no cuesta
+ * JavaScript. Encima, cada lámina entra con una escala y una opacidad ligadas a
+ * su posición (`animation-timeline: view()`), así que **no se enciende y se
+ * apaga: se acerca y se aleja**. Como depende de la posición y no del tiempo, va
+ * y viene con el dedo — que es exactamente lo que se pidió.
+ *
+ * POR QUÉ LA LÁMINA NO ES UN DEGRADADO
+ *
+ * Aquí es donde irían las fotografías del día que existan, y el hueco está
+ * dimensionado para ellas. Mientras tanto la lámina la compone la tipografía: el
+ * verbo del paso a cuerpo enorme en Newsreader y el número pequeño arriba. Cada
+ * una sobre un tinte plano distinto, para que el cambio de una a otra se lea sin
+ * necesidad de mirar el texto.
+ *
+ * LA RUPTURA VIVE DENTRO DE LA SECUENCIA
+ *
+ * El paso 03 —«solicitar no es estar confirmado»— era una banda que cortaba la
+ * página. Ahora es la lámina amarilla del tercer paso: está en pantalla todo el
+ * tiempo que dura ese paso, en vez de pasar de largo. Es más difícil de saltarse
+ * que un cartel.
+ *
+ * EN TELÉFONO
+ *
+ * Nada se fija. La lámina va encima y el texto debajo, y cada paso entra con el
+ * mismo revelado que el resto del sitio. Un panel pegajoso en 390 px taparía
+ * media pantalla de texto.
+ *
+ * `prefers-reduced-motion` desactiva las escalas; el `sticky` se queda, porque
+ * no es una animación: es una posición.
+ */
+const TINTES = [
+  "bg-carbon/[0.055] text-carbon",
+  "bg-orange/[0.09] text-carbon",
+  "bg-sunny text-carbon",
+  "bg-carbon text-warm-white",
+  "bg-orange/[0.14] text-carbon",
+];
+
+function Lamina({ paso, indice }: { paso: PasoDelRecorrido; indice: number }) {
+  return (
+    <div
+      className={`recorrido-lamina relative flex aspect-[4/5] w-full flex-col justify-between overflow-clip p-7 sm:p-9 ${TINTES[indice % TINTES.length]}`}
+    >
+      <span aria-hidden className="text-small tracking-[0.18em] tabular-nums opacity-60">
+        {paso.numero} / 05
+      </span>
+
+      {paso.ruptura ? (
+        /* La ruptura no lleva verbo: lleva la frase entera. Es el único paso
+           que existe para corregir una idea equivocada, así que la lámina la
+           dice completa. */
+        <p className="max-w-[14ch] font-serif text-[clamp(2rem,3.6vw,3.25rem)] leading-[1.08] italic">
+          Solicitar no es estar confirmado.
+        </p>
+      ) : (
+        <p aria-hidden className="font-serif text-[clamp(3rem,6vw,5.5rem)] leading-[0.9] italic">
+          {paso.clave}
+        </p>
+      )}
+    </div>
+  );
+}
+
+export function Recorrido() {
+  return (
+    <ol className="recorrido">
+      {RECORRIDO.map((paso, i) => (
+        <li key={paso.numero} className="recorrido-paso">
+          <Container>
+            <div className="lg:grid lg:grid-cols-12 lg:gap-[48px]">
+              {/*
+                LA LÁMINA SE QUEDA.
+
+                `sticky` con `top` a un quinto de la ventana: la lámina se
+                detiene ahí y acompaña la lectura del paso entero. De `lg` hacia
+                abajo no se fija — ver la nota de arriba.
+              */}
+              <div className="lg:col-span-5 lg:sticky lg:top-[18vh] lg:self-start">
+                <Lamina paso={paso} indice={i} />
+              </div>
+
+              <div className="mt-8 lg:col-span-6 lg:col-start-7 lg:mt-0 lg:flex lg:min-h-[70vh] lg:items-center">
+                <InViewReveal>
+                  <div>
+                    <span
+                      aria-hidden
+                      className="recorrido-num block font-serif text-orange-ink/30 lg:hidden"
+                    >
+                      {paso.numero}
+                    </span>
+                    <h3 className="mt-4 max-w-[20ch] text-title text-balance lg:mt-0">{paso.titulo}</h3>
+                    <p className="mt-4 max-w-[40ch] text-lead text-gray">{paso.texto}</p>
+
+                    {paso.ruptura && (
+                      <p className="mt-6 max-w-[42ch] text-body text-carbon/70">
+                        Al enviar el formulario nos llega tu solicitud y revisamos la disponibilidad del espacio. Tu
+                        lugar queda confirmado cuando te escribimos por WhatsApp, no antes. Si no hay cupo, también te
+                        avisamos.
+                      </p>
+                    )}
+                  </div>
+                </InViewReveal>
+              </div>
+            </div>
+          </Container>
+        </li>
+      ))}
+    </ol>
+  );
+}

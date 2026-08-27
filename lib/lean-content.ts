@@ -127,6 +127,15 @@ export interface PasoDelRecorrido {
   numero: string;
   titulo: string;
   texto: string;
+  /**
+   * El verbo del paso, para la lámina que acompaña al recorrido.
+   *
+   * No es copy nuevo: es el verbo que ya encabeza cada título, aislado. La
+   * lámina necesita una palabra que se lea a dos metros mientras el texto de al
+   * lado se lee de cerca, y repetir el título entero ahí sería decirlo dos veces
+   * en la misma pantalla.
+   */
+  clave: string;
   ruptura?: boolean;
 }
 
@@ -134,27 +143,32 @@ export const RECORRIDO: PasoDelRecorrido[] = [
   {
     numero: "01",
     titulo: "Encuentra algo que quieras vivir",
+    clave: "Encuentra",
     texto: "Explora las experiencias disponibles.",
   },
   {
     numero: "02",
     titulo: "Solicita tu lugar",
+    clave: "Solicita",
     texto: "Deja tus datos. No necesitas crear una cuenta.",
   },
   {
     numero: "03",
     titulo: "Sunny revisa disponibilidad",
+    clave: "Revisa",
     texto: "La solicitud llega y se revisa si todavía existe lugar.",
     ruptura: true,
   },
   {
     numero: "04",
     titulo: "Recibe tu confirmación",
+    clave: "Confirma",
     texto: "Sunny se comunica por WhatsApp.",
   },
   {
     numero: "05",
     titulo: "Vive la experiencia",
+    clave: "Vive",
     texto: "Llegas al espacio y formas parte de la experiencia.",
   },
 ];

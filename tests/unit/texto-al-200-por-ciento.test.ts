@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync, statSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 /**
@@ -76,14 +76,47 @@ describe("el texto al 200% no rompe el ancho", () => {
     ).not.toBeNull();
   });
 
-  it("el hueco de la rejilla de «Cómo funciona» no escala con el texto", () => {
-    const fuente = soloCodigo(leer("app/como-funciona/page.tsx"));
-    const rejilla = fuente.split("\n").find((l) => l.includes("sm:grid-cols-12"));
+  it("ninguna rejilla de 12 columnas separa con huecos en rem", () => {
+    /*
+      SE BUSCA POR LO QUE HACE, NO POR DÓNDE VIVE.
 
-    expect(rejilla, "ya no se encuentra la rejilla de los pasos").toBeDefined();
+      Antes esta prueba miraba una línea concreta de `app/como-funciona/page.tsx`.
+      El recorrido se mudó a un componente compartido y la prueba se cayó por el
+      cambio de archivo, no por una regresión — o sea que estaba atada a la
+      ubicación en vez de al riesgo.
+
+      El riesgo es este: once huecos dentro de una rejilla de doce columnas se
+      duplican con el texto del navegador al 200% y sacan la página de su ancho.
+      Da igual en qué archivo esté la rejilla. Ahora se revisa todo el código de
+      páginas y componentes.
+    */
+    const archivos: string[] = [];
+    const recorrer = (dir: string) => {
+      for (const entrada of readdirSync(dir)) {
+        const ruta = `${dir}/${entrada}`;
+        if (statSync(ruta).isDirectory()) recorrer(ruta);
+        else if (/\.tsx$/.test(entrada)) archivos.push(ruta);
+      }
+    };
+    recorrer("app");
+    recorrer("components");
+
+    const culpables: string[] = [];
+    for (const ruta of archivos) {
+      soloCodigo(leer(ruta))
+        .split("\n")
+        .forEach((linea, i) => {
+          if (!linea.includes("grid-cols-12")) return;
+          // `gap-8` escala; `gap-[48px]` no. Solo se persiguen los numéricos.
+          const enRem = linea.match(/\b(?:sm|md|lg|xl):?gap(?:-x|-y)?-\d+\b/g);
+          if (enRem) culpables.push(`${ruta}:${i + 1} → ${enRem.join(" ")}`);
+        });
+    }
+
+    expect(archivos.length, "no se encontró ningún .tsx que revisar").toBeGreaterThan(10);
     expect(
-      rejilla,
-      "once huecos en rem dentro de una rejilla de 12 columnas se duplican con el texto y desbordan",
-    ).not.toMatch(/sm:gap-\d/);
+      culpables,
+      `hueco en rem dentro de una rejilla de 12 columnas:\n  ${culpables.join("\n  ")}`,
+    ).toEqual([]);
   });
 });

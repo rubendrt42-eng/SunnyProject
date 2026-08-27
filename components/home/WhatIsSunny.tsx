@@ -55,7 +55,7 @@ export function WhatIsSunny() {
         </h2>
       </InViewReveal>
 
-      <div className="mt-14 grid gap-12 lg:mt-20 lg:grid-cols-12 lg:gap-x-12">
+      <div className="mt-14 grid gap-12 lg:mt-20 lg:grid-cols-12 lg:gap-x-[48px]">
         {/* Columna estrecha de texto: deliberadamente más angosta que el
             statement de arriba, para que se lea como la nota al pie de una idea
             grande y no como otro bloque del mismo peso. */}

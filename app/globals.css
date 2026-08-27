@@ -630,14 +630,22 @@ h2 {
   igual pero no crea contenedor de scroll, así que lo de dentro vuelve a
   medirse contra la página.
 */
+/*
+  Se subió el efecto.
+
+  Estaba en 0.965 y 0.55: un 3,5% de escala que casi nadie llegaba a percibir.
+  Es el gesto que hace que la portada se sienta una capa y no un fondo, así que
+  ahora baja a 0.93 y se apaga más. Sigue siendo sutil —no es un zoom— pero
+  ahora sí se nota que el hero se aleja mientras la página pasa por delante.
+*/
 @keyframes sunny-hero-exit {
   from {
-    transform: scale(1);
+    transform: scale(1) translateY(0);
     opacity: 1;
   }
   to {
-    transform: scale(0.965);
-    opacity: 0.55;
+    transform: scale(0.93) translateY(-1.5rem);
+    opacity: 0.35;
   }
 }
 
@@ -1251,5 +1259,77 @@ a {
 @media (prefers-reduced-motion: reduce) {
   .hero-accion {
     transition: none;
+  }
+}
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   EL RECORRIDO CON LÁMINA FIJA
+
+   Cada paso ocupa una pantalla. La lámina se queda pegada mientras se lee el
+   texto de al lado y sale cuando el paso termina, dejando entrar la del paso
+   siguiente. Si se sube, vuelve la anterior.
+
+   El `sticky` lo hace la maquetación; esto le añade lo único que le faltaba
+   para no sentirse un interruptor: que la lámina **se acerque y se aleje** en
+   vez de encenderse y apagarse.
+
+   Va ligado a la POSICIÓN y no al tiempo (`animation-timeline: view()`), y ese
+   es todo el truco: una animación por tiempo se dispara una vez y ya; una
+   ligada al scroll va y viene con el dedo. Subir deshace exactamente lo que
+   bajar hizo, sin código que lo gestione.
+
+   Corre en el compositor —solo escala y opacidad—, así que no cuesta
+   fotogramas ni bloquea el hilo principal.
+   ═════════════════════════════════════════════════════════════════════════════ */
+.recorrido-paso {
+  padding-block: 3rem;
+}
+
+@media (min-width: 1024px) {
+  .recorrido-paso {
+    /* Una pantalla por paso: es lo que le da a la lámina tiempo de quedarse
+       fija el rato suficiente para que el cambio se lea como un cambio. */
+    min-height: 88vh;
+    padding-block: 4rem;
+  }
+}
+
+@keyframes sunny-lamina {
+  from {
+    transform: scale(0.94);
+    opacity: 0.25;
+  }
+  32%,
+  68% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0.94);
+    opacity: 0.25;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (min-width: 1024px) {
+    .recorrido-lamina {
+      animation: sunny-lamina linear both;
+      animation-timeline: view();
+      animation-range: entry 5% exit 95%;
+      will-change: transform, opacity;
+    }
+  }
+}
+
+/*
+  Sin la línea de tiempo de scroll —o con movimiento reducido— la lámina se
+  queda quieta y visible. El `sticky` no se toca: no es una animación, es una
+  posición, y quitarlo dejaría el recorrido peor de lo que estaba.
+*/
+@media (prefers-reduced-motion: reduce) {
+  .recorrido-lamina {
+    animation: none;
+    opacity: 1;
+    transform: none;
   }
 }

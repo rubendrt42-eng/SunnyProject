@@ -64,7 +64,7 @@ export function ExperienciasDestacadas({ experiences }: { experiences: Experienc
         <ExperienceGrid experiences={experiences} />
       </div>
 
-      <div className="hidden lg:grid lg:grid-cols-12 lg:gap-x-12">
+      <div className="hidden lg:grid lg:grid-cols-12 lg:gap-x-[48px]">
         {/* ── La protagonista ────────────────────────────────────────────── */}
         <div className="lg:col-span-7">
           <InViewReveal variant="media">

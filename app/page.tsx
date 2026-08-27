@@ -106,7 +106,7 @@ export default async function HomePage() {
               se queda con una sola cosa que decir y esta sección deja de
               abrirse con la fórmula antetítulo-sobre-titular.
             */}
-            <div className="lg:grid lg:grid-cols-12 lg:gap-x-12">
+            <div className="lg:grid lg:grid-cols-12 lg:gap-x-[48px]">
               <h2 className="max-w-[18ch] text-title text-balance lg:col-span-6">
                 Planes para moverte, recuperarte, conectar y probar algo diferente.
               </h2>
@@ -183,7 +183,7 @@ export default async function HomePage() {
       */}
       <section className="bg-orange/8 py-20 sm:py-28 lg:py-36">
         <Container>
-          <div className="grid gap-12 lg:grid-cols-12 lg:gap-x-12">
+          <div className="grid gap-12 lg:grid-cols-12 lg:gap-x-[48px]">
             <div className="min-w-0 lg:col-span-7">
               <InViewReveal variant="lead">
                 <h2 className="max-w-[14ch] text-display text-balance">

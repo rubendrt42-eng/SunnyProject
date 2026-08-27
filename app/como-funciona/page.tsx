@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/ui/Container";
 import { LinkButton } from "@/components/ui/Button";
-import { InViewReveal } from "@/components/motion/InViewReveal";
-import { RECORRIDO } from "@/lib/lean-content";
+import { Recorrido } from "@/components/lean/Recorrido";
 
 export const metadata: Metadata = {
   title: "Cómo funciona — The Sunny Project",
@@ -58,82 +57,16 @@ export default function ComoFuncionaPage() {
       </Container>
 
       {/*
-        El índice. `<ol>` a ancho completo con un `Container` dentro de cada
-        `<li>`, para que el paso de la ruptura pueda pintar su banda de borde a
-        borde sin sacar el documento de su ancho — y sin perder que sea una
-        lista para quien la escucha.
+        La misma secuencia con lámina fija que la portada.
+
+        Antes esta página era un índice de texto quieto y la portada un zigzag,
+        cada una con su composición. Lo que faltaba en las dos era lo mismo: que
+        recorrerlas se sintiera. Comparten `Recorrido` para que el gesto sea el
+        mismo por las dos puertas — lo que cambia es la entrada, no el paso.
       */}
-      <ol className="mt-16 sm:mt-24">
-        {RECORRIDO.map((paso) =>
-          paso.ruptura ? (
-            <li key={paso.numero} className="ruptura my-8 py-16 sm:my-12 sm:py-24">
-              <Container>
-                {/*
-                  EL HUECO VA EN PÍXELES, NO EN REM.
-
-                  Es una rejilla de 12 columnas con dos bloques, así que separa
-                  once veces aunque solo haya dos cosas que separar. Con el
-                  hueco en rem y el texto del navegador al 200%, esos once
-                  huecos pasan de 32 a 64 px: 704 px de hueco dentro de un
-                  contenedor de 640, y las doce columnas calculadas a 0. La
-                  página se iba de ancho — está medido y documentado.
-
-                  En píxeles el hueco mide lo mismo a cualquier tamaño de texto,
-                  porque es separación estructural y no texto. Hay una prueba
-                  que lo vigila y me lo acaba de reprobar.
-                */}
-                <div className="sm:grid sm:grid-cols-12 sm:gap-[32px]">
-                  <InViewReveal className="sm:col-span-7">
-                    <p className="text-title text-balance text-carbon">
-                      Solicitar <span className="font-serif font-normal italic">no es</span> estar confirmado.
-                    </p>
-                    <p className="mt-6 max-w-[46ch] text-body-l text-carbon/75">
-                      Al enviar el formulario nos llega tu solicitud y revisamos la disponibilidad del espacio. Tu
-                      lugar queda confirmado cuando te escribimos por WhatsApp, no antes. Si no hay cupo, también te
-                      avisamos.
-                    </p>
-                  </InViewReveal>
-
-                  <InViewReveal delay={0.08} className="mt-10 sm:col-span-4 sm:col-start-9 sm:mt-0">
-                    <div className="border-t border-carbon/25 pt-5">
-                      <span aria-hidden className="recorrido-num block font-serif text-carbon/40">
-                        {paso.numero}
-                      </span>
-                      <h2 className="mt-5 text-heading text-carbon">{paso.titulo}</h2>
-                      <p className="mt-2 text-body text-carbon/75">{paso.texto}</p>
-                    </div>
-                  </InViewReveal>
-                </div>
-              </Container>
-            </li>
-          ) : (
-            <li key={paso.numero}>
-              <Container>
-                <InViewReveal delay={0.05}>
-                  {/*
-                    El número en su propia columna, alineado con la regla. Es
-                    lo que hace que esto se lea como un índice y no como una
-                    lista de párrafos con una cifra delante.
-                  */}
-                  <div className="grid grid-cols-[3.5rem_1fr] items-start gap-x-6 border-t border-carbon/15 py-10 sm:grid-cols-[7rem_1fr] sm:gap-x-10 sm:py-14">
-                    <span
-                      aria-hidden
-                      className="font-serif text-[clamp(2.5rem,5vw,4rem)] leading-[0.85] text-orange-ink/35 tabular-nums"
-                    >
-                      {paso.numero}
-                    </span>
-                    <div className="min-w-0">
-                      <h2 className="max-w-[22ch] text-subtitle text-balance">{paso.titulo}</h2>
-                      <p className="mt-3 max-w-[42ch] text-body-l text-gray">{paso.texto}</p>
-                    </div>
-                  </div>
-                </InViewReveal>
-              </Container>
-            </li>
-          ),
-        )}
-      </ol>
-
+      <div className="mt-16 sm:mt-20">
+        <Recorrido />
+      </div>
       <Container>
         <div className="mt-16 border-t border-carbon/15 pt-10 sm:mt-20">
           <LinkButton href="/experiencias" size="lg" variant="secondary" arrow>
