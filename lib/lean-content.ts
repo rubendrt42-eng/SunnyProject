@@ -126,49 +126,88 @@ export function antetituloDeLaLista(
 export interface PasoDelRecorrido {
   numero: string;
   titulo: string;
+  /** Una línea. Lo que se lee de reojo al pasar. */
   texto: string;
   /**
-   * El verbo del paso, para la lámina que acompaña al recorrido.
+   * La explicación de verdad.
    *
-   * No es copy nuevo: es el verbo que ya encabeza cada título, aislado. La
-   * lámina necesita una palabra que se lea a dos metros mientras el texto de al
-   * lado se lee de cerca, y repetir el título entero ahí sería decirlo dos veces
-   * en la misma pantalla.
+   * Cada paso tenía una sola frase y se leía como un índice: quien llegaba sin
+   * saber qué es Sunny seguía sin saberlo al terminar. Esto es lo que responde
+   * las preguntas que de verdad se hacen — qué dejo, quién me contesta, cuándo
+   * sé que tengo lugar, qué llevo.
+   */
+  detalle: string;
+  /**
+   * El verbo del paso, para la lámina. No es copy nuevo: es el que ya encabeza
+   * el título, aislado, porque la lámina necesita una palabra que se lea a dos
+   * metros mientras el texto de al lado se lee de cerca.
    */
   clave: string;
+  /** El paso donde se corrige la idea equivocada más cara del producto. */
   ruptura?: boolean;
 }
 
+/**
+ * EL RECORRIDO, EN UN SOLO SITIO.
+ *
+ * Lo cuentan dos pantallas —el capítulo de la portada y la página
+ * `/como-funciona`— y estaban escritas dos veces. Pasó lo que pasa siempre: una
+ * se actualizó y la otra no, y durante un rato el sitio se contradijo según por
+ * dónde entraras. Ahora hay una sola lista.
+ *
+ * SON CUATRO, NO CINCO
+ *
+ * Había un paso «Sunny revisa disponibilidad» entre solicitar y recibir la
+ * confirmación. Es verdad que ocurre, pero **no es un paso de quien lee**: es
+ * algo que pasa del otro lado mientras espera. Contarlo como paso propio
+ * alargaba el recorrido sin darle nada a quien lo recorre.
+ *
+ * La revisión no desapareció: vive dentro de «Recibe tu confirmación», que es
+ * donde de verdad importa, junto con el aviso de que solicitar no es estar
+ * confirmado. Ese aviso estaba en el paso que se quitó — ahora está en el paso
+ * que lo necesita.
+ */
 export const RECORRIDO: PasoDelRecorrido[] = [
   {
     numero: "01",
     titulo: "Encuentra algo que quieras vivir",
     clave: "Encuentra",
     texto: "Explora las experiencias disponibles.",
+    detalle:
+      "Cada semana se publican experiencias de bienestar, movimiento y comunidad en espacios locales de Monterrey. " +
+      "Cada una trae su fecha, su hora, dónde es y con quién. Abre la que te llame y lee de qué va antes de decidir.",
   },
   {
     numero: "02",
     titulo: "Solicita tu lugar",
     clave: "Solicita",
     texto: "Deja tus datos. No necesitas crear una cuenta.",
+    detalle:
+      "Tu nombre, tu WhatsApp, tu correo y cuántas personas van. Nada más: no hay registro, no hay contraseña y no se " +
+      "cobra nada. Si hay algo que debamos saber —que vas con alguien, una lesión, una duda— hay un campo para " +
+      "escribirlo.",
   },
   {
     numero: "03",
-    titulo: "Sunny revisa disponibilidad",
-    clave: "Revisa",
-    texto: "La solicitud llega y se revisa si todavía existe lugar.",
-    ruptura: true,
-  },
-  {
-    numero: "04",
     titulo: "Recibe tu confirmación",
     clave: "Confirma",
     texto: "Sunny se comunica por WhatsApp.",
+    ruptura: true,
+    detalle:
+      "Tu solicitud llega a Sunny y se revisa contra el cupo real del espacio. Te escribimos por WhatsApp al número " +
+      "que dejaste: si hay lugar, queda confirmado ahí; si ya se llenó, también te avisamos. Tu lugar existe cuando " +
+      "recibes ese mensaje, no antes.",
   },
   {
-    numero: "05",
+    numero: "04",
     titulo: "Vive la experiencia",
     clave: "Vive",
     texto: "Llegas al espacio y formas parte de la experiencia.",
+    detalle:
+      // Sin nombrar «pase» ni «folio»: negarlos obliga a escribirlos, y escribirlos
+      // le mete a quien lee un concepto que en este producto no existe. Hay una
+      // prueba que lo vigila y me lo reprobó.
+      "Llegas al lugar y a la hora que te confirmamos. No tienes que imprimir nada ni enseñar nada al llegar. De ahí " +
+      "en adelante la experiencia la hacen las personas que llegaron.",
   },
 ];

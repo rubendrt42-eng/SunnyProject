@@ -16,7 +16,7 @@ export function HowItWorks() {
       <Container>
         <InViewReveal variant="lead">
           <h2 className="max-w-[16ch] text-title">
-            <span className="block">Cinco pasos,</span>
+            <span className="block">Cuatro pasos,</span>
             <span className="mt-1 block font-serif text-[1.06em] leading-[1.06] font-normal tracking-normal text-orange-ink italic">
               y ninguna cuenta que crear.
             </span>

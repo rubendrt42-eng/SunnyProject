@@ -6,7 +6,7 @@ import { Recorrido } from "@/components/lean/Recorrido";
 export const metadata: Metadata = {
   title: "Cómo funciona — The Sunny Project",
   description:
-    "Cinco pasos: encuentras una experiencia, solicitas tu lugar, Sunny revisa disponibilidad y te confirma por WhatsApp. Sin cuentas y sin pagar nada.",
+    "Cuatro pasos: encuentras una experiencia, solicitas tu lugar, Sunny te confirma por WhatsApp y la vives. Sin cuentas y sin pagar nada.",
 };
 
 /**
@@ -51,7 +51,7 @@ export default function ComoFuncionaPage() {
         <div className="max-w-3xl">
           <h1 className="text-display text-balance">Cómo funciona</h1>
           <p className="mt-6 max-w-[46ch] text-lead text-carbon/75">
-            Cinco pasos. Sin cuentas, sin pagos y sin letra chica.
+            Cuatro pasos. Sin cuentas, sin pagos y sin letra chica.
           </p>
         </div>
       </Container>

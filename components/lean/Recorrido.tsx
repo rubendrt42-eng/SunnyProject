@@ -70,7 +70,7 @@ function Lamina({ paso, indice }: { paso: PasoDelRecorrido; indice: number }) {
       className={`recorrido-lamina relative flex aspect-[3/2] w-full flex-col justify-between overflow-clip p-7 sm:p-9 lg:aspect-[4/5] ${TINTES[indice % TINTES.length]}`}
     >
       <span aria-hidden className="text-small tracking-[0.18em] tabular-nums opacity-60">
-        {paso.numero} / 05
+        {paso.numero} / {String(RECORRIDO.length).padStart(2, "0")}
       </span>
 
       {paso.ruptura ? (
@@ -117,13 +117,25 @@ export function Recorrido() {
                       {paso.numero}
                     </span>
                     <h3 className="mt-4 max-w-[20ch] text-title text-balance lg:mt-0">{paso.titulo}</h3>
-                    <p className="mt-4 max-w-[40ch] text-lead text-gray">{paso.texto}</p>
+                    <p className="mt-4 max-w-[40ch] text-lead text-carbon/80">{paso.texto}</p>
+
+                    {/*
+                      LA EXPLICACIÓN DE VERDAD.
+
+                      Cada paso tenía una sola línea y el recorrido se leía como
+                      un índice: quien llegaba sin saber qué es Sunny seguía sin
+                      saberlo al final. Esto responde lo que de verdad se
+                      pregunta — qué dejo, quién me contesta, cuándo sé que
+                      tengo lugar, qué llevo.
+                    */}
+                    <p className="mt-6 max-w-[46ch] text-body text-gray">{paso.detalle}</p>
 
                     {paso.ruptura && (
-                      <p className="mt-6 max-w-[42ch] text-body text-carbon/70">
-                        Al enviar el formulario nos llega tu solicitud y revisamos la disponibilidad del espacio. Tu
-                        lugar queda confirmado cuando te escribimos por WhatsApp, no antes. Si no hay cupo, también te
-                        avisamos.
+                      /* La frase que evita el malentendido caro se repite en el
+                         texto y no solo en la lámina: quien lee de cerca no
+                         debería depender de haber mirado el panel de al lado. */
+                      <p className="mt-6 max-w-[42ch] border-l-2 border-sunny pl-5 text-body-l text-carbon">
+                        Solicitar no es estar confirmado.
                       </p>
                     )}
                   </div>
