@@ -1333,3 +1333,30 @@ a {
     transform: none;
   }
 }
+
+/*
+  EL TEXTO DE LA LÁMINA SE MIDE CONTRA LA LÁMINA, NO CONTRA LA VENTANA.
+
+  Estaba en `6vw`, que es el ancho de la PANTALLA. La lámina no mide lo que mide
+  la pantalla: en un teléfono ocupa unos 290 px útiles, y ahí «Encuentra» a 48 px
+  no cabe — se partía en «Encuentr / a», con la «a» sola en la línea siguiente.
+
+  Con `cqw` la medida es el ancho de la lámina, que es la caja donde la palabra
+  tiene que caber de verdad. La misma regla vale para un panel de 460 px en
+  escritorio y para uno de 290 en un teléfono, sin puntos de corte.
+*/
+.recorrido-lamina {
+  container-type: inline-size;
+}
+
+.recorrido-verbo {
+  /* 15cqw deja aire de sobra para el verbo más largo («Encuentra», nueve
+     letras) sin que llegue a tocar el relleno lateral. */
+  font-size: clamp(1.75rem, 15cqw, 5.5rem);
+  line-height: 0.9;
+}
+
+.recorrido-frase {
+  font-size: clamp(1.25rem, 8cqw, 3.25rem);
+  line-height: 1.08;
+}

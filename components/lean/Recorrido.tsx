@@ -60,7 +60,14 @@ const TINTES = [
 function Lamina({ paso, indice }: { paso: PasoDelRecorrido; indice: number }) {
   return (
     <div
-      className={`recorrido-lamina relative flex aspect-[4/5] w-full flex-col justify-between overflow-clip p-7 sm:p-9 ${TINTES[indice % TINTES.length]}`}
+      /*
+        La proporción cambia con el ancho, no por capricho: en escritorio la
+        lámina es una columna estrecha y alta (4/5) que acompaña la lectura;
+        en un teléfono ocupa todo el ancho, y a 4/5 se convertía en un bloque
+        de color de 437 px con un verbo al fondo y el resto vacío. A 3/2 mide
+        233 px y sigue siendo un hueco válido para la fotografía futura.
+      */
+      className={`recorrido-lamina relative flex aspect-[3/2] w-full flex-col justify-between overflow-clip p-7 sm:p-9 lg:aspect-[4/5] ${TINTES[indice % TINTES.length]}`}
     >
       <span aria-hidden className="text-small tracking-[0.18em] tabular-nums opacity-60">
         {paso.numero} / 05
@@ -70,11 +77,11 @@ function Lamina({ paso, indice }: { paso: PasoDelRecorrido; indice: number }) {
         /* La ruptura no lleva verbo: lleva la frase entera. Es el único paso
            que existe para corregir una idea equivocada, así que la lámina la
            dice completa. */
-        <p className="max-w-[14ch] font-serif text-[clamp(2rem,3.6vw,3.25rem)] leading-[1.08] italic">
+        <p className="recorrido-frase max-w-[14ch] font-serif italic">
           Solicitar no es estar confirmado.
         </p>
       ) : (
-        <p aria-hidden className="font-serif text-[clamp(3rem,6vw,5.5rem)] leading-[0.9] italic">
+        <p aria-hidden className="recorrido-verbo font-serif italic">
           {paso.clave}
         </p>
       )}
