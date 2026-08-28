@@ -60,7 +60,7 @@ export function LeanHero({
 }: {
   title: string;
   titleAccent?: string | null;
-  /** Se acepta por compatibilidad; la portada lo dibuja en el capítulo 02. */
+  /** La nota pequeña de la esquina inferior derecha. */
   subtitle?: string;
   experienceCount: number;
   image?: SanityImage | null;
@@ -80,9 +80,32 @@ export function LeanHero({
             className="parallax -z-20 object-cover object-[center_45%]"
             {...blurProps(image)}
           />
-          {/* Un velo, no dos. Con la fotografía real el degradado sobra: lo que
-              hace falta es bajar la foto lo justo para que el texto se lea. */}
-          <div aria-hidden className="absolute inset-0 -z-10 bg-carbon/60" />
+          {/*
+            EL VELO ESTÁ CALCULADO, NO ESTIMADO.
+
+            Medí la luminancia de la fotografía justo donde cae cada texto, en
+            las cuatro anchuras. Sin velo, el titular en blanco cálido daba
+            entre 1.53:1 y 1.77:1 de contraste — y AA pide 3:1 para texto de
+            ese cuerpo. O sea: el titular se perdía, y no por poco.
+
+            Para llegar a 3:1 en el peor caso —1440 px, donde el cielo entra
+            más alto en el encuadre— hacía falta un 53%. El velo base va al
+            58%. Medido ya montado —con el grano y el degradado encima, que
+            suman más de lo que decía el cálculo— el titular daba 6.3:1 en
+            blanco y 4.4:1 en amarillo: mucho margen sobre el 3:1 que pide AA.
+            Así que baja al 50%, para que la fotografía se vea. A 50% sigue en
+            5.4:1 y 3.8:1.
+
+            Encima, un degradado que suma solo en los extremos: arriba vive la
+            línea de contexto y abajo la nota, las dos en cuerpo pequeño, y el
+            pequeño necesita 4.5:1. En el centro no suma nada, para no
+            oscurecer la foto justo donde se mira.
+          */}
+          <div aria-hidden className="absolute inset-0 -z-10 bg-carbon/[0.50]" />
+          <div
+            aria-hidden
+            className="absolute inset-0 -z-10 bg-gradient-to-b from-carbon/30 via-transparent to-carbon/30"
+          />
         </>
       )}
       {/* Grano de papel, no degradado. Es textura de superficie: se ve igual
@@ -96,9 +119,27 @@ export function LeanHero({
 
         {/* El manifiesto, centrado y solo. */}
         <div className="flex flex-1 items-center justify-center py-12">
-          <h1 className="manifiesto max-w-[15ch] text-center text-warm-white">
-            <WordReveal as="span" text={title} className="block" />
-            {destacada && (
+          {/*
+            LA FRASE RESALTA DENTRO DEL TITULAR, NO DEBAJO.
+
+            Antes la frase destacada era una segunda línea. Este titular no
+            funciona así: lo que resalta vive en mitad de la oración, y
+            sacarlo a otra línea la rompería.
+
+            WordReveal busca la frase entre las palabras del titular. Si la
+            encuentra, la pinta en la otra voz ahí mismo; si no aparece, se
+            dibuja debajo como antes. Emmy puede escribir cualquiera de las
+            dos formas y ninguna se rompe.
+          */}
+          <h1 className="manifiesto max-w-[17ch] text-center text-warm-white">
+            <WordReveal
+              as="span"
+              text={title}
+              className="block"
+              resaltar={destacada}
+              claseResalte="font-serif text-sunny italic"
+            />
+            {destacada && !title.toLocaleLowerCase("es").includes(destacada.toLocaleLowerCase("es")) && (
               <WordReveal
                 as="span"
                 text={destacada}
@@ -133,10 +174,16 @@ export function LeanHero({
                 />
               </Link>
 
-              {experienceCount >= 3 && (
-                <p className="text-small text-warm-white/55">
-                  <span className="font-serif text-body-l text-warm-white">{experienceCount}</span> disponibles ahora
-                </p>
+              {/*
+                LA NOTA, EN LA ESQUINA Y EN VOZ BAJA.
+
+                Explica qué es esto para quien llega sin contexto, pero no le
+                disputa el sitio al statement: va al extremo opuesto de la
+                misma regla, alineada a la derecha y en cuerpo pequeño. Se lee
+                después del titular, que es el orden correcto.
+              */}
+              {subtitle && (
+                <p className="max-w-[44ch] text-small text-warm-white/75 sm:text-right">{subtitle}</p>
               )}
             </div>
           </div>

@@ -74,6 +74,7 @@ export default async function HomePage() {
       <LeanHero
         title={s.heroTitle}
         titleAccent={s.heroTitleAccent}
+        subtitle={s.heroSubtitle}
         experienceCount={experiences.filter((e) => e.status !== "sold_out").length}
         image={settings?.heroImage ?? null}
       />
@@ -111,10 +112,19 @@ export default async function HomePage() {
                 Planes para moverte, recuperarte, conectar y probar algo diferente.
               </h2>
 
-              <div className="mt-10 lg:col-span-5 lg:col-start-8 lg:mt-0 lg:border-l lg:border-carbon/15 lg:pl-10">
-                <p className="max-w-[38ch] text-body-l text-carbon/75">{s.heroSubtitle}</p>
+              {/*
+                La entradilla volvió al hero.
 
-                <div className="mt-8">
+                Vivió aquí mientras el hero no tenía fotografía: era la frase
+                que cruzaba el pliegue. Con la foto de fondo, el hero recuperó
+                sitio para su propia nota y tenerla en los dos lados sería
+                decir lo mismo dos veces seguidas.
+
+                La regla vertical se queda: sigue relacionando el titular con
+                el contexto del otro extremo, que es su trabajo.
+              */}
+              <div className="mt-10 lg:col-span-5 lg:col-start-8 lg:mt-0 lg:border-l lg:border-carbon/15 lg:pl-10">
+                <div>
                   <p className="text-small tracking-[0.14em] text-gray uppercase">
                     {antetituloDeLaLista(experiences)}
                   </p>
