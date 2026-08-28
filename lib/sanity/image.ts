@@ -5,19 +5,24 @@ import type { SanityImage } from "./types";
 const builder = createImageUrlBuilder({ projectId, dataset });
 
 /**
- * URL de una imagen de Sanity al ancho que hace falta.
+ * 90, no 78.
  *
- * Se pide a Sanity la transformación en vez de dejar que Next descargue el
- * original y lo reescale: los archivos que sube Emmy desde su teléfono pueden
- * pesar varios megas y medir 4000 px, y traerlos enteros para mostrar una
- * tarjeta de 400 px es el error de rendimiento más caro que se puede cometer en
- * un sitio con CMS.
+ * Con dos compresiones encadenadas bajar la calidad de la primera era una
+ * defensa razonable contra el peso. Ahora solo hay una, así que puede ir alta:
+ * en AVIF y WebP —que es lo que sirve `auto("format")`— la diferencia de peso
+ * entre 78 y 90 es pequeña y la de nitidez se ve.
+ */
+const CALIDAD = 90;
+
+/**
+ * URL suelta de una imagen de Sanity a un ancho concreto.
  *
- * `auto("format")` sirve WebP o AVIF según lo que acepte el navegador, sin que
- * haya que decidirlo aquí.
+ * Queda para donde hace falta una URL y no un componente `<Image>`: las
+ * imágenes de Open Graph y los metadatos, que los consume WhatsApp o Google y
+ * no pasan por `next/image`.
  */
 export function sanityImageUrl(image: SanityImage, width: number): string {
-  return builder.image(image.url).width(width).quality(78).auto("format").fit("max").url();
+  return builder.image(image.url).width(width).quality(CALIDAD).auto("format").fit("max").url();
 }
 
 /**

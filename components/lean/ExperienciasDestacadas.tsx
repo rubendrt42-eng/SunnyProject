@@ -7,7 +7,8 @@ import { TIMEZONE } from "@/lib/constants";
 import { ExperienceGrid } from "@/components/lean/ExperienceGrid";
 import { InViewReveal } from "@/components/motion/InViewReveal";
 import { formatTime } from "@/lib/dates";
-import { blurProps, sanityImageUrl } from "@/lib/sanity/image";
+import { blurProps } from "@/lib/sanity/image";
+import { sanityLoader } from "@/lib/sanity/loader";
 import type { ExperienceCardData } from "@/lib/sanity/types";
 
 /**
@@ -73,7 +74,8 @@ export function ExperienciasDestacadas({ experiences }: { experiences: Experienc
                 <div className="relative aspect-[16/10] w-full overflow-clip bg-carbon/[0.055]">
                   {protagonista.image ? (
                     <Image
-                      src={sanityImageUrl(protagonista.image, 1200)}
+                      src={protagonista.image.url}
+                      loader={sanityLoader}
                       alt={protagonista.image.alt}
                       fill
                       sizes="(min-width: 1024px) 58vw, 100vw"

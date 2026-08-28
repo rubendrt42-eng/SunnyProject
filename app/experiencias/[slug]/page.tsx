@@ -13,6 +13,7 @@ import { env } from "@/lib/env";
 import { ExperienceViewTracker } from "@/components/lean/ExperienceViewTracker";
 import { formatDateTime, formatTime, isPast } from "@/lib/dates";
 import { blurProps, sanityImageUrl } from "@/lib/sanity/image";
+import { sanityLoader } from "@/lib/sanity/loader";
 import { getAllExperienceSlugs, getExperienceBySlug } from "@/lib/sanity/queries";
 
 /**
@@ -124,7 +125,8 @@ export default async function ExperienceDetailPage({ params }: { params: Promise
       >
         {experience.image ? (
           <Image
-            src={sanityImageUrl(experience.image, 1800)}
+            src={experience.image.url}
+            loader={sanityLoader}
             alt={experience.image.alt}
             fill
             priority

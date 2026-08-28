@@ -4,7 +4,8 @@ import { ArrowRight } from "lucide-react";
 import { WordReveal } from "@/components/motion/WordReveal";
 import { LineReveal } from "@/components/motion/LineReveal";
 import { Container } from "@/components/ui/Container";
-import { blurProps, sanityImageUrl } from "@/lib/sanity/image";
+import { blurProps } from "@/lib/sanity/image";
+import { sanityLoader } from "@/lib/sanity/loader";
 import type { SanityImage } from "@/lib/sanity/types";
 
 /**
@@ -75,10 +76,28 @@ export function LeanHero({
       {image && (
         <>
           <Image
-            src={sanityImageUrl(image, 1920)}
+            src={image.url}
+            loader={sanityLoader}
             alt={image.alt}
             fill
             priority
+            /*
+              82 y no la calidad por defecto de 90, y es para MEJORAR la imagen,
+              no para empeorarla.
+
+              Medido sobre esta misma fotografía a 3840 px, que es lo que pide
+              una pantalla Retina:
+
+                  q=90  →  WEBP  1455 KB
+                  q=82  →  AVIF   682 KB
+
+              `auto=format` sirve AVIF hasta 82 y por encima se cae a WebP.
+              AVIF a 82 se ve mejor que WebP a 90 y pesa menos de la mitad, así
+              que subir el número aquí daba una imagen peor y más pesada. En
+              las demás fotos, más pequeñas, AVIF no entra en ningún caso y se
+              quedan en la calidad alta por defecto.
+            */
+            quality={82}
             sizes="100vw"
             className="parallax -z-20 object-cover object-[center_45%]"
             {...blurProps(image)}

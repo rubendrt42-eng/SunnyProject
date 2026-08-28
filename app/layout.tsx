@@ -77,6 +77,19 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="es" className={`${manrope.variable} ${newsreader.variable} h-full antialiased`}>
+      <head>
+        {/*
+          Las fotografías se sirven desde el CDN de Sanity, no desde el
+          optimizador de Vercel — así se codifican una sola vez en vez de dos.
+          La contrapartida es un servidor más al que conectarse, y esa conexión
+          (DNS, TLS) se paga entera antes del primer byte de la primera imagen.
+
+          `preconnect` la abre mientras el navegador todavía está leyendo el
+          HTML, así que cuando toca pedir la fotografía el canal ya está listo.
+        */}
+        <link rel="preconnect" href="https://cdn.sanity.io" crossOrigin="" />
+        <link rel="dns-prefetch" href="https://cdn.sanity.io" />
+      </head>
       <body className="flex min-h-screen flex-col bg-ivory text-carbon">
         {/* Primero en el orden de tabulación, invisible hasta que recibe el
             foco. Sin él, quien navega con teclado recorre el logotipo, los

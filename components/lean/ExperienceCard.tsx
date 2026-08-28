@@ -6,7 +6,8 @@ import { BrandCanvas } from "@/components/lean/BrandCanvas";
 import { InViewReveal } from "@/components/motion/InViewReveal";
 import { HoverLift } from "@/components/motion/HoverLift";
 import { formatDateShort, formatTime } from "@/lib/dates";
-import { blurProps, sanityImageUrl } from "@/lib/sanity/image";
+import { blurProps } from "@/lib/sanity/image";
+import { sanityLoader } from "@/lib/sanity/loader";
 import type { ExperienceCardData } from "@/lib/sanity/types";
 
 /**
@@ -85,7 +86,8 @@ export function ExperienceCard({ experience }: { experience: ExperienceCardData 
               */
               <div className="parallax absolute inset-0">
                 <Image
-                  src={sanityImageUrl(experience.image, 800)}
+                  src={experience.image.url}
+                  loader={sanityLoader}
                   alt={experience.image.alt}
                   fill
                   sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
