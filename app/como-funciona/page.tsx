@@ -6,7 +6,7 @@ import { Recorrido } from "@/components/lean/Recorrido";
 export const metadata: Metadata = {
   title: "Cómo funciona — The Sunny Project",
   description:
-    "Cuatro pasos: encuentras una experiencia, solicitas tu lugar, Sunny te confirma por WhatsApp y la vives. Sin cuentas y sin pagar nada.",
+    "Encuentras una experiencia, solicitas tu lugar, Sunny revisa el cupo y te confirma por WhatsApp. Así funciona de principio a fin.",
 };
 
 /**
@@ -50,8 +50,13 @@ export default function ComoFuncionaPage() {
         */}
         <div className="max-w-3xl">
           <h1 className="text-display text-balance">Cómo funciona</h1>
+          {/*
+            «Sin cuentas, sin pagos y sin letra chica» es la lista de lo que
+            una fintech promete no hacerte. Enumerar ausencias no explica el
+            proceso; esta página existe para explicarlo.
+          */}
           <p className="mt-6 max-w-[46ch] text-lead text-carbon/75">
-            Cuatro pasos. Sin cuentas, sin pagos y sin letra chica.
+            Así funciona una experiencia en Sunny, de principio a fin.
           </p>
         </div>
       </Container>

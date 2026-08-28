@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { InViewReveal } from "@/components/motion/InViewReveal";
 import { EMMY_PHOTO } from "@/lib/media";
+import type { BloqueDeTexto } from "@/lib/sanity/types";
 
 /**
  * Capítulo 03 — el propósito.
@@ -32,12 +33,12 @@ import { EMMY_PHOTO } from "@/lib/media";
  * hacer scroll. Es el único parallax del capítulo y es lo que le da profundidad
  * sin añadir ninguna animación nueva.
  */
-export function WhatIsSunny() {
+export function WhatIsSunny({ bloque }: { bloque: BloqueDeTexto }) {
   return (
     <div>
       {/* El statement, solo y a ancho casi completo. */}
       <InViewReveal variant="lead">
-        <p className="eyebrow">Qué es Sunny Project</p>
+        <p className="eyebrow">Qué es Sunny</p>
         {/*
           La medida se ESTRECHA en pantalla ancha, no se ensancha.
 
@@ -48,10 +49,13 @@ export function WhatIsSunny() {
           tocarse nunca. La asimetría se mantiene; la colisión desaparece.
         */}
         <h2 className="mt-5 max-w-[19ch] text-display text-balance lg:max-w-[17ch]">
-          No se trata solo de encontrar planes.{" "}
-          <span className="font-serif font-normal text-orange-ink italic">
-            Se trata de encontrar nuevas formas de vivir.
-          </span>
+          {bloque.titulo}
+          {bloque.acento && (
+            <>
+              {" "}
+              <span className="font-serif font-normal text-orange-ink italic">{bloque.acento}</span>
+            </>
+          )}
         </h2>
       </InViewReveal>
 
@@ -61,11 +65,7 @@ export function WhatIsSunny() {
             grande y no como otro bloque del mismo peso. */}
         <div className="min-w-0 lg:col-span-5">
           <InViewReveal delay={0.06}>
-            <p className="max-w-[46ch] text-lead text-carbon/80">
-              Sunny Project nace para reunir a personas que quieren mejorar, descubrir y salir de su zona de confort.
-              Conectamos esa energía con experiencias y espacios locales que quieren construir una comunidad más
-              activa, curiosa y cercana.
-            </p>
+            <p className="max-w-[46ch] text-lead text-carbon/80">{bloque.texto}</p>
           </InViewReveal>
 
           {/*
@@ -78,18 +78,20 @@ export function WhatIsSunny() {
           */}
           <InViewReveal delay={0.12}>
             <dl className="mt-10 space-y-6 border-t border-carbon/15 pt-6">
+              {/*
+                Las dos fichas responden las dos preguntas que quedan después
+                del párrafo: qué clase de plan es esto, y quién lo pone. No
+                repiten la filosofía — eso ya lo dijo el titular.
+              */}
               <div className="sm:grid sm:grid-cols-[10rem_1fr] sm:gap-5">
-                <dt className="text-small font-semibold tracking-[0.1em] text-carbon uppercase">Para quien busca</dt>
-                <dd className="mt-1.5 max-w-[42ch] text-body text-gray sm:mt-0">
-                  Un lugar donde probar algo distinto cada semana, sin cuentas y sin pagar nada.
-                </dd>
+                <dt className="text-small font-semibold tracking-[0.1em] text-carbon uppercase">
+                  Qué vas a encontrar
+                </dt>
+                <dd className="mt-1.5 max-w-[42ch] text-body text-gray sm:mt-0">{bloque.nota}</dd>
               </div>
               <div className="sm:grid sm:grid-cols-[10rem_1fr] sm:gap-5">
-                <dt className="text-small font-semibold tracking-[0.1em] text-carbon uppercase">Para los espacios</dt>
-                <dd className="mt-1.5 max-w-[42ch] text-body text-gray sm:mt-0">
-                  Estudios, cafés y clubes locales abren lugares y conocen personas que llegan por curiosidad, no por
-                  descuento.
-                </dd>
+                <dt className="text-small font-semibold tracking-[0.1em] text-carbon uppercase">Quién participa</dt>
+                <dd className="mt-1.5 max-w-[42ch] text-body text-gray sm:mt-0">{bloque.cita}</dd>
               </div>
             </dl>
           </InViewReveal>
@@ -134,8 +136,8 @@ export function WhatIsSunny() {
               <figcaption className="mt-5 max-w-[19rem] border-t border-carbon/15 pt-4">
                 <p className="text-small font-semibold tracking-[0.1em] text-carbon uppercase">Emmy</p>
                 <p className="mt-2 text-small text-gray">
-                  Fundadora y curadora. Selecciona cada experiencia y conecta a la comunidad con los espacios que la
-                  reciben. También organiza los Sunny Originals.
+                  Fundadora. Elige las experiencias que entran, habla con cada espacio y organiza los Sunny
+                  Originals.
                 </p>
               </figcaption>
             </figure>

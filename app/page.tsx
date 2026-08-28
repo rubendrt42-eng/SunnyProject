@@ -14,7 +14,7 @@ import { LeanHero } from "@/components/lean/LeanHero";
 import { ExperienciasDestacadas } from "@/components/lean/ExperienciasDestacadas";
 import { HowItWorks } from "@/components/lean/HowItWorks";
 import { getSiteSettings, getUpcomingExperiences } from "@/lib/sanity/queries";
-import { antetituloDeLaLista, DEFAULT_SETTINGS, whatsappLink } from "@/lib/lean-content";
+import { antetituloDeLaLista, DEFAULT_SETTINGS, mezclarAjustes, whatsappLink } from "@/lib/lean-content";
 
 /**
  * Portada del MVP lean — ocho capítulos.
@@ -52,11 +52,17 @@ import { antetituloDeLaLista, DEFAULT_SETTINGS, whatsappLink } from "@/lib/lean-
  */
 export const revalidate = 60;
 
-export const metadata: Metadata = {
-  title: "The Sunny Project — Experiencias en Monterrey",
-  description:
-    "Experiencias locales para salir de la rutina, conocer gente y formar parte de una comunidad que busca crecer.",
-};
+/**
+ * El título y la descripción que salen en Google y al compartir el enlace.
+ *
+ * Se leen de Sanity porque son texto de marca, no contrato de producto: si
+ * Emmy cambia cómo se describe Sunny, la vista previa de WhatsApp tiene que
+ * cambiar con ella. Si no ha escrito nada, salen los de `DEFAULT_SETTINGS`.
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  const s = mezclarAjustes(DEFAULT_SETTINGS, await getSiteSettings());
+  return { title: s.seoTitle, description: s.seoDescription };
+}
 
 export default async function HomePage() {
   // Una sola llamada por dato y en paralelo. Las dos comparten caché con el
@@ -64,7 +70,7 @@ export default async function HomePage() {
   // después no vuelve a pedir lo mismo.
   const [experiences, settings] = await Promise.all([getUpcomingExperiences(), getSiteSettings()]);
 
-  const s = { ...DEFAULT_SETTINGS, ...(settings ?? {}) };
+  const s = mezclarAjustes(DEFAULT_SETTINGS, settings);
   const destacadas = experiences.slice(0, 6);
   const hayContacto = Boolean(s.whatsapp?.trim() || s.instagramUrl?.trim() || s.contactEmail?.trim());
 
@@ -72,6 +78,7 @@ export default async function HomePage() {
     <main>
       {/* ── 01 · MANIFIESTO ───────────────────────────────────────────────── */}
       <LeanHero
+        eyebrow={s.heroEyebrow}
         title={s.heroTitle}
         titleAccent={s.heroTitleAccent}
         subtitle={s.heroSubtitle}
@@ -109,7 +116,7 @@ export default async function HomePage() {
             */}
             <div className="lg:grid lg:grid-cols-12 lg:gap-x-[48px]">
               <h2 className="max-w-[18ch] text-title text-balance lg:col-span-6">
-                Planes para moverte, recuperarte, conectar y probar algo diferente.
+                {s.bloqueExperiencias.titulo}
               </h2>
 
               {/*
@@ -128,6 +135,17 @@ export default async function HomePage() {
                   <p className="text-small tracking-[0.14em] text-gray uppercase">
                     {antetituloDeLaLista(experiences)}
                   </p>
+                  {/*
+                    La nota que dice quién publica esto.
+
+                    Es el único sitio de la portada donde se nombra la
+                    curaduría antes del capítulo que la explica, y va aquí a
+                    propósito: encima de la lista, que es donde alguien se
+                    pregunta de dónde salen estas experiencias.
+                  */}
+                  {s.bloqueExperiencias.nota && (
+                    <p className="mt-3 max-w-[34ch] text-small text-gray">{s.bloqueExperiencias.nota}</p>
+                  )}
                   {experiences.length > destacadas.length && (
                     <Link
                       href="/experiencias"
@@ -151,13 +169,13 @@ export default async function HomePage() {
       {/* ── 03 · QUÉ ES SUNNY ─────────────────────────────────────────────── */}
       <section id="que-es-sunny" className="scroll-mt-24 bg-warm-white py-20 sm:py-28 lg:py-40">
         <Container>
-          <WhatIsSunny />
+          <WhatIsSunny bloque={s.bloqueSunny} />
         </Container>
       </section>
 
       {/* ── 04 · CÓMO FUNCIONA ────────────────────────────────────────────── */}
       <section className="py-16 sm:py-24">
-        <HowItWorks />
+        <HowItWorks bloque={s.bloqueRecorrido} />
       </section>
 
       {/*
@@ -172,7 +190,7 @@ export default async function HomePage() {
         para que «combine» habría sido igualar hacia abajo.
       */}
       <section id="comunidad" className="scroll-mt-24">
-        <CommunitySection instagramUrl={s.instagramUrl} />
+        <CommunitySection bloque={s.bloqueComunidad} instagramUrl={s.instagramUrl} />
       </section>
 
       {/*
@@ -197,18 +215,20 @@ export default async function HomePage() {
             <div className="min-w-0 lg:col-span-7">
               <InViewReveal variant="lead">
                 <h2 className="max-w-[14ch] text-display text-balance">
-                  Tienes el espacio.{" "}
-                  <span className="font-serif font-normal text-orange-ink italic">
-                    Sunny lleva a las personas.
-                  </span>
+                  {s.bloqueNegocios.titulo}
+                  {s.bloqueNegocios.acento && (
+                    <>
+                      {" "}
+                      <span className="font-serif font-normal text-orange-ink italic">
+                        {s.bloqueNegocios.acento}
+                      </span>
+                    </>
+                  )}
                 </h2>
               </InViewReveal>
 
               <InViewReveal delay={0.08}>
-                <p className="mt-8 max-w-[48ch] text-lead text-carbon/80">
-                  Si tienes un estudio, un espacio o una clase, te ayudamos a que gente nueva lo conozca. Nos cuentas
-                  qué haces y platicamos cómo podría funcionar.
-                </p>
+                <p className="mt-8 max-w-[48ch] text-lead text-carbon/80">{s.bloqueNegocios.texto}</p>
               </InViewReveal>
 
               <InViewReveal delay={0.14}>
@@ -275,8 +295,10 @@ export default async function HomePage() {
                 corrida la «Y» quedaba huérfana al final del renglón y el giro
                 se leía como un tropiezo en vez de como una segunda frase. */}
             <p className="manifiesto mx-auto max-w-[14ch]">
-              <span className="block">Cada semana, algo nuevo.</span>
-              <span className="manifiesto__acento mt-1.5 block font-serif">Y alguien nuevo.</span>
+              <span className="block">{s.bloqueCierre.titulo}</span>
+              {s.bloqueCierre.acento && (
+                <span className="manifiesto__acento mt-1.5 block font-serif">{s.bloqueCierre.acento}</span>
+              )}
             </p>
           </InViewReveal>
 

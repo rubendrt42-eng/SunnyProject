@@ -6,7 +6,7 @@ import { BusinessForm } from "@/components/lean/BusinessForm";
 export const metadata: Metadata = {
   title: "Para negocios — The Sunny Project",
   description:
-    "Si tienes un estudio, un espacio o una clase en Monterrey, cuéntanos y armamos una experiencia juntos.",
+    "Sunny trabaja con estudios, cafés, clubes y talleres de Monterrey. Cuéntanos de tu espacio y armamos una experiencia juntos.",
 };
 
 /**
@@ -28,9 +28,16 @@ export default function ParaNegociosPage() {
         <InViewReveal>
           <p className="eyebrow">Para negocios</p>
           <h1 className="mt-3 text-title text-balance">¿Quieres crear una experiencia con Sunny?</h1>
+          {/*
+            «Nosotros llevamos gente nueva a conocerte. Sin costo para ti.» se
+            lee como una agencia de captación, y promete un resultado —que
+            llegue gente— que depende de cada experiencia. Esto describe el
+            trato real: se arma junta, el espacio aparta lugares, Sunny la
+            publica. El mismo mensaje que el capítulo de la portada.
+          */}
           <p className="mt-4 text-body-l text-gray">
-            Si tienes un estudio, un espacio o una clase en Monterrey, cedes algunos lugares y nosotros llevamos gente
-            nueva a conocerte. Sin costo para ti.
+            Sunny trabaja con estudios, cafés, clubes y talleres de Monterrey. Armamos juntos una experiencia, tú
+            apartas algunos lugares y nosotros la publicamos y la difundimos. Cuéntanos qué haces y lo platicamos.
           </p>
         </InViewReveal>
 

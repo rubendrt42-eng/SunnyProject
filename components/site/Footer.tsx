@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { getSiteSettings } from "@/lib/sanity/queries";
-import { whatsappLink } from "@/lib/lean-content";
+import { DEFAULT_SETTINGS, mezclarAjustes, whatsappLink } from "@/lib/lean-content";
 
 /**
  * El pie del sitio.
@@ -27,10 +27,10 @@ import { whatsappLink } from "@/lib/lean-content";
  * «Contacto» sobre un hueco es peor que no tener columna.
  */
 export async function Footer() {
-  const settings = await getSiteSettings();
-  const whatsapp = settings?.whatsapp?.trim();
-  const instagram = settings?.instagramUrl?.trim();
-  const correo = settings?.contactEmail?.trim();
+  const s = mezclarAjustes(DEFAULT_SETTINGS, await getSiteSettings());
+  const whatsapp = s.whatsapp?.trim();
+  const instagram = s.instagramUrl?.trim();
+  const correo = s.contactEmail?.trim();
   const hayContacto = Boolean(whatsapp || instagram || correo);
 
   return (
@@ -38,10 +38,13 @@ export async function Footer() {
       <Container className="flex flex-col gap-8 sm:flex-row sm:justify-between">
         <div className="max-w-sm">
           <p className="font-serif text-xl italic">The Sunny Project</p>
-          <p className="mt-2 text-sm text-warm-white/60">
-            Experiencias de bienestar, movimiento y comunidad en Monterrey. Solicitas tu lugar y nosotros te
-            confirmamos.
-          </p>
+          {/*
+            Decía «bienestar, movimiento y comunidad», y eso encerraba a Sunny
+            en wellness cuando también entran cafés, talleres y conceptos que
+            no son de movimiento. El pie sale en todas las páginas: es la
+            definición que más veces se lee del sitio.
+          */}
+          <p className="mt-2 text-sm text-warm-white/60">{s.footerDescripcion}</p>
         </div>
 
         <div className={`grid gap-8 text-sm ${hayContacto ? "grid-cols-2 sm:grid-cols-3" : "grid-cols-2"}`}>

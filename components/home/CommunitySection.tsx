@@ -2,6 +2,7 @@ import Link from "next/link";
 import { AtSign } from "lucide-react";
 import { InViewReveal } from "@/components/motion/InViewReveal";
 import { LinkButton } from "@/components/ui/Button";
+import type { BloqueDeTexto } from "@/lib/sanity/types";
 
 /**
  * Comunidad — el capítulo oscuro de la portada.
@@ -33,7 +34,7 @@ import { LinkButton } from "@/components/ui/Button";
  * —una desplazada respecto a la otra— porque es lo que hace que esta sección no
  * se lea como las rejillas de arriba y abajo.
  */
-export function CommunitySection({ instagramUrl }: { instagramUrl?: string }) {
+export function CommunitySection({ bloque, instagramUrl }: { bloque: BloqueDeTexto; instagramUrl?: string }) {
   return (
     <div className="bg-carbon py-24 text-warm-white sm:py-32 lg:py-40">
       <div className="mx-auto w-full max-w-4xl px-5 sm:px-8">
@@ -56,24 +57,35 @@ export function CommunitySection({ instagramUrl }: { instagramUrl?: string }) {
           ritmo de columnas de todo lo demás.
         */}
         <InViewReveal delay={0.06}>
+          {/*
+            «Puedes llegar solo. Eso no significa que te vas a ir igual»
+            prometía una transformación que Sunny no organiza, y estaba escrita
+            para sonar profunda. La frase que la sustituye no es una metáfora:
+            describe literalmente cómo se junta la gente en este producto —no
+            hay perfiles ni grupos, hay experiencias— y por eso puede ocupar el
+            mismo sitio sin prometer nada.
+
+            La composición no se tocó: el titular sigue siendo el elemento
+            visual del capítulo.
+          */}
           <h2 className="mt-6 text-display text-balance text-warm-white">
-            Puedes llegar solo.{" "}
-            <span className="font-serif font-normal text-sunny italic">
-              Eso no significa que te vas a ir igual.
-            </span>
+            {bloque.titulo}
+            {bloque.acento && (
+              <>
+                {" "}
+                <span className="font-serif font-normal text-sunny italic">{bloque.acento}</span>
+              </>
+            )}
           </h2>
         </InViewReveal>
 
         <InViewReveal delay={0.12}>
-          <p className="mt-10 max-w-[54ch] text-lead text-warm-white/75">
-            No se trata solamente de probar una actividad. Se trata de encontrar nuevas formas de moverte, aprender,
-            convivir y conectar con personas que tienen las mismas ganas de vivir algo diferente.
-          </p>
+          <p className="mt-10 max-w-[54ch] text-lead text-warm-white/75">{bloque.texto}</p>
         </InViewReveal>
 
         <InViewReveal delay={0.16}>
           <p className="mt-5 max-w-xl border-l border-sunny/40 pl-5 font-serif text-body-l text-warm-white/85 italic">
-            Una experiencia puede durar una hora. La conexión puede quedarse.
+            {bloque.cita}
           </p>
         </InViewReveal>
 

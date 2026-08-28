@@ -83,8 +83,18 @@ const BY_SLUG_QUERY = `
   }
 `;
 
+/**
+ * Un bloque de capítulo. Se pide igual en los cinco, así que se escribe una vez.
+ *
+ * `coalesce(..., {})` en vez de dejar que devuelva `null`: la mezcla con los
+ * textos por defecto trabaja campo por campo, y un bloque nulo entero la
+ * obliga a distinguir dos casos donde solo hay uno.
+ */
+const BLOQUE = `{ titulo, acento, texto, nota, cita }`;
+
 const SETTINGS_QUERY = `
   *[_type == "siteSettings"][0]{
+    heroEyebrow,
     heroTitle,
     heroTitleAccent,
     "heroImage": heroImage{
@@ -94,7 +104,15 @@ const SETTINGS_QUERY = `
       "lqip": asset->metadata.lqip
     },
     heroSubtitle,
-    aboutShortText,
+    "bloqueExperiencias": coalesce(bloqueExperiencias${BLOQUE}, {}),
+    "bloqueSunny": coalesce(bloqueSunny${BLOQUE}, {}),
+    "bloqueRecorrido": coalesce(bloqueRecorrido${BLOQUE}, {}),
+    "bloqueComunidad": coalesce(bloqueComunidad${BLOQUE}, {}),
+    "bloqueNegocios": coalesce(bloqueNegocios${BLOQUE}, {}),
+    "bloqueCierre": coalesce(bloqueCierre${BLOQUE}, {}),
+    seoTitle,
+    seoDescription,
+    footerDescripcion,
     instagramUrl,
     whatsapp,
     contactEmail,
@@ -232,11 +250,11 @@ export async function getExperienceBySlug(slug: string): Promise<ExperienceDetai
  * sitio tiene que poder desplegarse antes de que Emmy haya escrito nada — cada
  * consumidor usa sus propios textos por defecto.
  */
-export async function getSiteSettings(): Promise<SiteSettings | null> {
+export async function getSiteSettings(): Promise<Partial<SiteSettings> | null> {
   return safeFetch(
     "textos del sitio",
     () =>
-      sanityClient.fetch<SiteSettings | null>(
+      sanityClient.fetch<Partial<SiteSettings> | null>(
         SETTINGS_QUERY,
         {},
         { next: { revalidate: SANITY_REVALIDATE_SECONDS, tags: ["siteSettings"] } },

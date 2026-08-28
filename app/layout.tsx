@@ -4,6 +4,8 @@ import "./globals.css";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { AppChrome } from "@/components/motion/AppChrome";
+import { getSiteSettings } from "@/lib/sanity/queries";
+import { DEFAULT_SETTINGS, mezclarAjustes } from "@/lib/lean-content";
 
 const manrope = Manrope({ variable: "--font-manrope", subsets: ["latin"] });
 const newsreader = Newsreader({ variable: "--font-newsreader", subsets: ["latin"], style: ["italic", "normal"] });
@@ -16,24 +18,39 @@ const newsreader = Newsreader({ variable: "--font-newsreader", subsets: ["latin"
  * anterior, en el único texto que se propaga fuera del sitio y que nadie
  * revisa porque no se ve en pantalla.
  */
-export const metadata: Metadata = {
-  title: "The Sunny Project — Experiencias en Monterrey",
-  description:
-    "Experiencias de bienestar, movimiento y comunidad en Monterrey. Solicitas tu lugar, nosotros te confirmamos. Sin cuentas y sin pagar nada.",
-  /**
-   * Lo que se ve cuando alguien pega el enlace en WhatsApp. La imagen la genera
-   * `app/opengraph-image.tsx`; aquí solo va el texto que la acompaña.
-   */
-  openGraph: {
-    title: "The Sunny Project — Experiencias en Monterrey",
-    description:
-      "Cada semana publicamos experiencias de bienestar, movimiento y comunidad. Solicitas tu lugar y nosotros te confirmamos.",
-    locale: "es_MX",
-    type: "website",
-    siteName: "The Sunny Project",
-  },
-  twitter: { card: "summary_large_image" },
-};
+/**
+ * Se leen de Sanity, igual que el resto del texto de marca.
+ *
+ * Antes estaban escritos a mano aquí y decían «Experiencias de bienestar,
+ * movimiento y comunidad… Sin cuentas y sin pagar nada». Dos problemas en el
+ * único texto que sale FUERA del sitio y que nadie revisa porque no se ve en
+ * pantalla: encerraba a Sunny en wellness cuando también entran cafés y
+ * talleres, y prometía gratuidad de toda experiencia, que el producto no
+ * sostiene —no hay campo de precio ni cobro, así que lo verificable es que
+ * solicitar no cuesta—.
+ *
+ * Esta es la descripción por defecto de TODAS las páginas: cada una que no
+ * defina la suya hereda esta.
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  const s = mezclarAjustes(DEFAULT_SETTINGS, await getSiteSettings());
+  return {
+    title: s.seoTitle,
+    description: s.seoDescription,
+    /**
+     * Lo que se ve cuando alguien pega el enlace en WhatsApp. La imagen la
+     * genera `app/opengraph-image.tsx`; aquí solo va el texto que la acompaña.
+     */
+    openGraph: {
+      title: s.seoTitle,
+      description: s.seoDescription,
+      locale: "es_MX",
+      type: "website",
+      siteName: "The Sunny Project",
+    },
+    twitter: { card: "summary_large_image" },
+  };
+}
 
 /**
  * EL SITIO NO DEPENDE DE NINGUNA BASE DE DATOS PARA DIBUJARSE

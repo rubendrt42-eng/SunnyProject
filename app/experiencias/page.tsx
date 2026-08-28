@@ -32,7 +32,8 @@ export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Experiencias — The Sunny Project",
-  description: "Las experiencias publicadas en Monterrey, de la más próxima a la más lejana.",
+  description:
+    "Las experiencias que Sunny tiene publicadas en Monterrey, de la más próxima a la más lejana.",
 };
 
 export default async function ExperienciasPage() {
@@ -60,7 +61,7 @@ export default async function ExperienciasPage() {
           <p className="eyebrow">Monterrey</p>
           <h1 className="mt-3 max-w-2xl text-title text-balance">
             {experiences.length > 0
-              ? "Todo lo que puedes hacer estos días."
+              ? "Lo que hay estos días."
               : "Aquí van a estar las próximas experiencias."}
           </h1>
           {/*

@@ -50,18 +50,59 @@ export interface FaqItem {
   answer: string;
 }
 
+/**
+ * Un capítulo de la portada, tal y como se edita en Sanity.
+ *
+ * Cinco de los siete capítulos tienen la misma anatomía —un titular a dos
+ * voces, un párrafo y a veces una nota o una cita— así que comparten forma en
+ * vez de generar veinte campos sueltos en el Studio. Emmy ve un solo apartado
+ * plegable por capítulo, no una lista plana de frases sin contexto.
+ *
+ * Todo salvo `titulo` es opcional a propósito: un capítulo sin cita se dibuja
+ * sin cita, no con un hueco.
+ */
+export interface BloqueDeTexto {
+  /** La primera voz del titular, en Manrope. */
+  titulo: string;
+  /** La segunda voz, en Newsreader cursiva. Opcional: sin ella el titular es de una sola voz. */
+  acento?: string | null;
+  /** El párrafo de apoyo. */
+  texto?: string | null;
+  /** Una línea corta al margen. Cada capítulo decide qué hace con ella. */
+  nota?: string | null;
+  /** La frase destacada del capítulo, cuando su composición tiene una. */
+  cita?: string | null;
+}
+
 export interface SiteSettings {
+  /** La línea de contexto de arriba del hero. */
+  heroEyebrow: string;
   heroTitle: string;
   /**
-   * Opcional. La frase que la portada dibuja en amarillo, en su propia línea,
-   * debajo del título. Vacía significa titular entero en blanco, y eso es una
-   * decisión válida — no un error.
+   * La frase del titular que se pinta en amarillo y en cursiva.
+   *
+   * Si aparece dentro de `heroTitle`, el hero parte el titular en tres líneas
+   * —lo de antes, la frase, lo de después— y la resalta en su sitio. Si no
+   * aparece, se dibuja debajo como una segunda línea. Vacía es una decisión
+   * válida: el titular entero en blanco.
    */
   heroTitleAccent?: string | null;
-  /** Opcional. Sin ella la portada dibuja la composición de marca. */
+  /** Opcional. Sin ella el hero es carbón plano con grano. */
   heroImage?: SanityImage | null;
+  /** La nota pequeña de la esquina inferior del hero. */
   heroSubtitle: string;
-  aboutShortText: string;
+
+  bloqueExperiencias: BloqueDeTexto;
+  bloqueSunny: BloqueDeTexto;
+  bloqueRecorrido: BloqueDeTexto;
+  bloqueComunidad: BloqueDeTexto;
+  bloqueNegocios: BloqueDeTexto;
+  bloqueCierre: BloqueDeTexto;
+
+  seoTitle: string;
+  seoDescription: string;
+  footerDescripcion: string;
+
   instagramUrl?: string;
   whatsapp?: string;
   contactEmail?: string;

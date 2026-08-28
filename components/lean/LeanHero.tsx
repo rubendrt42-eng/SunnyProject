@@ -52,12 +52,15 @@ import type { SanityImage } from "@/lib/sanity/types";
  * improvisado.
  */
 export function LeanHero({
+  eyebrow,
   title,
   titleAccent,
   subtitle,
   experienceCount,
   image,
 }: {
+  /** La línea de contexto de arriba. */
+  eyebrow: string;
   title: string;
   titleAccent?: string | null;
   /** La nota pequeña de la esquina inferior derecha. */
@@ -81,30 +84,43 @@ export function LeanHero({
             {...blurProps(image)}
           />
           {/*
-            EL VELO ESTÁ CALCULADO, NO ESTIMADO.
+            LOS TRES VELOS ESTÁN MEDIDOS, NO ESTIMADOS.
 
-            Medí la luminancia de la fotografía justo donde cae cada texto, en
-            las cuatro anchuras. Sin velo, el titular en blanco cálido daba
-            entre 1.53:1 y 1.77:1 de contraste — y AA pide 3:1 para texto de
-            ese cuerpo. O sea: el titular se perdía, y no por poco.
+            Partir el titular en tres renglones lo hizo crecer hacia arriba, y
+            el renglón amarillo acabó encima de la parte más clara del cielo.
+            El amarillo Sunny es un color CLARO (luminancia 0.65), así que
+            necesita fondo oscuro; ahí medía 2.16:1 y AA pide 3:1. El
+            antetítulo estaba peor y venía de antes: al 50 % de opacidad sobre
+            ese mismo cielo daba 2.25:1 contra los 4.5:1 que pide el texto
+            pequeño. A esa opacidad no hay velo que lo salve — ni al 100 % de
+            opacidad llegaba, porque el fondo era el problema.
 
-            Para llegar a 3:1 en el peor caso —1440 px, donde el cielo entra
-            más alto en el encuadre— hacía falta un 53%. El velo base va al
-            58%. Medido ya montado —con el grano y el degradado encima, que
-            suman más de lo que decía el cálculo— el titular daba 6.3:1 en
-            blanco y 4.4:1 en amarillo: mucho margen sobre el 3:1 que pide AA.
-            Así que baja al 50%, para que la fotografía se vea. A 50% sigue en
-            5.4:1 y 3.8:1.
+            Subir un velo plano hasta que todo pasara dejaba la fotografía en
+            penumbra, que es la mitad de lo que se pedía. Así que la oscuridad
+            va donde hace falta y no donde no:
 
-            Encima, un degradado que suma solo en los extremos: arriba vive la
-            línea de contexto y abajo la nota, las dos en cuerpo pequeño, y el
-            pequeño necesita 4.5:1. En el centro no suma nada, para no
-            oscurecer la foto justo donde se mira.
+              · 48 % plano, el suelo de todo.
+              · Una elipse centrada en el titular, del 45 % al centro y
+                desvanecida al 78 %. Se lee como la caída de luz de la propia
+                fotografía.
+              · Un velo corto y fuerte en el 24 % de arriba, donde viven el
+                antetítulo y el menú. En una foto de cielo esto es exactamente
+                lo que hace un filtro degradado, así que no se nota como
+                intervención — se nota como fotografía.
+
+            Medido con el fondo compuesto, ocultando el texto y componiendo
+            cada pieza sobre SU píxel (el antetítulo y la nota no son opacos,
+            así que su color final depende de lo que tienen debajo). Las cuatro
+            anchuras pasan AA.
           */}
-          <div aria-hidden className="absolute inset-0 -z-10 bg-carbon/[0.50]" />
+          <div aria-hidden className="absolute inset-0 -z-10 bg-carbon/[0.48]" />
           <div
             aria-hidden
-            className="absolute inset-0 -z-10 bg-gradient-to-b from-carbon/30 via-transparent to-carbon/30"
+            className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_70%_56%_at_50%_46%,rgba(23,23,20,0.45)_0%,rgba(23,23,20,0.27)_50%,rgba(23,23,20,0)_78%)]"
+          />
+          <div
+            aria-hidden
+            className="absolute inset-0 -z-10 bg-[linear-gradient(to_bottom,rgba(23,23,20,0.75)_0%,rgba(23,23,20,0)_24%,rgba(23,23,20,0)_62%,rgba(23,23,20,0.52)_100%)]"
           />
         </>
       )}
@@ -114,22 +130,27 @@ export function LeanHero({
 
       <Container className="hero-caja relative flex min-h-[100svh] flex-col justify-between pt-28 pb-8 sm:pt-32 sm:pb-10">
         <LineReveal>
-          <p className="text-small tracking-[0.18em] text-warm-white/50 uppercase">Monterrey · Cada semana</p>
+          <p className="text-small tracking-[0.18em] text-warm-white/90 uppercase">{eyebrow}</p>
         </LineReveal>
 
         {/* El manifiesto, centrado y solo. */}
         <div className="flex flex-1 items-center justify-center py-12">
           {/*
-            LA FRASE RESALTA DENTRO DEL TITULAR, NO DEBAJO.
+            TRES RENGLONES, NO UN PÁRRAFO QUE SE PARTE SOLO.
 
-            Antes la frase destacada era una segunda línea. Este titular no
-            funciona así: lo que resalta vive en mitad de la oración, y
-            sacarlo a otra línea la rompería.
+            La frase destacada vive en mitad de la oración —«Tu próximo "qué
+            buen plan" puede empezar aquí»— así que resaltarla debajo la
+            rompería. Pero dejarla resaltada dentro del párrafo tampoco vale:
+            el salto de línea lo decidía el ancho disponible, y a 1440 px «qué»
+            se quedaba arriba y «buen plan» bajaba. La frase que sostiene el
+            titular se partía por la mitad según la pantalla.
 
-            WordReveal busca la frase entre las palabras del titular. Si la
-            encuentra, la pinta en la otra voz ahí mismo; si no aparece, se
-            dibuja debajo como antes. Emmy puede escribir cualquiera de las
-            dos formas y ninguna se rompe.
+            Con `enLineas` los tres renglones son fijos: lo de antes, la frase
+            entera, y lo de después. Las comillas viajan pegadas a su palabra,
+            así que la frase se lee completa y entrecomillada siempre.
+
+            Si Emmy escribe una frase que no aparece en el título, no se parte
+            nada y el titular se dibuja de corrido: no puede romperse.
           */}
           <h1 className="manifiesto max-w-[17ch] text-center text-warm-white">
             <WordReveal
@@ -137,6 +158,7 @@ export function LeanHero({
               text={title}
               className="block"
               resaltar={destacada}
+              enLineas
               claseResalte="font-serif text-sunny italic"
             />
             {destacada && !title.toLocaleLowerCase("es").includes(destacada.toLocaleLowerCase("es")) && (
@@ -183,7 +205,7 @@ export function LeanHero({
                 después del titular, que es el orden correcto.
               */}
               {subtitle && (
-                <p className="max-w-[44ch] text-small text-warm-white/75 sm:text-right">{subtitle}</p>
+                <p className="max-w-[44ch] text-small text-warm-white/85 sm:text-right">{subtitle}</p>
               )}
             </div>
           </div>

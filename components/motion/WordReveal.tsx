@@ -78,6 +78,27 @@ function rangoResaltado(palabras: string[], frase?: string | null) {
   return null;
 }
 
+/**
+ * Parte el titular en las tres líneas que dicta la frase destacada.
+ *
+ * Devuelve lo que va antes, la frase, y lo que va después — cada una con el
+ * índice global de su primera palabra, para que el escalonado de la animación
+ * siga siendo uno solo de principio a fin y no se reinicie en cada línea.
+ *
+ * Si la frase no aparece en el titular, devuelve una sola línea con todo: el
+ * titular no puede romperse porque alguien escriba mal la frase destacada.
+ */
+function partirEnLineas(palabras: string[], rango: { desde: number; hasta: number } | null) {
+  if (!rango) return [{ desde: 0, palabras, resaltada: false }];
+  const lineas: { desde: number; palabras: string[]; resaltada: boolean }[] = [];
+  if (rango.desde > 0) lineas.push({ desde: 0, palabras: palabras.slice(0, rango.desde), resaltada: false });
+  lineas.push({ desde: rango.desde, palabras: palabras.slice(rango.desde, rango.hasta + 1), resaltada: true });
+  if (rango.hasta < palabras.length - 1) {
+    lineas.push({ desde: rango.hasta + 1, palabras: palabras.slice(rango.hasta + 1), resaltada: false });
+  }
+  return lineas;
+}
+
 export function WordReveal({
   text,
   as = "span",
@@ -86,6 +107,7 @@ export function WordReveal({
   wordDelay = STAGGER.word,
   resaltar,
   claseResalte,
+  enLineas = false,
 }: {
   text: string;
   as?: keyof typeof TAGS;
@@ -99,34 +121,63 @@ export function WordReveal({
   resaltar?: string | null;
   /** Clases que se aplican a las palabras resaltadas. */
   claseResalte?: string;
+  /**
+   * Pone la frase destacada en su propio renglón, con lo de antes encima y lo
+   * de después debajo.
+   *
+   * Sin esto la frase resalta dentro del párrafo del titular y el salto de
+   * línea lo decide el ancho disponible, así que «qué buen plan» se parte por
+   * la mitad en cuanto cambia la pantalla. Con esto los tres renglones son
+   * fijos y la frase se lee siempre entera.
+   */
+  enLineas?: boolean;
 }) {
   const Tag = TAGS[as];
   const words = text.split(" ");
   const rango = rangoResaltado(words, resaltar);
 
+  const palabra = (word: string, i: number, resaltada: boolean, ultima: boolean) => (
+    <span
+      key={`${word}-${i}`}
+      aria-hidden
+      className={
+        resaltada
+          ? `reveal reveal-on-load inline-block whitespace-pre-wrap ${claseResalte ?? ""}`
+          : "reveal reveal-on-load inline-block whitespace-pre-wrap"
+      }
+      style={
+        {
+          "--reveal-delay": `${delay + i * wordDelay}s`,
+          "--reveal-y": "0.6em",
+        } as CSSProperties
+      }
+    >
+      {word}
+      {ultima ? "" : " "}
+    </span>
+  );
+
+  if (enLineas && rango) {
+    return (
+      <Tag className={className}>
+        <span className="sr-only">{text}</span>
+        {partirEnLineas(words, rango).map((linea) => (
+          <span key={linea.desde} aria-hidden className="block">
+            {linea.palabras.map((w, k) =>
+              palabra(w, linea.desde + k, linea.resaltada, k === linea.palabras.length - 1),
+            )}
+          </span>
+        ))}
+      </Tag>
+    );
+  }
+
   return (
     <Tag className={className}>
       <span className="sr-only">{text}</span>
-      {words.map((word, i) => (
-        <span
-          key={`${word}-${i}`}
-          aria-hidden
-          className={
-            rango && i >= rango.desde && i <= rango.hasta
-              ? `reveal reveal-on-load inline-block whitespace-pre-wrap ${claseResalte ?? ""}`
-              : "reveal reveal-on-load inline-block whitespace-pre-wrap"
-          }
-          style={
-            {
-              "--reveal-delay": `${delay + i * wordDelay}s`,
-              "--reveal-y": "0.6em",
-            } as CSSProperties
-          }
-        >
-          {word}
-          {i < words.length - 1 ? " " : ""}
-        </span>
-      ))}
+      {words.map((word, i) =>
+        palabra(word, i, Boolean(rango && i >= rango.desde && i <= rango.hasta), i === words.length - 1),
+      )}
     </Tag>
   );
 }
