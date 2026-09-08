@@ -69,18 +69,47 @@ export default function SunniHome() {
           Asimétrico: la tipografía manda a la izquierda y la fotografía entra
           por la derecha sin alinearse con ella. */}
       <section id="top" className="relative isolate overflow-clip pt-28 pb-16 sm:pt-32 sm:pb-24">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -top-40 -right-32 -z-10 size-[34rem] rounded-pill opacity-25 blur-3xl"
-          style={{ backgroundImage: "var(--gradient-sun)" }}
-        />
+        {/*
+          AQUÍ HABÍA UNA MANCHA DIFUMINADA DE GRADIENTE.
+
+          Un círculo enorme con `blur-3xl` flotando en la esquina es la firma
+          más reconocible de una página generada con IA — junto con el destello
+          dentro de una píldora que estaba justo debajo. No decía nada: era
+          color de relleno.
+
+          Lo que ocupa su sitio es la línea de sol del borde superior, que sí
+          significa algo (un amanecer, la marca se llama Sun-i) y además sale
+          en TODAS las páginas, así que hace de firma común en vez de adorno de
+          una sola pantalla.
+        */}
         <Container>
           <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-x-[48px]">
             <div className="min-w-0 lg:col-span-7">
               <InViewReveal variant="lead">
-                <span className="inline-flex items-center gap-2 rounded-pill border border-ink/10 bg-cream px-4 py-2 text-[0.7rem] font-semibold tracking-[0.2em] text-coral-ink uppercase">
-                  <Sparkles aria-hidden size={13} strokeWidth={2} />
-                  {HERO.badge}
+                {/*
+                  UN RÓTULO DE REVISTA, NO UNA PÍLDORA CON UN DESTELLO.
+
+                  El icono de destello dentro de una cápsula encima del titular
+                  es EL cliché de la landing generada con IA: aparece igual en
+                  miles de páginas y no aporta información. Además, aquí
+                  competía con el propio logo, que ya es una píldora con
+                  gradiente — dos cápsulas idénticas a diez píxeles.
+
+                  Esto es un rótulo de sección: una barra corta con el
+                  gradiente de la marca y la etiqueta al lado. El gradiente
+                  pasa de ser decoración a ser una MARCA DE LECTURA, que es la
+                  misma lógica con la que se usan las reglas finas en el resto
+                  de la página.
+                */}
+                <span className="flex items-center gap-3">
+                  <span
+                    aria-hidden
+                    className="h-[3px] w-10 shrink-0 rounded-pill"
+                    style={{ backgroundImage: "var(--gradient-sun)" }}
+                  />
+                  <span className="text-[0.7rem] font-semibold tracking-[0.25em] text-coral-ink uppercase">
+                    {HERO.badge}
+                  </span>
                 </span>
 
                 <h1 className="mt-7 font-display text-[clamp(2.6rem,6.6vw,4.6rem)] leading-[1.02] font-bold tracking-[-0.03em] text-ink">
@@ -123,18 +152,32 @@ export default function SunniHome() {
             </div>
 
             <InViewReveal variant="media" delay={0.1} className="min-w-0 lg:col-span-5">
-              <div className="relative">
+              <figure className="relative">
                 <HuecoDeFoto nota="Fotografía de portada" />
                 {/* La tarjeta que nombra el vending sin dejar que se coma la
                     marca: es un touchpoint, no el producto entero. */}
-                <div className="absolute -bottom-5 -left-4 flex items-center gap-3 rounded-xl border border-ink/8 bg-warm-white px-5 py-4 shadow-[0_18px_44px_-24px_rgba(232,78,50,0.35)] sm:-left-8">
-                  <span aria-hidden className="size-9 shrink-0 rounded-pill" style={{ backgroundImage: "var(--gradient-sun)" }} />
-                  <span>
+                {/*
+                  La nota que impide la confusión más cara del proyecto: que
+                  alguien crea que Sun-i ES una empresa de vending.
+
+                  Era una tarjeta flotante con sombra difusa y un círculo de
+                  gradiente al lado — la misma pieza que sale en cualquier
+                  landing de software. Ahora cuelga del borde inferior de la
+                  fotografía como un pie de foto: se lee como parte de la
+                  imagen, no como un widget encima de ella.
+                */}
+                <figcaption className="mt-5 flex items-baseline gap-3 border-t border-ink/12 pt-4">
+                  <span
+                    aria-hidden
+                    className="mt-1.5 h-[3px] w-6 shrink-0 rounded-pill"
+                    style={{ backgroundImage: "var(--gradient-sun)" }}
+                  />
+                  <span className="min-w-0">
                     <span className="block font-display text-small font-semibold text-ink">{HERO.tarjeta.titulo}</span>
                     <span className="block text-[0.78rem] text-gray">{HERO.tarjeta.texto}</span>
                   </span>
-                </div>
-              </div>
+                </figcaption>
+              </figure>
             </InViewReveal>
           </div>
         </Container>

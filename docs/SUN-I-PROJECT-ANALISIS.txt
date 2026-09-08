@@ -1,0 +1,478 @@
+================================================================================
+SUN-I PROJECT®  ·  ANÁLISIS COMPLETO DE LA PÁGINA
+================================================================================
+Documento de contexto. Explica qué es la marca, qué busca, cómo está construida
+la página, qué hace cada sección, a dónde va la información y qué falta.
+
+Escrito para poder pegarse entero en un chat como contexto, o para leerlo
+alguien que no ha visto nunca el proyecto.
+
+Sitio en producción:  https://sunny-mvp.vercel.app
+Gestor de contenido:  https://the-sunny-project.sanity.studio
+Instagram:            https://www.instagram.com/thesuniproject/
+Actualizado:          7 de septiembre de 2026
+
+
+================================================================================
+1. QUÉ ES SUN-I PROJECT
+================================================================================
+
+Sun-i project® es una MARCA DE EVERYDAY WELLNESS: productos, espacios y
+tecnología que hacen que cuidarte sea parte natural del día.
+
+La idea de la que nace: el bienestar se volvió complicado. Planes, apps,
+suscripciones y promesas que no caben en un martes cualquiera. Sun-i propone lo
+contrario — que sentirte bien sea lo más fácil de tu día.
+
+EL NOMBRE
+El proyecto se llamaba antes «Feel Good / Feelgood Hub» y ese nombre no se pudo
+conservar por temas de propiedad intelectual. La marca actual se escribe
+«Sun-i project®», con guion y la «i» minúscula. En Instagram es @thesuniproject.
+
+  OJO: en el primer borrador del encargo aparecía como «THE SUNNI PROJECT».
+  Ese nombre quedó atrás. El logo, el manual de marca y la cuenta de Instagram
+  dicen «Sun-i project®», y es el que usa el sitio.
+
+LO QUE SUN-I NO ES
+No es una empresa de vending. Esto es lo más fácil de malinterpretar y el copy
+del sitio está escrito para evitarlo: Sun-i Vending es UNO de los primeros
+touchpoints del ecosistema, no la marca entera. Sun-i Experiences es otro.
+
+
+================================================================================
+2. QUÉ BUSCA LA PÁGINA
+================================================================================
+
+La página tiene UN objetivo comercial y TRES públicos distintos.
+
+OBJETIVO: que alguien deje sus datos para empezar una conversación.
+No vende en línea, no cobra, no gestiona reservas automáticas.
+
+LOS TRES PÚBLICOS
+
+  A) DUEÑOS DE ESPACIOS  — gyms, universidades, oficinas, hoteles, residencial,
+     clínicas. Quieren un amenity para su comunidad.
+     Lo que se les ofrece: Sun-i instala, surte y opera. Sin costo de
+     instalación y sin contratos eternos.
+     Su acción: «Bring Sun-i to your space».
+
+  B) EMPRESAS E INSTITUCIONES — quieren llevar bienestar a su gente.
+     Lo que se les ofrece: sesiones cortas facilitadas por expertos
+     (mindfulness, yoga, movilidad, ejercicio funcional, activaciones), con
+     facilitador y material incluidos.
+     Su acción: «Lleva una experiencia Sun-i a tu espacio».
+
+  C) MARCAS DE PRODUCTO — snacks, bebidas, suplementos, self-care, wellness tech.
+     Lo que se les ofrece: estar dentro de la curaduría de Sun-i, frente a
+     comunidades que compran con intención.
+     Su acción: «Partner with Sun-i».
+
+HAY UN CUARTO PÚBLICO, MÁS PEQUEÑO
+  D) PERSONAS que quieren apuntarse a una experiencia abierta al público.
+     Ese es el catálogo en /experiencias, que viene del proyecto anterior y
+     sigue funcionando. Se explica en la sección 6 de este documento.
+
+TONO Y ESTILO
+  · Titulares y llamadas a la acción EN INGLÉS. Cuerpo de texto EN ESPAÑOL.
+    Es una regla de la marca, no una inconsistencia.
+  · Aspiracional, editorial, joven, cálido. Sin jerga corporativa.
+  · Nada de métricas inventadas. La sección de impacto dice «coming soon»
+    a propósito, porque todavía no hay datos reales.
+
+
+================================================================================
+3. IDENTIDAD VISUAL
+================================================================================
+
+COLORES
+  Coral de marca      #E84E32   primario: titulares destacados, rellenos, bordes
+  Coral tinta         #D63518   texto pequeño (antetítulos, etiquetas)
+  Amarillo sol        #FFE47A   inicio del gradiente
+  Amarillo cálido     #FFDB78
+  Naranja suave       #FFC17B
+  Peach               #FFA876   fin del gradiente
+  Blanco cálido       #FFFEFC   fondo dominante
+  Cream               #FFF9F1   fondos de sección y tarjetas
+  Charcoal / tinta    #252525   todo el texto
+  Gris cálido         #7B7065   texto secundario
+
+  PROHIBIDO por manual de marca: verde, salvia, gris frío, beige apagado,
+  estética SaaS o clínica, y tipografía serif.
+
+  POR QUÉ HAY DOS CORALES
+  El coral de marca sobre blanco da 3.74:1 de contraste. Eso pasa la norma de
+  accesibilidad para texto grande (pide 3:1) pero NO para texto pequeño (pide
+  4.5:1). Como el manual usa coral en antetítulos, que son pequeños, hay una
+  segunda intensidad más oscura para esos casos.
+
+GRADIENTE FIRMA
+  linear-gradient(90deg, #FFE47A → #FFD77A → #FFC17B → #FFA876)
+  Uso SELECTIVO, lo dice el propio manual. En toda la portada aparece cuatro
+  veces: el botón principal, la banda «Bring Sun-i», el círculo del manifiesto
+  y los huecos de fotografía. Nunca como fondo general.
+
+  CORRECCIÓN HECHA AL MANUAL
+  El manual pedía el texto de los botones en coral sobre ese gradiente. Medido,
+  eso da 2.99:1 en el extremo amarillo y 2.00:1 en el naranja — el botón
+  principal del sitio resultaba ilegible en su mitad derecha. Se cambió a la
+  tinta de la marca, que sube a 12.14 y 8.11.
+
+TIPOGRAFÍA
+  Titulares:  Poppins (500/600/700/800)
+  Cuerpo:     DM Sans
+  No hay serif. El manual la prohíbe.
+
+  El nombre de la marca lleva GUION DURO (U+2011), no guion normal. Sin eso el
+  navegador parte «Sun-i» a mitad de línea: medido, a 240 px de ancho dejaba
+  «Sun-» arriba e «i» abajo. Se ve idéntico y no se puede partir.
+
+LOGO
+  PENDIENTE. El archivo oficial (PNG 481×130) todavía no está en el proyecto.
+  Mientras tanto se dibuja con CSS: la píldora con el gradiente y el nombre en
+  Poppins coral, que es literalmente lo que es el logo. Vive aislado en un solo
+  componente para poder cambiarlo por el archivo real en una línea.
+
+
+================================================================================
+4. LA PORTADA, SECCIÓN POR SECCIÓN
+================================================================================
+
+Es UNA SOLA PÁGINA con navegación por anclas. El menú lleva a #about,
+#vending, /experiencias y #brands, más el botón «Bring Sun-i» que abre el
+formulario directamente.
+
+--------------------------------------------------------------------------------
+01 · HERO                                                              (#top)
+--------------------------------------------------------------------------------
+QUÉ HACE: dice qué es Sun-i en cinco segundos y ofrece la acción principal.
+
+  Etiqueta:   Everyday wellness brand
+  Titular:    A little more Sun-i in your everyday.   («Sun-i» en coral)
+  Texto:      Sun-i project® es una marca de everyday wellness: productos,
+              espacios y tecnología que hacen que cuidarte sea parte natural
+              del día. No una tarea más — algo que ya está ahí cuando lo
+              necesitas.
+  Acción 1:   Bring Sun-i to your space   → abre formulario (vending)
+  Acción 2:   Discover Sun-i              → baja a #about
+  Etiquetas:  snack · hydrate · focus · energy · recover · feel good
+  Tarjeta:    Sun-i Vending — «Uno de nuestros primeros touchpoints»
+              (existe para que nadie confunda el vending con la marca entera)
+  Imagen:     PENDIENTE. Fotografía de portada.
+
+--------------------------------------------------------------------------------
+02 · BANDA EN MOVIMIENTO
+--------------------------------------------------------------------------------
+Una tira fina que se desplaza sola:
+  everyday wellness · smart retail · curaduría real · diseño primero ·
+  hábitos, no dietas · comunidad
+Se detiene si el sistema pide movimiento reducido.
+
+--------------------------------------------------------------------------------
+03 · ABOUT                                                           (#about)
+--------------------------------------------------------------------------------
+QUÉ HACE: explica de dónde nace la marca y qué defiende.
+
+  Titular:  No somos una máquina. Somos un hábito.
+  Párrafo 1: el bienestar se volvió complicado (planes, apps, suscripciones).
+  Párrafo 2: por eso construimos un ecosistema de everyday wellness que vive
+             en la ciudad, la oficina, el campus y el gym.
+  Cierre:   Wellness shouldn't feel like another task.
+            It should be there when you need it.
+
+  LOS TRES PILARES
+    Purpose  · Hacer el bienestar inevitable
+    Mission  · Everyday wellness, sin fricción
+    Vision   · Un ecosistema de mejor vivir
+
+  MANIFIESTO: «Que cuidarte sea lo más fácil de tu día.»
+
+--------------------------------------------------------------------------------
+04 · HOW SUN-I WORKS                                                   (#how)
+--------------------------------------------------------------------------------
+QUÉ HACE: cuenta el mecanismo del ecosistema en cuatro pasos.
+
+  01 Discover   · Curamos marcas y productos que valen la pena.
+  02 Access     · Acceso instantáneo, donde ya pasas tu día.
+  03 Experience · Momentos diseñados para sentirse bien.
+  04 Connect    · Comunidades, marcas y espacios conectados.
+
+--------------------------------------------------------------------------------
+05 · SUN-I VENDING                                                 (#vending)
+--------------------------------------------------------------------------------
+QUÉ HACE: presenta el primer producto físico SIN dejar que se coma la marca.
+
+  Antetítulo: Uno de nuestros primeros touchpoints    ← deliberado
+  Texto:      Unidad de diseño minimalista con curaduría de bienestar, pantalla
+              inteligente y pago sin fricción. Es una de las primeras formas de
+              vivir Sun-i — no la marca completa, sino la puerta de entrada.
+  Categorías: Snack · Hydrate · Energy · Focus · Recover · Essentials · Discover
+  Frase:      Choose your good mood here.
+  Acción:     Quiero una Sun-i en mi espacio  → formulario (vending)
+  Imagen:     PENDIENTE. Unidad en su espacio.
+
+--------------------------------------------------------------------------------
+06 · INSIDE SUN-I                                                   (#inside)
+--------------------------------------------------------------------------------
+QUÉ HACE: explica la lógica de la curaduría.
+
+  Titular: Elige por cómo quieres sentirte.
+  Idea:    no se organiza por categorías de supermercado sino por moods.
+
+  Snack · Hydrate · Energy · Focus · Recover · Essentials  (seis, con su texto)
+
+--------------------------------------------------------------------------------
+07 · SUN-I EXPERIENCES                                         (#experiences)
+--------------------------------------------------------------------------------
+QUÉ HACE: presenta la oferta B2B de experiencias de bienestar.
+
+  Titular: Activa el día, comparte el bienestar.
+  Texto:   Llevamos experiencias de bienestar a oficinas, instituciones,
+           escuelas y comunidades. Sesiones cortas, facilitadas por expertos.
+
+  Tipos:   Mindfulness · Yoga · Movilidad · Ejercicio funcional · Activaciones
+  Frase:   Bienestar que se programa, se siente y se comparte.
+  Acción:  Lleva una experiencia Sun-i a tu espacio → formulario (experiences)
+
+  PUENTE AL CATÁLOGO: aquí hay un enlace a /experiencias para quien busca
+  experiencias abiertas al público. Son dos cosas distintas y las dos son
+  verdad; la sección nombra las dos en vez de fingir que la otra no existe.
+
+--------------------------------------------------------------------------------
+08 · WHERE SUN-I LIVES                                            (#espacios)
+--------------------------------------------------------------------------------
+QUÉ HACE: que el dueño de un espacio se reconozca en la lista.
+
+  Titular: Donde la vida sucede, Sun-i pertenece.
+  Gyms & Studios · Universidades · Oficinas · Residencial · Hoteles ·
+  Clínicas & Wellness
+  Acción:  Bring Sun-i to your space → formulario (vending)
+
+--------------------------------------------------------------------------------
+09 · FOR BRANDS                                                     (#brands)
+--------------------------------------------------------------------------------
+QUÉ HACE: abre la puerta a marcas de producto.
+
+  Titular: Partner with Sun-i
+  Product placement · Sampling · Activations · Co-branding
+  Acción:  Let's collaborate → formulario (brands)
+
+--------------------------------------------------------------------------------
+10 · BRING SUN-I                                                     (#bring)
+--------------------------------------------------------------------------------
+QUÉ HACE: el momento de máxima conversión. Único bloque con el gradiente a
+plena potencia.
+
+  Titular: Bring Sun-i to your space.
+  Texto:   ¿Tienes un gym, campus, oficina, hotel o espacio con comunidad?
+           Instalamos, surtimos y operamos por ti — sin costo de instalación y
+           sin contratos eternos.
+  Acción:  I want Sun-i → formulario (vending)
+
+--------------------------------------------------------------------------------
+11 · THE SUN-I EFFECT                                               (#effect)
+--------------------------------------------------------------------------------
+QUÉ HACE: promete medición sin inventar números.
+
+  Titular: Pequeños momentos, mejores días.
+  Texto:   Estamos midiendo el impacto real. Muy pronto compartiremos aquí los
+           resultados.
+  Tres bloques (personas / espacios / marcas), los tres con «Coming soon».
+
+  IMPORTANTE: aquí NO hay métricas porque no existen todavía. Un número de
+  impacto inventado acaba citado en una junta.
+
+--------------------------------------------------------------------------------
+12 · CIERRE
+--------------------------------------------------------------------------------
+  Titular:  A little more Sun-i in your everyday.
+  Acciones: Bring Sun-i to your space (vending) · Partner with Sun-i (brands)
+
+--------------------------------------------------------------------------------
+13 · PIE
+--------------------------------------------------------------------------------
+  Marca, descripción, enlaces a las secciones, privacidad y contacto.
+  Los canales de contacto solo aparecen si están cargados en el gestor:
+  prometer un WhatsApp que no existe es peor que no poner nada.
+
+
+================================================================================
+5. LOS FORMULARIOS Y A DÓNDE VA LA INFORMACIÓN
+================================================================================
+
+TODO va a la MISMA hoja de cálculo de Google, repartido en TRES pestañas.
+Ninguna información personal se guarda en el gestor de contenido.
+
+  FORMULARIO                      DÓNDE ESTÁ              PESTAÑA
+  ------------------------------  ----------------------  --------------
+  Solicitar mi lugar              ficha de experiencia    Solicitudes
+  Crear experiencia con Sun-i     /para-negocios          Negocios
+  Bring Sun-i (vending)           portada ×5 + menú ×3    Sun-i
+  Experiencias Sun-i              portada ×1              Sun-i
+  Partner with Sun-i              portada ×2              Sun-i
+
+Los tres de la portada comparten pestaña a propósito: se distinguen por la
+columna «Tipo» (Vending / Experiencia / Marca). Quien revisa contactos quiere
+una bandeja de entrada, no tres sitios donde mirar cada mañana.
+
+COLUMNAS DE LA PESTAÑA «SUN-I»
+  Fecha · Tipo · Nombre · Email · Teléfono · Espacio o marca ·
+  Tipo de espacio o categoría · Ciudad · Personas · Interés ·
+  Web o Instagram · Mensaje · Estado · Notas
+
+  «Interés» significa algo distinto en cada variante: en vending es «¿para
+  cuándo lo quieres?», en experiencias es «qué tipo de sesión», en marcas es
+  «qué tipo de colaboración».
+
+LO QUE PIDE CADA VARIANTE
+  Vending      Nombre* · Espacio* · Tipo de espacio · Email* · Teléfono ·
+               Ciudad* · Personas al día · Para cuándo · Mensaje
+  Experiencias Tipo de experiencia · Tipo de espacio · Cuántas personas ·
+               Nombre* · Email* · Espacio* · Ciudad* · Mensaje
+  Marcas       Nombre* · Marca* · Email* · Teléfono · Web o Instagram ·
+               Categoría · Tipo de colaboración · Mensaje
+  (* obligatorio)
+
+PROTECCIONES
+  · Límite por IP para que nadie inunde la hoja.
+  · Campo trampa oculto: una persona lo deja vacío, un robot lo llena y se
+    delata. Sin captcha, sin molestar a nadie.
+  · Validación en el servidor además del navegador, porque cualquiera puede
+    mandar una petición directa sin pasar por el formulario.
+  · Si la hoja no está configurada, el mensaje lo dice — no promete «inténtalo
+    en unos minutos», que sería mentira.
+
+DIFERENCIA CON LA VERSIÓN DE LOVABLE
+  Allí los tres formularios enseñan una pantalla de «gracias» y NO GUARDAN
+  NADA. Está anotado como pendiente en su propia especificación. Cada contacto
+  real se perdía. Aquí sí guardan.
+
+
+================================================================================
+6. EL CATÁLOGO DE EXPERIENCIAS  (/experiencias)
+================================================================================
+
+Viene del proyecto anterior y sigue vivo. Es distinto de la sección
+«Experiences» de la portada:
+
+  PORTADA · Sun-i Experiences  →  B2B. Llevar sesiones a oficinas y escuelas.
+  /experiencias                →  B2C. Experiencias abiertas, la gente se apunta.
+
+CÓMO FUNCIONA
+  1. Se publican experiencias desde el gestor, cada una con fecha, hora, lugar,
+     quién la da, descripción, foto y cupo.
+  2. Se listan de la más próxima a la más lejana, agrupadas en «Próximos días»
+     (siete días) y «Más adelante». El corte se calcula solo desde la fecha.
+  3. Alguien abre una, deja nombre, WhatsApp, correo y cuántas personas van.
+  4. Esa solicitud cae en la pestaña «Solicitudes».
+  5. Se revisa el cupo real con el espacio y se contesta por WhatsApp.
+
+  REGLA IMPORTANTE: solicitar NO es estar confirmado. El lugar existe cuando
+  llega ese mensaje. Está dicho explícitamente en el sitio porque es el único
+  punto donde alguien puede presentarse a una clase donde no lo esperan.
+
+  Las experiencias que ya pasaron desaparecen solas. No hay que borrarlas.
+
+PÁGINAS QUE LO ACOMPAÑAN
+  /como-funciona          los cuatro pasos explicados
+  /para-negocios          formulario para espacios que quieren crear experiencia
+  /preguntas-frecuentes   ocho preguntas
+  /privacidad             qué datos se guardan y dónde
+
+  NOTA: estas páginas describen el negocio ANTERIOR (experiencias curadas en
+  Monterrey). Llevan ya el nombre nuevo, pero hay que decidir si se quedan, se
+  reescriben para Sun-i o se retiran.
+
+
+================================================================================
+7. QUÉ SE PUEDE EDITAR SIN TOCAR CÓDIGO
+================================================================================
+
+HOY, desde el gestor de contenido (Sanity):
+  · Las experiencias del catálogo: alta, edición, fotos, fechas, cupo.
+  · Las preguntas frecuentes.
+  · La descripción del pie, el título y la descripción para Google.
+  · Instagram, WhatsApp y correo de contacto.
+
+TODAVÍA NO (está en código):
+  · Todos los textos de la portada de Sun-i.
+    → Es el siguiente trabajo pendiente.
+
+SE QUEDA EN CÓDIGO A PROPÓSITO, Y NO ES PEREZA
+  Etiquetas de formulario, mensajes de error, validaciones, estados
+  «Disponible / Agotada», el aviso de que solicitar no es estar confirmado, y
+  el mensaje de confirmación. Son el CONTRATO DEL PRODUCTO: cambiarlos por
+  error podría prometer algo que el sistema no cumple.
+
+  La frontera es: contenido de marca en el gestor, contrato de producto en
+  código.
+
+
+================================================================================
+8. CÓMO ESTÁ HECHO
+================================================================================
+
+  Framework      Next.js 16 (App Router)
+  Estilos        Tailwind v4
+  Contenido      Sanity
+  Formularios    Google Sheets, mediante una cuenta de servicio
+  Alojamiento    Vercel
+  Repositorio    rama mvp-lean
+
+  Sin base de datos. Sin cuentas de usuario. Sin pagos. Sin reservas
+  automáticas. Todo lo que llega es una lista de contactos que alguien revisa.
+
+  PRIVACIDAD: los datos personales NUNCA pasan por el gestor de contenido. Van
+  del servidor a la hoja de cálculo y ahí se quedan.
+
+
+================================================================================
+9. ESTADO ACTUAL Y PENDIENTES
+================================================================================
+
+FUNCIONA Y ESTÁ PROBADO
+  · La portada completa con sus doce secciones.
+  · Los tres formularios, verificados con envíos reales que llegaron a la hoja.
+  · El catálogo de experiencias, con alta desde el gestor.
+  · Accesibilidad de contraste medida en toda la portada.
+  · 343 pruebas automáticas en verde.
+
+FALTA
+  1. EL LOGO. Falta el archivo oficial. Hoy se dibuja con CSS.
+  2. LAS CINCO FOTOGRAFÍAS: portada, máquina, producto, comunidad y
+     experiencias. Los huecos están dimensionados y dibujados a propósito —no
+     son rectángulos vacíos— pero son huecos.
+     Las que había en la versión de Lovable las generó una IA y no se usan.
+  3. EL DOMINIO. Todavía no se ha comprado.
+  4. CONFIRMAR EL CORREO hola@sun-iproject.com — no se sabe si es real.
+  5. PASAR LOS TEXTOS DE LA PORTADA AL GESTOR para que se puedan editar.
+  6. DECIDIR QUÉ PASA con /como-funciona, /para-negocios y las preguntas
+     frecuentes, que describen el negocio anterior.
+
+
+================================================================================
+10. DECISIONES QUE CONVIENE CONOCER
+================================================================================
+
+Cosas que no son evidentes mirando la página y que se decidieron a propósito:
+
+  · EL VENDING NO PUEDE PARECER LA MARCA. Se nombra tres veces como «uno de
+    nuestros primeros touchpoints». Es la confusión más cara del proyecto.
+
+  · NO HAY MÉTRICAS INVENTADAS. Ni de impacto, ni de espacios, ni de usuarios.
+
+  · NO SE PROMETE NADA QUE DEPENDA DE TERCEROS. No se dice cuánta gente va a
+    llegar, ni que un espacio se va a llenar.
+
+  · DOS SECCIONES SEGUIDAS NO COMPARTEN COMPOSICIÓN. Los tres pilares son una
+    lista, no tres tarjetas. El recorrido son cifras. Los espacios son líneas
+    finas. Solo «For Brands» usa tarjetas, y por eso ahí destacan.
+    Es lo que evita que la página se lea como plantilla — que es justo lo que
+    pedía el encargo original: «minimalista, editorial, mucho espacio en
+    blanco, evitar completamente el look corporativo».
+
+  · EL GRADIENTE APARECE CUATRO VECES EN TODA LA PÁGINA. Ponerlo en cada
+    tarjeta es lo que hace que un gradiente bonito acabe pareciendo barato.
+
+================================================================================
+FIN
+================================================================================

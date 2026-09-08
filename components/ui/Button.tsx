@@ -14,15 +14,20 @@ type Size = "md" | "lg" | "sm";
  * exception used only for the cancel-reservation action.
  */
 const variantClasses: Record<Variant, string> = {
-  primary: "bg-sunny text-carbon hover:bg-sunny/85",
-  secondary: "border border-carbon/25 bg-transparent text-carbon hover:border-carbon/60 hover:bg-carbon/5",
-  outline: "border border-carbon/25 bg-transparent text-carbon hover:border-carbon/60 hover:bg-carbon/5",
+  primary: "bg-[image:var(--gradient-sun)] text-ink hover:brightness-[1.03]",
+  secondary: "border border-coral/45 bg-transparent text-coral-ink hover:border-coral hover:bg-coral/6",
+  outline: "border border-ink/20 bg-transparent text-ink hover:border-ink/45 hover:bg-ink/4",
   ghost: "text-carbon underline-offset-4 hover:underline",
   danger: "border border-orange/60 text-orange-ink hover:bg-orange/10",
 };
 
 /**
- * Radius is `rounded-md` (10px), never a capsule — SUNNY_VISUAL_DIRECTION_1_0.md
+ * RADIO: PÍLDORA. Antes era `rounded-md` (10 px) y estaba escrito que nunca
+ * fuera cápsula — era la dirección visual de The Sunny Project, que era
+ * angulosa y editorial. La identidad de Sun-i es lo contrario: redondeada, y
+ * sus botones son cápsulas. Un botón de esquina viva en el catálogo junto a
+ * uno de cápsula en la portada se lee como dos sitios distintos.
+ * Referencia anterior: SUNNY_VISUAL_DIRECTION_1_0.md
  * §4 reserves the pill shape for filter chips, where the shape itself
  * communicates "selectable". Heights keep a 44px touch target at `md`.
  */
@@ -35,9 +40,9 @@ const containedSizeClasses: Record<Size, string> = {
     igual de alto mientras quepa en una línea —el relleno vertical suma menos
     que el mínimo— y solo crece cuando de verdad hace falta.
   */
-  sm: "min-h-9 px-4 py-2 text-small rounded-md",
-  md: "min-h-11 px-5 py-2 text-small rounded-md",
-  lg: "min-h-[50px] px-6 py-2.5 text-body rounded-md",
+  sm: "min-h-9 px-5 py-2 text-small rounded-pill",
+  md: "min-h-11 px-6 py-2 text-small rounded-pill",
+  lg: "min-h-[50px] px-7 py-2.5 text-body rounded-pill",
 };
 
 const base =

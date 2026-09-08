@@ -208,12 +208,12 @@
   --text-display: clamp(2.5rem, 6.4vw, 4.75rem);
   --text-display--line-height: 1.03;
   --text-display--letter-spacing: -0.012em;
-  --text-display--font-weight: 500;
+  --text-display--font-weight: 700;
 
   --text-title: clamp(1.875rem, 3.5vw, 2.875rem);
   --text-title--line-height: 1.1;
   --text-title--letter-spacing: -0.008em;
-  --text-title--font-weight: 500;
+  --text-title--font-weight: 700;
 
   --text-subtitle: clamp(1.3125rem, 2.1vw, 1.75rem);
   --text-subtitle--line-height: 1.18;
@@ -439,13 +439,44 @@ h2 {
     Se conserva `@layer components` para que una utilidad de color del marcado
     pueda seguir ganándole (la sección oscura la pinta en amarillo).
   */
+  /*
+    LOS TITULARES VAN EN POPPINS, EN TODAS LAS PÁGINAS.
+
+    Las utilidades `text-display`, `text-title`… fijan tamaño, peso y tracking
+    pero no la familia, así que heredaban DM Sans. Resultado: la portada de
+    Sun-i escribía sus titulares en Poppins —porque los pide a mano— y el
+    catálogo los escribía en la tipografía de cuerpo. Dos páginas del mismo
+    sitio con dos voces distintas, que es justo el libro azul con una hoja
+    naranja.
+
+    Poniendo la familia aquí, cada titular del proyecto la hereda sin tocar una
+    sola clase, incluidas las pantallas que todavía no se han revisado.
+  */
+  h1,
+  h2,
+  h3,
+  h4,
+  .text-display,
+  .text-title,
+  .text-subtitle,
+  .text-heading {
+    font-family: var(--font-display);
+    letter-spacing: -0.022em;
+  }
+
+  /*
+    EL ANTETÍTULO ES EL MISMO EN TODAS PARTES.
+
+    Era gris, sin caja alta y sin tracking; la portada de Sun-i dibujaba el
+    suyo en coral, versalitas y muy espaciado. Ahora hay uno solo.
+  */
   .eyebrow {
-    font-size: var(--text-small);
-    line-height: var(--text-small--line-height);
-    letter-spacing: 0;
-    font-weight: 500;
-    text-transform: none;
-    color: var(--color-gray);
+    font-size: 0.7rem;
+    line-height: 1.2;
+    letter-spacing: 0.25em;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--color-coral-ink);
   }
 }
 

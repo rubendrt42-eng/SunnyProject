@@ -129,6 +129,29 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           todas las páginas. Es un componente de cliente, pero `children` sigue
           renderizándose en el servidor — se le pasa como prop ya resuelto.
         */}
+        {/*
+          LA LÍNEA DE SOL.
+
+          Cuatro píxeles del gradiente de la marca cruzando el borde superior
+          de TODAS las páginas. Es la pieza que hace que el sitio se lea como
+          un solo sitio: entres por la portada, por el catálogo o por una ficha
+          de experiencia, lo primero que hay arriba es lo mismo.
+
+          Sustituye a la mancha difuminada que había flotando en la esquina del
+          hero. Aquella era decoración —y de la que delata una página generada
+          con IA—; esta significa algo: un amanecer, en una marca que se llama
+          Sun-i, y funciona como cabecera de publicación.
+
+          Va fija y por encima del encabezado para que no desaparezca al hacer
+          scroll: si se fuera con el scroll sería un adorno del hero otra vez,
+          no una firma del sitio.
+        */}
+        <div
+          aria-hidden
+          className="fixed inset-x-0 top-0 z-[60] h-1"
+          style={{ backgroundImage: "var(--gradient-sun)" }}
+        />
+
         <SunniModalProvider>
           <AppChrome>
             <div id="contenido" className="flex flex-1 flex-col">{children}</div>
