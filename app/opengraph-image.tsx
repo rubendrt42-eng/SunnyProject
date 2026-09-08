@@ -15,7 +15,7 @@ import { ImageResponse } from "next/og";
  */
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "The Sunny Project — Experiencias en Monterrey";
+export const alt = "Sun-i project® — A little more Sun-i in your everyday";
 
 export default async function Image() {
   return new ImageResponse(
@@ -60,7 +60,7 @@ export default async function Image() {
           <span style={{ color: "#f8d347" }}>Vívelo con alguien.</span>
         </div>
         <div style={{ fontSize: 32, color: "rgba(255,253,252,.7)", marginTop: 32 }}>
-          The Sunny Project · Experiencias en Monterrey
+          Sun-i project® · Everyday wellness
         </div>
       </div>
     ),

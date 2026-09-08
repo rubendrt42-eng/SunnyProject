@@ -1,10 +1,22 @@
 import { HeaderInteractive } from "@/components/site/HeaderInteractive";
 
+/**
+ * La navegación de Sun-i.
+ *
+ * Casi toda es de ancla dentro de la portada, porque la portada ES el sitio:
+ * cuenta el ecosistema entero de arriba abajo. La única que sale de ella es
+ * «Experiencias», que lleva al catálogo — el que ya existe, con su alta desde
+ * Sanity y su formulario de solicitud.
+ *
+ * Las anclas llevan `/#…` y no `#…` para que también funcionen desde el
+ * catálogo: pulsar «About» estando en `/experiencias` tiene que volver a la
+ * portada, no buscar un ancla que ahí no existe.
+ */
 const NAV_LINKS = [
-  { href: "/experiencias", label: "Experiencias" },
-  { href: "/como-funciona", label: "Cómo funciona" },
-  { href: "/#comunidad", label: "Comunidad" },
-  { href: "/para-negocios", label: "Para negocios" },
+  { href: "/#about", label: "About" },
+  { href: "/#vending", label: "Sun-i Vending" },
+  { href: "/experiencias", label: "Experiences" },
+  { href: "/#brands", label: "For Brands" },
 ];
 
 /**
@@ -27,5 +39,5 @@ const NAV_LINKS = [
  * dejan de tener puerta de entrada desde el sitio público.
  */
 export function Header() {
-  return <HeaderInteractive links={NAV_LINKS} ctaLabel="Explorar experiencias" />;
+  return <HeaderInteractive links={NAV_LINKS} />;
 }

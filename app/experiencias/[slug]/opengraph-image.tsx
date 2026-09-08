@@ -23,7 +23,7 @@ import { formatDateShort, formatTime } from "@/lib/dates";
  */
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "Experiencia de The Sunny Project en Monterrey";
+export const alt = "Experiencia de Sun-i project® en Monterrey";
 
 export default async function Image({ params }: { params: Promise<{ slug: string }> }) {
   // `params` es una promesa en esta convención de archivo, igual que en las
@@ -49,7 +49,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
     texto.length > tope ? `${texto.slice(0, tope - 1).trimEnd()}…` : texto;
 
   // Sin datos no se inventa nada: se cae a la tarjeta de marca sin título.
-  const titulo = recortar(experience?.title ?? "The Sunny Project", 120);
+  const titulo = recortar(experience?.title ?? "Sun-i project®", 120);
   const cuando = experience?.startDateTime
     ? `${formatDateShort(experience.startDateTime)} · ${formatTime(experience.startDateTime)}`
     : null;
@@ -102,7 +102,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
         <div
           style={{ fontSize: 30, color: "rgba(255,253,252,.7)", marginTop: 30, display: "flex", wordBreak: "break-word" }}
         >
-          {anfitrion ? `${anfitrion} · The Sunny Project` : "The Sunny Project · Experiencias en Monterrey"}
+          {anfitrion ? `${anfitrion} · Sun-i project®` : "Sun-i project® · Experiencias en Monterrey"}
         </div>
       </div>
     ),

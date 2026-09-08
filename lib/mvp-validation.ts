@@ -247,3 +247,56 @@ export function rateLimit(ip: string): { ok: boolean } {
 export function firstErrorMessage(error: z.ZodError): string {
   return error.issues[0]?.message ?? "Revisa los datos del formulario.";
 }
+
+
+/**
+ * LOS TRES FORMULARIOS DE LA PORTADA DE SUN-I.
+ *
+ * Un solo esquema con una discriminante `tipo`, y no tres, porque las tres
+ * variantes piden casi lo mismo con etiquetas distintas. Lo que de verdad
+ * cambia entre ellas es qué campos son obligatorios:
+ *
+ *   vending      quiere saber DÓNDE va la máquina  → espacio y ciudad
+ *   experiencias quiere saber DÓNDE es la sesión   → espacio y ciudad
+ *   marcas       quiere saber QUIÉN es la marca    → marca, y la ciudad da igual
+ *
+ * El teléfono es opcional en los tres: pedirlo obligatorio en un formulario de
+ * primer contacto cuesta envíos y no aporta nada que el correo no resuelva.
+ */
+const textoCorto = (max: number) => z.string().trim().max(max);
+
+export const sunniLeadSchema = z.object({
+  tipo: z.enum(["vending", "experiences", "brands"], { error: "Falta el tipo de solicitud." }),
+  nombre: nombre,
+  email: correo,
+  telefono: opcional(textoCorto(30)),
+  espacio: opcional(textoCorto(120)),
+  categoria: opcional(textoCorto(120)),
+  ciudad: opcional(textoCorto(120)),
+  personas: opcional(textoCorto(60)),
+  interes: opcional(textoCorto(120)),
+  web: opcional(textoCorto(160)),
+  mensaje: opcional(textoCorto(700)),
+  website: trampa,
+}, { error: CUERPO_INVALIDO })
+  .superRefine((v, ctx) => {
+    /**
+     * Los obligatorios que dependen de la variante.
+     *
+     * Se comprueban aquí y no con tres esquemas sueltos porque el mensaje
+     * tiene que nombrar el campo COMO SE LLAMA EN PANTALLA: en la variante de
+     * marcas el mismo campo dice «Marca o empresa», no «Nombre del espacio».
+     */
+    const pide = (campo: keyof typeof v, mensaje: string) => {
+      if (!v[campo] || String(v[campo]).trim() === "") {
+        ctx.addIssue({ code: "custom", path: [campo], message: mensaje });
+      }
+    };
+
+    if (v.tipo === "brands") {
+      pide("espacio", "Escribe el nombre de tu marca.");
+    } else {
+      pide("espacio", "Escribe el nombre de tu espacio.");
+      pide("ciudad", "Dinos en qué ciudad está.");
+    }
+  });

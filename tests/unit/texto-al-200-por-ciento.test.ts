@@ -42,9 +42,15 @@ function soloCodigo(fuente: string) {
 describe("el texto al 200% no rompe el ancho", () => {
   it("la marca del encabezado puede partirse si no cabe", () => {
     const fuente = soloCodigo(leer("components/site/HeaderInteractive.tsx"));
-    const marca = fuente.split("\n").find((l) => l.includes("font-serif") && l.includes("shrink-0"));
+    /*
+      La marca dejó de ser texto suelto en el encabezado y pasó a ser el
+      componente `Wordmark`. Lo que hay que vigilar sigue siendo lo mismo —que
+      al 200% de zoom el nombre no empuje el documento— pero ahora las clases
+      que lo garantizan viven en el enlace que lo envuelve, no en el texto.
+    */
+    const marca = fuente.split("\n").find((l) => l.includes('aria-label="Sun-i project'));
 
-    expect(marca, "ya no se encuentra la clase de la marca en el encabezado").toBeDefined();
+    expect(marca, "ya no se encuentra la marca en el encabezado").toBeDefined();
     expect(
       marca,
       "prohibir encoger y prohibir partir a la vez deja al nombre sin salida cuando el texto crece",

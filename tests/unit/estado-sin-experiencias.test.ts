@@ -36,7 +36,7 @@ function soloCodigo(fuente: string) {
 
 describe("sin experiencias, nadie promete que las hay", () => {
   it("el antetítulo de la portada depende de que haya lista", () => {
-    const fuente = soloCodigo(leer("app/page.tsx"));
+    const fuente = soloCodigo(leer("app/experiencias/page.tsx"));
 
     /*
       SE BUSCA POR LO QUE HACE, NO POR CÓMO SE VE.
@@ -52,8 +52,20 @@ describe("sin experiencias, nadie promete que las hay", () => {
       `antetituloDeLaLista` mirando la lista, y que no vuelva a existir un
       «Esta semana» escrito a mano en la portada.
     */
-    expect(fuente, "la portada dejó de calcular el antetítulo de la lista").toMatch(
-      /antetituloDeLaLista\(experiences\)/,
+    /*
+      EL INVARIANTE SOBREVIVIÓ AL CAMBIO DE MARCA; SU SITIO CAMBIÓ.
+
+      El «Esta semana» vivía en la portada de The Sunny Project, encima de la
+      lista de experiencias. La portada de Sun-i project® no lleva lista: es la
+      presentación del ecosistema, y el catálogo pasó a su propia página.
+
+      Lo que había que proteger no era esa etiqueta concreta sino la regla de
+      la que salía — **ninguna promesa de cadencia puede escribirse a mano; se
+      deduce de las fechas**. El catálogo la cumple agrupando por
+      `empiezaEnLosProximos`, que mira la fecha de cada experiencia.
+    */
+    expect(fuente, "el catálogo dejó de deducir los grupos de las fechas").toMatch(
+      /empiezaEnLosProximos\(/,
     );
 
     expect(

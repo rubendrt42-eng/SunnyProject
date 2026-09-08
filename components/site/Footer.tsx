@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
+import { Wordmark } from "@/components/site/Wordmark";
+import { MARCA } from "@/lib/sunni-content";
 import { getSiteSettings } from "@/lib/sanity/queries";
 import { DEFAULT_SETTINGS, mezclarAjustes, whatsappLink } from "@/lib/lean-content";
 
@@ -34,10 +36,10 @@ export async function Footer() {
   const hayContacto = Boolean(whatsapp || instagram || correo);
 
   return (
-    <footer className="mt-auto bg-carbon py-12 text-warm-white">
+    <footer className="mt-auto bg-ink py-12 text-warm-white">
       <Container className="flex flex-col gap-8 sm:flex-row sm:justify-between">
         <div className="max-w-sm">
-          <p className="font-serif text-xl italic">The Sunny Project</p>
+          <Wordmark tono="claro" />
           {/*
             Decía «bienestar, movimiento y comunidad», y eso encerraba a Sunny
             en wellness cuando también entran cafés, talleres y conceptos que
@@ -50,9 +52,10 @@ export async function Footer() {
         <div className={`grid gap-8 text-sm ${hayContacto ? "grid-cols-2 sm:grid-cols-3" : "grid-cols-2"}`}>
           <div className="flex flex-col gap-2">
             <span className="font-medium text-warm-white">Explora</span>
-            <EnlacePie href="/experiencias">Experiencias</EnlacePie>
-            <EnlacePie href="/como-funciona">Cómo funciona</EnlacePie>
-            <EnlacePie href="/para-negocios">Para negocios</EnlacePie>
+            <EnlacePie href="/#about">About</EnlacePie>
+            <EnlacePie href="/#vending">Sun-i Vending</EnlacePie>
+            <EnlacePie href="/experiencias">Experiences</EnlacePie>
+            <EnlacePie href="/#brands">For Brands</EnlacePie>
           </div>
 
           <div className="flex flex-col gap-2">
@@ -100,7 +103,7 @@ export async function Footer() {
       </Container>
 
       <Container className="mt-10 border-t border-warm-white/10 pt-6 text-xs text-warm-white/50">
-        © {new Date().getFullYear()} The Sunny Project — Monterrey.
+        © {new Date().getFullYear()} {MARCA.nombre} — Everyday wellness, lifestyle y tecnología.
       </Container>
     </footer>
   );

@@ -184,7 +184,7 @@ export function SpotRequestForm({
         </span>
         <h3 className="mt-4 text-subtitle">¡Recibimos tu solicitud!</h3>
         <p className="mx-auto mt-2 max-w-sm text-small text-gray">
-          The Sunny Project revisará la disponibilidad y se pondrá en contacto contigo para confirmar tu lugar.
+          Sun-i project® revisará la disponibilidad y se pondrá en contacto contigo para confirmar tu lugar.
         </p>
 
         {/*

@@ -37,7 +37,7 @@ export function ShareExperience({
 }) {
   const [copiado, setCopiado] = useState(false);
 
-  const mensaje = `${title} — ${fecha}. Mira esta experiencia de The Sunny Project:`;
+  const mensaje = `${title} — ${fecha}. Mira esta experiencia de Sun-i project®:`;
   const whatsapp = `https://wa.me/?text=${encodeURIComponent(`${mensaje} ${url}`)}`;
 
   async function copiar() {

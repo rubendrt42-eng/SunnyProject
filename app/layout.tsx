@@ -1,14 +1,36 @@
 import type { Metadata } from "next";
-import { Manrope, Newsreader } from "next/font/google";
+import { DM_Sans, Poppins } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { AppChrome } from "@/components/motion/AppChrome";
+import { SunniModalProvider } from "@/components/lean/SunniModal";
 import { getSiteSettings } from "@/lib/sanity/queries";
 import { DEFAULT_SETTINGS, mezclarAjustes } from "@/lib/lean-content";
 
-const manrope = Manrope({ variable: "--font-manrope", subsets: ["latin"] });
-const newsreader = Newsreader({ variable: "--font-newsreader", subsets: ["latin"], style: ["italic", "normal"] });
+/**
+ * Las dos tipografías de Sun-i project®.
+ *
+ * Poppins para titulares —geométrica, redonda, con la personalidad optimista
+ * de la marca— y DM Sans para el cuerpo, que es más neutra y aguanta párrafos
+ * largos sin cansar.
+ *
+ * SE FUE LA SERIF, Y NO POR GUSTO
+ *
+ * La marca anterior contrastaba Manrope con Newsreader en cursiva, y ese
+ * duelo era media personalidad del sitio. La identidad de Sun-i prohíbe
+ * expresamente la tipografía serif, así que el contraste ahora lo hacen el
+ * peso y la escala dentro de la misma familia geométrica. `--font-serif`
+ * apunta a Poppins para que las veinticinco marcas de acento que ya existían
+ * en el catálogo sigan leyéndose como acento en vez de romperse.
+ */
+const poppins = Poppins({
+  variable: "--font-display",
+  subsets: ["latin"],
+  weight: ["500", "600", "700", "800"],
+  style: ["normal", "italic"],
+});
+const dmSans = DM_Sans({ variable: "--font-body", subsets: ["latin"] });
 
 /**
  * Los metadatos del sitio entero: lo que sale en Google y en el enlace que
@@ -46,7 +68,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description: s.seoDescription,
       locale: "es_MX",
       type: "website",
-      siteName: "The Sunny Project",
+      siteName: "Sun-i project®",
     },
     twitter: { card: "summary_large_image" },
   };
@@ -76,7 +98,7 @@ export async function generateMetadata(): Promise<Metadata> {
  */
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="es" className={`${manrope.variable} ${newsreader.variable} h-full antialiased`}>
+    <html lang="es" className={`${poppins.variable} ${dmSans.variable} h-full antialiased`}>
       <head>
         {/*
           Las fotografías se sirven desde el CDN de Sanity, no desde el
@@ -90,7 +112,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <link rel="preconnect" href="https://cdn.sanity.io" crossOrigin="" />
         <link rel="dns-prefetch" href="https://cdn.sanity.io" />
       </head>
-      <body className="flex min-h-screen flex-col bg-ivory text-carbon">
+      <body className="flex min-h-screen flex-col bg-warm-white text-ink">
         {/* Primero en el orden de tabulación, invisible hasta que recibe el
             foco. Sin él, quien navega con teclado recorre el logotipo, los
             cuatro enlaces y el botón en CADA página antes de llegar al texto. */}
@@ -101,9 +123,17 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           Saltar al contenido
         </a>
         <Header />
-        <AppChrome>
-          <div id="contenido" className="flex flex-1 flex-col">{children}</div>
-        </AppChrome>
+        {/*
+          El proveedor del formulario envuelve todo el árbol porque hay botones
+          que lo abren FUERA de la portada: el de la cabecera, que sale en
+          todas las páginas. Es un componente de cliente, pero `children` sigue
+          renderizándose en el servidor — se le pasa como prop ya resuelto.
+        */}
+        <SunniModalProvider>
+          <AppChrome>
+            <div id="contenido" className="flex flex-1 flex-col">{children}</div>
+          </AppChrome>
+        </SunniModalProvider>
         <Footer />
       </body>
     </html>

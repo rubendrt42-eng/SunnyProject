@@ -31,6 +31,16 @@ import { JWT } from "google-auth-library";
 export const SHEET_TABS = {
   requests: "Solicitudes",
   businesses: "Negocios",
+  /**
+   * Los tres formularios de la portada de Sun-i —vending, experiencias y
+   * marcas— caen en UNA sola pestaña con una columna «Tipo».
+   *
+   * Tres pestañas habrían sido más ordenadas sobre el papel y peores en la
+   * práctica: quien revisa los contactos quiere una bandeja de entrada, no
+   * tres sitios donde mirar cada mañana. Los campos de los tres se solapan
+   * casi por completo, y los que no, caben en columnas de nombre general.
+   */
+  sunni: "Sun-i",
 } as const;
 
 /** Estado con el que entra toda solicitud. Emmy lo cambia a mano después. */
@@ -44,6 +54,30 @@ export interface SpotRequest {
   email: string;
   numberOfPeople: number;
   comments?: string;
+}
+
+/**
+ * Un contacto de la portada de Sun-i.
+ *
+ * Los tres formularios comparten esta forma. Los campos que no aplican a una
+ * variante llegan vacíos, y por eso las columnas tienen nombres generales:
+ * «interés» es «¿cuándo lo quieres?» en vending, «qué tipo de experiencia» en
+ * experiencias y «qué tipo de colaboración» en marcas.
+ */
+export interface SunniLead {
+  tipo: "Vending" | "Experiencia" | "Marca";
+  nombre: string;
+  email: string;
+  telefono?: string;
+  /** Nombre del espacio, o de la marca en la variante de marcas. */
+  espacio?: string;
+  /** Tipo de espacio, o categoría de producto en la variante de marcas. */
+  categoria?: string;
+  ciudad?: string;
+  personas?: string;
+  interes?: string;
+  web?: string;
+  mensaje?: string;
 }
 
 export interface BusinessRequest {
@@ -101,7 +135,39 @@ export function isSheetsConfigured(): boolean {
   }
 }
 
-async function appendRow(tab: string, values: (string | number)[]): Promise<void> {
+/**
+ * Crea la pestaña si no existe, con su fila de encabezados.
+ *
+ * Sin esto, estrenar un formulario nuevo exige que alguien entre a la hoja y
+ * cree la pestaña con el nombre exacto antes del primer envío. Si no lo hace
+ * —y es fácil que no lo haga— el primer contacto real se pierde y el error de
+ * Google («Unable to parse range») no se parece en nada al problema.
+ */
+async function crearPestana(token: string, sheetId: string, tab: string, encabezados: string[]): Promise<void> {
+  const base = `https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(sheetId)}`;
+  const cabeceras = { Authorization: `Bearer ${token}`, "Content-Type": "application/json" };
+
+  const crear = await fetch(`${base}:batchUpdate`, {
+    method: "POST",
+    headers: cabeceras,
+    body: JSON.stringify({ requests: [{ addSheet: { properties: { title: tab } } }] }),
+  });
+  // Si otra petición la creó un instante antes, Google responde 400 y da igual.
+  if (!crear.ok) {
+    const detalle = await crear.text().catch(() => "");
+    if (!detalle.includes("already exists")) {
+      throw new Error(`No se pudo crear la pestaña «${tab}». ${detalle.slice(0, 200)}`);
+    }
+    return;
+  }
+
+  await fetch(
+    `${base}/values/${encodeURIComponent(`${tab}!A1`)}:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`,
+    { method: "POST", headers: cabeceras, body: JSON.stringify({ values: [encabezados] }) },
+  );
+}
+
+async function appendRow(tab: string, values: (string | number)[], encabezados?: string[]): Promise<void> {
   const { email, privateKey, sheetId } = readCredentials();
 
   const auth = new JWT({
@@ -134,6 +200,21 @@ async function appendRow(tab: string, values: (string | number)[]): Promise<void
     // El cuerpo del error de Google dice qué pasó (hoja no compartida, pestaña
     // inexistente, id equivocado). Se registra sin la llave, obviamente.
     const detail = await res.text().catch(() => "");
+
+    // Pestaña inexistente: se crea con sus encabezados y se reintenta UNA vez.
+    const faltaLaPestana = res.status === 400 && detail.includes("Unable to parse range");
+    if (faltaLaPestana && encabezados) {
+      await crearPestana(token, sheetId, tab, encabezados);
+      const reintento = await fetch(url, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ values: [values] }),
+      });
+      if (reintento.ok) return;
+      const detalle2 = await reintento.text().catch(() => "");
+      throw new Error(`Google Sheets respondió ${reintento.status} tras crear «${tab}». ${detalle2.slice(0, 300)}`);
+    }
+
     throw new Error(`Google Sheets respondió ${res.status}. ${detail.slice(0, 300)}`);
   }
 }
@@ -187,4 +268,52 @@ export async function appendBusinessRequest(req: BusinessRequest): Promise<void>
     INITIAL_STATUS,
     "", // Notas: la llena Emmy
   ]);
+}
+
+
+/** Los encabezados de la pestaña «Sun-i», en el orden en que se escriben. */
+const ENCABEZADOS_SUNNI = [
+  "Fecha",
+  "Tipo",
+  "Nombre",
+  "Email",
+  "Teléfono",
+  "Espacio o marca",
+  "Tipo de espacio / categoría",
+  "Ciudad",
+  "Personas",
+  "Interés",
+  "Web o Instagram",
+  "Mensaje",
+  "Estado",
+  "Notas",
+];
+
+/**
+ * Añade un contacto de la portada de Sun-i.
+ *
+ * El orden lo fija la hoja: Sheets escribe por posición, no por nombre. Si
+ * algún día hace falta una columna, va al final.
+ */
+export async function appendSunniLead(lead: SunniLead): Promise<void> {
+  await appendRow(
+    SHEET_TABS.sunni,
+    [
+      timestamp(),
+      lead.tipo,
+      lead.nombre,
+      lead.email,
+      lead.telefono ?? "",
+      lead.espacio ?? "",
+      lead.categoria ?? "",
+      lead.ciudad ?? "",
+      lead.personas ?? "",
+      lead.interes ?? "",
+      lead.web ?? "",
+      lead.mensaje ?? "",
+      INITIAL_STATUS,
+      "", // Notas: se llenan a mano
+    ],
+    ENCABEZADOS_SUNNI,
+  );
 }

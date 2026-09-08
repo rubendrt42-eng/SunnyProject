@@ -6,7 +6,7 @@ import { getSiteSettings } from "@/lib/sanity/queries";
 import { DEFAULT_SETTINGS, mezclarAjustes } from "@/lib/lean-content";
 
 export const metadata: Metadata = {
-  title: "Preguntas frecuentes — The Sunny Project",
+  title: "Preguntas frecuentes — Sun-i project®",
   description:
     "Qué tipo de experiencias hay, si puedes ir solo, qué cuesta y cómo sabes que tu lugar quedó confirmado.",
 };

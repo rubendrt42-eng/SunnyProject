@@ -1,39 +1,75 @@
 @import "tailwindcss";
 
 :root {
-  --color-ivory: #f4f1e8;
-  --color-carbon: #171714;
-  --color-sunny: #f8d347;
-  --color-orange: #ff7a3d;
-  /* The same brand orange, darkened until it is legible AS TEXT.
-     `--color-orange` is a *fill* colour: at #ff7a3d it scores 2.29:1 against
-     ivory and 2.56:1 under warm-white, so every orange word on the site —
-     the hero's second line, the eyebrows, the step numerals, and every form
-     error message — failed WCAG AA. Error text was the worst of it: the
-     copy a person most needs to read was the hardest to read.
-     Rule: `orange` fills and outlines, `orange-ink` letters and icons.
+  /* ─────────────────────────────────────────────────────────────────────
+     PALETA SUN-I PROJECT®
 
-     POR QUÉ SE OSCURECIÓ OTRA VEZ
+     El proyecto cambió de marca: de «The Sunny Project» —carbón, amarillo y
+     naranja, con voz editorial— a «Sun-i project®», una marca de everyday
+     wellness cuyo primario es un coral cálido sobre blanco.
 
-     #bf4408 daba 4.60:1 sobre marfil: pasa AA, pero por 0.10. Ese margen se
-     lo come cualquier fondo tintado. La sección «Para negocios» de la portada
-     usa `bg-orange/8`, que sobre marfil da #f5e7da, y ahí el mismo naranja
-     caía a 4.28:1 — reprobado. Bajar el tinte no lo salvaba: ni al 3% llegaba
-     a 4.5. El problema no era el fondo, era que el token no tenía holgura.
+     LOS NOMBRES DE LOS TOKENS NO CAMBIAN, LOS VALORES SÍ
 
-     #b23f07 conserva el tono y da 4.80:1 sobre el fondo tintado, 5.15:1 sobre
-     marfil y 5.74:1 sobre blanco cálido. Ahora aguanta el tinte. */
-  --color-orange-ink: #b23f07;
-  --color-warm-white: #fffdfc;
-  /* Mismo caso que el naranja: #6d6d65 daba 4.62:1 sobre marfil y caía a
-     4.30:1 sobre el fondo tintado de «Para negocios» — y ahí vive un párrafo
-     que la gente sí lee. #65655e sube a 4.84:1 tintado y 5.20:1 sobre marfil,
-     con el mismo tono neutro. */
-  --color-gray: #65655e;
-  /* The one deliberately narrow secondary. Two sanctioned uses only:
-     the Sunny Original seal and the "Conoce gente nueva" badge.
-     See SUNNY_VISUAL_DIRECTION_1_0.md §1. */
-  --color-pine: #2f4739;
+     `carbon`, `ivory`, `sunny`, `orange` y `gray` siguen llamándose igual y
+     apuntan a los colores nuevos. Así el catálogo de experiencias —que son
+     varias pantallas ya construidas— se rebrandea entero sin tocar una sola
+     clase, y lo nuevo usa los nombres nuevos de abajo. Renombrarlos habría
+     sido más limpio de leer y habría dejado el sitio roto a medias durante
+     todo el cambio.
+     ───────────────────────────────────────────────────────────────────── */
+
+  /* Fondos */
+  --color-warm-white: #fffefc;
+  --color-cream: #fff9f1;
+  --color-ivory: #fff9f1; /* alias heredado → cream */
+
+  /* Tinta */
+  --color-ink: #252525;
+  --color-carbon: #252525; /* alias heredado → ink */
+
+  /*
+     EL CORAL VIENE EN DOS INTENSIDADES, Y NO ES UN CAPRICHO.
+
+     El coral de marca (#E84E32) da 3.74:1 sobre blanco cálido y 3.61:1 sobre
+     cream. AA pide 3:1 para texto grande —así que como titular funciona— pero
+     4.5:1 para texto pequeño, y ahí no llega. La especificación lo usa en
+     antetítulos y etiquetas, que son justo texto pequeño.
+
+     `coral` para rellenos, bordes y titulares. `coral-ink` para letra
+     pequeña: es el mismo tono oscurecido hasta 4.58:1 sobre cream.
+  */
+  --color-coral: #e84e32;
+  --color-coral-ink: #d63518;
+  --color-orange: #ffa876;      /* alias heredado → peach */
+  --color-orange-ink: #d63518;  /* alias heredado → coral-ink */
+
+  /* Gradiente */
+  --color-sun: #ffe47a;
+  --color-sunny: #ffe47a; /* alias heredado */
+  --color-sun-warm: #ffdb78;
+  --color-sun-orange: #ffc17b;
+  --color-peach: #ffa876;
+
+  /*
+     El gradiente firma. Uso SELECTIVO —lo dice su propia especificación—:
+     botón primario, el bloque «Bring Sun-i» y algún círculo. Nunca de fondo
+     general; ahí es donde una página empieza a parecer una plantilla.
+  */
+  --gradient-sun: linear-gradient(90deg, #ffe47a 0%, #ffd77a 25%, #ffc17b 55%, #ffa876 100%);
+  --gradient-dawn: linear-gradient(180deg, #fffefc 0%, #fff3e4 100%);
+
+  /*
+     Gris de cuerpo con matiz cálido, oscurecido hasta 4.62:1 sobre cream —
+     que es el fondo más claro donde se usa. El de la especificación era más
+     claro y no llegaba.
+  */
+  --color-gray: #7b7065;
+
+  /* El verde de la marca anterior. Su paleta prohíbe verde y salvia, así que
+     apunta al coral hasta que se retiren sus dos usos. */
+  --color-pine: #d63518;
+
+  --shadow-soft: 0 24px 60px -30px rgb(232 78 50 / 0.28);
 
   --radius-xs: 4px;
   --radius-sm: 8px;
@@ -44,6 +80,16 @@
      de forzarlas a 14 y cambiar el aspecto, el sistema sube su tope a 16 y
      todo lo que estaba suelto aterriza aquí. */
   --radius-xl: 16px;
+  /*
+     Radios grandes para la marca nueva. Se AÑADEN a la escala, no la
+     sustituyen: si todo es una píldora no hay jerarquía, y eso es justo lo
+     que hace que una página se lea como plantilla. Los bloques grandes y las
+     fotografías usan `2xl`; las tarjetas, `xl`; los botones de acción, `pill`;
+     los campos de formulario se quedan en `lg`.
+  */
+  --radius-2xl: 28px;
+  --radius-3xl: 32px;
+  --radius-pill: 9999px;
 
   /* Sistema de movimiento 1.0 — la escala vive en lib/motion.ts, esto es su
      mitad en CSS. Los nombres y los valores son los mismos a propósito: antes
@@ -89,11 +135,24 @@
   --color-orange: var(--color-orange);
   --color-orange-ink: var(--color-orange-ink);
   --color-warm-white: var(--color-warm-white);
+  --color-cream: var(--color-cream);
+  --color-ink: var(--color-ink);
+  --color-coral: var(--color-coral);
+  --color-coral-ink: var(--color-coral-ink);
+  --color-sun: var(--color-sun);
+  --color-sun-warm: var(--color-sun-warm);
+  --color-sun-orange: var(--color-sun-orange);
+  --color-peach: var(--color-peach);
   --color-gray: var(--color-gray);
   --color-pine: var(--color-pine);
 
-  --font-sans: var(--font-manrope);
-  --font-serif: var(--font-newsreader);
+  --font-sans: var(--font-body);
+  /* Titulares. Nombre nuevo porque la marca nueva sí distingue display de
+     cuerpo, cosa que la anterior hacía con la serif. */
+  --font-display: var(--font-display);
+  /* La marca de Sun-i prohíbe serif. `font-serif` sigue existiendo para no
+     romper los acentos ya escritos en el catálogo, pero resuelve a Poppins. */
+  --font-serif: var(--font-display);
 
   /* Named type scale, adopted from Coda's `type-*` pattern (see
      SUNNY_REFERENCE_ANALYSIS.md §2). Sections must use these instead of
@@ -203,6 +262,9 @@
   --radius-md: var(--radius-md);
   --radius-lg: var(--radius-lg);
   --radius-xl: var(--radius-xl);
+  --radius-2xl: var(--radius-2xl);
+  --radius-3xl: var(--radius-3xl);
+  --radius-pill: var(--radius-pill);
 
   --animate-fade-in: fade-in 0.4s ease-out;
   --animate-marquee: marquee 46s linear infinite;
@@ -1359,4 +1421,36 @@ a {
 .recorrido-frase {
   font-size: clamp(1.25rem, 8cqw, 3.25rem);
   line-height: 1.08;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   BANDA EN MOVIMIENTO DE LA PORTADA DE SUN-I
+
+   La lista se repite cuatro veces en el marcado y el recorrido es del -50%:
+   con dos copias completas dentro de ese 50% el salto al reiniciar cae en un
+   punto idéntico al de partida, así que el bucle no se ve.
+
+   Se detiene con `prefers-reduced-motion`. Un texto que se desplaza solo y
+   sin parar es de los movimientos que peor sientan a quien tiene sensibilidad
+   vestibular, y aquí no comunica nada que se pierda al quedarse quieto.
+   ───────────────────────────────────────────────────────────────────────── */
+@keyframes sunni-marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.marquee-track {
+  animation: sunni-marquee 32s linear infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+    transform: none;
+  }
 }

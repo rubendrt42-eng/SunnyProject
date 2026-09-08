@@ -34,16 +34,18 @@ function leer(ruta: string) {
 }
 
 describe("los recuentos no cuentan las agotadas como disponibles", () => {
-  it("la portada le pasa al hero solo las que se pueden solicitar", () => {
-    const fuente = leer("app/page.tsx");
-    const linea = fuente.split("\n").find((l) => l.includes("experienceCount="));
+  /*
+    LA MITAD DEL HERO SE RETIRÓ, Y NO POR RELAJAR LA REGLA.
 
-    expect(linea, "app/page.tsx ya no le pasa experienceCount al hero").toBeDefined();
-    expect(
-      linea,
-      `«${linea?.trim()}» cuenta también las agotadas, y el hero dice «disponibles»`,
-    ).toContain("sold_out");
-  });
+    La portada de The Sunny Project tenía un contador —«N experiencias
+    disponibles»— y esta prueba vigilaba que el número llegara ya filtrado. La
+    portada de Sun-i project® no cuenta experiencias: es la presentación del
+    ecosistema y el catálogo vive en su propia página.
+
+    Vigilar una línea que ya no existe no protege nada; lo que sí sigue vivo es
+    la otra mitad, la del catálogo, y esa se queda tal cual. Si algún día vuelve
+    un contador a la portada, vuelve también esta comprobación.
+  */
 
   it("el catálogo no llama «disponibles» al total que enseña", () => {
     const fuente = leer("app/experiencias/page.tsx");

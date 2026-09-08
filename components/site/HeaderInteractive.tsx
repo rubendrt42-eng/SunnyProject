@@ -3,7 +3,8 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
-import { LinkButton } from "@/components/ui/Button";
+import { Wordmark } from "@/components/site/Wordmark";
+import { SunniCTA } from "@/components/lean/SunniCTA";
 import { FullscreenMenu } from "@/components/motion/FullscreenMenu";
 
 interface NavLink {
@@ -43,10 +44,8 @@ interface NavLink {
  */
 export function HeaderInteractive({
   links,
-  ctaLabel = "Explorar experiencias",
 }: {
   links: NavLink[];
-  ctaLabel?: string;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const botonMenu = useRef<HTMLButtonElement>(null);
@@ -123,11 +122,8 @@ export function HeaderInteractive({
             El tope al 100% del contenedor solo actúa cuando el texto de verdad
             no cabe: a tamaño normal y 320px ocupa 173px de los 280 que hay, así
             que sigue en una línea igual que antes. */}
-        <Link
-          href="/"
-          className="max-w-full shrink-0 font-serif text-2xl font-medium tracking-tight text-current italic"
-        >
-          The Sunny Project
+        <Link href="/" aria-label="Sun-i project, ir al inicio" className="max-w-full shrink-0">
+          <Wordmark />
         </Link>
 
         <nav className="hidden items-center gap-7 lg:flex" aria-label="Principal">
@@ -144,11 +140,19 @@ export function HeaderInteractive({
 
         {/* En móvil el botón sí aporta: la navegación está detrás del menú y
             esta es la única acción a la vista. */}
+        {/* La acción principal vive en la cabecera de TODAS las anchuras: es
+            la conversión del sitio y no debe quedar solo detrás del menú. */}
+        <div className="hidden lg:block">
+          <SunniCTA variante="vending" className="min-h-10 px-5 text-[0.8rem]">
+            Bring Sun-i
+          </SunniCTA>
+        </div>
+
         <div className="flex items-center gap-2 lg:hidden">
           <div className="hidden sm:block">
-            <LinkButton href="/experiencias" size="sm" variant="primary">
-              {ctaLabel}
-            </LinkButton>
+            <SunniCTA variante="vending" className="min-h-10 px-5 text-[0.8rem]">
+              Bring Sun-i
+            </SunniCTA>
           </div>
           <button
             ref={botonMenu}
@@ -173,9 +177,11 @@ export function HeaderInteractive({
         links={links}
         footer={
           <div className="flex flex-col gap-4">
-            <LinkButton href="/experiencias" onClick={cerrarMenu} className="mt-2 w-fit">
-              {ctaLabel}
-            </LinkButton>
+            <div onClick={cerrarMenu} className="mt-2">
+              <SunniCTA variante="vending" flecha>
+                Bring Sun-i
+              </SunniCTA>
+            </div>
           </div>
         }
       />

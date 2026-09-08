@@ -4,9 +4,9 @@ import { InViewReveal } from "@/components/motion/InViewReveal";
 import { BusinessForm } from "@/components/lean/BusinessForm";
 
 export const metadata: Metadata = {
-  title: "Para negocios — The Sunny Project",
+  title: "Para negocios — Sun-i project®",
   description:
-    "Sunny trabaja con estudios, cafés, clubes y talleres de Monterrey. Cuéntanos de tu espacio y armamos una experiencia juntos.",
+    "Sun-i trabaja con estudios, cafés, clubes y talleres de Monterrey. Cuéntanos de tu espacio y armamos una experiencia juntos.",
 };
 
 /**
@@ -27,7 +27,7 @@ export default function ParaNegociosPage() {
       <Container className="max-w-2xl">
         <InViewReveal>
           <p className="eyebrow">Para negocios</p>
-          <h1 className="mt-3 text-title text-balance">¿Quieres crear una experiencia con Sunny?</h1>
+          <h1 className="mt-3 text-title text-balance">¿Quieres crear una experiencia con Sun-i?</h1>
           {/*
             «Nosotros llevamos gente nueva a conocerte. Sin costo para ti.» se
             lee como una agencia de captación, y promete un resultado —que
@@ -36,7 +36,7 @@ export default function ParaNegociosPage() {
             publica. El mismo mensaje que el capítulo de la portada.
           */}
           <p className="mt-4 text-body-l text-gray">
-            Sunny trabaja con estudios, cafés, clubes y talleres de Monterrey. Armamos juntos una experiencia, tú
+            Sun-i trabaja con estudios, cafés, clubes y talleres de Monterrey. Armamos juntos una experiencia, tú
             apartas algunos lugares y nosotros la publicamos y la difundimos. Cuéntanos qué haces y lo platicamos.
           </p>
         </InViewReveal>
