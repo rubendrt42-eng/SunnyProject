@@ -31,9 +31,9 @@ import { getUpcomingExperiences } from "@/lib/sanity/queries";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "Experiencias — Sun-i project®",
+  title: "Experiencias — Sun‑i project®",
   description:
-    "Las experiencias que Sun-i tiene publicadas en Monterrey, de la más próxima a la más lejana.",
+    "Las experiencias que Sun‑i tiene publicadas en Monterrey, de la más próxima a la más lejana.",
 };
 
 export default async function ExperienciasPage() {

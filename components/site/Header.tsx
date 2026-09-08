@@ -14,7 +14,7 @@ import { HeaderInteractive } from "@/components/site/HeaderInteractive";
  */
 const NAV_LINKS = [
   { href: "/#about", label: "About" },
-  { href: "/#vending", label: "Sun-i Vending" },
+  { href: "/#vending", label: "Sun‑i Vending" },
   { href: "/experiencias", label: "Experiences" },
   { href: "/#brands", label: "For Brands" },
 ];

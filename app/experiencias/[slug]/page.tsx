@@ -37,10 +37,10 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const experience = await getExperienceBySlug(slug);
-  if (!experience) return { title: "Experiencia no encontrada — Sun-i project®" };
+  if (!experience) return { title: "Experiencia no encontrada — Sun‑i project®" };
 
   return {
-    title: `${experience.title} — Sun-i project®`,
+    title: `${experience.title} — Sun‑i project®`,
     description: experience.shortDescription,
     openGraph: {
       title: experience.title,

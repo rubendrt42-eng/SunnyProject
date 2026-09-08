@@ -68,7 +68,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description: s.seoDescription,
       locale: "es_MX",
       type: "website",
-      siteName: "Sun-i project®",
+      siteName: "Sun‑i project®",
     },
     twitter: { card: "summary_large_image" },
   };

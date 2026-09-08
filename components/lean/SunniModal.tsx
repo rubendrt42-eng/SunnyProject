@@ -37,10 +37,10 @@ const VARIANTES: Record<
   { titulo: string; intro: string; pie: string; boton: string; exito: string; exitoTexto: string; campos: Campo[] }
 > = {
   vending: {
-    titulo: "Bring Sun-i to your space",
+    titulo: "Bring Sun‑i to your space",
     intro: "Cuéntanos de tu espacio. Instalamos, surtimos y operamos: tú solo abres la puerta.",
     pie: "Sin costo de instalación · Sin contratos eternos",
-    boton: "Quiero Sun-i",
+    boton: "Quiero Sun‑i",
     exito: "Thanks — the sun is coming to you",
     exitoTexto: "Tu espacio ya está en nuestro radar. Te escribimos muy pronto.",
     campos: [
@@ -71,7 +71,7 @@ const VARIANTES: Record<
     ],
   },
   experiences: {
-    titulo: "Experiencias Sun-i",
+    titulo: "Experiencias Sun‑i",
     intro:
       "Cuéntanos qué quieres activar. Diseñamos la sesión, llevamos al facilitador y el material: tú solo invitas a tu gente.",
     pie: "Facilitador incluido · Material incluido",
@@ -105,7 +105,7 @@ const VARIANTES: Record<
     ],
   },
   brands: {
-    titulo: "Partner with Sun-i",
+    titulo: "Partner with Sun‑i",
     intro: "Si tu marca comparte nuestra filosofía de everyday wellness, hay un lugar para ti dentro del ecosistema.",
     pie: "Curaduría real · Comunidades con intención",
     boton: "Let's collaborate",
@@ -127,7 +127,7 @@ const VARIANTES: Record<
         name: "interes",
         label: "Tipo de colaboración",
         tipo: "select",
-        opciones: ["Product placement", "Sampling", "Activaciones", "Co-branding", "Lanzamiento de producto", "Aún no lo sé"],
+        opciones: ["Product placement", "Sampling", "Activaciones", "Co‑branding", "Lanzamiento de producto", "Aún no lo sé"],
       },
       { name: "mensaje", label: "Cuéntanos sobre tu marca", tipo: "textarea" },
     ],

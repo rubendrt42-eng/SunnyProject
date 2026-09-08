@@ -35,7 +35,7 @@ export function Wordmark({
       <span
         className={`font-display text-[1.05rem] leading-none font-bold tracking-[-0.02em] text-warm-white ${className}`}
       >
-        Sun-i project
+        Sun‑i project
         <span className="ml-0.5 align-super text-[0.5em] font-medium">®</span>
       </span>
     );
@@ -46,7 +46,7 @@ export function Wordmark({
       className={`inline-flex max-w-full items-center rounded-pill px-4 py-2 font-display text-[1.05rem] leading-none font-bold tracking-[-0.02em] text-coral ${className}`}
       style={{ backgroundImage: "var(--gradient-sun)" }}
     >
-      Sun-i project
+      Sun‑i project
       <span className="ml-0.5 align-super text-[0.5em] font-medium">®</span>
     </span>
   );

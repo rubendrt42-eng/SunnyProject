@@ -53,7 +53,7 @@ export async function Footer() {
           <div className="flex flex-col gap-2">
             <span className="font-medium text-warm-white">Explora</span>
             <EnlacePie href="/#about">About</EnlacePie>
-            <EnlacePie href="/#vending">Sun-i Vending</EnlacePie>
+            <EnlacePie href="/#vending">Sun‑i Vending</EnlacePie>
             <EnlacePie href="/experiencias">Experiences</EnlacePie>
             <EnlacePie href="/#brands">For Brands</EnlacePie>
           </div>

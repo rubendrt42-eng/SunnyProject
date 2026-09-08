@@ -34,7 +34,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   heroTitle: 'Tu próximo "qué buen plan" puede empezar aquí.',
   heroTitleAccent: "qué buen plan",
   heroSubtitle:
-    "Sun-i selecciona experiencias en estudios, cafés, clubes y otros espacios de Monterrey. " +
+    "Sun‑i selecciona experiencias en estudios, cafés, clubes y otros espacios de Monterrey. " +
     "Cada semana entran nuevas.",
 
   // ── 02 · Lo que hay ahora ───────────────────────────────────────────────
@@ -49,11 +49,11 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   // y no explicaba nada. Es el único sitio del recorrido donde cabe decir que
   // hay una selección, quién la hace y qué clase de espacios entran.
   bloqueSunny: {
-    titulo: "Sun-i no es un directorio de eventos.",
+    titulo: "Sun‑i no es un directorio de eventos.",
     acento: "Es una selección.",
     texto:
       "Emmy elige cada experiencia y cada espacio que entra: estudios, cafés, clubes, talleres y conceptos " +
-      "locales de Monterrey. Algunas las organiza Sun-i —los Sun-i Originals—; el resto salen de espacios que " +
+      "locales de Monterrey. Algunas las organiza Sun‑i —los Sun‑i Originals—; el resto salen de espacios que " +
       "ya existen y que a lo mejor no conocías.",
     nota:
       "Clases, talleres, catas, sesiones de movimiento y planes en espacios de la ciudad. La lista cambia cada semana.",
@@ -76,7 +76,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
     titulo: "La comunidad se forma",
     acento: "alrededor de las experiencias.",
     texto:
-      "Sun-i reúne a gente con ganas de probar cosas. Las experiencias pasan en espacios de Monterrey y puedes " +
+      "Sun‑i reúne a gente con ganas de probar cosas. Las experiencias pasan en espacios de Monterrey y puedes " +
       "llegar solo, con alguien, o simplemente porque viste algo que te llamó la atención.",
     cita: "No hay perfiles, ni matching, ni grupos de chat. El punto de encuentro es la experiencia.",
   },
@@ -91,7 +91,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
     titulo: "Apartas algunos lugares.",
     acento: "Llega gente que no te conocía.",
     texto:
-      "Sun-i trabaja con estudios, cafés, clubes y talleres de Monterrey. Armamos juntos una experiencia, tú " +
+      "Sun‑i trabaja con estudios, cafés, clubes y talleres de Monterrey. Armamos juntos una experiencia, tú " +
       "apartas algunos lugares y nosotros la publicamos y la difundimos. No es publicidad pagada ni un " +
       "directorio: quien llega, llega porque le dio curiosidad tu espacio.",
   },
@@ -106,9 +106,9 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   },
 
   // ── Marca y contacto ────────────────────────────────────────────────────
-  seoTitle: "Sun-i project® — A little more Sun-i in your everyday",
+  seoTitle: "Sun‑i project® — A little more Sun‑i in your everyday",
   seoDescription:
-    "Sun-i project® es una marca de everyday wellness: productos, espacios y tecnología que hacen que " +
+    "Sun‑i project® es una marca de everyday wellness: productos, espacios y tecnología que hacen que " +
     "cuidarte sea parte natural del día.",
   // No encierra a Sunny en «bienestar»: también entran cafés, talleres y
   // conceptos que no son de movimiento, y el pie sale en todas las páginas.
@@ -145,7 +145,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
     {
       question: "¿Tiene costo?",
       answer:
-        "Solicitar tu lugar no tiene costo: Sun-i no cobra por usar el sitio ni por confirmarte. Si una " +
+        "Solicitar tu lugar no tiene costo: Sun‑i no cobra por usar el sitio ni por confirmarte. Si una " +
         "experiencia tuviera algún costo del espacio, viene dicho en su página.",
     },
     {
@@ -345,10 +345,10 @@ export const RECORRIDO: PasoDelRecorrido[] = [
     numero: "03",
     titulo: "Recibe tu confirmación",
     clave: "Confirma",
-    texto: "Sun-i revisa el cupo y te escribe.",
+    texto: "Sun‑i revisa el cupo y te escribe.",
     ruptura: true,
     detalle:
-      "Tu solicitud llega a Sun-i, que la revisa contra el cupo real del espacio. Después te escribimos por " +
+      "Tu solicitud llega a Sun‑i, que la revisa contra el cupo real del espacio. Después te escribimos por " +
       "WhatsApp al número que dejaste: si hay lugar, queda apartado ahí mismo; si ya se llenó, también te " +
       "avisamos. No hay lista de espera automática.",
   },

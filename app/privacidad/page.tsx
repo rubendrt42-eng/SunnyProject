@@ -4,7 +4,7 @@ import { getSiteSettings } from "@/lib/sanity/queries";
 import { whatsappLink } from "@/lib/lean-content";
 
 export const metadata: Metadata = {
-  title: "Privacidad — Sun-i project®",
+  title: "Privacidad — Sun‑i project®",
   description: "Qué datos recogemos cuando solicitas un lugar, para qué los usamos y dónde quedan guardados.",
 };
 
@@ -94,7 +94,7 @@ export default async function PrivacidadPage() {
           <section>
             <h2 className="text-subtitle">Dónde quedan guardados</h2>
             <p className="mt-3 text-gray">
-              En una hoja de cálculo privada de Google, a la que solo tiene acceso el equipo de Sun-i project®. El
+              En una hoja de cálculo privada de Google, a la que solo tiene acceso el equipo de Sun‑i project®. El
               sitio no tiene base de datos de usuarios ni guarda tu información en el navegador.
             </p>
           </section>
@@ -143,7 +143,7 @@ export default async function PrivacidadPage() {
           <section>
             <h2 className="text-subtitle">Cambios</h2>
             <p className="mt-3 text-gray">
-              Sun-i project® está en una etapa temprana. Si cambiamos la forma de tratar los datos, actualizamos esta
+              Sun‑i project® está en una etapa temprana. Si cambiamos la forma de tratar los datos, actualizamos esta
               página.
             </p>
           </section>

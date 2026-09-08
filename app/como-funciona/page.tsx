@@ -4,9 +4,9 @@ import { LinkButton } from "@/components/ui/Button";
 import { Recorrido } from "@/components/lean/Recorrido";
 
 export const metadata: Metadata = {
-  title: "Cómo funciona — Sun-i project®",
+  title: "Cómo funciona — Sun‑i project®",
   description:
-    "Encuentras una experiencia, solicitas tu lugar, Sun-i revisa el cupo y te confirma por WhatsApp. Así funciona de principio a fin.",
+    "Encuentras una experiencia, solicitas tu lugar, Sun‑i revisa el cupo y te confirma por WhatsApp. Así funciona de principio a fin.",
 };
 
 /**
@@ -56,7 +56,7 @@ export default function ComoFuncionaPage() {
             proceso; esta página existe para explicarlo.
           */}
           <p className="mt-6 max-w-[46ch] text-lead text-carbon/75">
-            Así funciona una experiencia en Sun-i, de principio a fin.
+            Así funciona una experiencia en Sun‑i, de principio a fin.
           </p>
         </div>
       </Container>

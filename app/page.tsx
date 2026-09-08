@@ -97,13 +97,13 @@ export default function SunniHome() {
               <InViewReveal delay={0.14}>
                 <div className="mt-9 flex flex-wrap items-center gap-3">
                   <SunniCTA variante="vending" flecha>
-                    Bring Sun-i to your space
+                    Bring Sun‑i to your space
                   </SunniCTA>
                   <a
                     href="#about"
                     className="press inline-flex min-h-12 items-center rounded-pill border border-coral/45 px-7 font-display text-small font-semibold text-coral-ink transition-colors hover:border-coral hover:bg-coral/6"
                   >
-                    Discover Sun-i
+                    Discover Sun‑i
                   </a>
                 </div>
               </InViewReveal>
@@ -210,7 +210,7 @@ export default function SunniHome() {
                   {ABOUT.manifiesto}
                 </p>
                 <figcaption className="mt-6 text-[0.7rem] tracking-[0.2em] text-warm-white/55 uppercase">
-                  Manifiesto Sun-i
+                  Manifiesto Sun‑i
                 </figcaption>
               </blockquote>
             </figure>
@@ -256,7 +256,7 @@ export default function SunniHome() {
         <Container>
           <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-x-[48px]">
             <InViewReveal variant="media" className="min-w-0 lg:col-span-5">
-              <HuecoDeFoto nota="Unidad Sun-i en su espacio" />
+              <HuecoDeFoto nota="Unidad Sun‑i en su espacio" />
             </InViewReveal>
 
             <div className="min-w-0 lg:col-span-6 lg:col-start-7">
@@ -526,16 +526,16 @@ export default function SunniHome() {
         <Container className="text-center">
           <InViewReveal variant="lead">
             <h2 className="mx-auto max-w-[16ch] font-display text-[clamp(2rem,4.8vw,3.4rem)] leading-[1.05] font-bold tracking-[-0.03em]">
-              A little more <span className="text-sun">Sun-i</span> in your everyday.
+              A little more <span className="text-sun">Sun‑i</span> in your everyday.
             </h2>
           </InViewReveal>
           <InViewReveal delay={0.1}>
             <div className="mt-10 flex flex-wrap justify-center gap-3">
               <SunniCTA variante="vending" flecha>
-                Bring Sun-i to your space
+                Bring Sun‑i to your space
               </SunniCTA>
               <SunniCTA variante="brands" tono="contorno" className="!border-warm-white/35 !text-warm-white hover:!border-warm-white hover:!bg-warm-white/10">
-                Partner with Sun-i
+                Partner with Sun‑i
               </SunniCTA>
             </div>
           </InViewReveal>
