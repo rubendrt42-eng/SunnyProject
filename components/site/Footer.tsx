@@ -55,13 +55,11 @@ export async function Footer() {
             <EnlacePie href="/#que-hacemos">What is Sun‑i</EnlacePie>
             <EnlacePie href="/#vending">Sun‑i Vending</EnlacePie>
             <EnlacePie href="/#experiences">Sun‑i Experiences</EnlacePie>
-            <EnlacePie href="/experiencias">Calendario de experiencias</EnlacePie>
             <EnlacePie href="/#brands">For Brands</EnlacePie>
           </div>
 
           <div className="flex flex-col gap-2">
             <span className="font-medium text-warm-white">Ayuda</span>
-            <EnlacePie href="/preguntas-frecuentes">Preguntas sobre experiencias</EnlacePie>
             <EnlacePie href="/privacidad">Privacidad</EnlacePie>
             {/*
               «Términos» ya no se enlaza: la página describía reglas que no

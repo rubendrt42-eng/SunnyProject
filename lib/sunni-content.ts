@@ -123,11 +123,6 @@ export const EXPERIENCIAS = {
   tipos: ["Mindfulness", "Yoga", "Movilidad", "Ejercicio funcional", "Activaciones"],
   espacios: "Oficinas · Instituciones · Universidades · Comunidades",
   cta: "Lleva una experiencia Sun‑i a tu espacio",
-  /**
-   * El enlace al catálogo abierto al público es SECUNDARIO a propósito: la
-   * portada es B2B y el catálogo es una extensión, no el producto.
-   */
-  enlaceCatalogo: "También publicamos experiencias abiertas al público",
 } as const;
 
 /* ── 05 · DÓNDE VIVE SUN-I ─────────────────────────────────────────────────

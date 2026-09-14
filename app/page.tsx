@@ -238,18 +238,14 @@ export default function SunniHome() {
                   {EXPERIENCIAS.cta}
                 </SunniCTA>
               </div>
-              {/* Secundario a propósito: la portada es B2B y el catálogo
-                  abierto al público es una extensión, no el producto. */}
-              <p className="mt-6 text-small text-gray">
-                {EXPERIENCIAS.enlaceCatalogo}.{" "}
-                <Link
-                  href="/experiencias"
-                  className="font-medium text-coral-ink underline decoration-coral/35 underline-offset-4 transition-colors hover:decoration-coral"
-                >
-                  Ver el calendario
-                </Link>
-                .
-              </p>
+              {/*
+                AQUÍ HABÍA UN ENLACE AL CATÁLOGO DE EXPERIENCIAS ABIERTAS.
+
+                Se retira con el catálogo: su pestaña en la hoja de cálculo ya
+                no existe, así que el formulario de solicitud no tendría dónde
+                escribir. Enlazar a una página cuyo formulario falla es peor
+                que no enlazarla.
+              */}
             </InViewReveal>
 
             <InViewReveal delay={0.08} className="min-w-0 lg:col-span-5 lg:col-start-8">
