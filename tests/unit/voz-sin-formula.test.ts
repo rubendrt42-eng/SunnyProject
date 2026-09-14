@@ -38,11 +38,6 @@ import { DEFAULT_SETTINGS, RECORRIDO } from "@/lib/lean-content";
 const RAICES_PUBLICAS = [
   "app/page.tsx",
   "app/layout.tsx",
-  "app/experiencias/page.tsx",
-  "app/experiencias/[slug]/page.tsx",
-  "app/como-funciona/page.tsx",
-  "app/para-negocios/page.tsx",
-  "app/preguntas-frecuentes/page.tsx",
   "app/privacidad/page.tsx",
 ];
 
@@ -137,17 +132,17 @@ describe("la voz del sitio", () => {
     ).toEqual([]);
   });
 
-  it("mantiene intacto el aviso de que solicitar no es estar confirmado", () => {
-    // Es el único punto donde alguien puede llevarse una idea equivocada y
-    // presentarse a una clase donde no lo esperan. El paso marcado como
-    // `ruptura` tiene que seguir diciéndolo.
-    const ruptura = RECORRIDO.find((p) => p.ruptura);
-    expect(ruptura, "Ningún paso del recorrido está marcado como la ruptura.").toBeDefined();
-    expect(ruptura!.detalle).toMatch(/no antes|cuando recibes|hasta que|queda apartado ahí mismo/i);
+  /*
+    AQUÍ SE VIGILABA «SOLICITAR NO ES ESTAR CONFIRMADO».
 
-    const recorrido = readFileSync("components/lean/Recorrido.tsx", "utf8");
-    expect(recorrido).toContain("Solicitar no es estar confirmado");
-  });
+    Era el aviso del recorrido de cuatro pasos del catálogo de experiencias:
+    el único punto donde alguien podía presentarse a una clase donde no lo
+    esperaban. Se retiró con el catálogo, y ya no hay nada que solicitar ni
+    cupo que confirmar.
+
+    Si el catálogo vuelve, esta comprobación vuelve con él: la idea
+    equivocada que corregía sigue siendo la más cara del producto.
+  */
 
   it("explica de qué clase de espacios habla Sunny, no solo que son «locales»", () => {
     // El diagnóstico encontró que se podían leer los siete capítulos sin

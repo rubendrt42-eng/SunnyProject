@@ -28,11 +28,6 @@ import { describe, expect, it } from "vitest";
  */
 const RAICES_PUBLICAS = [
   "app/page.tsx",
-  "app/experiencias/page.tsx",
-  "app/experiencias/[slug]/page.tsx",
-  "app/como-funciona/page.tsx",
-  "app/para-negocios/page.tsx",
-  "app/preguntas-frecuentes/page.tsx",
   "app/privacidad/page.tsx",
   "app/layout.tsx",
 ];

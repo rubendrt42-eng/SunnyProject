@@ -53,8 +53,14 @@ describe("los documentos de referencia describen el sitio que existe", () => {
   });
 
   it("el código real responde 503 cuando falta la hoja", () => {
-    // El ancla del documento: si esto cambia, el documento vuelve a mentir.
-    const ruta = leer("app/api/solicitudes/route.ts");
+    /*
+      El ancla se mudó de `/api/solicitudes` a `/api/sun-i`: la primera se
+      retiró con el catálogo de experiencias, y la segunda es la que recibe
+      hoy los tres formularios de la portada. Lo que se vigila no cambia —que
+      falta de configuración y fallo pasajero no den el mismo mensaje— solo el
+      archivo donde vive.
+    */
+    const ruta = leer("app/api/sun-i/route.ts");
     expect(ruta).toMatch(/SheetsNotConfiguredError[\s\S]{0,400}status:\s*503/);
   });
 

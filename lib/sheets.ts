@@ -29,11 +29,15 @@ import { JWT } from "google-auth-library";
 
 /** Las dos pestañas de la hoja. Los nombres tienen que coincidir exactamente con los de Google Sheets. */
 export const SHEET_TABS = {
-  requests: "Solicitudes",
-  businesses: "Negocios",
   /**
-   * Los tres formularios de la portada de Sun-i —vending, experiencias y
-   * marcas— caen en UNA sola pestaña con una columna «Tipo».
+   * LA ÚNICA PESTAÑA QUE RECIBE ALGO.
+   *
+   * Había otras dos. «Solicitudes» era del catálogo de experiencias, que se
+   * retiró; «Negocios» la llenaba /para-negocios, que también. Sus escritores
+   * seguían aquí sin que nadie los llamara.
+   *
+   * Los tres formularios de la portada —vending, experiencias y marcas— caen
+   * en UNA sola pestaña con una columna «Tipo».
    *
    * Tres pestañas habrían sido más ordenadas sobre el papel y peores en la
    * práctica: quien revisa los contactos quiere una bandeja de entrada, no
@@ -46,15 +50,6 @@ export const SHEET_TABS = {
 /** Estado con el que entra toda solicitud. Emmy lo cambia a mano después. */
 export const INITIAL_STATUS = "Nueva";
 
-export interface SpotRequest {
-  experienceId: string;
-  experienceName: string;
-  name: string;
-  whatsapp: string;
-  email: string;
-  numberOfPeople: number;
-  comments?: string;
-}
 
 /**
  * Un contacto de la portada de Sun-i.
@@ -80,16 +75,6 @@ export interface SunniLead {
   mensaje?: string;
 }
 
-export interface BusinessRequest {
-  businessName: string;
-  contactName: string;
-  whatsapp: string;
-  email: string;
-  instagram?: string;
-  location?: string;
-  experienceType?: string;
-  message?: string;
-}
 
 /** Falta configuración. Se distingue de un fallo de red para poder decir cosas distintas en los logs. */
 export class SheetsNotConfiguredError extends Error {
@@ -231,44 +216,6 @@ function timestamp(): string {
   });
 }
 
-/**
- * Añade una solicitud de lugar.
- *
- * El orden de las columnas está fijado por la hoja y **no se puede cambiar sin
- * cambiar la hoja**: Sheets escribe por posición, no por nombre. Si algún día
- * hay que insertar una columna, va al final.
- */
-export async function appendSpotRequest(req: SpotRequest): Promise<void> {
-  await appendRow(SHEET_TABS.requests, [
-    timestamp(),
-    req.experienceId,
-    req.experienceName,
-    req.name,
-    req.whatsapp,
-    req.email,
-    req.numberOfPeople,
-    req.comments ?? "",
-    INITIAL_STATUS,
-    "", // Notas: la llena Emmy
-  ]);
-}
-
-/** Añade una solicitud de negocio que quiere crear una experiencia con Sunny. */
-export async function appendBusinessRequest(req: BusinessRequest): Promise<void> {
-  await appendRow(SHEET_TABS.businesses, [
-    timestamp(),
-    req.businessName,
-    req.contactName,
-    req.whatsapp,
-    req.email,
-    req.instagram ?? "",
-    req.location ?? "",
-    req.experienceType ?? "",
-    req.message ?? "",
-    INITIAL_STATUS,
-    "", // Notas: la llena Emmy
-  ]);
-}
 
 
 /** Los encabezados de la pestaña «Sun-i», en el orden en que se escriben. */

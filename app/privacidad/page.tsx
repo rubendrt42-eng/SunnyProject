@@ -60,34 +60,36 @@ export default async function PrivacidadPage() {
               Solo los que escribes tú en un formulario. No hay cuentas, no hay contraseñas y no te pedimos nada para
               navegar el sitio.
             </p>
-            <p className="mt-4 text-carbon">Cuando solicitas un lugar en una experiencia:</p>
+            {/*
+              Esta lista describía los formularios del catálogo de experiencias
+              y de la página para negocios, que se retiraron. Un aviso de
+              privacidad que enumera datos que ya no se piden no protege a
+              nadie: describe otro sitio.
+
+              Ahora son los tres formularios de la portada, que comparten
+              campos.
+            */}
+            <p className="mt-4 text-carbon">Cuando nos escribes desde cualquiera de los formularios:</p>
             <ul className="mt-2 flex flex-col gap-1.5 text-gray">
               <Punto>Tu nombre</Punto>
-              <Punto>Tu WhatsApp</Punto>
-              <Punto>Tu correo</Punto>
-              <Punto>Cuántas personas van</Punto>
-              <Punto>Los comentarios que decidas escribir</Punto>
-            </ul>
-            <p className="mt-4 text-carbon">Si envías el formulario para negocios:</p>
-            <ul className="mt-2 flex flex-col gap-1.5 text-gray">
-              <Punto>El nombre del negocio y de la persona de contacto</Punto>
-              <Punto>WhatsApp y correo</Punto>
-              <Punto>Instagram, zona y tipo de experiencia, si los llenas</Punto>
-              <Punto>El mensaje que escribas</Punto>
+              <Punto>Tu correo y, si lo escribes, tu teléfono</Punto>
+              <Punto>El nombre de tu espacio o de tu marca, y la ciudad</Punto>
+              <Punto>El tipo de espacio, cuánta gente pasa por él y qué te interesa</Punto>
+              <Punto>Tu web o Instagram, si los llenas</Punto>
+              <Punto>El mensaje que decidas escribir</Punto>
             </ul>
           </section>
 
           <section>
             <h2 className="text-subtitle">Para qué los usamos</h2>
             <ul className="mt-3 flex flex-col gap-1.5 text-gray">
-              <Punto>Revisar tu solicitud y ver si hay disponibilidad</Punto>
-              <Punto>Contactarte por WhatsApp o correo para confirmarte o avisarte que no hay cupo</Punto>
-              <Punto>Organizar tu participación en la experiencia con el espacio anfitrión</Punto>
-              <Punto>Atender propuestas de negocios y espacios</Punto>
+              <Punto>Leer lo que nos cuentas y entender qué necesitas</Punto>
+              <Punto>Contactarte por correo o teléfono para responderte</Punto>
+              <Punto>Preparar una propuesta para tu espacio, tu equipo o tu marca</Punto>
             </ul>
             <p className="mt-4 text-gray">
               No usamos tus datos para publicidad, no los vendemos y no los compartimos con terceros más allá de lo
-              necesario para organizar la experiencia que solicitaste.
+              necesario para responderte.
             </p>
           </section>
 

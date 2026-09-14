@@ -34,10 +34,8 @@ import { describe, expect, it } from "vitest";
  */
 const ARCHIVOS_CON_MOVIMIENTO = [
   "components/lean/LeanHero.tsx",
-  "components/lean/ExperienceCard.tsx",
   "components/lean/BrandCanvas.tsx",
   "components/home/WhatIsSunny.tsx",
-  "app/experiencias/[slug]/page.tsx",
 ];
 
 describe("el movimiento ligado al scroll no vive dentro de contenedores de scroll", () => {

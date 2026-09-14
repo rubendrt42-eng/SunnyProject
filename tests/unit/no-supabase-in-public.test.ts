@@ -31,11 +31,6 @@ import { describe, expect, it } from "vitest";
 const RUTAS_PUBLICAS = [
   "app/layout.tsx",
   "app/page.tsx",
-  "app/experiencias/page.tsx",
-  "app/experiencias/[slug]/page.tsx",
-  "app/para-negocios/page.tsx",
-  "app/api/solicitudes/route.ts",
-  "app/api/negocios-lean/route.ts",
 ];
 
 /** Menciones en comentarios o en texto visible no cuentan: lo que importa es lo que se ejecuta. */

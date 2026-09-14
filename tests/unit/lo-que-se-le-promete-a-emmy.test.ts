@@ -31,10 +31,7 @@ describe("las instrucciones para Emmy dicen lo que el código hace", () => {
   it("todas las rutas públicas revalidan en el mismo plazo", () => {
     const rutas = [
       "app/page.tsx",
-      "app/experiencias/page.tsx",
-      "app/experiencias/[slug]/page.tsx",
-      "app/preguntas-frecuentes/page.tsx",
-      "app/privacidad/page.tsx",
+                  "app/privacidad/page.tsx",
     ];
     const plazos = rutas.map((r) => {
       const m = readFileSync(r, "utf8").match(/export const revalidate = (\d+)/);

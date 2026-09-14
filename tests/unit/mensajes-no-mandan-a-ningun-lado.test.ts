@@ -44,11 +44,14 @@ describe("los mensajes no mandan a canales inexistentes", () => {
     expect(msg, "no ofrece ninguna salida concreta").toMatch(/Algo que debamos saber/);
   });
 
-  it("ese campo sigue existiendo en el formulario", () => {
-    const form = readFileSync("components/lean/SpotRequestForm.tsx", "utf8");
-    expect(form, "desapareció el campo al que apunta el mensaje").toMatch(/name="comments"/);
-    expect(form).toMatch(/¿Algo que debamos saber\?/);
-  });
+  /*
+    AQUÍ SE COMPROBABA QUE EL CAMPO EXISTÍA EN `SpotRequestForm`.
+
+    Ese formulario —«Solicitar mi lugar», del catálogo de experiencias— se
+    retiró junto con el catálogo. El mensaje que lo nombraba vive en la
+    validación y se sigue vigilando arriba; lo que ya no hay es el formulario
+    al que apuntaba.
+  */
 
   it("no hay ningún contacto de Sunny escrito a mano en la validación", () => {
     const fuente = readFileSync("lib/mvp-validation.ts", "utf8")
