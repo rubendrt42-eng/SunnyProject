@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { execSync } from "node:child_process";
 import { describe, expect, it } from "vitest";
 import { EASE, MOTION, STAGGER, transition } from "@/lib/motion";
@@ -15,9 +15,20 @@ import { EASE, MOTION, STAGGER, transition } from "@/lib/motion";
  */
 
 function sourceFiles(): string[] {
-  return execSync('git ls-files "app/**/*.tsx" "components/**/*.tsx"', { encoding: "utf8" })
-    .split("\n")
-    .filter(Boolean);
+  return (
+    execSync('git ls-files "app/**/*.tsx" "components/**/*.tsx"', { encoding: "utf8" })
+      .split("\n")
+      .filter(Boolean)
+      /*
+        `git ls-files` lista lo que git TIENE INDEXADO, no lo que hay en disco.
+        Un archivo borrado sin preparar el borrado sigue apareciendo, y estas
+        tres pruebas reventaban con un `ENOENT` que no dice nada del sistema de
+        movimiento — cuesta dos vueltas averiguar que el fallo era otro.
+
+        Ignorando lo que ya no existe, el fallo vuelve a significar lo que dice.
+      */
+      .filter((f) => existsSync(f))
+  );
 }
 
 describe("escala de movimiento", () => {

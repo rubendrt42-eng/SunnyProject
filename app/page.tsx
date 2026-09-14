@@ -8,7 +8,6 @@ import { Container } from "@/components/ui/Container";
 import { InViewReveal } from "@/components/motion/InViewReveal";
 import { SunniCTA } from "@/components/lean/SunniCTA";
 import { HuecoDeFoto } from "@/components/sunni/HuecoDeFoto";
-import { EstrellaSunni, SolSunni } from "@/components/sunni/Figuras";
 import { CIERRE, ESPACIOS, EXPERIENCIAS, HERO, MARCAS, QUE_HACEMOS, SEO, VENDING } from "@/lib/sunni-content";
 
 /**
@@ -120,18 +119,7 @@ export default function SunniHome() {
           Dos bloques del MISMO tamaño y peso. Que estén a la par es lo que
           dice —sin repetirlo en el copy— que el vending no es la marca
           entera. */}
-      <section
-        id="que-hacemos"
-        className="relative isolate scroll-mt-24 overflow-clip border-y border-ink/8 bg-cream py-20 sm:py-28"
-      >
-        {/*
-          La estrella, entera y pequeña, en la esquina.
-
-          Antes había aquí un recorte de la ilustración de Instagram partido
-          por la mitad, y salía sin brazo. Esta está redibujada: completa, y
-          nítida a cualquier tamaño.
-        */}
-        <EstrellaSunni className="pointer-events-none absolute bottom-8 left-8 hidden w-[150px] opacity-90 xl:block 2xl:w-[170px]" />
+      <section id="que-hacemos" className="scroll-mt-24 border-y border-ink/8 bg-cream py-20 sm:py-28">
         <Container>
           <InViewReveal variant="lead">
             <Rotulo>{QUE_HACEMOS.eyebrow}</Rotulo>
@@ -282,10 +270,7 @@ export default function SunniHome() {
 
       {/* ── 05 · DÓNDE VIVE SUN-I ─────────────────────────────────────────
           Sin párrafo. Quien llega aquí busca reconocerse en un renglón. */}
-      <section id="espacios" className="relative isolate scroll-mt-24 overflow-clip py-20 sm:py-28">
-        {/* El sol, por el lado contrario al de la estrella: si los dos
-            asomaran por la izquierda se leerían como un patrón. */}
-        <SolSunni className="pointer-events-none absolute top-20 right-8 hidden w-[145px] opacity-90 xl:block 2xl:w-[165px]" />
+      <section id="espacios" className="scroll-mt-24 py-20 sm:py-28">
         <Container>
           <InViewReveal variant="lead">
             <Rotulo>{ESPACIOS.eyebrow}</Rotulo>
@@ -379,24 +364,6 @@ export default function SunniHome() {
                 </SunniCTA>
               </div>
               <p className="mt-7 text-[0.75rem] tracking-[0.1em] text-ink/55">{CIERRE.condiciones}</p>
-
-              {/* Los dos juntos, caminando por el borde inferior del bloque.
-                  Es el único sitio donde salen en pareja y el último momento
-                  de la página: el cierre puede permitirse el guiño completo.
-                  Sobre el gradiente se sostienen por el contorno negro. */}
-              {/*
-                Los dos juntos, en el último momento de la página. Es el único
-                sitio donde salen en pareja: el cierre puede permitirse el
-                guiño completo. Sobre el gradiente se sostienen por el
-                contorno negro.
-              */}
-              <div
-                aria-hidden
-                className="pointer-events-none absolute right-8 bottom-4 hidden items-end lg:flex"
-              >
-                <EstrellaSunni className="w-[130px]" />
-                <SolSunni className="-ml-3 w-[138px]" />
-              </div>
             </div>
           </InViewReveal>
         </Container>
