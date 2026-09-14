@@ -8,7 +8,7 @@ import { Container } from "@/components/ui/Container";
 import { InViewReveal } from "@/components/motion/InViewReveal";
 import { SunniCTA } from "@/components/lean/SunniCTA";
 import { HuecoDeFoto } from "@/components/sunni/HuecoDeFoto";
-import { Personaje } from "@/components/sunni/Personaje";
+import { EstrellaSunni, SolSunni } from "@/components/sunni/Figuras";
 import { CIERRE, ESPACIOS, EXPERIENCIAS, HERO, MARCAS, QUE_HACEMOS, SEO, VENDING } from "@/lib/sunni-content";
 
 /**
@@ -125,18 +125,13 @@ export default function SunniHome() {
         className="relative isolate scroll-mt-24 overflow-clip border-y border-ink/8 bg-cream py-20 sm:py-28"
       >
         {/*
-          AQUÍ HABÍA UNA ESTRELLA SUELTA, Y ESTABA MAL RECORTADA.
+          La estrella, entera y pequeña, en la esquina.
 
-          La ilustración de origen es una pareja: la estrella y el sol van de
-          la mano, y cada uno tapa un trozo del otro. Al partirlas por la
-          mitad, la estrella se quedó sin el brazo derecho —el que sostiene la
-          mano del sol— y el sol arrastró un pedazo del cuerpo de la estrella.
-
-          No eran figuras asomando por el borde: eran recortes incompletos.
-
-          Mientras no haya los archivos originales por separado, se usa solo la
-          pareja, que sí está completa. Ver el apartado de pendientes.
+          Antes había aquí un recorte de la ilustración de Instagram partido
+          por la mitad, y salía sin brazo. Esta está redibujada: completa, y
+          nítida a cualquier tamaño.
         */}
+        <EstrellaSunni className="pointer-events-none absolute bottom-8 left-8 hidden w-[150px] opacity-90 xl:block 2xl:w-[170px]" />
         <Container>
           <InViewReveal variant="lead">
             <Rotulo>{QUE_HACEMOS.eyebrow}</Rotulo>
@@ -288,6 +283,9 @@ export default function SunniHome() {
       {/* ── 05 · DÓNDE VIVE SUN-I ─────────────────────────────────────────
           Sin párrafo. Quien llega aquí busca reconocerse en un renglón. */}
       <section id="espacios" className="relative isolate scroll-mt-24 overflow-clip py-20 sm:py-28">
+        {/* El sol, por el lado contrario al de la estrella: si los dos
+            asomaran por la izquierda se leerían como un patrón. */}
+        <SolSunni className="pointer-events-none absolute top-20 right-8 hidden w-[145px] opacity-90 xl:block 2xl:w-[165px]" />
         <Container>
           <InViewReveal variant="lead">
             <Rotulo>{ESPACIOS.eyebrow}</Rotulo>
@@ -387,19 +385,18 @@ export default function SunniHome() {
                   de la página: el cierre puede permitirse el guiño completo.
                   Sobre el gradiente se sostienen por el contorno negro. */}
               {/*
-                ENTERA Y DENTRO DEL BLOQUE.
-
-                Estaba pegada a la esquina inferior derecha y el redondeo del
-                bloque le cortaba los pies. Una ilustración cortada no se lee
-                como que se sale del cuadro: se lee como que está mal puesta.
-
-                Ahora cabe completa dentro del bloque, con aire por debajo.
+                Los dos juntos, en el último momento de la página. Es el único
+                sitio donde salen en pareja: el cierre puede permitirse el
+                guiño completo. Sobre el gradiente se sostienen por el
+                contorno negro.
               */}
-              <Personaje
-                quien="par"
-                ancho={230}
-                className="right-6 bottom-6 hidden opacity-95 lg:block xl:right-10 xl:w-[270px]"
-              />
+              <div
+                aria-hidden
+                className="pointer-events-none absolute right-8 bottom-4 hidden items-end lg:flex"
+              >
+                <EstrellaSunni className="w-[130px]" />
+                <SolSunni className="-ml-3 w-[138px]" />
+              </div>
             </div>
           </InViewReveal>
         </Container>
