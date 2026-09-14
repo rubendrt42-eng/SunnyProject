@@ -122,6 +122,17 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         >
           Saltar al contenido
         </a>
+        {/*
+          EL PROVEEDOR ENVUELVE TAMBIÉN LA CABECERA Y EL PIE.
+
+          Estaba solo alrededor del contenido, y la cabecera quedaba fuera. El
+          botón «Bring Sun-i» del menú recibía entonces la función por defecto
+          del contexto —que no hace nada— y el clic no abría el formulario. Sin
+          error en consola: el botón se pulsaba y no pasaba nada.
+
+          Es la conversión principal del sitio, y salía en todas las páginas.
+        */}
+        <SunniModalProvider>
         <Header />
         {/*
           El proveedor del formulario envuelve todo el árbol porque hay botones
@@ -152,12 +163,11 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           style={{ backgroundImage: "var(--gradient-sun)" }}
         />
 
-        <SunniModalProvider>
-          <AppChrome>
-            <div id="contenido" className="flex flex-1 flex-col">{children}</div>
-          </AppChrome>
-        </SunniModalProvider>
+        <AppChrome>
+          <div id="contenido" className="flex flex-1 flex-col">{children}</div>
+        </AppChrome>
         <Footer />
+        </SunniModalProvider>
       </body>
     </html>
   );

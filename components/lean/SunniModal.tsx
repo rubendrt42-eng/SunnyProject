@@ -136,11 +136,30 @@ const VARIANTES: Record<
 
 /* ── El contexto: cualquier botón del sitio puede abrir la variante que toque ── */
 
-const ContextoSunni = createContext<(v: VarianteSunni) => void>(() => {});
+/**
+ * `null` y no una función vacía por defecto.
+ *
+ * Era `() => {}`, y eso convirtió un error de montaje en un fallo mudo: la
+ * cabecera quedó fuera del proveedor, su botón recibió esa función vacía, y el
+ * clic no hacía nada — sin excepción, sin aviso en consola, sin nada que
+ * mirar. El botón era la conversión principal del sitio y salía en todas las
+ * páginas.
+ *
+ * Con `null`, un componente montado fuera del proveedor lo dice en voz alta en
+ * cuanto alguien pulsa, en vez de esconderlo.
+ */
+const ContextoSunni = createContext<((v: VarianteSunni) => void) | null>(null);
 
 /** Abre el formulario. Devuelve una función a la que se le pasa la variante. */
 export function useAbrirSunni() {
-  return useContext(ContextoSunni);
+  const abrir = useContext(ContextoSunni);
+  if (!abrir) {
+    throw new Error(
+      "useAbrirSunni() se usó fuera de <SunniModalProvider>. El botón no abriría nada: " +
+        "revisa que el componente esté dentro del proveedor en app/layout.tsx.",
+    );
+  }
+  return abrir;
 }
 
 export function SunniModalProvider({ children }: { children: React.ReactNode }) {
