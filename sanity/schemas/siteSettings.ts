@@ -6,6 +6,26 @@ import { CogIcon } from "@sanity/icons/Cog";
 /**
  * Los textos del sitio que Emmy puede cambiar sin tocar código.
  *
+ * SE FUERON ONCE CAMPOS, Y ERA URGENTE
+ *
+ * Este documento tenía los textos de la portada de The Sunny Project: el
+ * titular, la frase destacada, la fotografía de fondo y seis bloques de
+ * capítulo. La portada de Sun-i project® no usa ninguno.
+ *
+ * Quedarse en el Studio sin salir en la web es la peor forma de estar: Emmy
+ * los veía, podía escribir en ellos, y no pasaba nada. Encima `heroTitle` era
+ * obligatorio, así que el documento mostraba un aviso de validación por un
+ * campo que el sitio ya no lee.
+ *
+ * Lo que queda es lo que de verdad se dibuja, verificado siguiendo los
+ * imports desde las rutas públicas.
+ *
+ * PENDIENTE
+ *
+ * Los textos de la portada de Sun-i viven hoy en `lib/sunni-content.ts`, en
+ * código. Pasarlos aquí es un trabajo aparte y con su propia decisión: hacerlo
+ * mal significa otros veinte campos sueltos que nadie sabe dónde salen.
+ *
  * Documento único: no hay «crear otro». Se fuerza con un id fijo desde la
  * estructura del Studio (ver sanity/structure.ts), porque un singleton
  * duplicado es una de las formas más silenciosas de romper un sitio con CMS
@@ -48,75 +68,6 @@ export function revisarWhatsapp(valor: string): true | string {
   return true;
 }
 
-/**
- * Un capítulo de la portada.
- *
- * Cinco capítulos tienen la misma anatomía —titular a dos voces, párrafo, y a
- * veces una nota o una frase destacada— así que comparten forma. En el Studio
- * Emmy ve UN apartado por capítulo, no dieciocho campos sueltos con nombres
- * parecidos donde es imposible saber cuál sale dónde.
- *
- * Cada capítulo declara abajo qué hace con cada pieza, porque «nota» significa
- * una cosa en «Qué es Sunny» y otra en «Experiencias».
- */
-function bloqueDeCapitulo(opciones: {
-  name: string;
-  title: string;
-  description: string;
-  campos: { acento?: string; texto?: string; nota?: string; cita?: string };
-}) {
-  const { campos } = opciones;
-  return defineField({
-    name: opciones.name,
-    title: opciones.title,
-    type: "object",
-    group: "portada",
-    description: opciones.description,
-    options: { collapsible: true, collapsed: true },
-    fields: [
-      defineField({
-        name: "titulo",
-        title: "Titular",
-        type: "string",
-        description: "La primera parte del titular. Se dibuja en la tipografía de siempre.",
-        validation: (Rule) => Rule.max(90).warning("Los titulares largos parten en demasiadas líneas."),
-      }),
-      ...(campos.acento
-        ? [
-            defineField({
-              name: "acento",
-              title: "Segunda parte del titular",
-              type: "string",
-              description: campos.acento,
-              validation: (Rule) => Rule.max(70).warning("Los titulares largos parten en demasiadas líneas."),
-            }),
-          ]
-        : []),
-      ...(campos.texto
-        ? [
-            defineField({
-              name: "texto",
-              title: "Párrafo",
-              type: "text",
-              rows: 4,
-              description: campos.texto,
-              validation: (Rule) => Rule.max(400).warning("Más de 400 caracteres se lee largo en el celular."),
-            }),
-          ]
-        : []),
-      ...(campos.nota
-        ? [defineField({ name: "nota", title: "Nota", type: "text", rows: 2, description: campos.nota })]
-        : []),
-      ...(campos.cita
-        ? [defineField({ name: "cita", title: "Frase destacada", type: "text", rows: 2, description: campos.cita })]
-        : []),
-    ],
-    preview: {
-      select: { title: "titulo", subtitle: "acento" },
-    },
-  });
-}
-
 export const siteSettings = defineType({
   name: "siteSettings",
   title: "Textos del sitio",
@@ -124,135 +75,11 @@ export const siteSettings = defineType({
   icon: CogIcon,
 
   groups: [
-    { name: "portada", title: "Portada", default: true },
-    { name: "contacto", title: "Contacto" },
+    { name: "contacto", title: "Marca y contacto", default: true },
     { name: "faq", title: "Preguntas frecuentes" },
   ],
 
   fields: [
-    // ── 01 · El manifiesto ───────────────────────────────────────────────
-    defineField({
-      name: "heroEyebrow",
-      title: "Línea de contexto",
-      type: "string",
-      group: "portada",
-      description: "La línea pequeña de arriba del todo. Hoy dice «Monterrey · Cada semana».",
-      validation: (Rule) => Rule.max(40).warning("En el celular no caben más de unos 40 caracteres."),
-    }),
-
-    defineField({
-      name: "heroTitle",
-      title: "Título principal",
-      type: "string",
-      group: "portada",
-      description:
-        "Lo primero que se lee al entrar. Si escribes aquí la frase destacada tal cual, el sitio la parte en " +
-        "líneas y la resalta en su sitio dentro de la oración.",
-      validation: (Rule) =>
-        Rule.required().max(70).warning("Más de 70 caracteres ocupa media pantalla en el celular."),
-    }),
-
-    defineField({
-      name: "heroTitleAccent",
-      title: "Frase destacada en amarillo",
-      type: "string",
-      group: "portada",
-      description:
-        "La parte del título que se pinta en amarillo y en cursiva. Escríbela EXACTAMENTE como aparece dentro " +
-        "del título —sin las comillas— y el sitio la resaltará ahí mismo. Si no aparece en el título, se " +
-        "dibuja debajo como una segunda línea. Puedes dejarla vacía: el título se lee entero en blanco.",
-      validation: (Rule) => Rule.max(45).warning("Una frase corta resalta más que una larga."),
-    }),
-
-    defineField({
-      name: "heroImage",
-      title: "Fotografía de fondo",
-      type: "image",
-      group: "portada",
-      options: { hotspot: true },
-      description:
-        "La fotografía que va detrás del título, a pantalla completa. Sin ella el fondo es carbón liso. " +
-        "Elige una donde el centro no tenga detalle importante: encima va el título.",
-      fields: [
-        defineField({
-          name: "alt",
-          title: "Descripción de la imagen",
-          type: "string",
-          description: "Para quien no puede ver la foto. Describe qué se ve.",
-          validation: (Rule) => Rule.min(10).error("Hace falta describir la imagen para que el sitio sea accesible."),
-        }),
-      ],
-    }),
-
-    defineField({
-      name: "heroSubtitle",
-      title: "Nota de la esquina",
-      type: "text",
-      rows: 3,
-      group: "portada",
-      description:
-        "La línea pequeña de la esquina de abajo, debajo de la raya. Explica qué es Sunny a quien llega sin " +
-        "contexto. Va en voz baja: no compite con el título.",
-      validation: (Rule) => Rule.max(200).warning("Es una nota al margen; más de 200 caracteres pesa demasiado."),
-    }),
-
-    // ── Los capítulos ────────────────────────────────────────────────────
-    bloqueDeCapitulo({
-      name: "bloqueExperiencias",
-      title: "Capítulo · Lo que hay ahora",
-      description: "El bloque que encabeza la lista de experiencias de la portada.",
-      campos: { nota: "La línea del extremo derecho, junto al enlace al catálogo." },
-    }),
-
-    bloqueDeCapitulo({
-      name: "bloqueSunny",
-      title: "Capítulo · Qué es Sunny",
-      description: "El capítulo que explica el proyecto. Es donde alguien entiende que hay una selección.",
-      campos: {
-        acento: "Se dibuja en naranja y en cursiva, seguido del titular.",
-        texto: "El párrafo que explica qué hace Sunny y quién elige.",
-        nota: "Ficha «Qué vas a encontrar»: qué clase de experiencias hay.",
-        cita: "Ficha «Quién participa»: qué clase de espacios entran.",
-      },
-    }),
-
-    bloqueDeCapitulo({
-      name: "bloqueRecorrido",
-      title: "Capítulo · Cómo funciona",
-      description:
-        "Solo la entrada del capítulo. Los cuatro pasos NO se editan aquí: describen cómo funciona de verdad " +
-        "el producto y cambiarlos podría prometer algo que no ocurre.",
-      campos: { acento: "Se dibuja en naranja y en cursiva, debajo del titular." },
-    }),
-
-    bloqueDeCapitulo({
-      name: "bloqueComunidad",
-      title: "Capítulo · Comunidad",
-      description: "El capítulo de fondo oscuro. El titular es el elemento visual, así que conviene que sea corto.",
-      campos: {
-        acento: "Se dibuja en amarillo y en cursiva, seguido del titular.",
-        texto: "El párrafo que explica cómo se junta la gente.",
-        cita: "La frase con raya amarilla al lado.",
-      },
-    }),
-
-    bloqueDeCapitulo({
-      name: "bloqueNegocios",
-      title: "Capítulo · Para negocios",
-      description: "La propuesta a los espacios, en la portada. La página /para-negocios repite este mismo mensaje.",
-      campos: {
-        acento: "Se dibuja en naranja y en cursiva, seguido del titular.",
-        texto: "El párrafo que explica la colaboración.",
-      },
-    }),
-
-    bloqueDeCapitulo({
-      name: "bloqueCierre",
-      title: "Capítulo · Cierre",
-      description: "El bloque amarillo del final, justo antes de las preguntas.",
-      campos: { acento: "Se dibuja en cursiva, debajo del titular." },
-    }),
-
     // ── Marca ────────────────────────────────────────────────────────────
     defineField({
       name: "seoTitle",
@@ -279,7 +106,7 @@ export const siteSettings = defineType({
       type: "text",
       rows: 2,
       group: "contacto",
-      description: "La frase que describe Sunny en el pie de TODAS las páginas.",
+      description: "La frase que describe Sun‑i en el pie de TODAS las páginas.",
       validation: (Rule) => Rule.max(160).warning("El pie es estrecho; más de 160 caracteres ocupa cuatro líneas."),
     }),
 

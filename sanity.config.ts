@@ -24,7 +24,7 @@ import { apiVersion, dataset, projectId } from "./sanity/env";
  */
 export default defineConfig({
   name: "the-sunny-project",
-  title: "The Sunny Project",
+  title: "Sun‑i project®",
 
   projectId,
   dataset,
