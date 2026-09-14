@@ -8,6 +8,7 @@ import { Container } from "@/components/ui/Container";
 import { InViewReveal } from "@/components/motion/InViewReveal";
 import { SunniCTA } from "@/components/lean/SunniCTA";
 import { HuecoDeFoto } from "@/components/sunni/HuecoDeFoto";
+import { Personaje } from "@/components/sunni/Personaje";
 import { CIERRE, ESPACIOS, EXPERIENCIAS, HERO, MARCAS, QUE_HACEMOS, SEO, VENDING } from "@/lib/sunni-content";
 
 /**
@@ -119,7 +120,18 @@ export default function SunniHome() {
           Dos bloques del MISMO tamaño y peso. Que estén a la par es lo que
           dice —sin repetirlo en el copy— que el vending no es la marca
           entera. */}
-      <section id="que-hacemos" className="scroll-mt-24 border-y border-ink/8 bg-cream py-20 sm:py-28">
+      <section
+        id="que-hacemos"
+        className="relative isolate scroll-mt-24 overflow-clip border-y border-ink/8 bg-cream py-20 sm:py-28"
+      >
+        {/* La estrella asoma por la izquierda, a la altura de los dos bloques.
+            `-left-24` la mete medio cuerpo fuera: es un guiño, no una
+            ilustración que haya que mirar. */}
+        <Personaje
+          quien="estrella"
+          ancho={215}
+          className="-bottom-12 -left-28 -z-10 hidden opacity-85 xl:block"
+        />
         <Container>
           <InViewReveal variant="lead">
             <Rotulo>{QUE_HACEMOS.eyebrow}</Rotulo>
@@ -270,7 +282,14 @@ export default function SunniHome() {
 
       {/* ── 05 · DÓNDE VIVE SUN-I ─────────────────────────────────────────
           Sin párrafo. Quien llega aquí busca reconocerse en un renglón. */}
-      <section id="espacios" className="scroll-mt-24 py-20 sm:py-28">
+      <section id="espacios" className="relative isolate scroll-mt-24 overflow-clip py-20 sm:py-28">
+        {/* El sol, por el lado contrario al de la estrella: si los dos
+            asomaran por la izquierda se leerían como un patrón. */}
+        <Personaje
+          quien="sol"
+          ancho={190}
+          className="-right-28 -bottom-6 -z-10 hidden opacity-85 xl:block"
+        />
         <Container>
           <InViewReveal variant="lead">
             <Rotulo>{ESPACIOS.eyebrow}</Rotulo>
@@ -364,6 +383,16 @@ export default function SunniHome() {
                 </SunniCTA>
               </div>
               <p className="mt-7 text-[0.75rem] tracking-[0.1em] text-ink/55">{CIERRE.condiciones}</p>
+
+              {/* Los dos juntos, caminando por el borde inferior del bloque.
+                  Es el único sitio donde salen en pareja y el último momento
+                  de la página: el cierre puede permitirse el guiño completo.
+                  Sobre el gradiente se sostienen por el contorno negro. */}
+              <Personaje
+                quien="par"
+                ancho={260}
+                className="-right-8 -bottom-6 hidden opacity-95 sm:block md:right-4 md:w-[300px]"
+              />
             </div>
           </InViewReveal>
         </Container>
