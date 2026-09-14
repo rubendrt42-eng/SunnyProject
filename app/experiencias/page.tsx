@@ -58,7 +58,7 @@ export default async function ExperienciasPage() {
     <main className="py-14 sm:py-20">
       <Container>
         <InViewReveal variant="lead">
-          <p className="eyebrow">Monterrey</p>
+          <p className="eyebrow">Sun‑i Experiences · Abiertas al público</p>
           <h1 className="mt-3 max-w-2xl text-title text-balance">
             {experiences.length > 0
               ? "Lo que hay estos días."

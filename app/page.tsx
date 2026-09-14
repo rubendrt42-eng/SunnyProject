@@ -1,43 +1,46 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import {
-  ArrowUpRight, BedDouble, Brain, Building2, Compass, Droplets, Dumbbell, FlaskConical,
-  Flower2, GraduationCap, Handshake, Heart, HeartPulse, Home, Leaf, Megaphone, Move,
-  Package, ShoppingBag, Smartphone, Sparkles, Target, Users, Zap,
+  ArrowRight, BedDouble, Building2, Droplets, Dumbbell, GraduationCap, HeartPulse,
+  Home, Leaf, ShoppingBag, Sparkles, Target, Zap,
 } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { InViewReveal } from "@/components/motion/InViewReveal";
 import { SunniCTA } from "@/components/lean/SunniCTA";
 import { HuecoDeFoto } from "@/components/sunni/HuecoDeFoto";
-import { ABOUT, BRING, EFECTO, ESPACIOS, EXPERIENCIAS, HERO, MARCAS, MARQUEE, MOODS, RECORRIDO, SEO, VENDING } from "@/lib/sunni-content";
+import { CIERRE, ESPACIOS, EXPERIENCIAS, HERO, MARCAS, QUE_HACEMOS, SEO, VENDING } from "@/lib/sunni-content";
 
 /**
  * LA PORTADA DE SUN-I PROJECT®.
  *
- * Una sola página que cuenta el ecosistema entero, con navegación por anclas.
- * La estructura y los textos vienen de la especificación de marca; la
- * composición es nuestra, y esa distinción fue deliberada.
+ * SIETE SECCIONES, NO DOCE
  *
- * POR QUÉ NO SE COPIÓ LA MAQUETACIÓN DE LA VERSIÓN DE LOVABLE
+ * La versión anterior explicaba la filosofía de la marca antes que el
+ * producto: manifiesto, tres pilares, un recorrido de cuatro pasos y una
+ * promesa de métricas futuras. Quien entraba —el dueño de un gym, una
+ * universidad, una oficina— tenía que leer todo eso antes de entender qué se
+ * le estaba ofreciendo.
  *
- * Aquella resuelve las once secciones con la misma receta: antetítulo, titular,
- * párrafo y una rejilla de tarjetas redondeadas. Ocho rejillas de tarjetas
- * seguidas. Funciona, y se lee como una plantilla — que es exactamente lo que
- * el propio encargo de Emmy pedía evitar («minimalista, editorial, mucho
- * espacio en blanco, evitar completamente el look corporativo»).
+ * El orden ahora responde las preguntas según se hacen:
  *
- * Aquí gobierna la misma regla que el resto del proyecto: **dos secciones
- * seguidas no comparten composición.** Los tres pilares son una lista
- * numerada, no tres tarjetas. El recorrido son cifras grandes. Los espacios
- * son una lista con reglas finas. Solo «For Brands» usa tarjetas, y por eso
- * ahí sí destacan.
+ *   01 Hero            ¿qué es esto?
+ *   02 Qué hacemos     ¿qué hacen?            ← las dos líneas, lado a lado
+ *   03 Vending         ¿qué implica?
+ *   04 Experiences     ¿qué implica?
+ *   05 Dónde vive      ¿para quién es?        ← «esto podría estar en mi espacio»
+ *   06 Para marcas     otra puerta, pequeña
+ *   07 Cierre          ¿qué hago ahora?
  *
- * EL GRADIENTE, CON CUENTAGOTAS
+ * LA ARQUITECTURA DICE LO QUE EL COPY REPETÍA
  *
- * Aparece cuatro veces en toda la página: el botón principal, la banda «Bring
- * Sun-i», el círculo del manifiesto y los huecos de fotografía. Su propia
- * especificación dice «uso selectivo»; ponerlo en cada tarjeta es lo que hace
- * que un gradiente bonito acabe pareciendo barato.
+ * Antes se aclaraba cuatro veces que el vending no es toda la marca. Ahora la
+ * sección 02 enseña las dos formas una al lado de la otra, del mismo tamaño y
+ * con el mismo peso, y eso lo dice solo. Queda una aclaración de una línea
+ * dentro de Vending, y basta.
+ *
+ * SIGUE VIGENTE: dos secciones seguidas no comparten composición, y el
+ * gradiente aparece con cuentagotas. Es lo que impide que se lea como
+ * plantilla.
  */
 export const revalidate = 60;
 
@@ -47,75 +50,40 @@ export const metadata: Metadata = {
 };
 
 const ICONOS = {
-  ShoppingBag, Droplets, Zap, Target, Leaf, Sparkles, Brain, Flower2, Move, Dumbbell, Users,
-  GraduationCap, Building2, Home, BedDouble, HeartPulse, Package, FlaskConical, Megaphone,
-  Handshake, Compass, Smartphone, Heart,
+  Droplets, Zap, Target, Leaf, ShoppingBag, Sparkles,
+  Dumbbell, GraduationCap, Building2, Home, BedDouble, HeartPulse,
 } as const;
 
-function Icono({ nombre, className = "" }: { nombre: string; className?: string }) {
+function Icono({ nombre }: { nombre: string }) {
   const C = ICONOS[nombre as keyof typeof ICONOS] ?? Sparkles;
-  return <C aria-hidden size={20} strokeWidth={1.75} className={className} />;
+  return <C aria-hidden size={20} strokeWidth={1.75} />;
 }
 
 /** Antetítulo. Coral oscurecido porque es texto pequeño y necesita 4.5:1. */
-function Eyebrow({ children }: { children: React.ReactNode }) {
-  return <p className="text-[0.7rem] font-semibold tracking-[0.25em] text-coral-ink uppercase">{children}</p>;
+function Rotulo({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="flex items-center gap-3">
+      <span aria-hidden className="h-[3px] w-10 shrink-0 rounded-pill" style={{ backgroundImage: "var(--gradient-sun)" }} />
+      <span className="text-[0.7rem] font-semibold tracking-[0.25em] text-coral-ink uppercase">{children}</span>
+    </span>
+  );
 }
 
 export default function SunniHome() {
   return (
     <main>
       {/* ── 01 · HERO ─────────────────────────────────────────────────────
-          Asimétrico: la tipografía manda a la izquierda y la fotografía entra
-          por la derecha sin alinearse con ella. */}
-      <section id="top" className="relative isolate overflow-clip pt-28 pb-16 sm:pt-32 sm:pb-24">
-        {/*
-          AQUÍ HABÍA UNA MANCHA DIFUMINADA DE GRADIENTE.
-
-          Un círculo enorme con `blur-3xl` flotando en la esquina es la firma
-          más reconocible de una página generada con IA — junto con el destello
-          dentro de una píldora que estaba justo debajo. No decía nada: era
-          color de relleno.
-
-          Lo que ocupa su sitio es la línea de sol del borde superior, que sí
-          significa algo (un amanecer, la marca se llama Sun-i) y además sale
-          en TODAS las páginas, así que hace de firma común en vez de adorno de
-          una sola pantalla.
-        */}
+          Una frase para decir qué es Sun-i. Se fueron las etiquetas de mood:
+          ahora viven dentro de Vending, donde explican el producto en vez de
+          decorar. */}
+      <section id="top" className="pt-28 pb-16 sm:pt-32 sm:pb-24">
         <Container>
           <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-x-[48px]">
             <div className="min-w-0 lg:col-span-7">
               <InViewReveal variant="lead">
-                {/*
-                  UN RÓTULO DE REVISTA, NO UNA PÍLDORA CON UN DESTELLO.
-
-                  El icono de destello dentro de una cápsula encima del titular
-                  es EL cliché de la landing generada con IA: aparece igual en
-                  miles de páginas y no aporta información. Además, aquí
-                  competía con el propio logo, que ya es una píldora con
-                  gradiente — dos cápsulas idénticas a diez píxeles.
-
-                  Esto es un rótulo de sección: una barra corta con el
-                  gradiente de la marca y la etiqueta al lado. El gradiente
-                  pasa de ser decoración a ser una MARCA DE LECTURA, que es la
-                  misma lógica con la que se usan las reglas finas en el resto
-                  de la página.
-                */}
-                <span className="flex items-center gap-3">
-                  <span
-                    aria-hidden
-                    className="h-[3px] w-10 shrink-0 rounded-pill"
-                    style={{ backgroundImage: "var(--gradient-sun)" }}
-                  />
-                  <span className="text-[0.7rem] font-semibold tracking-[0.25em] text-coral-ink uppercase">
-                    {HERO.badge}
-                  </span>
-                </span>
-
+                <Rotulo>{HERO.badge}</Rotulo>
                 <h1 className="mt-7 font-display text-[clamp(2.6rem,6.6vw,4.6rem)] leading-[1.02] font-bold tracking-[-0.03em] text-ink">
-                  {HERO.titulo}{" "}
-                  <span className="text-coral">{HERO.tituloAcento}</span>{" "}
-                  {HERO.tituloFin}
+                  {HERO.titulo} <span className="text-coral">{HERO.tituloAcento}</span> {HERO.tituloFin}
                 </h1>
               </InViewReveal>
 
@@ -129,173 +97,72 @@ export default function SunniHome() {
                     Bring Sun‑i to your space
                   </SunniCTA>
                   <a
-                    href="#about"
+                    href="#que-hacemos"
                     className="press inline-flex min-h-12 items-center rounded-pill border border-coral/45 px-7 font-display text-small font-semibold text-coral-ink transition-colors hover:border-coral hover:bg-coral/6"
                   >
                     Discover Sun‑i
                   </a>
                 </div>
               </InViewReveal>
-
-              <InViewReveal delay={0.2}>
-                <ul className="mt-9 flex flex-wrap gap-2">
-                  {HERO.pills.map((p) => (
-                    <li
-                      key={p}
-                      className="rounded-pill border border-ink/10 px-4 py-1.5 text-small text-gray transition-colors hover:border-coral/45 hover:text-coral-ink"
-                    >
-                      {p}
-                    </li>
-                  ))}
-                </ul>
-              </InViewReveal>
             </div>
 
             <InViewReveal variant="media" delay={0.1} className="min-w-0 lg:col-span-5">
-              <figure className="relative">
-                <HuecoDeFoto nota="Fotografía de portada" />
-                {/* La tarjeta que nombra el vending sin dejar que se coma la
-                    marca: es un touchpoint, no el producto entero. */}
-                {/*
-                  La nota que impide la confusión más cara del proyecto: que
-                  alguien crea que Sun-i ES una empresa de vending.
-
-                  Era una tarjeta flotante con sombra difusa y un círculo de
-                  gradiente al lado — la misma pieza que sale en cualquier
-                  landing de software. Ahora cuelga del borde inferior de la
-                  fotografía como un pie de foto: se lee como parte de la
-                  imagen, no como un widget encima de ella.
-                */}
-                <figcaption className="mt-5 flex items-baseline gap-3 border-t border-ink/12 pt-4">
-                  <span
-                    aria-hidden
-                    className="mt-1.5 h-[3px] w-6 shrink-0 rounded-pill"
-                    style={{ backgroundImage: "var(--gradient-sun)" }}
-                  />
-                  <span className="min-w-0">
-                    <span className="block font-display text-small font-semibold text-ink">{HERO.tarjeta.titulo}</span>
-                    <span className="block text-[0.78rem] text-gray">{HERO.tarjeta.texto}</span>
-                  </span>
-                </figcaption>
-              </figure>
+              <HuecoDeFoto nota="Fotografía de portada" />
             </InViewReveal>
           </div>
         </Container>
       </section>
 
-      {/* ── 02 · MARQUEE ──────────────────────────────────────────────────
-          Una banda fina. Rompe el ritmo entre el hero y el capítulo largo. */}
-      <div className="overflow-clip border-y border-ink/8 bg-cream py-4">
-        <div className="marquee-track flex w-max items-center gap-8 whitespace-nowrap">
-          {[...MARQUEE, ...MARQUEE, ...MARQUEE, ...MARQUEE].map((t, i) => (
-            <span key={`${t}-${i}`} className="flex items-center gap-8 text-small text-gray">
-              {t}
-              <span aria-hidden className="size-1.5 rounded-pill" style={{ backgroundImage: "var(--gradient-sun)" }} />
-            </span>
-          ))}
-        </div>
-      </div>
+      {/* ── 02 · QUÉ HACEMOS ──────────────────────────────────────────────
+          La sección que hace que alguien diga «ah, ya entendí».
 
-      {/* ── 03 · ABOUT ────────────────────────────────────────────────────
-          El statement suelto y a ancho casi completo; el apoyo, en columna
-          estrecha. Manda la idea, no la rejilla. */}
-      <section id="about" className="scroll-mt-24 py-20 sm:py-28 lg:py-36">
+          Dos bloques del MISMO tamaño y peso. Que estén a la par es lo que
+          dice —sin repetirlo en el copy— que el vending no es la marca
+          entera. */}
+      <section id="que-hacemos" className="scroll-mt-24 border-y border-ink/8 bg-cream py-20 sm:py-28">
         <Container>
           <InViewReveal variant="lead">
-            <Eyebrow>{ABOUT.eyebrow}</Eyebrow>
-            <h2 className="mt-5 max-w-[18ch] font-display text-[clamp(2.1rem,4.8vw,3.5rem)] leading-[1.05] font-bold tracking-[-0.025em] text-ink">
-              {ABOUT.titulo} <span className="text-coral">{ABOUT.tituloAcento}</span>
+            <Rotulo>{QUE_HACEMOS.eyebrow}</Rotulo>
+            <h2 className="mt-5 max-w-[18ch] font-display text-[clamp(1.9rem,4.2vw,3rem)] leading-[1.08] font-bold tracking-[-0.025em] text-ink">
+              {QUE_HACEMOS.titulo}
             </h2>
           </InViewReveal>
 
-          <div className="mt-12 grid gap-10 lg:mt-16 lg:grid-cols-12 lg:gap-x-[48px]">
-            <InViewReveal delay={0.06} className="min-w-0 lg:col-span-6">
-              <p className="max-w-[54ch] text-lead text-gray">{ABOUT.p1}</p>
-              <p className="mt-5 max-w-[54ch] text-body text-gray">{ABOUT.p2}</p>
-            </InViewReveal>
-
-            <InViewReveal delay={0.12} className="min-w-0 lg:col-span-5 lg:col-start-8">
-              <p className="font-display text-[clamp(1.3rem,2.4vw,1.9rem)] leading-[1.25] font-semibold text-coral">
-                {ABOUT.cierre}
-              </p>
-            </InViewReveal>
-          </div>
-
-          {/*
-            LOS TRES PILARES SON UNA LISTA, NO TRES TARJETAS.
-
-            Tres tarjetas iguales en fila es la forma por defecto de esta
-            sección en cualquier sitio, y aquí venían seguidas de otras seis
-            rejillas. Como lista numerada con regla superior se leen igual de
-            claro y no repiten la forma de nada más de la página.
-          */}
-          <ol className="mt-16 grid gap-px overflow-clip rounded-2xl border border-ink/10 bg-ink/10 sm:mt-20 md:grid-cols-3">
-            {ABOUT.pilares.map((p, i) => (
-              <li key={p.tag} className="bg-warm-white p-8">
-                <InViewReveal delay={0.05 * i}>
-                  <span className="font-display text-[0.7rem] font-semibold tracking-[0.22em] text-coral-ink uppercase">
-                    {p.tag}
+          <div className="mt-12 grid gap-px overflow-clip rounded-2xl border border-ink/10 bg-ink/10 sm:mt-16 md:grid-cols-2">
+            {QUE_HACEMOS.bloques.map((b, i) => (
+              <InViewReveal key={b.rotulo} delay={0.06 * i} className="bg-warm-white">
+                <div className="flex h-full flex-col p-8 sm:p-10">
+                  <span className="font-display text-[0.72rem] font-semibold tracking-[0.22em] text-coral-ink uppercase">
+                    {b.rotulo}
                   </span>
-                  <h3 className="mt-3 font-display text-heading font-semibold text-ink">{p.titulo}</h3>
-                  <p className="mt-2.5 text-small text-gray">{p.texto}</p>
-                </InViewReveal>
-              </li>
+                  <h3 className="mt-4 max-w-[16ch] font-display text-[clamp(1.35rem,2.4vw,1.9rem)] leading-[1.15] font-bold tracking-[-0.02em] text-ink">
+                    {b.titulo}
+                  </h3>
+                  <p className="mt-4 max-w-[40ch] text-body text-gray">{b.texto}</p>
+                  <a
+                    href={b.ancla}
+                    className="group mt-auto inline-flex min-h-11 items-center gap-2 pt-7 text-small font-semibold text-coral-ink"
+                  >
+                    {b.enlace}
+                    <ArrowRight
+                      aria-hidden
+                      size={15}
+                      strokeWidth={2}
+                      className="transition-transform duration-[var(--motion-nudge)] ease-sunny group-hover:translate-x-1"
+                    />
+                  </a>
+                </div>
+              </InViewReveal>
             ))}
-          </ol>
-
-          {/* El manifiesto: bloque de tinta con el círculo del gradiente. */}
-          <InViewReveal delay={0.1}>
-            <figure className="mt-14 grid gap-6 sm:mt-20 md:grid-cols-5 md:gap-8">
-              <HuecoDeFoto proporcion="aspect-[4/3]" nota="Producto sobre superficie cálida" className="md:col-span-3" />
-              <blockquote className="flex flex-col justify-between rounded-2xl bg-ink p-8 md:col-span-2">
-                <span aria-hidden className="size-11 rounded-pill" style={{ backgroundImage: "var(--gradient-sun)" }} />
-                <p className="mt-8 font-display text-[clamp(1.25rem,2.2vw,1.7rem)] leading-[1.25] font-semibold text-warm-white">
-                  {ABOUT.manifiesto}
-                </p>
-                <figcaption className="mt-6 text-[0.7rem] tracking-[0.2em] text-warm-white/55 uppercase">
-                  Manifiesto Sun‑i
-                </figcaption>
-              </blockquote>
-            </figure>
-          </InViewReveal>
+          </div>
         </Container>
       </section>
 
-      {/* ── 04 · CÓMO FUNCIONA ────────────────────────────────────────────
-          Fondo amanecer y cifras grandes: la única sección donde manda el
-          número. */}
-      <section id="how" className="scroll-mt-24 border-y border-ink/8 py-20 sm:py-28" style={{ backgroundImage: "var(--gradient-dawn)" }}>
-        <Container>
-          <InViewReveal variant="lead">
-            <Eyebrow>{RECORRIDO.eyebrow}</Eyebrow>
-            <h2 className="mt-5 max-w-[16ch] font-display text-[clamp(1.9rem,4.2vw,3rem)] leading-[1.08] font-bold tracking-[-0.025em] text-ink">
-              {RECORRIDO.titulo}
-            </h2>
-            <p className="mt-5 max-w-[48ch] text-body text-gray">{RECORRIDO.intro}</p>
-          </InViewReveal>
-
-          <ol className="mt-14 grid gap-x-10 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
-            {RECORRIDO.pasos.map((p, i) => (
-              <li key={p.n}>
-                <InViewReveal delay={0.06 * i}>
-                  <div className="border-t border-ink/15 pt-5">
-                    <span className="font-display text-[2.6rem] leading-none font-bold tracking-[-0.04em] text-coral/35 tabular-nums">
-                      {p.n}
-                    </span>
-                    <h3 className="mt-4 font-display text-heading font-semibold text-ink">{p.tag}</h3>
-                    <p className="mt-2.5 max-w-[34ch] text-small text-gray">{p.texto}</p>
-                  </div>
-                </InViewReveal>
-              </li>
-            ))}
-          </ol>
-        </Container>
-      </section>
-
-      {/* ── 05 · VENDING ──────────────────────────────────────────────────
-          Díptico invertido: la fotografía a la izquierda. Es la única sección
-          que empieza por imagen. */}
-      <section id="vending" className="scroll-mt-24 py-20 sm:py-28 lg:py-36">
+      {/* ── 03 · VENDING ──────────────────────────────────────────────────
+          Díptico con la fotografía a la izquierda, y debajo los seis moods,
+          que venían de la sección «Inside Sun-i». Se mudaron aquí porque
+          explican el producto: su sitio es dentro del producto. */}
+      <section id="vending" className="scroll-mt-24 py-20 sm:py-28 lg:py-32">
         <Container>
           <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-x-[48px]">
             <InViewReveal variant="media" className="min-w-0 lg:col-span-5">
@@ -304,21 +171,15 @@ export default function SunniHome() {
 
             <div className="min-w-0 lg:col-span-6 lg:col-start-7">
               <InViewReveal variant="lead">
-                <Eyebrow>{VENDING.eyebrow}</Eyebrow>
-                <h2 className="mt-5 font-display text-[clamp(2rem,4.4vw,3.2rem)] leading-[1.05] font-bold tracking-[-0.025em] text-ink">
+                <Rotulo>{VENDING.eyebrow}</Rotulo>
+                <h2 className="mt-5 max-w-[18ch] font-display text-[clamp(1.8rem,3.8vw,2.7rem)] leading-[1.08] font-bold tracking-[-0.025em] text-ink">
                   {VENDING.titulo}
                 </h2>
               </InViewReveal>
               <InViewReveal delay={0.08}>
-                <p className="mt-6 max-w-[50ch] text-body text-gray">{VENDING.texto}</p>
-                <ul className="mt-7 flex flex-wrap gap-x-5 gap-y-2">
-                  {VENDING.categorias.map((c) => (
-                    <li key={c} className="text-[0.72rem] font-semibold tracking-[0.16em] text-gray uppercase">
-                      {c}
-                    </li>
-                  ))}
-                </ul>
-                <p className="mt-8 font-display text-[clamp(1.3rem,2.4vw,1.8rem)] font-semibold text-coral">
+                <p className="mt-6 max-w-[48ch] text-body text-gray">{VENDING.texto}</p>
+                <p className="mt-4 max-w-[44ch] text-small text-gray/85">{VENDING.nota}</p>
+                <p className="mt-7 font-display text-[clamp(1.25rem,2.2vw,1.7rem)] font-semibold text-coral">
                   {VENDING.frase}
                 </p>
                 <div className="mt-8">
@@ -329,134 +190,105 @@ export default function SunniHome() {
               </InViewReveal>
             </div>
           </div>
-        </Container>
-      </section>
 
-      {/* ── 06 · INSIDE SUN-I ─────────────────────────────────────────────
-          Rejilla compacta con regla, no tarjetas con borde: los moods son un
-          índice, no seis productos. */}
-      <section id="inside" className="scroll-mt-24 border-y border-ink/8 bg-cream py-20 sm:py-28">
-        <Container>
-          <InViewReveal variant="lead">
-            <Eyebrow>{MOODS.eyebrow}</Eyebrow>
-            <h2 className="mt-5 max-w-[18ch] font-display text-[clamp(1.9rem,4.2vw,3rem)] leading-[1.08] font-bold tracking-[-0.025em] text-ink">
-              {MOODS.titulo}
-            </h2>
-            <p className="mt-5 max-w-[52ch] text-body text-gray">{MOODS.intro}</p>
-          </InViewReveal>
-
-          <ul className="mt-14 grid gap-x-10 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">
-            {MOODS.items.map((m, i) => (
-              <li key={m.nombre}>
-                <InViewReveal delay={0.04 * i}>
-                  <div className="flex gap-4 border-t border-ink/12 pt-5">
-                    <span className="mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-pill bg-warm-white text-coral-ink">
-                      <Icono nombre={m.icono} />
-                    </span>
-                    <div className="min-w-0">
-                      <h3 className="font-display text-heading font-semibold text-ink">{m.nombre}</h3>
-                      <p className="mt-1.5 text-small text-gray">{m.texto}</p>
-                    </div>
-                  </div>
-                </InViewReveal>
-              </li>
-            ))}
-          </ul>
-        </Container>
-      </section>
-
-      {/* ── 07 · EXPERIENCIAS ─────────────────────────────────────────────
-          Lista editorial numerada + el puente al catálogo que ya existe. */}
-      <section id="experiences" className="scroll-mt-24 py-20 sm:py-28 lg:py-36">
-        <Container>
-          <div className="grid gap-10 lg:grid-cols-12 lg:gap-x-[48px]">
-            <InViewReveal variant="lead" className="min-w-0 lg:col-span-5">
-              <Eyebrow>{EXPERIENCIAS.eyebrow}</Eyebrow>
-              <h2 className="mt-5 max-w-[14ch] font-display text-[clamp(1.9rem,4.2vw,3rem)] leading-[1.06] font-bold tracking-[-0.025em] text-ink">
-                {EXPERIENCIAS.titulo}
-              </h2>
-              <p className="mt-6 max-w-[46ch] text-body text-gray">{EXPERIENCIAS.texto}</p>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <SunniCTA variante="experiences" flecha>
-                  {EXPERIENCIAS.cta}
-                </SunniCTA>
-              </div>
-              {/*
-                EL PUENTE AL CATÁLOGO.
-
-                «Experiences» en la especificación es la oferta B2B: llevar
-                sesiones a oficinas y escuelas. Pero el sitio ya tiene un
-                catálogo de experiencias abiertas al público, con su alta desde
-                el gestor y su formulario de solicitud. Son cosas distintas y
-                las dos son verdad, así que esta sección nombra las dos en vez
-                de fingir que la otra no existe.
-              */}
-              <p className="mt-6 text-small text-gray">
-                ¿Buscas experiencias abiertas al público?{" "}
-                <Link
-                  href="/experiencias"
-                  className="font-medium text-coral-ink underline decoration-coral/35 underline-offset-4 transition-colors hover:decoration-coral"
-                >
-                  Mira las que están publicadas
-                </Link>
-                .
-              </p>
+          {/* Los moods. Rejilla compacta con regla superior — ni tarjetas ni
+              cajas: es un índice de lo que hay dentro. */}
+          <div className="mt-16 sm:mt-20">
+            <InViewReveal>
+              <h3 className="text-[0.72rem] font-semibold tracking-[0.22em] text-gray uppercase">
+                {VENDING.moodsTitulo}
+              </h3>
             </InViewReveal>
-
-            <ol className="min-w-0 lg:col-span-6 lg:col-start-7">
-              {EXPERIENCIAS.tipos.map((t, i) => (
-                <li key={t.nombre} className="border-b border-ink/12 py-5 first:border-t">
-                  <InViewReveal delay={0.05 * i}>
-                    <div className="flex items-start gap-4">
-                      <span className="mt-0.5 text-coral-ink">
-                        <Icono nombre={t.icono} />
+            <ul className="mt-7 grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
+              {VENDING.moods.map((m, i) => (
+                <li key={m.nombre}>
+                  <InViewReveal delay={0.04 * i}>
+                    <div className="flex gap-4 border-t border-ink/12 pt-5">
+                      <span className="mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-pill bg-cream text-coral-ink">
+                        <Icono nombre={m.icono} />
                       </span>
                       <div className="min-w-0">
-                        <h3 className="font-display text-heading font-semibold text-ink">{t.nombre}</h3>
-                        <p className="mt-1 max-w-[44ch] text-small text-gray">{t.texto}</p>
+                        <h4 className="font-display text-heading font-semibold text-ink">{m.nombre}</h4>
+                        <p className="mt-1.5 text-small text-gray">{m.texto}</p>
                       </div>
                     </div>
                   </InViewReveal>
                 </li>
               ))}
-            </ol>
+            </ul>
           </div>
-
-          <InViewReveal delay={0.1}>
-            <div className="relative mt-14 overflow-clip rounded-2xl sm:mt-20">
-              <HuecoDeFoto proporcion="aspect-[21/9]" nota="Sesión de bienestar en oficina" />
-              <p className="absolute bottom-8 left-8 max-w-[22ch] font-display text-[clamp(1.2rem,2.6vw,2rem)] leading-[1.15] font-bold text-ink">
-                {EXPERIENCIAS.frase}
-              </p>
-            </div>
-          </InViewReveal>
         </Container>
       </section>
 
-      {/* ── 08 · DÓNDE VIVE SUN-I ─────────────────────────────────────────
-          Dos columnas de líneas finas. Ninguna caja. */}
-      <section id="espacios" className="scroll-mt-24 border-y border-ink/8 py-20 sm:py-28" style={{ backgroundImage: "var(--gradient-dawn)" }}>
+      {/* ── 04 · EXPERIENCES ──────────────────────────────────────────────
+          Texto a la izquierda, tipos a la derecha en lista con reglas. No
+          repite la composición del bloque anterior. */}
+      <section id="experiences" className="scroll-mt-24 border-y border-ink/8 py-20 sm:py-28" style={{ backgroundImage: "var(--gradient-dawn)" }}>
+        <Container>
+          <div className="grid gap-10 lg:grid-cols-12 lg:gap-x-[48px]">
+            <InViewReveal variant="lead" className="min-w-0 lg:col-span-6">
+              <Rotulo>{EXPERIENCIAS.eyebrow}</Rotulo>
+              <h2 className="mt-5 max-w-[15ch] font-display text-[clamp(1.8rem,3.8vw,2.7rem)] leading-[1.08] font-bold tracking-[-0.025em] text-ink">
+                {EXPERIENCIAS.titulo}
+              </h2>
+              <p className="mt-6 max-w-[46ch] text-body text-gray">{EXPERIENCIAS.texto}</p>
+              <p className="mt-5 text-small font-medium text-ink/70">{EXPERIENCIAS.espacios}</p>
+              <div className="mt-8">
+                <SunniCTA variante="experiences" flecha>
+                  {EXPERIENCIAS.cta}
+                </SunniCTA>
+              </div>
+              {/* Secundario a propósito: la portada es B2B y el catálogo
+                  abierto al público es una extensión, no el producto. */}
+              <p className="mt-6 text-small text-gray">
+                {EXPERIENCIAS.enlaceCatalogo}.{" "}
+                <Link
+                  href="/experiencias"
+                  className="font-medium text-coral-ink underline decoration-coral/35 underline-offset-4 transition-colors hover:decoration-coral"
+                >
+                  Ver el calendario
+                </Link>
+                .
+              </p>
+            </InViewReveal>
+
+            <InViewReveal delay={0.08} className="min-w-0 lg:col-span-5 lg:col-start-8">
+              <ul>
+                {EXPERIENCIAS.tipos.map((t) => (
+                  <li
+                    key={t}
+                    className="border-b border-ink/12 py-4 font-display text-heading font-semibold text-ink first:border-t"
+                  >
+                    {t}
+                  </li>
+                ))}
+              </ul>
+            </InViewReveal>
+          </div>
+        </Container>
+      </section>
+
+      {/* ── 05 · DÓNDE VIVE SUN-I ─────────────────────────────────────────
+          Sin párrafo. Quien llega aquí busca reconocerse en un renglón. */}
+      <section id="espacios" className="scroll-mt-24 py-20 sm:py-28">
         <Container>
           <InViewReveal variant="lead">
-            <Eyebrow>{ESPACIOS.eyebrow}</Eyebrow>
-            <h2 className="mt-5 max-w-[16ch] font-display text-[clamp(1.9rem,4.2vw,3rem)] leading-[1.08] font-bold tracking-[-0.025em] text-ink">
+            <Rotulo>{ESPACIOS.eyebrow}</Rotulo>
+            <h2 className="mt-5 max-w-[16ch] font-display text-[clamp(1.8rem,3.8vw,2.7rem)] leading-[1.08] font-bold tracking-[-0.025em] text-ink">
               {ESPACIOS.titulo}
             </h2>
           </InViewReveal>
 
-          <ul className="mt-12 grid gap-x-12 md:grid-cols-2">
+          <ul className="mt-10 grid gap-x-12 sm:grid-cols-2 lg:grid-cols-3">
             {ESPACIOS.items.map((e, i) => (
               <li key={e.nombre} className="border-b border-ink/12 py-5">
                 <InViewReveal delay={0.04 * i}>
-                  <div className="flex items-baseline justify-between gap-6">
-                    <h3 className="flex items-center gap-3 font-display text-heading font-semibold text-ink">
-                      <span className="text-coral-ink">
-                        <Icono nombre={e.icono} />
-                      </span>
-                      {e.nombre}
-                    </h3>
-                  </div>
-                  <p className="mt-2 max-w-[42ch] pl-9 text-small text-gray">{e.texto}</p>
+                  <h3 className="flex items-center gap-3 font-display text-heading font-semibold text-ink">
+                    <span className="text-coral-ink">
+                      <Icono nombre={e.icono} />
+                    </span>
+                    {e.nombre}
+                  </h3>
                 </InViewReveal>
               </li>
             ))}
@@ -472,114 +304,66 @@ export default function SunniHome() {
         </Container>
       </section>
 
-      {/* ── 09 · PARA MARCAS ──────────────────────────────────────────────
-          La ÚNICA rejilla de tarjetas de la página, y por eso funciona. */}
-      <section id="brands" className="scroll-mt-24 py-20 sm:py-28 lg:py-36">
+      {/* ── 06 · PARA MARCAS ──────────────────────────────────────────────
+          Pequeña a propósito: una tercera puerta, no un tercer negocio. Una
+          sola fila, sin tarjetas, sin beneficios inventados. */}
+      <section id="brands" className="scroll-mt-24 border-y border-ink/8 bg-cream py-16 sm:py-20">
         <Container>
-          <InViewReveal variant="lead">
-            <Eyebrow>{MARCAS.eyebrow}</Eyebrow>
-            <h2 className="mt-5 font-display text-[clamp(2rem,4.4vw,3.2rem)] leading-[1.05] font-bold tracking-[-0.025em] text-ink">
-              {MARCAS.titulo}
-            </h2>
-            <p className="mt-5 max-w-[54ch] text-body text-gray">{MARCAS.texto}</p>
-          </InViewReveal>
+          <div className="grid items-center gap-8 lg:grid-cols-12 lg:gap-x-[48px]">
+            <InViewReveal variant="lead" className="min-w-0 lg:col-span-6">
+              <Rotulo>{MARCAS.eyebrow}</Rotulo>
+              <h2 className="mt-5 font-display text-[clamp(1.6rem,3vw,2.2rem)] leading-[1.1] font-bold tracking-[-0.025em] text-ink">
+                {MARCAS.titulo}
+              </h2>
+              <p className="mt-4 max-w-[46ch] text-body text-gray">{MARCAS.texto}</p>
+            </InViewReveal>
 
-          <ul className="mt-14 grid gap-5 sm:grid-cols-2">
-            {MARCAS.items.map((m, i) => (
-              <li key={m.tag}>
-                <InViewReveal delay={0.05 * i}>
-                  <div className="group h-full rounded-2xl border border-ink/10 bg-cream p-7 transition-all duration-[var(--motion-enter)] ease-sunny hover:-translate-y-1 hover:border-coral/40 hover:shadow-[0_24px_60px_-30px_rgba(232,78,50,0.28)]">
-                    <span className="flex size-11 items-center justify-center rounded-pill bg-warm-white text-coral-ink transition-colors">
-                      <Icono nombre={m.icono} />
-                    </span>
-                    <h3 className="mt-5 font-display text-heading font-semibold text-ink">{m.tag}</h3>
-                    <p className="mt-2.5 text-small text-gray">{m.texto}</p>
-                  </div>
-                </InViewReveal>
-              </li>
-            ))}
-          </ul>
-
-          <InViewReveal delay={0.14}>
-            <div className="mt-10">
-              <SunniCTA variante="brands" flecha>
-                {MARCAS.cta}
-              </SunniCTA>
-            </div>
-          </InViewReveal>
+            <InViewReveal delay={0.08} className="min-w-0 lg:col-span-5 lg:col-start-8">
+              <ul className="flex flex-wrap gap-x-6 gap-y-2">
+                {MARCAS.formas.map((f) => (
+                  <li key={f} className="text-small font-medium text-ink/75">
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-7">
+                <SunniCTA variante="brands" tono="contorno" flecha>
+                  {MARCAS.cta}
+                </SunniCTA>
+              </div>
+            </InViewReveal>
+          </div>
         </Container>
       </section>
 
-      {/* ── 10 · BRING SUN-I ──────────────────────────────────────────────
-          El único bloque con el gradiente a plena potencia. Es la conversión
-          principal del sitio y el momento de máximo contraste. */}
-      <section id="bring" className="scroll-mt-24 px-5 pb-20 sm:pb-28">
+      {/* ── 07 · CIERRE ───────────────────────────────────────────────────
+          Absorbe el bloque «Bring Sun-i», que era una sección aparte
+          diciendo lo mismo. Un solo momento de máximo contraste en toda la
+          página. */}
+      <section id="bring" className="scroll-mt-24 px-5 py-20 sm:py-28">
         <Container className="!px-0">
           <InViewReveal variant="lead">
             <div
               className="relative isolate overflow-clip rounded-3xl px-8 py-16 text-center sm:px-12 sm:py-20"
               style={{ backgroundImage: "var(--gradient-sun)" }}
             >
-              <div aria-hidden className="pointer-events-none absolute -top-16 -right-10 size-56 rounded-pill bg-warm-white/35 blur-3xl" />
-              <h2 className="mx-auto max-w-[18ch] font-display text-[clamp(2rem,4.8vw,3.4rem)] leading-[1.05] font-bold tracking-[-0.03em] text-ink">
-                {BRING.titulo}
+              <h2 className="mx-auto max-w-[18ch] font-display text-[clamp(2rem,4.8vw,3.2rem)] leading-[1.05] font-bold tracking-[-0.03em] text-ink">
+                {CIERRE.titulo}
               </h2>
-              <p className="mx-auto mt-6 max-w-[56ch] text-body text-ink/75">{BRING.texto}</p>
-              <div className="mt-9 flex justify-center">
+              <p className="mx-auto mt-6 max-w-[50ch] text-body text-ink/75">{CIERRE.texto}</p>
+              <div className="mt-9 flex flex-wrap justify-center gap-3">
                 <SunniCTA variante="vending" tono="claro" flecha>
-                  {BRING.cta}
+                  {CIERRE.cta}
+                </SunniCTA>
+                <SunniCTA
+                  variante="brands"
+                  tono="contorno"
+                  className="!border-ink/30 !text-ink hover:!border-ink/60 hover:!bg-ink/5"
+                >
+                  {CIERRE.ctaMarcas}
                 </SunniCTA>
               </div>
-            </div>
-          </InViewReveal>
-        </Container>
-      </section>
-
-      {/* ── 11 · THE SUN-I EFFECT ─────────────────────────────────────────
-          Sin métricas inventadas. Lo dice su propia especificación y es lo
-          correcto: un número de impacto falso acaba citado en una junta. */}
-      <section id="effect" className="scroll-mt-24 border-y border-ink/8 bg-cream py-20 sm:py-28">
-        <Container>
-          <InViewReveal variant="lead">
-            <Eyebrow>{EFECTO.eyebrow}</Eyebrow>
-            <h2 className="mt-5 max-w-[16ch] font-display text-[clamp(1.9rem,4.2vw,3rem)] leading-[1.08] font-bold tracking-[-0.025em] text-ink">
-              {EFECTO.titulo}
-            </h2>
-            <p className="mt-5 max-w-[52ch] text-body text-gray">{EFECTO.texto}</p>
-          </InViewReveal>
-
-          <ul className="mt-12 grid gap-x-10 gap-y-8 md:grid-cols-3">
-            {EFECTO.items.map((e, i) => (
-              <li key={e.titulo}>
-                <InViewReveal delay={0.05 * i}>
-                  <div className="border-t border-ink/12 pt-5">
-                    <h3 className="font-display text-heading font-semibold text-ink">{e.titulo}</h3>
-                    <p className="mt-2 text-small text-gray">{e.texto}</p>
-                    <p className="mt-4 text-[0.68rem] tracking-[0.2em] text-coral-ink/70 uppercase">Coming soon</p>
-                  </div>
-                </InViewReveal>
-              </li>
-            ))}
-          </ul>
-        </Container>
-      </section>
-
-      {/* ── 12 · CIERRE ───────────────────────────────────────────────────── */}
-      <section className="bg-ink py-20 text-warm-white sm:py-28">
-        <Container className="text-center">
-          <InViewReveal variant="lead">
-            <h2 className="mx-auto max-w-[16ch] font-display text-[clamp(2rem,4.8vw,3.4rem)] leading-[1.05] font-bold tracking-[-0.03em]">
-              A little more <span className="text-sun">Sun‑i</span> in your everyday.
-            </h2>
-          </InViewReveal>
-          <InViewReveal delay={0.1}>
-            <div className="mt-10 flex flex-wrap justify-center gap-3">
-              <SunniCTA variante="vending" flecha>
-                Bring Sun‑i to your space
-              </SunniCTA>
-              <SunniCTA variante="brands" tono="contorno" className="!border-warm-white/35 !text-warm-white hover:!border-warm-white hover:!bg-warm-white/10">
-                Partner with Sun‑i
-              </SunniCTA>
+              <p className="mt-7 text-[0.75rem] tracking-[0.1em] text-ink/55">{CIERRE.condiciones}</p>
             </div>
           </InViewReveal>
         </Container>

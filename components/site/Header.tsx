@@ -13,9 +13,9 @@ import { HeaderInteractive } from "@/components/site/HeaderInteractive";
  * portada, no buscar un ancla que ahí no existe.
  */
 const NAV_LINKS = [
-  { href: "/#about", label: "About" },
-  { href: "/#vending", label: "Sun‑i Vending" },
-  { href: "/experiencias", label: "Experiences" },
+  { href: "/#que-hacemos", label: "What is Sun‑i" },
+  { href: "/#vending", label: "Vending" },
+  { href: "/#experiences", label: "Experiences" },
   { href: "/#brands", label: "For Brands" },
 ];
 

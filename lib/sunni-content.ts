@@ -1,200 +1,189 @@
 /**
  * EL CONTENIDO DE LA PORTADA DE SUN-I PROJECT®.
  *
- * Los textos vienen de la especificación de marca de Emmy, literales salvo
- * donde se indica. Viven aquí y no repartidos por la maquetación para que
- * revisar el copy sea leer un archivo, y para que pasarlos a Sanity —cuando
- * toque— sea mover datos y no reescribir componentes.
+ * LA PASADA DE SIMPLIFICACIÓN
  *
- * IDIOMA
+ * La portada tenía doce secciones y explicaba la filosofía de la marca antes de
+ * explicar el producto. Alguien que entraba —el dueño de un gym, una
+ * universidad, una oficina— tenía que leer un manifiesto, tres pilares, un
+ * recorrido de cuatro pasos y una promesa de métricas futuras antes de
+ * entender qué se le estaba ofreciendo.
  *
- * Titulares y llamadas a la acción en inglés, cuerpo en español. Es la regla de
- * la marca, no una inconsistencia.
+ * Ahora son siete, y el orden responde las preguntas según se hacen: qué es
+ * esto, qué hacen, para quién es, qué implica, qué hago ahora.
+ *
+ * LO QUE SE FUE, Y POR QUÉ
+ *
+ *   Banda en movimiento   repetía conceptos de marca sin añadir información.
+ *   Purpose/Mission/Vision  tres formas de decir lo mismo, ninguna explica el
+ *                           producto. Lo esencial vive en «Qué hacemos».
+ *   How Sun-i Works       Discover/Access/Experience/Connect era un armazón de
+ *                           marca, no el funcionamiento real.
+ *   Inside Sun-i          la información SÍ servía —explica el producto— así
+ *                           que se mudó dentro de Vending, que es su sitio.
+ *   The Sun-i Effect      tres bloques de «coming soon». Vuelve cuando existan
+ *                           métricas reales.
+ *
+ * LA REGLA DE ESTA VERSIÓN
+ *
+ * Si una frase no ayuda a entender el producto, no está. No hay frases
+ * escritas para sonar bien.
+ *
+ * IDIOMA: titulares y llamadas a la acción en inglés, cuerpo en español. Es
+ * regla de la marca, no una inconsistencia.
  */
 
 export const MARCA = {
   nombre: "Sun‑i project®",
-  /** Lo que la marca promete, en una línea. Sale en el pie y en los metadatos. */
   tagline: "A little more Sun‑i in your everyday.",
-  /** De su prompt original. Explica la marca mejor que el tagline. */
   promesa: "Everyday wellness, made easy.",
   instagram: "https://www.instagram.com/thesuniproject/",
   correo: "hola@sun-iproject.com",
 } as const;
 
+/* ── 01 · HERO ─────────────────────────────────────────────────────────────
+   Una frase. La definición prioriza PRODUCTOS + ESPACIOS + EXPERIENCIAS.
+
+   Antes decía «productos, espacios y tecnología». La tecnología apoya al
+   producto —la pantalla, el pago— pero no es una línea del negocio, y
+   ponerla en la definición dejaba fuera justo la mitad de lo que Sun‑i hace.
+
+   Se fueron las etiquetas (snack · hydrate · focus…) porque ahora viven
+   dentro de Vending, donde explican el producto en vez de decorar el hero.  */
 export const HERO = {
   badge: "Everyday wellness brand",
   titulo: "A little more",
   tituloAcento: "Sun‑i",
   tituloFin: "in your everyday.",
   texto:
-    "Sun‑i project® es una marca de everyday wellness: productos, espacios y tecnología que hacen que cuidarte " +
-    "sea parte natural del día. No una tarea más — algo que ya está ahí cuando lo necesitas.",
-  pills: ["snack", "hydrate", "focus", "energy", "recover", "feel good"],
-  tarjeta: { titulo: "Sun‑i Vending", texto: "Uno de nuestros primeros touchpoints" },
+    "Sun‑i project® es una marca de everyday wellness: productos, espacios y experiencias que hacen que cuidarte " +
+    "sea parte natural de tu día.",
 } as const;
 
-export const MARQUEE = [
-  "everyday wellness",
-  "smart retail",
-  "curaduría real",
-  "diseño primero",
-  "hábitos, no dietas",
-  "comunidad",
-] as const;
+/* ── 02 · QUÉ HACEMOS ──────────────────────────────────────────────────────
+   La sección que hace que alguien diga «ah, ya entendí».
 
-export const ABOUT = {
-  eyebrow: "About",
-  titulo: "No somos una máquina.",
-  tituloAcento: "Somos un hábito.",
-  p1:
-    "Sun‑i project® nace de una idea simple: el bienestar se volvió complicado. Planes, apps, suscripciones y " +
-    "promesas que no caben en un martes cualquiera. Creemos en lo contrario — que sentirte bien debería ser lo " +
-    "más fácil de tu día.",
-  p2:
-    "Por eso construimos un ecosistema de everyday wellness: diseño, tecnología y curaduría real que convierten " +
-    "los micromomentos cotidianos en pausas que sí suman. Sun‑i vive en la ciudad, en la oficina, en el campus " +
-    "y en el gym — en cada lugar donde la vida ya está pasando.",
-  cierre: "Wellness shouldn't feel like another task. It should be there when you need it.",
-  pilares: [
+   No repite que el vending no es toda la marca: enseña las dos formas una al
+   lado de la otra y deja que la arquitectura lo diga sola.                   */
+export const QUE_HACEMOS = {
+  eyebrow: "What is Sun‑i",
+  titulo: "Hoy Sun‑i llega de dos maneras.",
+  bloques: [
     {
-      tag: "Purpose",
-      titulo: "Hacer el bienestar inevitable",
+      ancla: "#vending",
+      rotulo: "Sun‑i Vending",
+      titulo: "Productos donde ya pasas el día.",
       texto:
-        "Que sentirse bien no dependa de tiempo, planes ni fuerza de voluntad. Ponemos lo bueno justo donde la " +
-        "vida ya sucede.",
+        "Unidades con una selección de everyday wellness dentro de gyms, oficinas, universidades, hoteles y " +
+        "espacios con comunidad.",
+      enlace: "Ver Sun‑i Vending",
     },
     {
-      tag: "Mission",
-      titulo: "Everyday wellness, sin fricción",
+      ancla: "#experiences",
+      rotulo: "Sun‑i Experiences",
+      titulo: "Bienestar que llevamos a tu gente.",
       texto:
-        "Diseñamos productos, espacios y tecnología que convierten los micromomentos del día en pausas de " +
-        "cuidado accesibles y hermosas.",
-    },
-    {
-      tag: "Vision",
-      titulo: "Un ecosistema de mejor vivir",
-      texto:
-        "Ser la marca que redefine cómo se vive el bienestar todos los días, a través de múltiples touchpoints " +
-        "físicos y digitales.",
+        "Sesiones cortas facilitadas por expertos para oficinas, universidades, instituciones y comunidades.",
+      enlace: "Ver Sun‑i Experiences",
     },
   ],
-  manifiesto: "Que cuidarte sea lo más fácil de tu día.",
 } as const;
 
-export const RECORRIDO = {
-  eyebrow: "How Sun‑i works",
-  titulo: "Cuatro pasos, cero fricción.",
-  intro: "Así funciona el ecosistema: desde lo que curamos hasta cómo se siente en tu día.",
-  pasos: [
-    { n: "01", tag: "Discover", texto: "Curamos marcas y productos que valen la pena: reales, funcionales y con historia." },
-    { n: "02", tag: "Access", texto: "Acceso instantáneo y sin fricción, en los espacios donde ya pasas tu día." },
-    { n: "03", tag: "Experience", texto: "Momentos diseñados para sentirse bien: producto, entorno y detalle." },
-    { n: "04", tag: "Connect", texto: "Comunidades, marcas y espacios conectados alrededor de mejores días." },
-  ],
-} as const;
-
+/* ── 03 · VENDING ──────────────────────────────────────────────────────────
+   Absorbe «Inside Sun‑i»: los seis moods explican el producto, así que su
+   sitio es aquí y no en una sección propia.                                  */
 export const VENDING = {
-  eyebrow: "Uno de nuestros primeros touchpoints",
-  titulo: "Sun‑i Vending",
+  eyebrow: "Sun‑i Vending",
+  titulo: "Una unidad en tu espacio, con lo que tu gente necesita.",
   texto:
-    "Una unidad de diseño minimalista con curaduría de bienestar, pantalla inteligente y pago sin fricción. Es " +
-    "una de las primeras formas de vivir Sun‑i — no la marca completa, sino la puerta de entrada al ecosistema.",
-  categorias: ["Snack", "Hydrate", "Energy", "Focus", "Recover", "Essentials", "Discover"],
-  frase: "Choose your good mood here.",
-  cta: "Quiero una Sun‑i en mi espacio",
-} as const;
-
-export const MOODS = {
-  eyebrow: "Inside Sun‑i",
-  titulo: "Elige por cómo quieres sentirte.",
-  intro:
-    "Nuestra curaduría no se organiza por categorías de supermercado, sino por moods cotidianos. Marcas reales, " +
-    "ingredientes limpios, cero relleno.",
-  items: [
-    { icono: "ShoppingBag", nombre: "Snack", texto: "Antojos que sí nutren, sin culpas ni etiquetas raras." },
+    "Diseño minimalista, pantalla inteligente y pago sin fricción. Nosotros elegimos los productos, instalamos la " +
+    "unidad, la surtimos y la operamos.",
+  // Aclaración de una línea, no de un párrafo repetido cuatro veces.
+  nota: "Es una de las formas de vivir Sun‑i, no la marca entera.",
+  moodsTitulo: "Elige según lo que necesitas",
+  moods: [
     { icono: "Droplets", nombre: "Hydrate", texto: "Bebidas limpias para volver a ti a media tarde." },
     { icono: "Zap", nombre: "Energy", texto: "Impulso funcional cuando el día pide un poco más." },
     { icono: "Target", nombre: "Focus", texto: "Claridad para estudiar, crear y sostener el ritmo." },
     { icono: "Leaf", nombre: "Recover", texto: "Lo que tu cuerpo agradece después del esfuerzo." },
+    { icono: "ShoppingBag", nombre: "Snack", texto: "Antojos que sí nutren, sin etiquetas raras." },
     { icono: "Sparkles", nombre: "Essentials", texto: "Los básicos de self‑care que siempre olvidas traer." },
   ],
+  frase: "Choose your good mood here.",
+  cta: "Bring Sun‑i to your space",
 } as const;
 
+/* ── 04 · EXPERIENCES ──────────────────────────────────────────────────────  */
 export const EXPERIENCIAS = {
-  eyebrow: "Experiencias Sun‑i — otro touchpoint del ecosistema",
-  titulo: "Activa el día, comparte el bienestar.",
+  eyebrow: "Sun‑i Experiences",
+  titulo: "Bienestar que llega a tu espacio.",
   texto:
-    "Llevamos experiencias de bienestar a oficinas, instituciones, escuelas y comunidades. Sesiones cortas, " +
-    "facilitadas por expertos, diseñadas para crear micromomentos de cuidado colectivo: activar el cuerpo, " +
-    "calmar la mente y reconectar equipos sin interrumpir el día.",
-  tipos: [
-    { icono: "Brain", nombre: "Mindfulness", texto: "Pausas guiadas para recargar la mente y bajar el ritmo del día." },
-    { icono: "Flower2", nombre: "Yoga", texto: "Clases que combinan respiración, postura y presencia consciente." },
-    { icono: "Move", nombre: "Movilidad", texto: "Sesiones cortas que suavizan el cuerpo después de horas sentado." },
-    { icono: "Dumbbell", nombre: "Ejercicio funcional", texto: "Micro‑workouts que se adaptan a cualquier nivel y espacio." },
-    { icono: "Users", nombre: "Activaciones", texto: "Momentos de bienestar compartido que conectan equipos y comunidades." },
-  ],
-  frase: "Bienestar que se programa, se siente y se comparte.",
+    "Sesiones cortas, facilitadas por expertos, para activar el cuerpo, calmar la mente y reconectar equipos sin " +
+    "interrumpir el día. Llevamos al facilitador y el material.",
+  tipos: ["Mindfulness", "Yoga", "Movilidad", "Ejercicio funcional", "Activaciones"],
+  espacios: "Oficinas · Instituciones · Universidades · Comunidades",
   cta: "Lleva una experiencia Sun‑i a tu espacio",
+  /**
+   * El enlace al catálogo abierto al público es SECUNDARIO a propósito: la
+   * portada es B2B y el catálogo es una extensión, no el producto.
+   */
+  enlaceCatalogo: "También publicamos experiencias abiertas al público",
 } as const;
 
+/* ── 05 · DÓNDE VIVE SUN-I ─────────────────────────────────────────────────
+   La lista hace el trabajo. Sin párrafo de introducción: quien llega aquí
+   busca reconocerse en un renglón, no leer.                                  */
 export const ESPACIOS = {
   eyebrow: "Where Sun‑i lives",
-  titulo: "Donde la vida sucede, Sun‑i pertenece.",
+  titulo: "¿Reconoces tu espacio?",
   items: [
-    { icono: "Dumbbell", nombre: "Gyms & Studios", texto: "Recarga antes y después del workout, sin salir del flow." },
-    { icono: "GraduationCap", nombre: "Universidades", texto: "Energía limpia para maratones de estudio, 24/7." },
-    { icono: "Building2", nombre: "Oficinas", texto: "Pausas que sí recuperan a tu equipo entre juntas." },
-    { icono: "Home", nombre: "Residencial", texto: "Lo esencial, en el lobby de casa, sin ir al súper." },
-    { icono: "BedDouble", nombre: "Hoteles", texto: "Un toque wellness que tus huéspedes recuerdan." },
-    { icono: "HeartPulse", nombre: "Clínicas & Wellness", texto: "Opciones cuidadas para quienes cuidan a otros." },
+    { icono: "Dumbbell", nombre: "Gyms & Studios" },
+    { icono: "GraduationCap", nombre: "Universidades" },
+    { icono: "Building2", nombre: "Oficinas" },
+    { icono: "Home", nombre: "Residencial" },
+    { icono: "BedDouble", nombre: "Hoteles" },
+    { icono: "HeartPulse", nombre: "Clínicas & Wellness" },
   ],
   cta: "Bring Sun‑i to your space",
 } as const;
 
+/* ── 06 · PARA MARCAS ──────────────────────────────────────────────────────
+   Pequeña a propósito. Es una tercera puerta, no un tercer negocio.
+
+   Sin beneficios inventados: no se promete audiencia, ni ventas, ni datos de
+   rotación. Solo qué clase de colaboración existe.                           */
 export const MARCAS = {
   eyebrow: "For brands",
   titulo: "Partner with Sun‑i",
   texto:
-    "Sun‑i es un punto de contacto premium con comunidades que cuidan lo que consumen. Si tu marca comparte esa " +
-    "filosofía, hay un lugar para ti en nuestro universo.",
-  items: [
-    { icono: "Package", tag: "Product placement", texto: "Tu marca dentro de la curaduría Sun‑i, frente a comunidades que compran con intención." },
-    { icono: "FlaskConical", tag: "Sampling", texto: "Pruebas de producto medibles, con datos reales de rotación y preferencia por espacio." },
-    { icono: "Megaphone", tag: "Activations", texto: "Activaciones en pantalla y en sitio: lanza, cuenta historias y conecta donde la gente ya está." },
-    { icono: "Handshake", tag: "Co‑branding", texto: "Colaboraciones de largo plazo para construir rituales, no solo impresiones." },
-  ],
+    "Trabajamos con marcas de wellness, alimentos y bebidas que quieren estar dentro de la selección de Sun‑i.",
+  formas: ["Product placement", "Sampling", "Activations", "Collaborations"],
   cta: "Let's collaborate",
 } as const;
 
-export const BRING = {
+/* ── 07 · CIERRE ───────────────────────────────────────────────────────────
+   Absorbe el bloque «Bring Sun-i», que era una sección aparte diciendo lo
+   mismo que el cierre. Un solo momento de máximo contraste.                  */
+export const CIERRE = {
   titulo: "Bring Sun‑i to your space.",
   texto:
-    "¿Tienes un gym, campus, oficina, hotel o espacio con comunidad? Instalamos, surtimos y operamos por ti — sin " +
-    "costo de instalación y sin contratos eternos. Solo una experiencia que tu gente va a querer usar todos los días.",
-  cta: "I want Sun‑i",
-} as const;
-
-export const EFECTO = {
-  eyebrow: "The Sun‑i effect",
-  titulo: "Pequeños momentos, mejores días.",
+    "¿Tienes un gym, campus, oficina, hotel o espacio con comunidad? Cuéntanos y lo vemos contigo.",
   /**
-   * Sin métricas. La especificación lo pide explícitamente y es lo correcto:
-   * inventar números de impacto en una marca que apenas arranca es la clase de
-   * dato que alguien acaba citando en una junta.
+   * PENDIENTE DE CONFIRMACIÓN COMERCIAL.
+   *
+   * «Sin costo de instalación · Sin contratos eternos» viene del contenido
+   * aprobado por Emmy y por eso no se retira. Pero son condiciones
+   * comerciales, no copy: hay que confirmarlas antes de publicar en un dominio
+   * propio. Está señalado en el reporte de entrega.
    */
-  texto: "Estamos midiendo el impacto real de Sun‑i en las comunidades donde vive. Muy pronto compartiremos aquí los resultados.",
-  items: [
-    { titulo: "Para las personas", texto: "Mejores decisiones cotidianas, sin esfuerzo extra." },
-    { titulo: "Para los espacios", texto: "Un amenity que la comunidad usa, recuerda y agradece." },
-    { titulo: "Para las marcas", texto: "Un touchpoint premium con contexto y intención real." },
-  ],
+  condiciones: "Sin costo de instalación · Sin contratos eternos",
+  cta: "I want Sun‑i",
+  ctaMarcas: "Partner with Sun‑i",
 } as const;
 
 export const SEO = {
   titulo: "Sun‑i project® — A little more Sun‑i in your everyday",
   descripcion:
-    "Sun‑i project® es una marca de everyday wellness: productos, espacios y tecnología que hacen que cuidarte " +
-    "sea parte natural del día.",
+    "Sun‑i project® es una marca de everyday wellness: productos, espacios y experiencias que hacen que cuidarte " +
+    "sea parte natural de tu día. Vending y experiencias de bienestar para espacios.",
 } as const;
