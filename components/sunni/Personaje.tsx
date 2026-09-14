@@ -12,10 +12,9 @@ import Image from "next/image";
  *
  * CÓMO SE COLOCAN, Y POR QUÉ ASÍ
  *
- * Asomados por el borde, nunca enteros ni centrados. Son un guiño al pasar,
- * no una ilustración que hay que mirar: si se colocan completos y en medio
- * piden atención y compiten con el texto, que es lo que la página acaba de
- * dejar de hacer.
+ * Discretos y en una esquina, pero SIEMPRE COMPLETOS. Asomar medio cuerpo por
+ * el borde parecía buena idea y no lo era: una ilustración cortada no se lee
+ * como que se sale del cuadro, se lee como que está mal puesta.
  *
  * Tres reglas que no se rompen:
  *
@@ -27,9 +26,20 @@ import Image from "next/image";
  *
  * Se ocultan por debajo de `sm`: en un teléfono el ancho es del contenido.
  */
+/**
+ * SOLO LA PAREJA, Y NO POR PEREZA.
+ *
+ * Hubo también una estrella y un sol sueltos, recortados de la misma
+ * ilustración. No servían: en el original los dos van de la mano y cada uno
+ * tapa un trozo del otro, así que al separarlos la estrella se quedaba sin el
+ * brazo derecho y el sol arrastraba un pedazo del cuerpo de la estrella.
+ * Salían figuras incompletas, y se notaba.
+ *
+ * Para tenerlos por separado hacen falta los archivos originales de cada uno,
+ * o redibujarlos en vectorial. Hasta entonces, una pieza buena antes que tres
+ * malas.
+ */
 const PERSONAJES = {
-  estrella: { src: "/media/sunni/sunni-estrella.webp", w: 621, h: 816 },
-  sol: { src: "/media/sunni/sunni-sol.webp", w: 642, h: 833 },
   par: { src: "/media/sunni/sunni-par.webp", w: 700, h: 480 },
 } as const;
 

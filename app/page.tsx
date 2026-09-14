@@ -124,14 +124,19 @@ export default function SunniHome() {
         id="que-hacemos"
         className="relative isolate scroll-mt-24 overflow-clip border-y border-ink/8 bg-cream py-20 sm:py-28"
       >
-        {/* La estrella asoma por la izquierda, a la altura de los dos bloques.
-            `-left-24` la mete medio cuerpo fuera: es un guiño, no una
-            ilustración que haya que mirar. */}
-        <Personaje
-          quien="estrella"
-          ancho={215}
-          className="-bottom-12 -left-28 -z-10 hidden opacity-85 xl:block"
-        />
+        {/*
+          AQUÍ HABÍA UNA ESTRELLA SUELTA, Y ESTABA MAL RECORTADA.
+
+          La ilustración de origen es una pareja: la estrella y el sol van de
+          la mano, y cada uno tapa un trozo del otro. Al partirlas por la
+          mitad, la estrella se quedó sin el brazo derecho —el que sostiene la
+          mano del sol— y el sol arrastró un pedazo del cuerpo de la estrella.
+
+          No eran figuras asomando por el borde: eran recortes incompletos.
+
+          Mientras no haya los archivos originales por separado, se usa solo la
+          pareja, que sí está completa. Ver el apartado de pendientes.
+        */}
         <Container>
           <InViewReveal variant="lead">
             <Rotulo>{QUE_HACEMOS.eyebrow}</Rotulo>
@@ -283,13 +288,6 @@ export default function SunniHome() {
       {/* ── 05 · DÓNDE VIVE SUN-I ─────────────────────────────────────────
           Sin párrafo. Quien llega aquí busca reconocerse en un renglón. */}
       <section id="espacios" className="relative isolate scroll-mt-24 overflow-clip py-20 sm:py-28">
-        {/* El sol, por el lado contrario al de la estrella: si los dos
-            asomaran por la izquierda se leerían como un patrón. */}
-        <Personaje
-          quien="sol"
-          ancho={190}
-          className="-right-28 -bottom-6 -z-10 hidden opacity-85 xl:block"
-        />
         <Container>
           <InViewReveal variant="lead">
             <Rotulo>{ESPACIOS.eyebrow}</Rotulo>
@@ -388,10 +386,19 @@ export default function SunniHome() {
                   Es el único sitio donde salen en pareja y el último momento
                   de la página: el cierre puede permitirse el guiño completo.
                   Sobre el gradiente se sostienen por el contorno negro. */}
+              {/*
+                ENTERA Y DENTRO DEL BLOQUE.
+
+                Estaba pegada a la esquina inferior derecha y el redondeo del
+                bloque le cortaba los pies. Una ilustración cortada no se lee
+                como que se sale del cuadro: se lee como que está mal puesta.
+
+                Ahora cabe completa dentro del bloque, con aire por debajo.
+              */}
               <Personaje
                 quien="par"
-                ancho={260}
-                className="-right-8 -bottom-6 hidden opacity-95 sm:block md:right-4 md:w-[300px]"
+                ancho={230}
+                className="right-6 bottom-6 hidden opacity-95 lg:block xl:right-10 xl:w-[270px]"
               />
             </div>
           </InViewReveal>
