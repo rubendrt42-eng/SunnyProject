@@ -250,12 +250,15 @@ export default function SunniHome() {
             <InViewReveal delay={0.08} className="min-w-0 lg:col-span-5 lg:col-start-8">
               <ul>
                 {EXPERIENCIAS.tipos.map((t, i) => (
-                  <li key={t} className="border-b border-ink/12 first:border-t">
+                  <li key={t.nombre} className="border-b border-ink/12 first:border-t">
                     {/* Escalonadas: entran de arriba abajo, como se leen. Sin
                         esto las cinco aparecían a la vez y el bloque se movía
                         como una sola lámina. */}
                     <InViewReveal delay={0.07 * i}>
-                      <span className="fila-viva block py-4 font-display text-heading font-semibold text-ink">{t}</span>
+                      <div className="fila-viva py-5">
+                        <h3 className="font-display text-heading font-semibold text-ink">{t.nombre}</h3>
+                        <p className="mt-1.5 max-w-[42ch] text-small text-gray">{t.texto}</p>
+                      </div>
                     </InViewReveal>
                   </li>
                 ))}

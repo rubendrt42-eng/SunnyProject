@@ -55,9 +55,13 @@ export const HERO = {
   titulo: "A little more",
   tituloAcento: "Sun‑i",
   tituloFin: "in your everyday.",
+  // Texto de Emmy, literal. Es más largo que el anterior y eso es deliberado:
+  // explica la marca entera —productos, lugares, experiencias y comunidad— en
+  // el primer párrafo, en vez de dejarlo para la sección de abajo.
   texto:
-    "Sun‑i project® es una marca de everyday wellness: productos, espacios y experiencias que hacen que cuidarte " +
-    "sea parte natural de tu día.",
+    "Sun‑i project® nace con una idea simple: hacer que sentirte bien sea más fácil. Más que una marca, somos " +
+    "una plataforma de everyday wellness que conecta productos, lugares, experiencias y comunidad para ayudarte " +
+    "a descubrir pequeñas cosas que hacen tu día mejor y construir una vida que se sienta bien.",
 } as const;
 
 /* ── 02 · QUÉ HACEMOS ──────────────────────────────────────────────────────
@@ -122,7 +126,20 @@ export const EXPERIENCIAS = {
   texto:
     "Llevamos sesiones de yoga, mindfulness, entrenamiento funcional y más a oficinas, universidades y " +
     "comunidades. Experiencias guiadas por expertos para moverse, conectar y sentirse bien.",
-  tipos: ["Yoga", "Mindfulness", "Entrenamiento funcional", "Movilidad", "Activaciones"],
+  /*
+    Las cinco sesiones, con la descripción que escribió Emmy.
+
+    Antes eran solo los nombres en una lista. Un nombre no dice qué pasa en la
+    sesión; quien decide si contratarla necesita saber qué va a recibir su
+    gente. Van en su orden.
+  */
+  tipos: [
+    { nombre: "Mindfulness", texto: "Una pausa para respirar y volver al presente." },
+    { nombre: "Yoga", texto: "Movimiento y equilibrio para conectar contigo." },
+    { nombre: "Movilidad", texto: "Muévete con más libertad y suelta la tensión." },
+    { nombre: "Entrenamiento funcional", texto: "Activa tu energía, fuerza y resistencia." },
+    { nombre: "Activaciones", texto: "Experiencias a la medida para conectar a tu comunidad." },
+  ],
   cta: "Lleva una experiencia Sun‑i a tu espacio",
 } as const;
 
