@@ -75,11 +75,22 @@ export const siteSettings = defineType({
   icon: CogIcon,
 
   groups: [
-    { name: "contacto", title: "Marca y contacto", default: true },
+    { name: "portada", title: "Portada", default: true },
+    { name: "contacto", title: "Marca y contacto" },
     { name: "faq", title: "Preguntas frecuentes" },
   ],
 
   fields: [
+    defineField({
+      name: "portada",
+      title: "Textos de la portada",
+      type: "portadaSunni",
+      group: "portada",
+      description:
+        "Siete apartados, uno por sección y en el orden en que se ven al bajar por la página. " +
+        "Lo que dejes vacío conserva el texto actual: vaciar un campo nunca deja un hueco.",
+    }),
+
     // ── Marca ────────────────────────────────────────────────────────────
     defineField({
       name: "seoTitle",

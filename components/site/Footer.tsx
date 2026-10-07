@@ -50,16 +50,16 @@ export async function Footer() {
         </div>
 
         <div className={`grid gap-8 text-sm ${hayContacto ? "grid-cols-2 sm:grid-cols-3" : "grid-cols-2"}`}>
-          <div className="flex flex-col gap-2">
-            <span className="font-medium text-warm-white">Explora</span>
+          <div className="flex flex-col gap-2 pointer-coarse:gap-0">
+            <span className="font-medium text-warm-white pointer-coarse:mb-1">Explora</span>
             <EnlacePie href="/#que-hacemos">What is Sun‑i</EnlacePie>
             <EnlacePie href="/#vending">Sun‑i Vending</EnlacePie>
             <EnlacePie href="/#experiences">Sun‑i Experiences</EnlacePie>
             <EnlacePie href="/#brands">For Brands</EnlacePie>
           </div>
 
-          <div className="flex flex-col gap-2">
-            <span className="font-medium text-warm-white">Ayuda</span>
+          <div className="flex flex-col gap-2 pointer-coarse:gap-0">
+            <span className="font-medium text-warm-white pointer-coarse:mb-1">Ayuda</span>
             <EnlacePie href="/privacidad">Privacidad</EnlacePie>
             {/*
               «Términos» ya no se enlaza: la página describía reglas que no
@@ -69,14 +69,14 @@ export async function Footer() {
           </div>
 
           {hayContacto && (
-            <div className="flex flex-col gap-2">
-              <span className="font-medium text-warm-white">Contacto</span>
+            <div className="flex flex-col gap-2 pointer-coarse:gap-0">
+              <span className="font-medium text-warm-white pointer-coarse:mb-1">Contacto</span>
               {whatsapp && (
                 <a
                   href={whatsappLink(whatsapp)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-warm-white/60 transition-colors hover:text-warm-white"
+                  className="text-warm-white/60 transition-colors hover:text-warm-white pointer-coarse:flex pointer-coarse:min-h-11 pointer-coarse:items-center"
                 >
                   WhatsApp
                 </a>
@@ -86,13 +86,13 @@ export async function Footer() {
                   href={instagram}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-warm-white/60 transition-colors hover:text-warm-white"
+                  className="text-warm-white/60 transition-colors hover:text-warm-white pointer-coarse:flex pointer-coarse:min-h-11 pointer-coarse:items-center"
                 >
                   Instagram
                 </a>
               )}
               {correo && (
-                <a href={`mailto:${correo}`} className="text-warm-white/60 transition-colors hover:text-warm-white">
+                <a href={`mailto:${correo}`} className="text-warm-white/60 transition-colors hover:text-warm-white pointer-coarse:flex pointer-coarse:min-h-11 pointer-coarse:items-center">
                   {correo}
                 </a>
               )}
@@ -108,9 +108,23 @@ export async function Footer() {
   );
 }
 
+/**
+ * Un enlace del pie.
+ *
+ * Medían 20px de alto, por debajo del mínimo de 24px de la WCAG 2.5.8, y en el
+ * teléfono quedaban cuatro seguidos a 8px de distancia: se tocaba el de al
+ * lado. `pointer-coarse:min-h-11` los lleva a los 44px
+ * estándar **donde se toca con el dedo** —teléfono y tableta por igual— y los
+ * deja en su altura natural donde hay cursor, porque ahí alargarlos solo
+ * abriría huecos en el pie. El ancho de pantalla era el criterio equivocado:
+ * una tableta de 768px se toca igual que un teléfono.
+ */
 function EnlacePie({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <Link href={href} className="text-warm-white/60 transition-colors hover:text-warm-white">
+    <Link
+      href={href}
+      className="text-warm-white/60 transition-colors hover:text-warm-white pointer-coarse:flex pointer-coarse:min-h-11 pointer-coarse:items-center"
+    >
       {children}
     </Link>
   );

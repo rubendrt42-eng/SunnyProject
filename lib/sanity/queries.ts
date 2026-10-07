@@ -83,33 +83,20 @@ const BY_SLUG_QUERY = `
   }
 `;
 
-/**
- * Un bloque de capítulo. Se pide igual en los cinco, así que se escribe una vez.
- *
- * `coalesce(..., {})` en vez de dejar que devuelva `null`: la mezcla con los
- * textos por defecto trabaja campo por campo, y un bloque nulo entero la
- * obliga a distinguir dos casos donde solo hay uno.
- */
-const BLOQUE = `{ titulo, acento, texto, nota, cita }`;
-
 const SETTINGS_QUERY = `
   *[_type == "siteSettings"][0]{
-    heroEyebrow,
-    heroTitle,
-    heroTitleAccent,
-    "heroImage": heroImage{
-      "url": asset->url,
-      "alt": coalesce(alt, ""),
-      "aspectRatio": asset->metadata.dimensions.aspectRatio,
-      "lqip": asset->metadata.lqip
+    // Los textos de la portada. Se piden campo por campo y no en bloque: así un
+    // campo nuevo en el Studio no llega al sitio hasta que alguien decida dónde
+    // se dibuja. GROQ no admite comentarios /* */, solo estos.
+    "portada": portada{
+      hero{badge, titulo, tituloAcento, tituloFin, texto},
+      queHacemos{eyebrow, titulo, "bloques": bloques[]{rotulo, titulo, texto, enlace}},
+      vending{eyebrow, titulo, texto, nota, frase, moodsTitulo, "moods": moods[]{nombre, texto, icono}, cta},
+      experiencias{eyebrow, titulo, texto, "tipos": tipos[]{nombre, texto}, cta},
+      espacios{eyebrow, titulo, "items": items[]{nombre, texto, icono}, cta},
+      marcas{eyebrow, titulo, texto, formas, cta},
+      cierre{titulo, texto, condiciones, cta, ctaMarcas}
     },
-    heroSubtitle,
-    "bloqueExperiencias": coalesce(bloqueExperiencias${BLOQUE}, {}),
-    "bloqueSunny": coalesce(bloqueSunny${BLOQUE}, {}),
-    "bloqueRecorrido": coalesce(bloqueRecorrido${BLOQUE}, {}),
-    "bloqueComunidad": coalesce(bloqueComunidad${BLOQUE}, {}),
-    "bloqueNegocios": coalesce(bloqueNegocios${BLOQUE}, {}),
-    "bloqueCierre": coalesce(bloqueCierre${BLOQUE}, {}),
     seoTitle,
     seoDescription,
     footerDescripcion,

@@ -205,6 +205,29 @@ function tieneContenido(valor: unknown): boolean {
   return true;
 }
 
+function esObjetoLlano(v: unknown): v is Record<string, unknown> {
+  return typeof v === "object" && v !== null && !Array.isArray(v);
+}
+
+/**
+ * Mezcla recursiva que ignora lo vacío.
+ *
+ * Las LISTAS no se mezclan elemento a elemento: si Emmy toca las categorías de
+ * producto, manda su lista entera. Mezclarlas por posición daría resultados
+ * imposibles de prever —la tercera fila de ella con el icono de la tercera de
+ * aquí— y eso es peor que no mezclarlas.
+ */
+function mezclarHondo(base: Record<string, unknown>, encima: Record<string, unknown>): Record<string, unknown> {
+  const salida = { ...base };
+  for (const [k, v] of Object.entries(encima)) {
+    if (!tieneContenido(v)) continue;
+    salida[k] = esObjetoLlano(v) && esObjetoLlano(salida[k])
+      ? mezclarHondo(salida[k] as Record<string, unknown>, v)
+      : v;
+  }
+  return salida;
+}
+
 export function mezclarAjustes(base: SiteSettings, deSanity: Partial<SiteSettings> | null): SiteSettings {
   if (!deSanity) return base;
   const salida = { ...base } as Record<string, unknown>;
@@ -212,18 +235,15 @@ export function mezclarAjustes(base: SiteSettings, deSanity: Partial<SiteSetting
   for (const [clave, valor] of Object.entries(deSanity)) {
     if (!tieneContenido(valor)) continue;
 
-    // Los bloques de capítulo se mezclan POR DENTRO: un titular reescrito no
-    // debe llevarse por delante el párrafo que no se tocó. Solo ellos —se
-    // reconocen por el prefijo— porque `heroImage` también es un objeto y ahí
-    // media imagen de Sanity encima de media imagen por defecto no significa
-    // nada.
+    // Los objetos se mezclan POR DENTRO y a cualquier profundidad: un titular
+    // reescrito no debe llevarse por delante el párrafo que no se tocó, y
+    // dentro de `portada` eso pasa tres niveles abajo.
+    //
+    // `heroImage` queda fuera: media imagen de Sanity encima de media imagen
+    // por defecto no significa nada.
     const actual = salida[clave];
-    if (clave.startsWith("bloque") && typeof actual === "object" && actual !== null) {
-      const mezcla = { ...(actual as unknown as Record<string, unknown>) };
-      for (const [k, v] of Object.entries(valor as unknown as Record<string, unknown>)) {
-        if (tieneContenido(v)) mezcla[k] = v;
-      }
-      salida[clave] = mezcla;
+    if (clave !== "heroImage" && esObjetoLlano(valor) && esObjetoLlano(actual)) {
+      salida[clave] = mezclarHondo(actual as Record<string, unknown>, valor as Record<string, unknown>);
     } else {
       salida[clave] = valor;
     }

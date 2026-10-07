@@ -106,7 +106,14 @@ export function HeaderInteractive({
         `h-18` era altura FIJA; con dos líneas recortaría el contenido. Pasa a
         ser altura mínima.
       */}
-      <Container className="flex min-h-18 flex-wrap items-center justify-between gap-x-6 gap-y-2 py-4">
+      {/*
+        La cabecera crece en escritorio: 72 px de alto mínimo en móvil y 96 en
+        pantalla ancha. A 72 px la marca y el botón quedaban apretados contra
+        los bordes y la barra se leía como una tira, no como una cabecera.
+        En móvil se queda como estaba: ahí cada píxel de alto le quita sitio al
+        contenido.
+      */}
+      <Container className="flex min-h-18 flex-wrap items-center justify-between gap-x-6 gap-y-2 py-4 lg:min-h-24 lg:py-6">
         {/* `shrink-0`: como hijo de un flex se encogía por debajo de su propio
             ancho y se rompía en «Sunny / Project» en toda ventana menor de
             640 px. Eso lo arregla no dejar que lo aplasten sus hermanos.
@@ -122,7 +129,14 @@ export function HeaderInteractive({
             El tope al 100% del contenedor solo actúa cuando el texto de verdad
             no cabe: a tamaño normal y 320px ocupa 173px de los 280 que hay, así
             que sigue en una línea igual que antes. */}
-        <Link href="/" aria-label="Sun-i project, ir al inicio" className="max-w-full shrink-0">
+        <Link
+          href="/"
+          aria-label="Sun-i project, ir al inicio"
+          /* Los 44px que un dedo necesita, solo donde se toca. El logotipo mide
+             33px: pasa el mínimo AA de 24px, pero se tocaba con puntería. Cabe
+             dentro de los 72px de la cabecera, así que no la estira. */
+          className="flex max-w-full shrink-0 items-center pointer-coarse:min-h-11"
+        >
           <Wordmark />
         </Link>
 

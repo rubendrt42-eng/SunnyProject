@@ -48,7 +48,13 @@ describe("el texto al 200% no rompe el ancho", () => {
       al 200% de zoom el nombre no empuje el documento— pero ahora las clases
       que lo garantizan viven en el enlace que lo envuelve, no en el texto.
     */
-    const marca = fuente.split("\n").find((l) => l.includes('aria-label="Sun-i project'));
+    /*
+      Leía una sola línea, y eso la hacía fallar en cuanto la etiqueta se
+      repartía en varias —lo normal en JSX con tres atributos—. Ahora toma la
+      etiqueta `<Link>` completa, de la apertura al `>`, así que comprueba la
+      garantía y no el formato.
+    */
+    const marca = /<Link\b[^>]*aria-label="Sun-i project[^>]*>/s.exec(fuente)?.[0];
 
     expect(marca, "ya no se encuentra la marca en el encabezado").toBeDefined();
     expect(

@@ -86,8 +86,12 @@ export const QUE_HACEMOS = {
       ancla: "#experiences",
       rotulo: "Sun‑i Experiences",
       titulo: "Bienestar que llevamos a tu gente.",
+      // Mismo texto de Emmy que en la sección de Experiences, recortado a lo
+      // que cabe en un bloque de resumen. Antes decía otra cosa y el visitante
+      // leía dos descripciones distintas de la misma línea de negocio.
       texto:
-        "Sesiones cortas facilitadas por expertos para oficinas, universidades, instituciones y comunidades.",
+        "Sesiones de yoga, mindfulness, entrenamiento funcional y más, guiadas por expertos, para oficinas, " +
+        "universidades y comunidades.",
       enlace: "Ver Sun‑i Experiences",
     },
   ],
@@ -205,3 +209,48 @@ export const SEO = {
     "Sun‑i project® es una marca de everyday wellness: productos, espacios y experiencias que hacen que cuidarte " +
     "sea parte natural de tu día. Vending y experiencias de bienestar para espacios.",
 } as const;
+
+
+/* ─────────────────────────────────────────────────────────────────────────
+   LA MEZCLA CON LO QUE EMMY ESCRIBA EN SANITY
+
+   Todo lo de arriba es el respaldo. Si Emmy escribe en el gestor, gana lo
+   suyo; si deja un campo vacío, se sirve el de aquí. Campo por campo y a
+   cualquier profundidad, así que puede reescribir un titular sin tocar su
+   párrafo.
+
+   Las LISTAS son la excepción: si toca las categorías de producto, manda su
+   lista entera. Mezclarlas por posición daría combinaciones imposibles de
+   prever —su tercera fila con el icono de la tercera de aquí— y eso es peor
+   que no mezclarlas.
+   ───────────────────────────────────────────────────────────────────────── */
+import type { PortadaSunni } from "@/lib/sanity/types";
+import { mezclarAjustes } from "@/lib/lean-content";
+
+/** La portada por defecto, con la forma exacta que tiene en Sanity. */
+export const PORTADA_POR_DEFECTO = {
+  hero: HERO,
+  queHacemos: QUE_HACEMOS,
+  vending: VENDING,
+  experiencias: EXPERIENCIAS,
+  espacios: ESPACIOS,
+  marcas: MARCAS,
+  cierre: CIERRE,
+} as const;
+
+export type Portada = {
+  hero: typeof HERO;
+  queHacemos: typeof QUE_HACEMOS;
+  vending: typeof VENDING;
+  experiencias: typeof EXPERIENCIAS;
+  espacios: typeof ESPACIOS;
+  marcas: typeof MARCAS;
+  cierre: typeof CIERRE;
+};
+
+export function portadaConSanity(dePortada: PortadaSunni | null | undefined): Portada {
+  return mezclarAjustes(
+    PORTADA_POR_DEFECTO as unknown as never,
+    (dePortada ?? null) as unknown as never,
+  ) as unknown as Portada;
+}

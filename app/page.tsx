@@ -8,7 +8,8 @@ import { Container } from "@/components/ui/Container";
 import { InViewReveal } from "@/components/motion/InViewReveal";
 import { SunniCTA } from "@/components/lean/SunniCTA";
 import { Foto } from "@/components/sunni/Foto";
-import { CIERRE, ESPACIOS, EXPERIENCIAS, HERO, MARCAS, QUE_HACEMOS, SEO, VENDING } from "@/lib/sunni-content";
+import { portadaConSanity, SEO } from "@/lib/sunni-content";
+import { getSiteSettings } from "@/lib/sanity/queries";
 
 /**
  * LA PORTADA DE SUN-I PROJECT®.
@@ -69,7 +70,16 @@ function Rotulo({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function SunniHome() {
+export default async function SunniHome() {
+  /*
+    Los textos vienen de Sanity y caen en los de `lib/sunni-content.ts` campo
+    por campo. Emmy puede reescribir un titular sin tocar su párrafo, y vaciar
+    un campo devuelve el texto de siempre en vez de dejar un hueco.
+  */
+  const ajustes = await getSiteSettings();
+  const { hero: HERO, queHacemos: QUE_HACEMOS, vending: VENDING, experiencias: EXPERIENCIAS,
+          espacios: ESPACIOS, marcas: MARCAS, cierre: CIERRE } = portadaConSanity(ajustes?.portada);
+
   return (
     <main>
       {/* ── 01 · HERO ─────────────────────────────────────────────────────

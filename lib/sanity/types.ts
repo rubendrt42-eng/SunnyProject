@@ -74,6 +74,88 @@ export interface BloqueDeTexto {
   cita?: string | null;
 }
 
+/* ─────────────────────────────────────────────────────────────────────────
+   LA PORTADA, EDITABLE DESDE SANITY
+
+   Hasta ahora los textos de la portada vivían en `lib/sunni-content.ts`, en
+   código: Emmy podía cambiar el pie, el SEO y las preguntas, pero no una sola
+   palabra de lo que se lee al entrar.
+
+   Cada bloque es un objeto plegable en el Studio, uno por sección y en el
+   mismo orden en que se ven al bajar por la página. Lo que NO sube aquí es el
+   orden de las secciones, los colores ni la maquetación: contenido de marca al
+   gestor, decisiones de diseño en el código.
+
+   Todo es opcional. Lo que Emmy deje vacío cae en el texto que hay hoy, que
+   está escrito y revisado — nunca en un hueco.
+   ───────────────────────────────────────────────────────────────────────── */
+
+/** Un elemento de lista con nombre, descripción y su icono. */
+export interface ItemDeLista {
+  nombre: string;
+  texto?: string | null;
+  /** Nombre del icono. La lista válida vive en el esquema de Sanity. */
+  icono?: string | null;
+}
+
+export interface PortadaSunni {
+  hero?: {
+    badge?: string | null;
+    titulo?: string | null;
+    tituloAcento?: string | null;
+    tituloFin?: string | null;
+    texto?: string | null;
+  } | null;
+  queHacemos?: {
+    eyebrow?: string | null;
+    titulo?: string | null;
+    bloques?: {
+      rotulo?: string | null;
+      titulo?: string | null;
+      texto?: string | null;
+      enlace?: string | null;
+      ancla?: string | null;
+    }[] | null;
+  } | null;
+  vending?: {
+    eyebrow?: string | null;
+    titulo?: string | null;
+    texto?: string | null;
+    nota?: string | null;
+    moodsTitulo?: string | null;
+    moods?: ItemDeLista[] | null;
+    frase?: string | null;
+    cta?: string | null;
+  } | null;
+  experiencias?: {
+    eyebrow?: string | null;
+    titulo?: string | null;
+    texto?: string | null;
+    tipos?: ItemDeLista[] | null;
+    cta?: string | null;
+  } | null;
+  espacios?: {
+    eyebrow?: string | null;
+    titulo?: string | null;
+    items?: ItemDeLista[] | null;
+    cta?: string | null;
+  } | null;
+  marcas?: {
+    eyebrow?: string | null;
+    titulo?: string | null;
+    texto?: string | null;
+    formas?: string[] | null;
+    cta?: string | null;
+  } | null;
+  cierre?: {
+    titulo?: string | null;
+    texto?: string | null;
+    condiciones?: string | null;
+    cta?: string | null;
+    ctaMarcas?: string | null;
+  } | null;
+}
+
 export interface SiteSettings {
   /** La línea de contexto de arriba del hero. */
   heroEyebrow: string;
@@ -102,6 +184,9 @@ export interface SiteSettings {
   seoTitle: string;
   seoDescription: string;
   footerDescripcion: string;
+
+  /** Los textos de la portada. Ver `PortadaSunni`. */
+  portada?: PortadaSunni | null;
 
   instagramUrl?: string;
   whatsapp?: string;
