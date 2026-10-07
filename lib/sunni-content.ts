@@ -117,11 +117,12 @@ export const VENDING = {
 export const EXPERIENCIAS = {
   eyebrow: "Sun‑i Experiences",
   titulo: "Bienestar que llega a tu espacio.",
+  // Texto de Emmy, literal. Nombra las sesiones y los espacios en la misma
+  // frase, así que la lista de abajo ya no repite los espacios.
   texto:
-    "Sesiones cortas, facilitadas por expertos, para activar el cuerpo, calmar la mente y reconectar equipos sin " +
-    "interrumpir el día. Llevamos al facilitador y el material.",
-  tipos: ["Mindfulness", "Yoga", "Movilidad", "Ejercicio funcional", "Activaciones"],
-  espacios: "Oficinas · Instituciones · Universidades · Comunidades",
+    "Llevamos sesiones de yoga, mindfulness, entrenamiento funcional y más a oficinas, universidades y " +
+    "comunidades. Experiencias guiadas por expertos para moverse, conectar y sentirse bien.",
+  tipos: ["Yoga", "Mindfulness", "Entrenamiento funcional", "Movilidad", "Activaciones"],
   cta: "Lleva una experiencia Sun‑i a tu espacio",
 } as const;
 
@@ -130,7 +131,12 @@ export const EXPERIENCIAS = {
    busca reconocerse en un renglón, no leer.                                  */
 export const ESPACIOS = {
   eyebrow: "Where Sun‑i lives",
-  titulo: "¿Reconoces tu espacio?",
+  /*
+    Emmy preguntó qué quería decir «¿Reconoces tu espacio?». Esa es la
+    respuesta: no se entendía. Pedía al lector resolver un acertijo antes de
+    llegar a la lista, cuando la lista es lo único que hace falta leer.
+  */
+  titulo: "Espacios donde Sun‑i encaja.",
   items: [
     { icono: "Dumbbell", nombre: "Gyms & Studios" },
     { icono: "GraduationCap", nombre: "Universidades" },

@@ -232,7 +232,6 @@ export default function SunniHome() {
                 {EXPERIENCIAS.titulo}
               </h2>
               <p className="mt-6 max-w-[46ch] text-body text-gray">{EXPERIENCIAS.texto}</p>
-              <p className="mt-5 text-small font-medium text-ink/70">{EXPERIENCIAS.espacios}</p>
               <div className="mt-8">
                 <SunniCTA variante="experiences" flecha>
                   {EXPERIENCIAS.cta}
