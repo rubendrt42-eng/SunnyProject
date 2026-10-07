@@ -53,8 +53,12 @@ describe("el texto al 200% no rompe el ancho", () => {
       repartía en varias —lo normal en JSX con tres atributos—. Ahora toma la
       etiqueta `<Link>` completa, de la apertura al `>`, así que comprueba la
       garantía y no el formato.
+
+      Sin la bandera `s`: no hay ningún `.` en el patrón, que es lo único a lo
+      que esa bandera afecta, y `[^>]` ya cruza los saltos de línea por sí solo.
+      Pedía ES2018 y el proyecto compila a ES2017, así que rompía `typecheck`.
     */
-    const marca = /<Link\b[^>]*aria-label="Sun-i project[^>]*>/s.exec(fuente)?.[0];
+    const marca = /<Link\b[^>]*aria-label="Sun-i project[^>]*>/.exec(fuente)?.[0];
 
     expect(marca, "ya no se encuentra la marca en el encabezado").toBeDefined();
     expect(
