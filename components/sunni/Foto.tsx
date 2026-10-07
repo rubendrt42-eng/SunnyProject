@@ -48,7 +48,16 @@ export function Foto({
         fill
         priority={prioridad}
         sizes="(min-width: 1024px) 42vw, 100vw"
-        className="object-cover"
+        /*
+          `parallax` mueve la fotografía algo más despacio que la columna de
+          texto al hacer scroll. Va sobre la imagen y nunca sobre el
+          contenedor: el contenedor recorta, así que el desplazamiento no
+          empuja nada y no puede crear scroll horizontal.
+
+          El sistema lo limita a ±4% con una escala del 1.09 para que el
+          desplazamiento no descubra el borde. Más que eso se nota como truco.
+        */
+        className="parallax object-cover"
       />
     </div>
   );

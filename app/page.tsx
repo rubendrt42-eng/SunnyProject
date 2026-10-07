@@ -82,7 +82,7 @@ export default function SunniHome() {
             <div className="min-w-0 lg:col-span-7">
               <InViewReveal variant="lead">
                 <Rotulo>{HERO.badge}</Rotulo>
-                <h1 className="mt-7 font-display text-[clamp(2.6rem,6.6vw,4.6rem)] leading-[1.02] font-bold tracking-[-0.03em] text-ink">
+                <h1 className="mt-7 font-display text-[clamp(2.9rem,7.4vw,5.4rem)] leading-[0.98] font-bold tracking-[-0.035em] text-ink">
                   {HERO.titulo} <span className="text-coral">{HERO.tituloAcento}</span> {HERO.tituloFin}
                 </h1>
               </InViewReveal>
@@ -123,19 +123,19 @@ export default function SunniHome() {
         <Container>
           <InViewReveal variant="lead">
             <Rotulo>{QUE_HACEMOS.eyebrow}</Rotulo>
-            <h2 className="mt-5 max-w-[18ch] font-display text-[clamp(1.9rem,4.2vw,3rem)] leading-[1.08] font-bold tracking-[-0.025em] text-ink">
+            <h2 className="mt-5 max-w-[18ch] font-display text-[clamp(2.2rem,5vw,3.8rem)] leading-[1.02] font-bold tracking-[-0.03em] text-ink">
               {QUE_HACEMOS.titulo}
             </h2>
           </InViewReveal>
 
           <div className="mt-12 grid gap-px overflow-clip rounded-2xl border border-ink/10 bg-ink/10 sm:mt-16 md:grid-cols-2">
             {QUE_HACEMOS.bloques.map((b, i) => (
-              <InViewReveal key={b.rotulo} delay={0.06 * i} className="bg-warm-white">
+              <InViewReveal key={b.rotulo} delay={0.12 * i} className="bg-warm-white">
                 <div className="flex h-full flex-col p-8 sm:p-10">
                   <span className="font-display text-[0.72rem] font-semibold tracking-[0.22em] text-coral-ink uppercase">
                     {b.rotulo}
                   </span>
-                  <h3 className="mt-4 max-w-[16ch] font-display text-[clamp(1.35rem,2.4vw,1.9rem)] leading-[1.15] font-bold tracking-[-0.02em] text-ink">
+                  <h3 className="mt-4 max-w-[16ch] font-display text-[clamp(1.5rem,2.9vw,2.25rem)] leading-[1.1] font-bold tracking-[-0.025em] text-ink">
                     {b.titulo}
                   </h3>
                   <p className="mt-4 max-w-[40ch] text-body text-gray">{b.texto}</p>
@@ -172,14 +172,14 @@ export default function SunniHome() {
             <div className="min-w-0 lg:col-span-6 lg:col-start-7">
               <InViewReveal variant="lead">
                 <Rotulo>{VENDING.eyebrow}</Rotulo>
-                <h2 className="mt-5 max-w-[18ch] font-display text-[clamp(1.8rem,3.8vw,2.7rem)] leading-[1.08] font-bold tracking-[-0.025em] text-ink">
+                <h2 className="mt-5 max-w-[18ch] font-display text-[clamp(2.05rem,4.5vw,3.4rem)] leading-[1.03] font-bold tracking-[-0.03em] text-ink">
                   {VENDING.titulo}
                 </h2>
               </InViewReveal>
               <InViewReveal delay={0.08}>
                 <p className="mt-6 max-w-[48ch] text-body text-gray">{VENDING.texto}</p>
                 <p className="mt-4 max-w-[44ch] text-small text-gray/85">{VENDING.nota}</p>
-                <p className="mt-7 font-display text-[clamp(1.25rem,2.2vw,1.7rem)] font-semibold text-coral">
+                <p className="mt-7 font-display text-[clamp(1.45rem,2.7vw,2.1rem)] font-semibold text-coral">
                   {VENDING.frase}
                 </p>
                 <div className="mt-8">
@@ -202,9 +202,9 @@ export default function SunniHome() {
             <ul className="mt-7 grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
               {VENDING.moods.map((m, i) => (
                 <li key={m.nombre}>
-                  <InViewReveal delay={0.04 * i}>
-                    <div className="flex gap-4 border-t border-ink/12 pt-5">
-                      <span className="mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-pill bg-cream text-coral-ink">
+                  <InViewReveal delay={0.07 * i}>
+                    <div className="fila-viva flex gap-4 border-t border-ink/12 pt-5">
+                      <span className="fila-viva__icono mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-pill bg-cream text-coral-ink">
                         <Icono nombre={m.icono} />
                       </span>
                       <div className="min-w-0">
@@ -228,7 +228,7 @@ export default function SunniHome() {
           <div className="grid gap-10 lg:grid-cols-12 lg:gap-x-[48px]">
             <InViewReveal variant="lead" className="min-w-0 lg:col-span-6">
               <Rotulo>{EXPERIENCIAS.eyebrow}</Rotulo>
-              <h2 className="mt-5 max-w-[15ch] font-display text-[clamp(1.8rem,3.8vw,2.7rem)] leading-[1.08] font-bold tracking-[-0.025em] text-ink">
+              <h2 className="mt-5 max-w-[15ch] font-display text-[clamp(2.05rem,4.5vw,3.4rem)] leading-[1.03] font-bold tracking-[-0.03em] text-ink">
                 {EXPERIENCIAS.titulo}
               </h2>
               <p className="mt-6 max-w-[46ch] text-body text-gray">{EXPERIENCIAS.texto}</p>
@@ -249,12 +249,14 @@ export default function SunniHome() {
 
             <InViewReveal delay={0.08} className="min-w-0 lg:col-span-5 lg:col-start-8">
               <ul>
-                {EXPERIENCIAS.tipos.map((t) => (
-                  <li
-                    key={t}
-                    className="border-b border-ink/12 py-4 font-display text-heading font-semibold text-ink first:border-t"
-                  >
-                    {t}
+                {EXPERIENCIAS.tipos.map((t, i) => (
+                  <li key={t} className="border-b border-ink/12 first:border-t">
+                    {/* Escalonadas: entran de arriba abajo, como se leen. Sin
+                        esto las cinco aparecían a la vez y el bloque se movía
+                        como una sola lámina. */}
+                    <InViewReveal delay={0.07 * i}>
+                      <span className="fila-viva block py-4 font-display text-heading font-semibold text-ink">{t}</span>
+                    </InViewReveal>
                   </li>
                 ))}
               </ul>
@@ -269,7 +271,7 @@ export default function SunniHome() {
         <Container>
           <InViewReveal variant="lead">
             <Rotulo>{ESPACIOS.eyebrow}</Rotulo>
-            <h2 className="mt-5 max-w-[16ch] font-display text-[clamp(1.8rem,3.8vw,2.7rem)] leading-[1.08] font-bold tracking-[-0.025em] text-ink">
+            <h2 className="mt-5 max-w-[16ch] font-display text-[clamp(2.05rem,4.5vw,3.4rem)] leading-[1.03] font-bold tracking-[-0.03em] text-ink">
               {ESPACIOS.titulo}
             </h2>
           </InViewReveal>
@@ -277,9 +279,9 @@ export default function SunniHome() {
           <ul className="mt-10 grid gap-x-12 sm:grid-cols-2 lg:grid-cols-3">
             {ESPACIOS.items.map((e, i) => (
               <li key={e.nombre} className="border-b border-ink/12 py-5">
-                <InViewReveal delay={0.04 * i}>
-                  <h3 className="flex items-center gap-3 font-display text-heading font-semibold text-ink">
-                    <span className="text-coral-ink">
+                <InViewReveal delay={0.07 * i}>
+                  <h3 className="fila-viva flex items-center gap-3 font-display text-heading font-semibold text-ink">
+                    <span className="fila-viva__icono text-coral-ink">
                       <Icono nombre={e.icono} />
                     </span>
                     {e.nombre}
@@ -307,7 +309,7 @@ export default function SunniHome() {
           <div className="grid items-center gap-8 lg:grid-cols-12 lg:gap-x-[48px]">
             <InViewReveal variant="lead" className="min-w-0 lg:col-span-6">
               <Rotulo>{MARCAS.eyebrow}</Rotulo>
-              <h2 className="mt-5 font-display text-[clamp(1.6rem,3vw,2.2rem)] leading-[1.1] font-bold tracking-[-0.025em] text-ink">
+              <h2 className="mt-5 font-display text-[clamp(1.85rem,3.6vw,2.7rem)] leading-[1.05] font-bold tracking-[-0.028em] text-ink">
                 {MARCAS.titulo}
               </h2>
               <p className="mt-4 max-w-[46ch] text-body text-gray">{MARCAS.texto}</p>
@@ -315,9 +317,11 @@ export default function SunniHome() {
 
             <InViewReveal delay={0.08} className="min-w-0 lg:col-span-5 lg:col-start-8">
               <ul className="flex flex-wrap gap-x-6 gap-y-2">
-                {MARCAS.formas.map((f) => (
-                  <li key={f} className="text-small font-medium text-ink/75">
-                    {f}
+                {MARCAS.formas.map((f, i) => (
+                  <li key={f}>
+                    <InViewReveal delay={0.06 * i}>
+                      <span className="block text-small font-medium text-ink/75">{f}</span>
+                    </InViewReveal>
                   </li>
                 ))}
               </ul>
@@ -342,7 +346,7 @@ export default function SunniHome() {
               className="relative isolate overflow-clip rounded-3xl px-8 py-16 text-center sm:px-12 sm:py-20"
               style={{ backgroundImage: "var(--gradient-sun)" }}
             >
-              <h2 className="mx-auto max-w-[18ch] font-display text-[clamp(2rem,4.8vw,3.2rem)] leading-[1.05] font-bold tracking-[-0.03em] text-ink">
+              <h2 className="mx-auto max-w-[18ch] font-display text-[clamp(2.3rem,5.6vw,4rem)] leading-[1.0] font-bold tracking-[-0.035em] text-ink">
                 {CIERRE.titulo}
               </h2>
               <p className="mx-auto mt-6 max-w-[50ch] text-body text-ink/75">{CIERRE.texto}</p>

@@ -1485,3 +1485,66 @@ a {
     transform: none;
   }
 }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   PASADA DE MOVIMIENTO — LOS DETALLES QUE SE SIENTEN AL RECORRER
+
+   El sistema de revelado ya existía y está ligado al scroll. Lo que faltaba
+   era aplicarlo al detalle: lo que pasa cuando el cursor roza una fila, y que
+   los titulares entren con el peso que tienen ahora que son más grandes.
+   ───────────────────────────────────────────────────────────────────────── */
+
+/*
+  LAS FILAS CON ICONO RESPONDEN AL CURSOR.
+
+  Los moods y los espacios son listas largas de filas idénticas. Sin respuesta
+  al cursor se leen como una tabla; con un desplazamiento mínimo y el icono
+  tomando color, se leen como algo vivo. Dos píxeles bastan: más y parece que
+  la página se mueve sola.
+*/
+.fila-viva {
+  transition:
+    transform var(--motion-nudge) var(--ease-sunny),
+    color var(--motion-tint) var(--ease-sunny);
+}
+
+@media (hover: hover) {
+  .fila-viva:hover {
+    transform: translateX(3px);
+  }
+
+  .fila-viva:hover .fila-viva__icono {
+    transform: scale(1.12) rotate(-6deg);
+  }
+}
+
+.fila-viva__icono {
+  transition: transform var(--motion-lift) var(--ease-sunny);
+}
+
+/*
+  LOS TITULARES ENTRAN DESDE MÁS ABAJO.
+
+  Al crecer de cuerpo, el recorrido de entrada que tenían se quedó corto: un
+  titular de 3.4rem subiendo 2.75rem se mueve proporcionalmente menos que uno
+  de 2.7rem, así que se notaba menos justo cuando debía notarse más.
+*/
+.reveal--lead {
+  --reveal-y: 3.5rem;
+}
+
+/*
+  Nada de esto ocurre si el sistema pide movimiento reducido. El revelado base
+  ya lo respeta; estas son transiciones de cursor y se desactivan igual.
+*/
+@media (prefers-reduced-motion: reduce) {
+  .fila-viva,
+  .fila-viva__icono {
+    transition: none;
+  }
+
+  .fila-viva:hover,
+  .fila-viva:hover .fila-viva__icono {
+    transform: none;
+  }
+}
