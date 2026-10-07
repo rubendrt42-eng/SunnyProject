@@ -7,7 +7,7 @@ import {
 import { Container } from "@/components/ui/Container";
 import { InViewReveal } from "@/components/motion/InViewReveal";
 import { SunniCTA } from "@/components/lean/SunniCTA";
-import { HuecoDeFoto } from "@/components/sunni/HuecoDeFoto";
+import { Foto } from "@/components/sunni/Foto";
 import { CIERRE, ESPACIOS, EXPERIENCIAS, HERO, MARCAS, QUE_HACEMOS, SEO, VENDING } from "@/lib/sunni-content";
 
 /**
@@ -107,7 +107,7 @@ export default function SunniHome() {
             </div>
 
             <InViewReveal variant="media" delay={0.1} className="min-w-0 lg:col-span-5">
-              <HuecoDeFoto nota="Fotografía de portada" />
+              <Foto cual="clase" prioridad />
             </InViewReveal>
           </div>
         </Container>
@@ -166,7 +166,7 @@ export default function SunniHome() {
         <Container>
           <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-x-[48px]">
             <InViewReveal variant="media" className="min-w-0 lg:col-span-5">
-              <HuecoDeFoto nota="Unidad Sun‑i en su espacio" />
+              <Foto cual="maquina" />
             </InViewReveal>
 
             <div className="min-w-0 lg:col-span-6 lg:col-start-7">
