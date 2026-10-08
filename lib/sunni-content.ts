@@ -257,8 +257,38 @@ export type Portada = {
 };
 
 export function portadaConSanity(dePortada: PortadaSunni | null | undefined): Portada {
-  return mezclarAjustes(
+  const mezclada = mezclarAjustes(
     PORTADA_POR_DEFECTO as unknown as never,
     (dePortada ?? null) as unknown as never,
   ) as unknown as Portada;
+
+  /*
+    LOS DESTINOS DE LOS DOS BLOQUES SE DEVUELVEN AQUÍ, SIEMPRE.
+
+    `ancla` —a dónde lleva «Ver Sun‑i Vending»— no está en el Studio a
+    propósito: es estructura, no contenido, igual que los destinos del menú y
+    del pie. Pero la mezcla sustituye los arrays enteros, no campo por campo:
+    en cuanto Sanity tenía los dos bloques con su texto, el array del código
+    desaparecía **con el destino dentro**.
+
+    El resultado era un `<a>` sin `href`. Eso no es un enlace que lleva mal:
+    es un trozo de texto que parece enlace, no navega, no se alcanza con el
+    tabulador y un lector de pantalla no lo anuncia. Y sin un solo error en
+    consola, que es lo que lo hizo sobrevivir a la revisión.
+
+    Se recomponen por posición porque son un par fijo —el Studio avisa si se
+    intenta un tercero— así que la posición es estable por definición.
+  */
+  const porDefecto = PORTADA_POR_DEFECTO.queHacemos.bloques;
+  mezclada.queHacemos = {
+    ...mezclada.queHacemos,
+    // El tipo de `bloques` es una tupla de dos porque sale de un `as const`,
+    // y `.map` devuelve un array suelto. El contenido es el mismo.
+    bloques: mezclada.queHacemos.bloques.map((b, i) => ({
+      ...b,
+      ancla: porDefecto[i]?.ancla ?? porDefecto[0].ancla,
+    })) as unknown as Portada["queHacemos"]["bloques"],
+  };
+
+  return mezclada;
 }
