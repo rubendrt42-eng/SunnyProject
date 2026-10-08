@@ -28,6 +28,13 @@ const PERSONAJES = {
 export function Personaje({
   cual,
   /**
+   * Grados de inclinación. Cada uno va ladeado distinto a propósito: cinco
+   * dibujos rectos en la misma página se leen como iconos repetidos de una
+   * plantilla; ladeados a ángulos distintos se leen como calcomanías puestas
+   * a mano, que es como los usa Emmy en Instagram.
+   */
+  giro = 0,
+  /**
    * `gira` entra ladeado y se endereza con el scroll — para el sol, que ya
    * tiene postura de carrera. `late` entra pequeño y crece — para la cara,
    * que está quieta y pide un gesto más tranquilo.
@@ -36,6 +43,7 @@ export function Personaje({
   className = "",
 }: {
   cual: keyof typeof PERSONAJES;
+  giro?: number;
   movimiento?: "gira" | "late";
   className?: string;
 }) {
@@ -47,8 +55,9 @@ export function Personaje({
       aria-hidden
       width={p.ancho}
       height={p.alto}
-      sizes="160px"
-      className={`personaje personaje--${movimiento} w-auto select-none ${className}`}
+      sizes="320px"
+      style={{ "--giro": `${giro}deg` } as React.CSSProperties}
+      className={`personaje personaje--${movimiento} w-auto max-w-full select-none ${className}`}
     />
   );
 }

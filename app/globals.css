@@ -785,22 +785,22 @@ h2 {
 */
 @keyframes sunny-personaje-gira {
   from {
-    transform: translateY(1.25rem) rotate(-11deg) scale(0.88);
+    transform: translateY(1.25rem) rotate(calc(var(--giro, 0deg) - 15deg)) scale(0.88);
     opacity: 0;
   }
   to {
-    transform: translateY(0) rotate(4deg) scale(1);
+    transform: translateY(0) rotate(var(--giro, 0deg)) scale(1);
     opacity: 1;
   }
 }
 
 @keyframes sunny-personaje-late {
   from {
-    transform: translateY(0.75rem) scale(0.82);
+    transform: translateY(0.75rem) rotate(calc(var(--giro, 0deg) + 8deg)) scale(0.82);
     opacity: 0;
   }
   to {
-    transform: translateY(0) scale(1);
+    transform: translateY(0) rotate(var(--giro, 0deg)) scale(1);
     opacity: 1;
   }
 }
@@ -828,8 +828,8 @@ h2 {
   invisible: una figura con `opacity: 0` que espera una animación que el
   navegador no sabe ejecutar es una figura que no aparece jamás.
 */
-.personaje--gira {
-  transform: rotate(4deg);
+.personaje {
+  transform: rotate(var(--giro, 0deg));
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -839,8 +839,7 @@ h2 {
   .reveal-on-load,
   .parallax,
   .hero-exit,
-  .personaje--gira,
-  .personaje--late {
+  .personaje {
     animation: none;
     opacity: 1;
     transform: none;

@@ -118,7 +118,10 @@ export default async function SunniHome() {
             </div>
 
             <InViewReveal variant="media" delay={0.1} className="min-w-0 lg:col-span-5">
-              <Foto cual="clase" prioridad />
+              {/* `aspect-[3/4]` es la proporción exacta del archivo (960×1280),
+                  así que `object-cover` no recorta un solo píxel: se ve el
+                  encuadre completo que mandaste. */}
+              <Foto cual="clase" proporcion="aspect-[3/4]" prioridad />
             </InViewReveal>
           </div>
         </Container>
@@ -133,14 +136,29 @@ export default async function SunniHome() {
       <section id="que-hacemos" className="scroll-mt-24 border-y border-ink/8 bg-cream py-20 sm:py-28">
         <Container>
           <InViewReveal variant="lead">
-            {/* El dibujo de Emmy presentando la marca. Va encima del rótulo
-                y no entre el rótulo y el titular: ahí partiría en dos el
-                bloque que se lee de corrido. */}
-            <Personaje cual="cara" movimiento="late" className="mb-5 h-16 sm:h-20" />
-            <Rotulo>{QUE_HACEMOS.eyebrow}</Rotulo>
-            <h2 className="mt-5 max-w-[18ch] font-display text-[clamp(2.2rem,5vw,3.8rem)] leading-[1.02] font-bold tracking-[-0.03em] text-ink">
-              {QUE_HACEMOS.titulo}
-            </h2>
+            {/*
+              El titular está topado a 18 caracteres, así que en pantalla
+              ancha la mitad derecha de esta fila quedaba vacía. El dibujo se
+              pone ahí, a tamaño grande, en vez de pequeño encima del rótulo:
+              ahí no llenaba nada y solo añadía un escalón más antes de leer.
+
+              `flex-col-reverse` en móvil lo deja arriba del texto, que es el
+              único sitio donde cabe a este tamaño sin estrujar el titular.
+            */}
+            <div className="flex flex-col-reverse items-start gap-6 md:flex-row md:items-center md:justify-between md:gap-10">
+              <div className="min-w-0">
+                <Rotulo>{QUE_HACEMOS.eyebrow}</Rotulo>
+                <h2 className="mt-5 max-w-[18ch] font-display text-[clamp(2.2rem,5vw,3.8rem)] leading-[1.02] font-bold tracking-[-0.03em] text-ink">
+                  {QUE_HACEMOS.titulo}
+                </h2>
+              </div>
+              <Personaje
+                cual="cara"
+                movimiento="late"
+                giro={-13}
+                className="h-28 shrink-0 sm:h-36 md:h-44 lg:h-56"
+              />
+            </div>
           </InViewReveal>
 
           <div className="mt-12 grid gap-px overflow-clip rounded-2xl border border-ink/10 bg-ink/10 sm:mt-16 md:grid-cols-2">
@@ -186,7 +204,22 @@ export default async function SunniHome() {
 
             <div className="min-w-0 lg:col-span-6 lg:col-start-7">
               <InViewReveal variant="lead">
-                <Rotulo>{VENDING.eyebrow}</Rotulo>
+                {/*
+                  Aquí el dibujo va en la fila del rótulo, no al lado del
+                  titular como en «What is Sun-i». Probado de la otra forma:
+                  esta columna es más estrecha, y el dibujo le quitaba ancho
+                  al titular hasta partirlo de tres líneas a cinco.
+
+                  En la fila del rótulo no compite con nada —«SUN-I VENDING»
+                  deja media fila libre— y el margen negativo lo sube al aire
+                  que ya había sobre la sección, así que no empuja el titular
+                  hacia abajo. Ladeado al otro lado que el anterior, para que
+                  los dos juntos no se lean como una plantilla.
+                */}
+                <div className="flex items-start justify-between gap-6">
+                  <Rotulo>{VENDING.eyebrow}</Rotulo>
+                  <Personaje cual="sol" giro={15} className="-mt-4 h-24 shrink-0 sm:h-32 lg:h-40" />
+                </div>
                 <h2 className="mt-5 max-w-[18ch] font-display text-[clamp(2.05rem,4.5vw,3.4rem)] leading-[1.03] font-bold tracking-[-0.03em] text-ink">
                   {VENDING.titulo}
                 </h2>
@@ -288,6 +321,11 @@ export default async function SunniHome() {
                   </li>
                 ))}
               </ul>
+
+              {/* La columna derecha terminaba en «Activaciones» mientras la
+                  izquierda seguía con la fotografía: ese desnivel era hueco
+                  en blanco. El dibujo lo ocupa y cierra la lista. */}
+              <Personaje cual="cara" movimiento="late" giro={11} className="mt-10 ml-auto h-24 sm:h-32" />
             </InViewReveal>
           </div>
         </Container>
@@ -362,6 +400,10 @@ export default async function SunniHome() {
             </InViewReveal>
 
             <InViewReveal delay={0.08} className="min-w-0 lg:col-span-5 lg:col-start-8">
+              {/* La lista de formas de colaborar son cuatro palabras sueltas
+                  contra un titular de dos líneas: esta mitad quedaba casi
+                  vacía. */}
+              <Personaje cual="sol" giro={-9} className="mb-6 h-20 sm:h-24" />
               <ul className="flex flex-wrap gap-x-6 gap-y-2">
                 {MARCAS.formas.map((f, i) => (
                   <li key={f}>
@@ -395,7 +437,7 @@ export default async function SunniHome() {
               {/* El sol corriendo, sobre el panel amarillo. Se sostiene por
                   el trazo negro del dibujo, no por el color: amarillo sobre
                   amarillo se perdería sin ese contorno. */}
-              <Personaje cual="sol" className="mx-auto mb-7 h-28 sm:h-36" />
+              <Personaje cual="sol" giro={4} className="mx-auto mb-7 h-28 sm:h-36" />
               <h2 className="mx-auto max-w-[18ch] font-display text-[clamp(2.3rem,5.6vw,4rem)] leading-[1.0] font-bold tracking-[-0.035em] text-ink">
                 {CIERRE.titulo}
               </h2>

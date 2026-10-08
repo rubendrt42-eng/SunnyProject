@@ -13,8 +13,15 @@ import Image from "next/image";
  * cambiarlas sin avisar, suben a Sanity como el resto.
  */
 const FOTOS = {
+  /*
+    El archivo cambió de nombre al pasar del recorte al encuadre completo, y
+    no por gusto: el optimizador de imágenes de Next cachea por URL. Con el
+    mismo nombre seguía sirviendo la versión recortada aunque el archivo en
+    disco ya fuera otro —pasó, y durante un rato parecía que el cambio no se
+    había aplicado—. Nombre nuevo, caché nueva.
+  */
   clase: {
-    src: "/media/sunni/sunni-clase.webp",
+    src: "/media/sunni/sunni-clase-completa.webp",
     alt: "Clase de yoga al aire libre, un grupo en postura de triángulo sobre tapetes de colores",
   },
   maquina: {
