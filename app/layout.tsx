@@ -8,6 +8,8 @@ import { SunniModalProvider } from "@/components/lean/SunniModal";
 import { interfazConSanity } from "@/lib/sunni-interfaz";
 import { getSiteSettings } from "@/lib/sanity/queries";
 import { DEFAULT_SETTINGS, mezclarAjustes } from "@/lib/lean-content";
+import { env } from "@/lib/env";
+import { DatosEstructurados } from "@/components/site/DatosEstructurados";
 
 /**
  * Las dos tipografías de Sun-i project®.
@@ -55,32 +57,20 @@ const dmSans = DM_Sans({ variable: "--font-body", subsets: ["latin"] });
  * Esta es la descripción por defecto de TODAS las páginas: cada una que no
  * defina la suya hereda esta.
  */
-/**
- * LA DIRECCIÓN BASE DEL SITIO.
- *
- * Sin esto, Next resuelve la imagen que se ve al compartir y la URL canónica
- * contra el origen de cada petición: en local salía `http://localhost:3111/…`
- * dentro de `og:image`, y en producción cambia con cada despliegue de
- * previsualización. Un enlace pegado en WhatsApp desde una previsualización
- * enseñaría la imagen de una URL que caduca.
- *
- * No hace falta crear ninguna variable: `VERCEL_PROJECT_PRODUCTION_URL` la
- * pone Vercel sola y apunta siempre al dominio de producción, así que el día
- * que se conecte el dominio oficial esto lo sigue sin tocar nada. La primera
- * opción queda por si algún día se prefiere fijarlo a mano.
- */
-function direccionBase(): URL {
-  const propia = process.env.NEXT_PUBLIC_SITE_URL?.trim();
-  if (propia) return new URL(propia);
-  const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim();
-  if (vercel) return new URL(`https://${vercel}`);
-  return new URL("http://localhost:3000");
-}
-
 export async function generateMetadata(): Promise<Metadata> {
   const s = mezclarAjustes(DEFAULT_SETTINGS, await getSiteSettings());
   return {
-    metadataBase: direccionBase(),
+    /*
+      Sin esto, la imagen que se ve al compartir y la URL canónica se resuelven
+      contra el origen de cada petición: un enlace pegado en WhatsApp desde una
+      previsualización enseñaría la imagen de una URL que caduca.
+
+      `env.siteUrl` ya resolvía esto para los enlaces de las experiencias y
+      tiene su propia prueba. Ayer escribí la misma lógica otra vez aquí sin
+      verla; dos funciones que calculan la dirección del sitio son dos
+      funciones que un día dirán cosas distintas.
+    */
+    metadataBase: new URL(env.siteUrl),
     title: s.seoTitle,
     description: s.seoDescription,
     /**
@@ -127,7 +117,9 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     y baja ya hecho: una petición menos por visita y el formulario nunca abre
     con el texto a medias.
   */
-  const { formularios } = interfazConSanity((await getSiteSettings())?.interfaz);
+  const ajustes = await getSiteSettings();
+  const { formularios } = interfazConSanity(ajustes?.interfaz);
+  const marca = mezclarAjustes(DEFAULT_SETTINGS, ajustes);
 
   return (
     <html lang="es" className={`${poppins.variable} ${dmSans.variable} h-full antialiased`}>
@@ -164,6 +156,15 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
 
           Es la conversión principal del sitio, y salía en todas las páginas.
         */}
+        {/* Va dentro de <body> a propósito: Next mueve a <head> lo que le
+            pasa por `metadata`, y un <script type="application/ld+json">
+            colocado a mano en el cuerpo lo lee igual cualquier buscador. */}
+        <DatosEstructurados
+          nombre="Sun‑i project®"
+          descripcion={marca.seoDescription}
+          instagram={marca.instagramUrl}
+          correo={marca.contactEmail}
+        />
         <SunniModalProvider textos={formularios}>
         <Header />
         {/*
