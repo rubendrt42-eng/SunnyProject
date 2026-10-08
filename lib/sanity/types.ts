@@ -98,6 +98,48 @@ export interface ItemDeLista {
   icono?: string | null;
 }
 
+/** Los seis textos de cada formulario, tal como llegan del Studio. */
+export interface ProsaFormularioSanity {
+  titulo?: string | null;
+  intro?: string | null;
+  pie?: string | null;
+  boton?: string | null;
+  exito?: string | null;
+  exitoTexto?: string | null;
+}
+
+/**
+ * Menú, pie y formularios.
+ *
+ * Los enlaces llegan como `enlace1`…`enlace4` y no como una lista: en el
+ * Studio son casillas fijas, porque el destino de cada una es fijo. Una lista
+ * dejaría añadir un quinto enlace que no apunta a ninguna parte.
+ */
+export interface InterfazSunni {
+  navegacion?: {
+    enlace1?: string | null;
+    enlace2?: string | null;
+    enlace3?: string | null;
+    enlace4?: string | null;
+    boton?: string | null;
+  } | null;
+  heroBotones?: { principal?: string | null; secundario?: string | null } | null;
+  pie?: {
+    tituloExplora?: string | null;
+    tituloAyuda?: string | null;
+    tituloContacto?: string | null;
+    enlace1?: string | null;
+    enlace2?: string | null;
+    enlace3?: string | null;
+    enlace4?: string | null;
+    privacidad?: string | null;
+    derechos?: string | null;
+  } | null;
+  vending?: ProsaFormularioSanity | null;
+  experiences?: ProsaFormularioSanity | null;
+  brands?: ProsaFormularioSanity | null;
+}
+
 export interface PortadaSunni {
   hero?: {
     badge?: string | null;
@@ -187,6 +229,9 @@ export interface SiteSettings {
 
   /** Los textos de la portada. Ver `PortadaSunni`. */
   portada?: PortadaSunni | null;
+
+  /** Menú, pie y formularios. Ver `InterfazSunni`. */
+  interfaz?: InterfazSunni | null;
 
   instagramUrl?: string;
   whatsapp?: string;

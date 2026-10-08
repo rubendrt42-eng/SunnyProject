@@ -44,8 +44,11 @@ interface NavLink {
  */
 export function HeaderInteractive({
   links,
+  /** El texto del botón de conversión. Viene de Sanity, con el del código de respaldo. */
+  boton,
 }: {
   links: NavLink[];
+  boton: string;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const botonMenu = useRef<HTMLButtonElement>(null);
@@ -158,14 +161,14 @@ export function HeaderInteractive({
             la conversión del sitio y no debe quedar solo detrás del menú. */}
         <div className="hidden lg:block">
           <SunniCTA variante="vending" className="min-h-10 px-5 text-[0.8rem]">
-            Bring Sun-i
+            {boton}
           </SunniCTA>
         </div>
 
         <div className="flex items-center gap-2 lg:hidden">
           <div className="hidden sm:block">
             <SunniCTA variante="vending" className="min-h-10 px-5 text-[0.8rem]">
-              Bring Sun-i
+              {boton}
             </SunniCTA>
           </div>
           <button
@@ -193,7 +196,7 @@ export function HeaderInteractive({
           <div className="flex flex-col gap-4">
             <div onClick={cerrarMenu} className="mt-2">
               <SunniCTA variante="vending" flecha>
-                Bring Sun-i
+                {boton}
               </SunniCTA>
             </div>
           </div>

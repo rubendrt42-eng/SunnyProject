@@ -162,22 +162,63 @@ export function useAbrirSunni() {
   return abrir;
 }
 
-export function SunniModalProvider({ children }: { children: React.ReactNode }) {
+/**
+ * Los seis textos de cada formulario que Sanity puede cambiar.
+ *
+ * Las casillas y sus listas de opciones NO entran: se escriben tal cual en
+ * una columna de la hoja de cálculo, y mezclar «cómo se llama el botón» con
+ * «qué opciones acepta la casilla de aforo» en la misma pantalla del Studio
+ * hace que no se encuentre ninguna de las dos.
+ */
+export type ProsaVariante = Pick<
+  (typeof VARIANTES)[VarianteSunni],
+  "titulo" | "intro" | "pie" | "boton" | "exito" | "exitoTexto"
+>;
+
+export function SunniModalProvider({
+  children,
+  /**
+   * Llega ya resuelto desde el layout, que es de servidor y sí puede leer
+   * Sanity. Este componente es de cliente: si consultara él, cada visita
+   * pagaría una petición más y el formulario abriría sin texto el primer
+   * instante.
+   */
+  textos,
+}: {
+  children: React.ReactNode;
+  textos?: Partial<Record<VarianteSunni, ProsaVariante>>;
+}) {
   const [variante, setVariante] = useState<VarianteSunni | null>(null);
   const abrir = useCallback((v: VarianteSunni) => setVariante(v), []);
 
   return (
     <ContextoSunni.Provider value={abrir}>
       {children}
-      {variante && <SunniModal variante={variante} onClose={() => setVariante(null)} />}
+      {variante && (
+        <SunniModal variante={variante} textos={textos?.[variante]} onClose={() => setVariante(null)} />
+      )}
     </ContextoSunni.Provider>
   );
 }
 
 /* ── El diálogo ── */
 
-function SunniModal({ variante, onClose }: { variante: VarianteSunni; onClose: () => void }) {
-  const v = VARIANTES[variante];
+function SunniModal({
+  variante,
+  textos,
+  onClose,
+}: {
+  variante: VarianteSunni;
+  textos?: ProsaVariante;
+  onClose: () => void;
+}) {
+  /*
+    Las casillas salen siempre del código; la prosa puede venir de Sanity.
+    `textos` llega ya limpio —`interfazConSanity` descarta lo vacío— así que
+    aquí basta con extenderlo encima: un campo que Emmy deje en blanco en el
+    Studio ni siquiera llega hasta este punto.
+  */
+  const v = { ...VARIANTES[variante], ...(textos ?? {}) };
   const [enviando, setEnviando] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [enviado, setEnviado] = useState(false);

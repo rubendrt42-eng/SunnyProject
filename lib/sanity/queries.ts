@@ -97,6 +97,14 @@ const SETTINGS_QUERY = `
       marcas{eyebrow, titulo, texto, formas, cta},
       cierre{titulo, texto, condiciones, cta, ctaMarcas}
     },
+    "interfaz": interfaz{
+      navegacion{enlace1, enlace2, enlace3, enlace4, boton},
+      heroBotones{principal, secundario},
+      pie{tituloExplora, tituloAyuda, tituloContacto, enlace1, enlace2, enlace3, enlace4, privacidad, derechos},
+      vending{titulo, intro, pie, boton, exito, exitoTexto},
+      experiences{titulo, intro, pie, boton, exito, exitoTexto},
+      brands{titulo, intro, pie, boton, exito, exitoTexto}
+    },
     seoTitle,
     seoDescription,
     footerDescripcion,

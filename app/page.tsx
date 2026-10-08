@@ -9,6 +9,7 @@ import { InViewReveal } from "@/components/motion/InViewReveal";
 import { SunniCTA } from "@/components/lean/SunniCTA";
 import { Foto } from "@/components/sunni/Foto";
 import { Personaje } from "@/components/sunni/Personaje";
+import { interfazConSanity } from "@/lib/sunni-interfaz";
 import { portadaConSanity, SEO } from "@/lib/sunni-content";
 import { getSiteSettings } from "@/lib/sanity/queries";
 
@@ -80,6 +81,9 @@ export default async function SunniHome() {
   const ajustes = await getSiteSettings();
   const { hero: HERO, queHacemos: QUE_HACEMOS, vending: VENDING, experiencias: EXPERIENCIAS,
           espacios: ESPACIOS, marcas: MARCAS, cierre: CIERRE } = portadaConSanity(ajustes?.portada);
+  // Los dos botones de la primera pantalla estaban escritos dentro del JSX,
+  // así que no se podían cambiar desde Sanity. Ahora sí.
+  const { heroBotones } = interfazConSanity(ajustes?.interfaz);
 
   return (
     <main>
@@ -105,13 +109,13 @@ export default async function SunniHome() {
               <InViewReveal delay={0.14}>
                 <div className="mt-9 flex flex-wrap items-center gap-3">
                   <SunniCTA variante="vending" flecha>
-                    Bring Sun‑i to your space
+                    {heroBotones.principal}
                   </SunniCTA>
                   <a
                     href="#que-hacemos"
                     className="press inline-flex min-h-12 items-center rounded-pill border border-coral/45 px-7 font-display text-small font-semibold text-coral-ink transition-colors hover:border-coral hover:bg-coral/6"
                   >
-                    Discover Sun‑i
+                    {heroBotones.secundario}
                   </a>
                 </div>
               </InViewReveal>
@@ -393,7 +397,12 @@ export default async function SunniHome() {
           <div className="grid items-center gap-8 lg:grid-cols-12 lg:gap-x-[48px]">
             <InViewReveal variant="lead" className="min-w-0 lg:col-span-6">
               <Rotulo>{MARCAS.eyebrow}</Rotulo>
-              <h2 className="mt-5 font-display text-[clamp(1.85rem,3.6vw,2.7rem)] leading-[1.05] font-bold tracking-[-0.028em] text-ink">
+              {/* Se quedó atrás cuando subió la escala del resto de los
+                  titulares: iba a 2.7rem contra los 3.4rem de las demás
+                  secciones y se leía como un subtítulo, no como una sección.
+                  Ahora usa la misma escala que Vending, Experiences y
+                  Espacios. */}
+              <h2 className="mt-5 font-display text-[clamp(2.05rem,4.5vw,3.4rem)] leading-[1.03] font-bold tracking-[-0.03em] text-ink">
                 {MARCAS.titulo}
               </h2>
               <p className="mt-4 max-w-[46ch] text-body text-gray">{MARCAS.texto}</p>
@@ -403,7 +412,7 @@ export default async function SunniHome() {
               {/* La lista de formas de colaborar son cuatro palabras sueltas
                   contra un titular de dos líneas: esta mitad quedaba casi
                   vacía. */}
-              <Personaje cual="sol" giro={-9} className="mb-6 h-20 sm:h-24" />
+              <Personaje cual="sol" giro={-16} className="mb-6 h-24 sm:h-32 lg:h-40" />
               <ul className="flex flex-wrap gap-x-6 gap-y-2">
                 {MARCAS.formas.map((f, i) => (
                   <li key={f}>

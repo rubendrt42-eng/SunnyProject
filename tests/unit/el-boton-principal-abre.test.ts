@@ -31,7 +31,14 @@ const codigo = LAYOUT.replace(/\{?\/\*[\s\S]*?\*\/\}?/g, " ").replace(/\/\/[^\n]
 
 describe("el botón principal abre el formulario", () => {
   it("la cabecera se monta DENTRO del proveedor del formulario", () => {
-    const proveedor = codigo.indexOf("<SunniModalProvider>");
+    /*
+      Buscaba `<SunniModalProvider>` tal cual y fallaba en cuanto el proveedor
+      recibió su primer atributo —ahora lleva los textos del formulario—,
+      aunque la garantía seguía intacta. Lo que importa es el ORDEN de las
+      tres etiquetas, no cómo estén escritas, así que la apertura se localiza
+      admitiendo atributos.
+    */
+    const proveedor = codigo.search(/<SunniModalProvider[\s>]/);
     const cabecera = codigo.indexOf("<Header />");
     const cierre = codigo.indexOf("</SunniModalProvider>");
 

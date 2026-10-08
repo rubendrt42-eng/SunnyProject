@@ -2,6 +2,7 @@ import type { SchemaTypeDefinition } from "sanity";
 import { experience } from "./experience";
 import { siteSettings } from "./siteSettings";
 import { portada } from "./portada";
+import { interfaz } from "./interfaz";
 
 /**
  * Todos los tipos de contenido del proyecto.
@@ -10,4 +11,4 @@ import { portada } from "./portada";
  * entender, y el objetivo declarado de este MVP es que administrar el sitio le
  * cueste minutos, no una capacitación.
  */
-export const schemaTypes: SchemaTypeDefinition[] = [experience, siteSettings, portada];
+export const schemaTypes: SchemaTypeDefinition[] = [experience, siteSettings, portada, interfaz];

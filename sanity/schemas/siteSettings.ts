@@ -76,6 +76,7 @@ export const siteSettings = defineType({
 
   groups: [
     { name: "portada", title: "Portada", default: true },
+    { name: "interfaz", title: "Menú, pie y formularios" },
     { name: "contacto", title: "Marca y contacto" },
     { name: "faq", title: "Preguntas frecuentes" },
   ],
@@ -89,6 +90,17 @@ export const siteSettings = defineType({
       description:
         "Siete apartados, uno por sección y en el orden en que se ven al bajar por la página. " +
         "Lo que dejes vacío conserva el texto actual: vaciar un campo nunca deja un hueco.",
+    }),
+
+    defineField({
+      name: "interfaz",
+      title: "Menú, pie y formularios",
+      type: "interfazSunni",
+      group: "interfaz",
+      description:
+        "Todo lo que se lee fuera de las secciones de la portada: el menú de arriba, los botones de " +
+        "la primera pantalla, el pie y lo que dicen los tres formularios. Misma regla: lo que dejes " +
+        "vacío conserva el texto actual.",
     }),
 
     // ── Marca ────────────────────────────────────────────────────────────

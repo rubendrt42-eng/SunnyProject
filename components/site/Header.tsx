@@ -1,4 +1,6 @@
 import { HeaderInteractive } from "@/components/site/HeaderInteractive";
+import { getSiteSettings } from "@/lib/sanity/queries";
+import { interfazConSanity } from "@/lib/sunni-interfaz";
 
 /**
  * La navegación de Sun-i.
@@ -12,12 +14,12 @@ import { HeaderInteractive } from "@/components/site/HeaderInteractive";
  * catálogo: pulsar «About» estando en `/experiencias` tiene que volver a la
  * portada, no buscar un ancla que ahí no existe.
  */
-const NAV_LINKS = [
-  { href: "/#que-hacemos", label: "What is Sun‑i" },
-  { href: "/#vending", label: "Vending" },
-  { href: "/#experiences", label: "Experiences" },
-  { href: "/#brands", label: "For Brands" },
-];
+/*
+  Las etiquetas ya no están aquí: viven en `lib/sunni-interfaz.ts` y Sanity
+  puede cambiarlas. Los DESTINOS siguen en el código, y es a propósito — un
+  menú donde se escribe el destino a mano es un menú que apunta a páginas
+  inexistentes en cuanto alguien se equivoca de guion.
+*/
 
 /**
  * El encabezado del MVP lean.
@@ -38,6 +40,8 @@ const NAV_LINKS = [
  * repositorio y en las ramas avanzadas, listas para la segunda etapa. Solo
  * dejan de tener puerta de entrada desde el sitio público.
  */
-export function Header() {
-  return <HeaderInteractive links={NAV_LINKS} />;
+export async function Header() {
+  const ajustes = await getSiteSettings();
+  const { navegacion } = interfazConSanity(ajustes?.interfaz);
+  return <HeaderInteractive links={navegacion.enlaces} boton={navegacion.boton} />;
 }

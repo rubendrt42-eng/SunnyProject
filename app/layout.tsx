@@ -5,6 +5,7 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { AppChrome } from "@/components/motion/AppChrome";
 import { SunniModalProvider } from "@/components/lean/SunniModal";
+import { interfazConSanity } from "@/lib/sunni-interfaz";
 import { getSiteSettings } from "@/lib/sanity/queries";
 import { DEFAULT_SETTINGS, mezclarAjustes } from "@/lib/lean-content";
 
@@ -97,6 +98,14 @@ export async function generateMetadata(): Promise<Metadata> {
  * de animación en todas las páginas del sitio para no hacer nada.
  */
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  /*
+    El proveedor del formulario es un componente de cliente, así que no puede
+    consultar Sanity por su cuenta. El texto se resuelve aquí, en el servidor,
+    y baja ya hecho: una petición menos por visita y el formulario nunca abre
+    con el texto a medias.
+  */
+  const { formularios } = interfazConSanity((await getSiteSettings())?.interfaz);
+
   return (
     <html lang="es" className={`${poppins.variable} ${dmSans.variable} h-full antialiased`}>
       <head>
@@ -132,7 +141,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
 
           Es la conversión principal del sitio, y salía en todas las páginas.
         */}
-        <SunniModalProvider>
+        <SunniModalProvider textos={formularios}>
         <Header />
         {/*
           El proveedor del formulario envuelve todo el árbol porque hay botones

@@ -4,6 +4,7 @@ import { Wordmark } from "@/components/site/Wordmark";
 import { MARCA } from "@/lib/sunni-content";
 import { getSiteSettings } from "@/lib/sanity/queries";
 import { DEFAULT_SETTINGS, mezclarAjustes, whatsappLink } from "@/lib/lean-content";
+import { interfazConSanity } from "@/lib/sunni-interfaz";
 
 /**
  * El pie del sitio.
@@ -29,7 +30,12 @@ import { DEFAULT_SETTINGS, mezclarAjustes, whatsappLink } from "@/lib/lean-conte
  * «Contacto» sobre un hueco es peor que no tener columna.
  */
 export async function Footer() {
-  const s = mezclarAjustes(DEFAULT_SETTINGS, await getSiteSettings());
+  const ajustes = await getSiteSettings();
+  const s = mezclarAjustes(DEFAULT_SETTINGS, ajustes);
+  // Los títulos de columna, las etiquetas de los enlaces y la línea final
+  // estaban escritos aquí dentro. Ahora salen de Sanity, con el texto de
+  // `lib/sunni-interfaz.ts` de respaldo.
+  const { pie } = interfazConSanity(ajustes?.interfaz);
   const whatsapp = s.whatsapp?.trim();
   const instagram = s.instagramUrl?.trim();
   const correo = s.contactEmail?.trim();
@@ -51,16 +57,17 @@ export async function Footer() {
 
         <div className={`grid gap-8 text-sm ${hayContacto ? "grid-cols-2 sm:grid-cols-3" : "grid-cols-2"}`}>
           <div className="flex flex-col gap-2 pointer-coarse:gap-0">
-            <span className="font-medium text-warm-white pointer-coarse:mb-1">Explora</span>
-            <EnlacePie href="/#que-hacemos">What is Sun‑i</EnlacePie>
-            <EnlacePie href="/#vending">Sun‑i Vending</EnlacePie>
-            <EnlacePie href="/#experiences">Sun‑i Experiences</EnlacePie>
-            <EnlacePie href="/#brands">For Brands</EnlacePie>
+            <span className="font-medium text-warm-white pointer-coarse:mb-1">{pie.tituloExplora}</span>
+            {pie.enlaces.map((e) => (
+              <EnlacePie key={e.href} href={e.href}>
+                {e.label}
+              </EnlacePie>
+            ))}
           </div>
 
           <div className="flex flex-col gap-2 pointer-coarse:gap-0">
-            <span className="font-medium text-warm-white pointer-coarse:mb-1">Ayuda</span>
-            <EnlacePie href="/privacidad">Privacidad</EnlacePie>
+            <span className="font-medium text-warm-white pointer-coarse:mb-1">{pie.tituloAyuda}</span>
+            <EnlacePie href="/privacidad">{pie.privacidad}</EnlacePie>
             {/*
               «Términos» ya no se enlaza: la página describía reglas que no
               existen y no hay una política validada que ponga en su lugar.
@@ -70,7 +77,7 @@ export async function Footer() {
 
           {hayContacto && (
             <div className="flex flex-col gap-2 pointer-coarse:gap-0">
-              <span className="font-medium text-warm-white pointer-coarse:mb-1">Contacto</span>
+              <span className="font-medium text-warm-white pointer-coarse:mb-1">{pie.tituloContacto}</span>
               {whatsapp && (
                 <a
                   href={whatsappLink(whatsapp)}
@@ -102,7 +109,7 @@ export async function Footer() {
       </Container>
 
       <Container className="mt-10 border-t border-warm-white/10 pt-6 text-xs text-warm-white/50">
-        © {new Date().getFullYear()} {MARCA.nombre} — Everyday wellness, lifestyle y tecnología.
+        © {new Date().getFullYear()} {MARCA.nombre} — {pie.derechos}
       </Container>
     </footer>
   );
