@@ -8,6 +8,7 @@ import { Container } from "@/components/ui/Container";
 import { InViewReveal } from "@/components/motion/InViewReveal";
 import { SunniCTA } from "@/components/lean/SunniCTA";
 import { Foto } from "@/components/sunni/Foto";
+import { Personaje } from "@/components/sunni/Personaje";
 import { portadaConSanity, SEO } from "@/lib/sunni-content";
 import { getSiteSettings } from "@/lib/sanity/queries";
 
@@ -132,6 +133,10 @@ export default async function SunniHome() {
       <section id="que-hacemos" className="scroll-mt-24 border-y border-ink/8 bg-cream py-20 sm:py-28">
         <Container>
           <InViewReveal variant="lead">
+            {/* El dibujo de Emmy presentando la marca. Va encima del rótulo
+                y no entre el rótulo y el titular: ahí partiría en dos el
+                bloque que se lee de corrido. */}
+            <Personaje cual="cara" movimiento="late" className="mb-5 h-16 sm:h-20" />
             <Rotulo>{QUE_HACEMOS.eyebrow}</Rotulo>
             <h2 className="mt-5 max-w-[18ch] font-display text-[clamp(2.2rem,5vw,3.8rem)] leading-[1.02] font-bold tracking-[-0.03em] text-ink">
               {QUE_HACEMOS.titulo}
@@ -255,6 +260,16 @@ export default async function SunniHome() {
                 escribir. Enlazar a una página cuyo formulario falla es peor
                 que no enlazarla.
               */}
+
+              {/*
+                Esta fotografía ya estaba en el repositorio y no se usaba en
+                ninguna parte. Es justo lo que describe la sección —un grupo
+                en sesión— y cae donde la columna izquierda se quedaba vacía
+                frente a las cinco filas de la derecha. Solo desde `lg`: en
+                móvil las dos columnas van una tras otra y aquí no hay hueco
+                que llenar, solo scroll de más.
+              */}
+              <Foto cual="circulo" proporcion="aspect-[16/10]" className="mt-12 hidden lg:block" />
             </InViewReveal>
 
             <InViewReveal delay={0.08} className="min-w-0 lg:col-span-5 lg:col-start-8">
@@ -282,6 +297,18 @@ export default async function SunniHome() {
           Sin párrafo. Quien llega aquí busca reconocerse en un renglón. */}
       <section id="espacios" className="scroll-mt-24 py-20 sm:py-28">
         <Container>
+          {/*
+            Esta sección era la única sin una sola imagen: un titular y seis
+            renglones sobre fondo crema. Entre la foto de la máquina amarilla
+            y el panel amarillo del cierre quedaba un tramo largo de puro
+            texto, y es justo donde la página pedía aire.
+
+            El render entra aquí y no en Vending porque enseña la unidad en un
+            parque: la sección habla de dónde cabe Sun-i, y esto es dónde cabe.
+            A la izquierda el texto, a la derecha la unidad.
+          */}
+          <div className="grid gap-10 lg:grid-cols-12 lg:gap-x-[48px]">
+            <div className="min-w-0 lg:col-span-7">
           <InViewReveal variant="lead">
             <Rotulo>{ESPACIOS.eyebrow}</Rotulo>
             <h2 className="mt-5 max-w-[16ch] font-display text-[clamp(2.05rem,4.5vw,3.4rem)] leading-[1.03] font-bold tracking-[-0.03em] text-ink">
@@ -289,7 +316,7 @@ export default async function SunniHome() {
             </h2>
           </InViewReveal>
 
-          <ul className="mt-10 grid gap-x-12 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="mt-10 grid gap-x-12 sm:grid-cols-2">
             {ESPACIOS.items.map((e, i) => (
               <li key={e.nombre} className="border-b border-ink/12 py-5">
                 <InViewReveal delay={0.07 * i}>
@@ -311,6 +338,12 @@ export default async function SunniHome() {
               </SunniCTA>
             </div>
           </InViewReveal>
+            </div>
+
+            <InViewReveal delay={0.08} className="min-w-0 lg:col-span-5">
+              <Foto cual="parque" proporcion="aspect-[3/4]" />
+            </InViewReveal>
+          </div>
         </Container>
       </section>
 
@@ -359,6 +392,10 @@ export default async function SunniHome() {
               className="relative isolate overflow-clip rounded-3xl px-8 py-16 text-center sm:px-12 sm:py-20"
               style={{ backgroundImage: "var(--gradient-sun)" }}
             >
+              {/* El sol corriendo, sobre el panel amarillo. Se sostiene por
+                  el trazo negro del dibujo, no por el color: amarillo sobre
+                  amarillo se perdería sin ese contorno. */}
+              <Personaje cual="sol" className="mx-auto mb-7 h-28 sm:h-36" />
               <h2 className="mx-auto max-w-[18ch] font-display text-[clamp(2.3rem,5.6vw,4rem)] leading-[1.0] font-bold tracking-[-0.035em] text-ink">
                 {CIERRE.titulo}
               </h2>

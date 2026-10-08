@@ -21,6 +21,20 @@ const FOTOS = {
     src: "/media/sunni/sunni-maquina.webp",
     alt: "Una mujer frente a una unidad Sun‑i amarilla, eligiendo producto, rodeada de un muro verde",
   },
+  /*
+    La única de las cuatro que llegó sin el rótulo de la marca anterior: la
+    unidad va rotulada «the SUNNI PROJECT». Por eso entra con el encuadre
+    completo, sin recortar y sin retocar — solo escalada y comprimida, que es
+    obligatorio para servirla por web.
+
+    Es un render, no una fotografía: las etiquetas de los productos no son
+    legibles de cerca. A la escala en que se muestra se lee como lo que es,
+    una propuesta de cómo se vería la unidad rotulada.
+  */
+  parque: {
+    src: "/media/sunni/sunni-parque.webp",
+    alt: "Render de una unidad Sun\u2011i rotulada con cielo azul en un parque, una persona eligiendo en la pantalla",
+  },
   circulo: {
     src: "/media/sunni/sunni-circulo.webp",
     alt: "Grupo sentado en círculo sobre tapetes escuchando a una facilitadora, junto a una unidad Sun‑i",

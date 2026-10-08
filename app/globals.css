@@ -765,13 +765,82 @@ h2 {
   animation-range: normal;
 }
 
+/*
+  LOS PERSONAJES DE EMMY.
+
+  Son dibujos, no fotografías, así que no se mueven como las fotografías: el
+  parallax de ±4% que usa una imagen encuadrada no significa nada en una
+  figura recortada sobre el fondo. Lo que sí significa algo es la postura.
+
+  `--gira` entra ladeado y se endereza conforme sube: el sol ya viene en
+  postura de carrera, y enderezarse mientras entra lo hace parecer que llega
+  corriendo al titular. `--late` entra algo más pequeño y crece hasta su
+  tamaño: la cara está quieta, con los ojos cerrados, y un giro la haría
+  parecer otra cosa.
+
+  Los dos se mueven contra el scroll, con el mismo `animation-timeline: view()`
+  que el resto de la página, así que no hay ni una línea de JavaScript ni un
+  observador más. El rango es `entry`: terminan su gesto en cuanto están
+  dentro, y no siguen moviéndose mientras se leen.
+*/
+@keyframes sunny-personaje-gira {
+  from {
+    transform: translateY(1.25rem) rotate(-11deg) scale(0.88);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) rotate(4deg) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes sunny-personaje-late {
+  from {
+    transform: translateY(0.75rem) scale(0.82);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  .personaje--gira,
+  .personaje--late {
+    animation: linear both;
+    animation-timeline: view();
+    animation-range: entry 8% entry 78%;
+    will-change: transform, opacity;
+  }
+
+  .personaje--gira {
+    animation-name: sunny-personaje-gira;
+  }
+
+  .personaje--late {
+    animation-name: sunny-personaje-late;
+  }
+}
+
+/*
+  Sin scroll-driven animations el personaje se queda quieto y visible, nunca
+  invisible: una figura con `opacity: 0` que espera una animación que el
+  navegador no sabe ejecutar es una figura que no aparece jamás.
+*/
+.personaje--gira {
+  transform: rotate(4deg);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .reveal,
   .reveal--media,
   .reveal--lead,
   .reveal-on-load,
   .parallax,
-  .hero-exit {
+  .hero-exit,
+  .personaje--gira,
+  .personaje--late {
     animation: none;
     opacity: 1;
     transform: none;

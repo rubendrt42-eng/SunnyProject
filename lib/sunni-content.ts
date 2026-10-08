@@ -86,12 +86,20 @@ export const QUE_HACEMOS = {
       ancla: "#experiences",
       rotulo: "Sun‑i Experiences",
       titulo: "Bienestar que llevamos a tu gente.",
-      // Mismo texto de Emmy que en la sección de Experiences, recortado a lo
-      // que cabe en un bloque de resumen. Antes decía otra cosa y el visitante
-      // leía dos descripciones distintas de la misma línea de negocio.
+      /*
+        Texto de Emmy, literal, para este recuadro.
+
+        Es más largo que el de Vending, así que la tarjeta de la izquierda
+        queda con aire debajo del suyo. Se deja tal cual: dice a quién va
+        dirigido —colaboradores y estudiantes— y de dónde sale la gente que
+        las guía, que es lo que pregunta una empresa antes de contratar.
+        Emparejarlo recortando palabras sería ganar simetría perdiendo
+        exactamente la parte que vende.
+      */
       texto:
-        "Sesiones de yoga, mindfulness, entrenamiento funcional y más, guiadas por expertos, para oficinas, " +
-        "universidades y comunidades.",
+        "Desarrollamos experiencias curadas y programas de bienestar para colaboradores y estudiantes, " +
+        "junto con nuestro equipo de instructores y expertos. Desde yoga y mindfulness hasta movilidad y " +
+        "entrenamiento funcional, creamos espacios para moverse, conectar y sentirse bien.",
       enlace: "Ver Sun‑i Experiences",
     },
   ],
