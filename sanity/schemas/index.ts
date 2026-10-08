@@ -1,5 +1,4 @@
 import type { SchemaTypeDefinition } from "sanity";
-import { experience } from "./experience";
 import { siteSettings } from "./siteSettings";
 import { portada } from "./portada";
 import { interfaz } from "./interfaz";
@@ -7,8 +6,19 @@ import { interfaz } from "./interfaz";
 /**
  * Todos los tipos de contenido del proyecto.
  *
- * Son dos a propósito. Cada tipo nuevo es una pantalla más que Emmy tiene que
- * entender, y el objetivo declarado de este MVP es que administrar el sitio le
- * cueste minutos, no una capacitación.
+ * Cada tipo registrado es una pantalla más que Emmy puede encontrarse, y el
+ * objetivo de este MVP es que administrar el sitio le cueste minutos, no una
+ * capacitación.
+ *
+ * YA NO SE REGISTRA `experience`.
+ *
+ * Se había retirado del menú del Studio al quitar el catálogo de la página,
+ * pero seguía registrado, y un tipo registrado sale en el buscador: Emmy
+ * encontraba seis experiencias que no se publican en ninguna parte y cuyos
+ * formularios ya no tienen a dónde escribir.
+ *
+ * NO SE BORRA NADA. Los seis documentos siguen intactos en el dataset con sus
+ * fotografías, y `./experience` sigue en el repositorio. Si el catálogo
+ * vuelve, se recupera devolviendo el import y su lugar en esta lista.
  */
-export const schemaTypes: SchemaTypeDefinition[] = [experience, siteSettings, portada, interfaz];
+export const schemaTypes: SchemaTypeDefinition[] = [siteSettings, portada, interfaz];

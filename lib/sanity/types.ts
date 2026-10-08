@@ -45,11 +45,6 @@ export interface ExperienceDetail extends ExperienceCardData {
   requirements: string[];
 }
 
-export interface FaqItem {
-  question: string;
-  answer: string;
-}
-
 /**
  * Un capítulo de la portada, tal y como se edita en Sanity.
  *
@@ -236,5 +231,4 @@ export interface SiteSettings {
   instagramUrl?: string;
   whatsapp?: string;
   contactEmail?: string;
-  faq: FaqItem[];
 }

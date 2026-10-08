@@ -110,8 +110,7 @@ const SETTINGS_QUERY = `
     footerDescripcion,
     instagramUrl,
     whatsapp,
-    contactEmail,
-    "faq": coalesce(faq[]{question, answer}, [])
+    contactEmail
   }
 `;
 

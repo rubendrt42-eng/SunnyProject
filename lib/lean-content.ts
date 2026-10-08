@@ -114,68 +114,6 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   // conceptos que no son de movimiento, y el pie sale en todas las páginas.
   footerDescripcion: "Everyday wellness, made easy. Productos, espacios y experiencias para sentirte bien todos los días.",
 
-  /**
-   * LAS PREGUNTAS.
-   *
-   * Antes casi todas describían límites técnicos del MVP —no hay cuenta, no se
-   * cobra, no hay pase— y ninguna decía qué clase de experiencias hay ni si
-   * puedes ir solo, que son las dos que de verdad se hacen antes de solicitar.
-   *
-   * SOBRE EL PRECIO
-   *
-   * «¿Cuánto cuesta? Nada» afirmaba que toda experiencia es y será gratuita.
-   * El producto no sostiene eso: no hay campo de precio ni cobro en el sitio,
-   * así que lo único verificable es que **solicitar** no cuesta. La respuesta
-   * dice exactamente eso y deja el costo del espacio, si lo hubiera, en la
-   * página de cada experiencia.
-   */
-  faq: [
-    {
-      question: "¿Qué tipo de experiencias hay?",
-      answer:
-        "Clases, talleres, catas, sesiones de movimiento y planes en estudios, cafés y clubes de Monterrey. " +
-        "La lista cambia cada semana.",
-    },
-    {
-      question: "¿Puedo ir solo?",
-      answer:
-        "Sí. Solicitas tu lugar por tu cuenta y llegas por tu cuenta; no hace falta apuntarse con nadie. " +
-        "Si prefieres ir acompañado, al solicitar indicas cuántas personas van.",
-    },
-    {
-      question: "¿Tiene costo?",
-      answer:
-        "Solicitar tu lugar no tiene costo: Sun‑i no cobra por usar el sitio ni por confirmarte. Si una " +
-        "experiencia tuviera algún costo del espacio, viene dicho en su página.",
-    },
-    {
-      question: "¿Cómo sé si mi lugar quedó confirmado?",
-      answer:
-        "Te escribimos por WhatsApp al número que dejaste. Hasta que llegue ese mensaje, tu lugar no está " +
-        "apartado. Si ya no había cupo, también te avisamos.",
-    },
-    {
-      question: "¿Necesito crear una cuenta?",
-      answer: "No. Dejas tu nombre, tu WhatsApp y tu correo al solicitar, y con eso basta.",
-    },
-    {
-      question: "¿Qué pasa si una experiencia está agotada?",
-      answer:
-        "Sigue visible pero ya no admite solicitudes. Las demás experiencias publicadas siguen abiertas.",
-    },
-    {
-      question: "¿Dónde veo las nuevas?",
-      answer:
-        "En la sección de experiencias. Se actualiza cuando Emmy publica algo, y las fechas que ya pasaron " +
-        "desaparecen solas.",
-    },
-    {
-      question: "Tengo un espacio, ¿cómo participo?",
-      answer:
-        "Escríbenos desde la sección para negocios. Emmy revisa cada propuesta y te contesta para platicar " +
-        "cómo podría funcionar.",
-    },
-  ],
 };
 
 /**

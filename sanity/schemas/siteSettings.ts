@@ -78,7 +78,6 @@ export const siteSettings = defineType({
     { name: "portada", title: "Portada", default: true },
     { name: "interfaz", title: "Menú, pie y formularios" },
     { name: "contacto", title: "Marca y contacto" },
-    { name: "faq", title: "Preguntas frecuentes" },
   ],
 
   fields: [
@@ -161,38 +160,6 @@ export const siteSettings = defineType({
       validation: (Rule) => Rule.email(),
     }),
 
-    defineField({
-      name: "faq",
-      title: "Preguntas frecuentes",
-      type: "array",
-      group: "faq",
-      description: "Las dudas que se responden al final del sitio. Se muestran en el orden en que las pongas aquí.",
-      of: [
-        {
-          type: "object",
-          name: "faqItem",
-          title: "Pregunta",
-          fields: [
-            defineField({
-              name: "question",
-              title: "Pregunta",
-              type: "string",
-              validation: (Rule) => Rule.required().min(5),
-            }),
-            defineField({
-              name: "answer",
-              title: "Respuesta",
-              type: "text",
-              rows: 3,
-              validation: (Rule) => Rule.required().min(10),
-            }),
-          ],
-          preview: {
-            select: { title: "question", subtitle: "answer" },
-          },
-        },
-      ],
-    }),
   ],
 
   preview: {
