@@ -69,9 +69,9 @@ function Icono({ nombre }: { nombre: string }) {
 }
 
 /** Antetítulo. Coral oscurecido porque es texto pequeño y necesita 4.5:1. */
-function Rotulo({ children }: { children: React.ReactNode }) {
+function Rotulo({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <span className="flex items-center gap-3">
+    <span className={`flex items-center gap-3 ${className}`}>
       <span aria-hidden className="h-[3px] w-10 shrink-0 rounded-pill" style={{ backgroundImage: "var(--gradient-sun)" }} />
       <span className="text-[0.7rem] font-semibold tracking-[0.25em] text-coral-ink uppercase">{children}</span>
     </span>
@@ -413,35 +413,39 @@ export default async function SunniHome() {
           sola fila, sin tarjetas, sin beneficios inventados. */}
       <section id="brands" className="scroll-mt-28 border-y border-ink/8 bg-cream py-16 sm:py-20">
         <Container>
-          <div className="grid items-center gap-8 lg:grid-cols-12 lg:gap-x-[48px]">
-            <InViewReveal variant="lead" className="min-w-0 lg:col-span-6">
-              <Rotulo>{MARCAS.eyebrow}</Rotulo>
-              {/* Se quedó atrás cuando subió la escala del resto de los
-                  titulares: iba a 2.7rem contra los 3.4rem de las demás
-                  secciones y se leía como un subtítulo, no como una sección.
-                  Ahora usa la misma escala que Vending, Experiences y
-                  Espacios. */}
-              <h2 className="mt-5 font-display text-[clamp(2.05rem,4.5vw,3.4rem)] leading-[1.03] font-bold tracking-[-0.03em] text-ink">
+          {/*
+            A UNA SOLA COLUMNA CENTRADA.
+
+            Iba a dos: el texto a la izquierda y, a la derecha, el dibujo con
+            las cuatro formas de colaborar y el botón. Eran dos mitades que no
+            se hablaban —el botón quedaba lejos del párrafo que lo justifica—
+            y la columna izquierda terminaba en el aire a media altura.
+
+            Centrado, se lee de corrido: qué es, para quién, de qué formas y
+            el botón. El dibujo sale; con la columna estrecha ya no hay hueco
+            que llenar, y el sol corriendo del cierre queda a una sección de
+            distancia, así que repetirlo aquí lo gastaba.
+          */}
+          <div className="mx-auto max-w-[46rem] text-center">
+            <InViewReveal variant="lead">
+              <Rotulo className="justify-center">{MARCAS.eyebrow}</Rotulo>
+              {/* Sube de 3.4rem a 3.8rem. Centrado y solo en su renglón
+                  aguanta más tamaño que cuando compartía fila. */}
+              <h2 className="mt-6 font-display text-[clamp(2.2rem,5vw,3.8rem)] leading-[1.03] font-bold tracking-[-0.03em] text-ink">
                 {MARCAS.titulo}
               </h2>
-              <p className="mt-4 max-w-[46ch] text-body text-gray">{MARCAS.texto}</p>
+              <p className="mx-auto mt-5 max-w-[48ch] text-lead text-gray">{MARCAS.texto}</p>
             </InViewReveal>
 
-            <InViewReveal delay={0.08} className="min-w-0 lg:col-span-5 lg:col-start-8">
-              {/* La lista de formas de colaborar son cuatro palabras sueltas
-                  contra un titular de dos líneas: esta mitad quedaba casi
-                  vacía. */}
-              <Personaje cual="sol" giro={-16} className="mb-6 h-24 sm:h-32 lg:h-40" />
-              <ul className="flex flex-wrap gap-x-6 gap-y-2">
-                {MARCAS.formas.map((f, i) => (
+            <InViewReveal delay={0.1}>
+              <ul className="mt-9 flex flex-wrap justify-center gap-x-7 gap-y-2">
+                {MARCAS.formas.map((f) => (
                   <li key={f}>
-                    <InViewReveal delay={0.06 * i}>
-                      <span className="block text-small font-medium text-ink/75">{f}</span>
-                    </InViewReveal>
+                    <span className="block text-small font-medium text-ink/75">{f}</span>
                   </li>
                 ))}
               </ul>
-              <div className="mt-7">
+              <div className="mt-8">
                 <SunniCTA variante="brands" tono="contorno" flecha>
                   {MARCAS.cta}
                 </SunniCTA>
