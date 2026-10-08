@@ -224,16 +224,68 @@ function SunniModal({
   const [enviado, setEnviado] = useState(false);
   const panel = useRef<HTMLDivElement>(null);
 
-  // Cerrar con Escape y bloquear el scroll del fondo mientras está abierto.
+  /*
+    Escape cierra, el fondo no hace scroll, y el foco se queda DENTRO.
+
+    Lo último no estaba. Se metía el foco al panel al abrir y el comentario de
+    aquí daba por hecho que con eso bastaba; no basta. Meter el foco una vez
+    no lo retiene: tabulando salía del diálogo a los veintitantos enlaces y
+    botones de la página de atrás, que además están ocultos para un lector de
+    pantalla porque el diálogo declara `aria-modal="true"`. Resultado: quien
+    navega con teclado se perdía detrás de una ventana que su lector decía que
+    no existe, y sin manera evidente de volver.
+
+    El ciclo se hace a mano porque esto es un `div` con `role="dialog"`. Un
+    `<dialog>` nativo abierto con `showModal()` lo trae de serie, pero cambiar
+    a nativo aquí arrastra el `::backdrop`, el posicionamiento y la animación
+    de entrada completos.
+  */
   useEffect(() => {
+    const FOCALES =
+      'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),' +
+      'textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+
+    const visibles = () =>
+      [...(panel.current?.querySelectorAll<HTMLElement>(FOCALES) ?? [])].filter(
+        (el) => el.offsetParent !== null || el === document.activeElement,
+      );
+
     const alPulsar = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        onClose();
+        return;
+      }
+      if (e.key !== "Tab") return;
+
+      const lista = visibles();
+      if (lista.length === 0) {
+        e.preventDefault();
+        panel.current?.focus();
+        return;
+      }
+      const primero = lista[0];
+      const ultimo = lista[lista.length - 1];
+      const activo = document.activeElement as HTMLElement | null;
+
+      // Si el foco ya se escapó —o está en el panel mismo— se devuelve al borde
+      // correcto según la dirección.
+      if (!activo || !panel.current?.contains(activo) || activo === panel.current) {
+        e.preventDefault();
+        (e.shiftKey ? ultimo : primero).focus();
+        return;
+      }
+      if (!e.shiftKey && activo === ultimo) {
+        e.preventDefault();
+        primero.focus();
+      } else if (e.shiftKey && activo === primero) {
+        e.preventDefault();
+        ultimo.focus();
+      }
     };
+
     document.addEventListener("keydown", alPulsar);
     const overflowPrevio = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    // El foco entra al panel: quien navega con teclado no puede quedarse fuera
-    // tabulando por la página de atrás mientras el diálogo está abierto.
     panel.current?.focus();
     return () => {
       document.removeEventListener("keydown", alPulsar);
@@ -289,7 +341,14 @@ function SunniModal({
           type="button"
           onClick={onClose}
           aria-label="Cerrar formulario"
-          className="absolute top-4 right-4 flex size-9 items-center justify-center rounded-pill text-gray transition-colors hover:bg-cream hover:text-ink"
+          /*
+            `size-9` son 36px: por debajo del objetivo táctil cómodo de 44, y
+            este botón está arriba a la derecha, que en un teléfono grande ya
+            es la zona más incómoda de alcanzar. Crece solo donde se toca con
+            el dedo; con cursor se queda en 36, que es el tamaño que pide el
+            diseño del panel.
+          */
+          className="absolute top-4 right-4 flex size-9 items-center justify-center rounded-pill text-gray transition-colors hover:bg-cream hover:text-ink pointer-coarse:size-11"
         >
           <X size={18} strokeWidth={1.75} />
         </button>

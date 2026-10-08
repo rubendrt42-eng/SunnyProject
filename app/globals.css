@@ -63,7 +63,15 @@
      que es el fondo más claro donde se usa. El de la especificación era más
      claro y no llegaba.
   */
-  --color-gray: #7b7065;
+  /*
+    Era #7b7065. Sobre el crema daba 4.62:1 —justo encima del 4.5 de la AA—,
+    y bastaba que el fondo fuera el degradado del amanecer para caer a 4.48 y
+    quedar por debajo. Un párrafo que pasa o no pasa según el punto del
+    degradado en el que caiga no es un color elegido, es una casualidad.
+    #74695e da entre 4.78 y 5.11 en todo el rango, y la diferencia a ojo es
+    inapreciable.
+  */
+  --color-gray: #74695e;
 
   /* El verde de la marca anterior. Su paleta prohíbe verde y salvia, así que
      apunta al coral hasta que se retiren sus dos usos. */

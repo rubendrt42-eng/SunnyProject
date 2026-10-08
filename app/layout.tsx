@@ -55,9 +55,32 @@ const dmSans = DM_Sans({ variable: "--font-body", subsets: ["latin"] });
  * Esta es la descripción por defecto de TODAS las páginas: cada una que no
  * defina la suya hereda esta.
  */
+/**
+ * LA DIRECCIÓN BASE DEL SITIO.
+ *
+ * Sin esto, Next resuelve la imagen que se ve al compartir y la URL canónica
+ * contra el origen de cada petición: en local salía `http://localhost:3111/…`
+ * dentro de `og:image`, y en producción cambia con cada despliegue de
+ * previsualización. Un enlace pegado en WhatsApp desde una previsualización
+ * enseñaría la imagen de una URL que caduca.
+ *
+ * No hace falta crear ninguna variable: `VERCEL_PROJECT_PRODUCTION_URL` la
+ * pone Vercel sola y apunta siempre al dominio de producción, así que el día
+ * que se conecte el dominio oficial esto lo sigue sin tocar nada. La primera
+ * opción queda por si algún día se prefiere fijarlo a mano.
+ */
+function direccionBase(): URL {
+  const propia = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  if (propia) return new URL(propia);
+  const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim();
+  if (vercel) return new URL(`https://${vercel}`);
+  return new URL("http://localhost:3000");
+}
+
 export async function generateMetadata(): Promise<Metadata> {
   const s = mezclarAjustes(DEFAULT_SETTINGS, await getSiteSettings());
   return {
+    metadataBase: direccionBase(),
     title: s.seoTitle,
     description: s.seoDescription,
     /**

@@ -148,7 +148,14 @@ export function HeaderInteractive({
             <Link
               key={link.href}
               href={link.href}
-              className="text-small font-medium text-current opacity-80 transition-opacity hover:opacity-100"
+              /*
+                Los enlaces medían 21px de alto. En una computadora da igual
+                —se apunta con el ratón— pero el menú de escritorio aparece
+                desde 1024px, y una tableta en horizontal mide justo eso y se
+                toca con el dedo. `pointer-coarse` los lleva a 44px solo ahí;
+                con cursor se quedan como están y la cabecera no cambia.
+              */
+              className="flex items-center text-small font-medium text-current opacity-80 transition-opacity hover:opacity-100 pointer-coarse:min-h-11"
             >
               {link.label}
             </Link>

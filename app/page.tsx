@@ -50,6 +50,12 @@ export const revalidate = 60;
 export const metadata: Metadata = {
   title: SEO.titulo,
   description: SEO.descripcion,
+  /*
+    La canónica va por página y no en el layout: puesta allí, `/privacidad`
+    heredaría «esta página es la portada» y le estaría diciendo a Google que
+    no la indexe por su cuenta. Se resuelve contra `metadataBase`.
+  */
+  alternates: { canonical: "/" },
 };
 
 const ICONOS = {
@@ -137,7 +143,11 @@ export default async function SunniHome() {
           Dos bloques del MISMO tamaño y peso. Que estén a la par es lo que
           dice —sin repetirlo en el copy— que el vending no es la marca
           entera. */}
-      <section id="que-hacemos" className="scroll-mt-24 border-y border-ink/8 bg-cream py-20 sm:py-28">
+      {/* `scroll-mt-28` = 112px. Era 24 (96px) contra una cabecera que mide
+          97: al pulsar el menú la sección quedaba un píxel por debajo. No se
+          notaba porque el relleno de la sección lo tapa, pero el margen era
+          negativo y cualquier crecimiento de la cabecera lo volvía visible. */}
+      <section id="que-hacemos" className="scroll-mt-28 border-y border-ink/8 bg-cream py-20 sm:py-28">
         <Container>
           <InViewReveal variant="lead">
             {/*
@@ -199,7 +209,7 @@ export default async function SunniHome() {
           Díptico con la fotografía a la izquierda, y debajo los seis moods,
           que venían de la sección «Inside Sun-i». Se mudaron aquí porque
           explican el producto: su sitio es dentro del producto. */}
-      <section id="vending" className="scroll-mt-24 py-20 sm:py-28 lg:py-32">
+      <section id="vending" className="scroll-mt-28 py-20 sm:py-28 lg:py-32">
         <Container>
           <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-x-[48px]">
             <InViewReveal variant="media" className="min-w-0 lg:col-span-5">
@@ -230,8 +240,17 @@ export default async function SunniHome() {
               </InViewReveal>
               <InViewReveal delay={0.08}>
                 <p className="mt-6 max-w-[48ch] text-body text-gray">{VENDING.texto}</p>
-                <p className="mt-4 max-w-[44ch] text-small text-gray/85">{VENDING.nota}</p>
-                <p className="mt-7 font-display text-[clamp(1.45rem,2.7vw,2.1rem)] font-semibold text-coral">
+                {/* Iba a `text-gray/85` y daba 3.46:1 sobre el crema, por debajo
+                    del 4.5 que pide la AA para texto de 14px. El gris de la marca
+                    a plena opacidad da 4.62:1 y es el único valor que pasa: al
+                    95% todavía se queda en 4.18. */}
+                <p className="mt-4 max-w-[44ch] text-small text-gray">{VENDING.nota}</p>
+                {/* `text-coral` da 3.61:1 sobre el crema. A 33px de escritorio
+                    eso basta —texto grande pide 3.0— pero en el teléfono baja a
+                    23px y ahí la norma pide 4.5, así que la frase quedaba por
+                    debajo solo en móvil. `coral-ink` da 4.58:1 y pasa en los dos,
+                    y es el mismo tono que ya llevan los rótulos y los enlaces. */}
+                <p className="mt-7 font-display text-[clamp(1.45rem,2.7vw,2.1rem)] font-semibold text-coral-ink">
                   {VENDING.frase}
                 </p>
                 <div className="mt-8">
@@ -275,7 +294,7 @@ export default async function SunniHome() {
       {/* ── 04 · EXPERIENCES ──────────────────────────────────────────────
           Texto a la izquierda, tipos a la derecha en lista con reglas. No
           repite la composición del bloque anterior. */}
-      <section id="experiences" className="scroll-mt-24 border-y border-ink/8 py-20 sm:py-28" style={{ backgroundImage: "var(--gradient-dawn)" }}>
+      <section id="experiences" className="scroll-mt-28 border-y border-ink/8 py-20 sm:py-28" style={{ backgroundImage: "var(--gradient-dawn)" }}>
         <Container>
           <div className="grid gap-10 lg:grid-cols-12 lg:gap-x-[48px]">
             <InViewReveal variant="lead" className="min-w-0 lg:col-span-6">
@@ -337,7 +356,7 @@ export default async function SunniHome() {
 
       {/* ── 05 · DÓNDE VIVE SUN-I ─────────────────────────────────────────
           Sin párrafo. Quien llega aquí busca reconocerse en un renglón. */}
-      <section id="espacios" className="scroll-mt-24 py-20 sm:py-28">
+      <section id="espacios" className="scroll-mt-28 py-20 sm:py-28">
         <Container>
           {/*
             Esta sección era la única sin una sola imagen: un titular y seis
@@ -392,7 +411,7 @@ export default async function SunniHome() {
       {/* ── 06 · PARA MARCAS ──────────────────────────────────────────────
           Pequeña a propósito: una tercera puerta, no un tercer negocio. Una
           sola fila, sin tarjetas, sin beneficios inventados. */}
-      <section id="brands" className="scroll-mt-24 border-y border-ink/8 bg-cream py-16 sm:py-20">
+      <section id="brands" className="scroll-mt-28 border-y border-ink/8 bg-cream py-16 sm:py-20">
         <Container>
           <div className="grid items-center gap-8 lg:grid-cols-12 lg:gap-x-[48px]">
             <InViewReveal variant="lead" className="min-w-0 lg:col-span-6">
@@ -436,7 +455,7 @@ export default async function SunniHome() {
           Absorbe el bloque «Bring Sun-i», que era una sección aparte
           diciendo lo mismo. Un solo momento de máximo contraste en toda la
           página. */}
-      <section id="bring" className="scroll-mt-24 px-5 py-20 sm:py-28">
+      <section id="bring" className="scroll-mt-28 px-5 py-20 sm:py-28">
         <Container className="!px-0">
           <InViewReveal variant="lead">
             <div
@@ -463,7 +482,10 @@ export default async function SunniHome() {
                   {CIERRE.ctaMarcas}
                 </SunniCTA>
               </div>
-              <p className="mt-7 text-[0.75rem] tracking-[0.1em] text-ink/55">{CIERRE.condiciones}</p>
+              {/* A 55% daba 3.13:1 sobre el degradado del panel. Es la línea que
+                  quita el miedo justo debajo del botón principal: si no se lee,
+                  no sirve de nada. Al 75% da 5.24:1. */}
+              <p className="mt-7 text-[0.75rem] tracking-[0.1em] text-ink/75">{CIERRE.condiciones}</p>
             </div>
           </InViewReveal>
         </Container>

@@ -6,6 +6,7 @@ import { whatsappLink } from "@/lib/lean-content";
 export const metadata: Metadata = {
   title: "Privacidad — Sun‑i project®",
   description: "Qué datos recogemos cuando solicitas un lugar, para qué los usamos y dónde quedan guardados.",
+  alternates: { canonical: "/privacidad" },
 };
 
 /**
