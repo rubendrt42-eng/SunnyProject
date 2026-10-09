@@ -133,11 +133,20 @@ export const VENDING = {
 export const EXPERIENCIAS = {
   eyebrow: "Sun‑i Experiences",
   titulo: "Bienestar que llega a tu espacio.",
-  // Texto de Emmy, literal. Nombra las sesiones y los espacios en la misma
-  // frase, así que la lista de abajo ya no repite los espacios.
+  /*
+    Texto de Emmy. Antes empezaba directo por «Llevamos sesiones de yoga…»,
+    que describe el servicio pero lo deja suelto: no decía qué pinta dentro
+    de la marca. Ahora abre encuadrándolo —es lo que complementa a los puntos
+    físicos— y después entra el mismo contenido de siempre.
+
+    «Más allá de los puntos físicos» es la frase que hace el trabajo: conecta
+    esta sección con Vending sin repetir lo que Vending ya explicó.
+  */
   texto:
-    "Llevamos sesiones de yoga, mindfulness, entrenamiento funcional y más a oficinas, universidades y " +
-    "comunidades. Experiencias guiadas por expertos para moverse, conectar y sentirse bien.",
+    "Complementamos la experiencia Sun‑i project®: más allá de los puntos físicos, desarrollamos una " +
+    "experiencia integral incorporando sesiones de yoga, mindfulness, entrenamiento funcional y más a " +
+    "oficinas, universidades y comunidades. Experiencias guiadas por expertos para moverse, conectar y " +
+    "sentirse bien.",
   /*
     Las cinco sesiones, con la descripción que escribió Emmy.
 
