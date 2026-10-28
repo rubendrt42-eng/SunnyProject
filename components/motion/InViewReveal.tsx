@@ -57,8 +57,18 @@ export function InViewReveal({
      * en una línea de tiempo de posición lo que existe es el avance. 0.08 s de
      * retraso equivalen a unos 6 puntos de rango, y se aplica a los dos
      * extremos para que la ventana no se acorte.
+     *
+     * EL TOPE ES 15 Y NO ES UN NÚMERO REDONDO CUALQUIERA.
+     *
+     * El rango termina en `entry 85% + escalonado`, y `entry` solo llega a
+     * 100%: con un escalonado de 22 el final caía en 107%, o sea fuera. La
+     * animación no terminaba nunca y el bloque se quedaba al 88 % de opacidad
+     * para siempre, ya completamente a la vista. Se veía como un texto
+     * desvaído —y en gris sobre crema baja del contraste mínimo—, no como un
+     * revelado. 85 + 15 = 100: el último escalón acaba justo al completar la
+     * entrada, que es lo que dice el comentario del rango en `globals.css`.
      */
-    ...(delay ? { "--reveal-shift": `${Math.min(delay * 75, 22)}%` } : {}),
+    ...(delay ? { "--reveal-shift": `${Math.min(delay * 75, 15)}%` } : {}),
   } as CSSProperties;
 
   return (
