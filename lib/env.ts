@@ -1,25 +1,42 @@
 /**
  * La dirección pública del sitio.
  *
- * POR QUÉ NO ES UN SIMPLE `|| "http://localhost:3000"`
+ * ES EL DOMINIO, NO UNA VARIABLE DE ENTORNO.
  *
- * Este valor arma el enlace que se manda al compartir una experiencia por
- * WhatsApp, que es el canal de crecimiento real de este producto. Si
- * `NEXT_PUBLIC_SITE_URL` falta, la versión anterior caía en `localhost:3000` y
- * **cada enlace compartido apuntaba al ordenador de quien lo compartió**. Sin
- * error, sin aviso, sin nada raro en la página: el fallo solo se ve cuando
- * alguien al otro lado abre el enlace y no llega a ningún sitio.
+ * Antes la única fuente era `NEXT_PUBLIC_SITE_URL` y, si faltaba, el dominio
+ * que el propio Vercel expone. La variable nunca se puso, así que en
+ * producción el sitio se presentaba como `sunny-mvp.vercel.app`: ahí
+ * apuntaban la URL canónica, la imagen de compartir y el mapa del sitio.
  *
- * Hoy la variable está bien puesta. El riesgo es el día que se cree el proyecto
- * de Vercel del dominio definitivo y alguien no la copie. Por eso, antes de
- * caer en localhost, se usa el dominio que el propio Vercel expone.
+ * Google obedeció. Indexó la dirección de Vercel en vez del dominio del
+ * cliente y, como el resultado vivía en `vercel.app`, rotuló la ficha con el
+ * nombre de Vercel y su logotipo. El sitio llevaba días así.
  *
- * `localhost` queda solo para desarrollo, que es donde de verdad corresponde.
+ * El dominio ya está decidido y conectado, así que vive aquí, en el código,
+ * donde no se puede olvidar de copiar. La variable sigue mandando por encima
+ * —sirve para mover el sitio sin tocar código— pero ya no hace falta que
+ * exista.
+ *
+ * ORDEN
+ *
+ *   1. `NEXT_PUBLIC_SITE_URL`, si alguien la pone a propósito.
+ *   2. En producción, el dominio oficial.
+ *   3. En una previsualización, su propia URL: cada rama se prueba a sí misma
+ *      y no se hace pasar por el sitio de verdad.
+ *   4. `localhost`, solo en desarrollo.
+ *
+ * Esto arma además el enlace que se manda al compartir por WhatsApp. Con
+ * `localhost` cada enlace compartido apuntaría al ordenador de quien lo
+ * compartió: sin error, sin aviso, y solo visible para quien lo recibe.
  */
+const DOMINIO_OFICIAL = "https://www.suniproject.com";
+
 function resolverSiteUrl(): string {
   if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL;
 
-  const enVercel = process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL;
+  if (process.env.VERCEL_ENV === "production") return DOMINIO_OFICIAL;
+
+  const enVercel = process.env.VERCEL_URL || process.env.VERCEL_PROJECT_PRODUCTION_URL;
   if (enVercel) return `https://${enVercel}`;
 
   return "http://localhost:3000";

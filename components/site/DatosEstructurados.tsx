@@ -50,14 +50,43 @@ export function DatosEstructurados({
   };
   const redes = [limpiar(instagram)].filter(Boolean);
 
+  /*
+    EL NOMBRE QUE GOOGLE ESCRIBE ENCIMA DEL RESULTADO.
+
+    En la ficha de búsqueda aparecía «Vercel», con su logotipo, encima del
+    título de la página. No era un error de Google: la canónica apuntaba a
+    `sunny-mvp.vercel.app`, y a falta de una declaración explícita Google
+    deduce el nombre del dominio — y el dueño de `vercel.app` es Vercel.
+
+    Arreglar la canónica es la mitad. La otra mitad es decirlo sin que haya
+    que deducirlo, y lo que Google lee para eso es un `WebSite` con `name`.
+
+    Va en todas las páginas porque el componente vive en el layout. No
+    estorba: Google solo toma el nombre del sitio de la portada.
+  */
   const datos: Record<string, unknown> = {
     "@context": "https://schema.org",
-    "@type": "Organization",
-    name: nombre,
-    url: env.siteUrl,
-    description: descripcion,
-    ...(redes.length ? { sameAs: redes } : {}),
-    ...(correo?.trim() ? { email: correo.trim() } : {}),
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": `${env.siteUrl}/#sitio`,
+        name: nombre,
+        url: env.siteUrl,
+        inLanguage: "es-MX",
+        publisher: { "@id": `${env.siteUrl}/#organizacion` },
+      },
+      {
+        "@type": "Organization",
+        "@id": `${env.siteUrl}/#organizacion`,
+        name: nombre,
+        url: env.siteUrl,
+        description: descripcion,
+        // El mismo dibujo que sale en la pestaña del navegador.
+        logo: `${env.siteUrl}/icon.png`,
+        ...(redes.length ? { sameAs: redes } : {}),
+        ...(correo?.trim() ? { email: correo.trim() } : {}),
+      },
+    ],
   };
 
   return (

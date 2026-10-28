@@ -1,26 +1,38 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 /**
- * El enlace que se comparte no puede apuntar a localhost.
+ * El sitio tiene que presentarse con su propio dominio.
+ *
+ * QUÉ PASABA
+ *
+ * `env.siteUrl` salía de `NEXT_PUBLIC_SITE_URL` y, si faltaba, del dominio que
+ * Vercel expone solo. La variable nunca llegó a ponerse, así que en producción
+ * la URL canónica, la imagen de compartir y el mapa del sitio decían todos
+ * `https://sunny-mvp.vercel.app`.
+ *
+ * Google hizo caso: indexó esa dirección en lugar del dominio del cliente y,
+ * como el resultado vivía en `vercel.app`, puso «Vercel» y su logotipo encima
+ * del nombre de la marca en la ficha de búsqueda.
+ *
+ * Es un fallo que no se ve desde dentro. La página se ve perfecta; lo que
+ * cambia es lo que el sitio dice de sí mismo en el `<head>`, y eso solo lo
+ * leen los buscadores y las aplicaciones de mensajería.
  *
  * QUÉ PROTEGE
  *
- * `env.siteUrl` arma la dirección que se manda por WhatsApp al compartir una
- * experiencia. Antes caía en `http://localhost:3000` en cuanto faltaba
- * `NEXT_PUBLIC_SITE_URL`, y ese fallo es invisible desde dentro: la página se
- * ve perfecta, el botón funciona, y el enlace solo se rompe cuando alguien al
- * otro lado lo abre.
+ * Que producción use el dominio aunque nadie ponga la variable, que una
+ * previsualización NO se haga pasar por producción, y que nunca se comparta
+ * un enlace a localhost.
  *
- * Hoy la variable está puesta. El riesgo es el día que se cree el proyecto de
- * Vercel del dominio definitivo y no se copie.
- *
- * Se recarga el módulo en cada caso porque el valor se calcula una sola vez, al
- * importarlo.
+ * Se recarga el módulo en cada caso porque el valor se calcula una sola vez,
+ * al importarlo.
  */
 const ORIGINAL = { ...process.env };
+const OFICIAL = "https://www.suniproject.com";
 
 async function siteUrlCon(vars: Record<string, string | undefined>): Promise<string> {
-  for (const k of ["NEXT_PUBLIC_SITE_URL", "VERCEL_PROJECT_PRODUCTION_URL", "VERCEL_URL"]) delete process.env[k];
+  for (const k of ["NEXT_PUBLIC_SITE_URL", "VERCEL_ENV", "VERCEL_PROJECT_PRODUCTION_URL", "VERCEL_URL"])
+    delete process.env[k];
   for (const [k, v] of Object.entries(vars)) if (v !== undefined) process.env[k] = v;
   vi.resetModules();
   const { env } = await import("@/lib/env");
@@ -34,26 +46,49 @@ afterEach(() => {
 });
 
 describe("la dirección pública del sitio", () => {
+  it("en producción usa el dominio oficial sin necesitar ninguna variable", async () => {
+    /*
+      ESTE ES EL CASO QUE FALLABA. Tal cual está Vercel hoy: `VERCEL_ENV` en
+      production, `NEXT_PUBLIC_SITE_URL` sin poner, y el dominio de Vercel
+      disponible. Antes ganaba el de Vercel.
+    */
+    const url = await siteUrlCon({
+      VERCEL_ENV: "production",
+      VERCEL_PROJECT_PRODUCTION_URL: "sunny-mvp.vercel.app",
+      VERCEL_URL: "sunny-mvp-abc123.vercel.app",
+    });
+    expect(url).toBe(OFICIAL);
+  });
+
+  it("nunca se presenta como vercel.app en producción", async () => {
+    const url = await siteUrlCon({ VERCEL_ENV: "production", VERCEL_PROJECT_PRODUCTION_URL: "sunny-mvp.vercel.app" });
+    expect(url, "Google indexaría la dirección de Vercel en vez del dominio").not.toContain("vercel.app");
+  });
+
   it("usa NEXT_PUBLIC_SITE_URL cuando está puesta", async () => {
     expect(await siteUrlCon({ NEXT_PUBLIC_SITE_URL: "https://thesunnyproject.mx" })).toBe("https://thesunnyproject.mx");
   });
 
-  it("manda la variable por encima del dominio de Vercel", async () => {
+  it("manda la variable por encima del dominio oficial", async () => {
+    /*
+      Sigue siendo la que gana: permite mover el sitio de dominio sin tocar
+      código ni volver a desplegar desde cero.
+    */
     const url = await siteUrlCon({
       NEXT_PUBLIC_SITE_URL: "https://thesunnyproject.mx",
-      VERCEL_PROJECT_PRODUCTION_URL: "otro.vercel.app",
+      VERCEL_ENV: "production",
     });
     expect(url).toBe("https://thesunnyproject.mx");
   });
 
-  it("cae en el dominio de producción de Vercel si falta la variable", async () => {
-    expect(await siteUrlCon({ VERCEL_PROJECT_PRODUCTION_URL: "sunny-mvp.vercel.app" })).toBe(
-      "https://sunny-mvp.vercel.app",
-    );
-  });
-
-  it("usa la URL del despliegue si no hay dominio de producción", async () => {
-    expect(await siteUrlCon({ VERCEL_URL: "sunny-mvp-abc123.vercel.app" })).toBe("https://sunny-mvp-abc123.vercel.app");
+  it("una previsualización se prueba a sí misma, no se hace pasar por el sitio", async () => {
+    /*
+      Si una rama en pruebas dijera ser el dominio oficial, su canónica y su
+      imagen de compartir apuntarían a producción y no se podría revisar lo
+      que de verdad cambió.
+    */
+    const url = await siteUrlCon({ VERCEL_ENV: "preview", VERCEL_URL: "sunny-mvp-abc123.vercel.app" });
+    expect(url).toBe("https://sunny-mvp-abc123.vercel.app");
   });
 
   it("solo llega a localhost fuera de Vercel", async () => {
@@ -61,7 +96,7 @@ describe("la dirección pública del sitio", () => {
   });
 
   it("nunca comparte un enlace a localhost estando en Vercel", async () => {
-    const url = await siteUrlCon({ VERCEL_URL: "sunny-mvp-abc123.vercel.app" });
+    const url = await siteUrlCon({ VERCEL_ENV: "preview", VERCEL_URL: "sunny-mvp-abc123.vercel.app" });
     expect(url).not.toContain("localhost");
   });
 });
