@@ -97,6 +97,14 @@ const SETTINGS_QUERY = `
       marcas{eyebrow, titulo, texto, formas, cta},
       cierre{titulo, texto, condiciones, cta, ctaMarcas}
     },
+    "imagenes": imagenes{
+      "clase": clase{"url": asset->url, "alt": alt, "hx": hotspot.x, "hy": hotspot.y, "lqip": asset->metadata.lqip},
+      "maquina": maquina{"url": asset->url, "alt": alt, "hx": hotspot.x, "hy": hotspot.y, "lqip": asset->metadata.lqip},
+      "circulo": circulo{"url": asset->url, "alt": alt, "hx": hotspot.x, "hy": hotspot.y, "lqip": asset->metadata.lqip},
+      "parque": parque{"url": asset->url, "alt": alt, "hx": hotspot.x, "hy": hotspot.y, "lqip": asset->metadata.lqip},
+      "personajeCara": personajeCara{"url": asset->url, "alt": alt},
+      "personajeSol": personajeSol{"url": asset->url, "alt": alt}
+    },
     "interfaz": interfaz{
       navegacion{enlace1, enlace2, enlace3, enlace4, boton},
       heroBotones{principal, secundario},

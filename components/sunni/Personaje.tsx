@@ -1,4 +1,6 @@
 import Image from "next/image";
+import { sanityLoader } from "@/lib/sanity/loader";
+import type { ImagenSunni } from "@/lib/sanity/types";
 
 /**
  * LOS PERSONAJES DE SUN-I.
@@ -28,6 +30,12 @@ const PERSONAJES = {
 export function Personaje({
   cual,
   /**
+   * El dibujo que Emmy subió al Studio, si lo hay. Tiene que ser PNG con
+   * fondo transparente: un JPG saldría con un recuadro blanco encima del
+   * degradado del cierre.
+   */
+  deSanity,
+  /**
    * Grados de inclinación. Cada uno va ladeado distinto a propósito: cinco
    * dibujos rectos en la misma página se leen como iconos repetidos de una
    * plantilla; ladeados a ángulos distintos se leen como calcomanías puestas
@@ -43,14 +51,19 @@ export function Personaje({
   className = "",
 }: {
   cual: keyof typeof PERSONAJES;
+  deSanity?: ImagenSunni | null;
   giro?: number;
   movimiento?: "gira" | "late";
   className?: string;
 }) {
   const p = PERSONAJES[cual];
+  const url = deSanity?.url?.trim();
   return (
     <Image
-      src={p.src}
+      src={url ?? p.src}
+      {...(url ? { loader: sanityLoader } : {})}
+      // Sigue sin texto alternativo aunque venga de Sanity: es decoración, y
+      // eso no cambia porque el archivo lo suba otra persona.
       alt=""
       aria-hidden
       width={p.ancho}

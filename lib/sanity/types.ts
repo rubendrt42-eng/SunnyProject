@@ -135,6 +135,31 @@ export interface InterfazSunni {
   brands?: ProsaFormularioSanity | null;
 }
 
+/**
+ * Una imagen subida desde el Studio.
+ *
+ * `hx`/`hy` son el punto de recorte que Emmy marca en Sanity, en 0..1. Se
+ * traducen a `object-position` para que al recortar la foto al formato del
+ * hueco se conserve lo importante en vez de lo que caiga en el centro.
+ */
+export interface ImagenSunni {
+  url?: string | null;
+  alt?: string | null;
+  hx?: number | null;
+  hy?: number | null;
+  lqip?: string | null;
+}
+
+/** Las imágenes de la portada, tal como llegan del Studio. */
+export interface ImagenesSunni {
+  clase?: ImagenSunni | null;
+  maquina?: ImagenSunni | null;
+  circulo?: ImagenSunni | null;
+  parque?: ImagenSunni | null;
+  personajeCara?: ImagenSunni | null;
+  personajeSol?: ImagenSunni | null;
+}
+
 export interface PortadaSunni {
   hero?: {
     badge?: string | null;
@@ -227,6 +252,9 @@ export interface SiteSettings {
 
   /** Menú, pie y formularios. Ver `InterfazSunni`. */
   interfaz?: InterfazSunni | null;
+
+  /** Las fotografías y los dibujos. Ver `ImagenesSunni`. */
+  imagenes?: ImagenesSunni | null;
 
   instagramUrl?: string;
   whatsapp?: string;

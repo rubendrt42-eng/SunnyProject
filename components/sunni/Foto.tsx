@@ -1,4 +1,6 @@
 import Image from "next/image";
+import { sanityLoader } from "@/lib/sanity/loader";
+import type { ImagenSunni } from "@/lib/sanity/types";
 
 /**
  * LAS FOTOGRAFÍAS DE SUN-I.
@@ -39,7 +41,13 @@ const FOTOS = {
     una propuesta de cómo se vería la unidad rotulada.
   */
   parque: {
-    src: "/media/sunni/sunni-parque.webp",
+    /*
+      Archivo nuevo, nombre nuevo. El optimizador de Next cachea por URL:
+      cambiar el contenido dejando el mismo nombre ya nos costó un rato de
+      creer que el cambio no se aplicaba. El anterior se queda en el
+      repositorio por si hace falta volver.
+    */
+    src: "/media/sunni/sunni-parque-v2.webp",
     alt: "Render de una unidad Sun\u2011i rotulada con cielo azul en un parque, una persona eligiendo en la pantalla",
   },
   circulo: {
@@ -50,22 +58,53 @@ const FOTOS = {
 
 export function Foto({
   cual,
+  deSanity,
   proporcion = "aspect-[4/5]",
   prioridad = false,
   className = "",
 }: {
   cual: keyof typeof FOTOS;
+  /**
+   * La imagen que Emmy subió al Studio, si la hay. Manda sobre la del
+   * repositorio; vacía o sin archivo, se usa la de aquí. Vaciar una imagen en
+   * Sanity nunca deja un hueco.
+   */
+  deSanity?: ImagenSunni | null;
   proporcion?: string;
   /** Solo para la del hero: es la imagen más grande de la primera pantalla. */
   prioridad?: boolean;
   className?: string;
 }) {
   const f = FOTOS[cual];
+  const url = deSanity?.url?.trim();
+  const desdeSanity = Boolean(url);
+
+  /*
+    EL PUNTO DE RECORTE.
+
+    Cada hueco tiene una forma fija y la foto se recorta con `object-cover`.
+    Por defecto el navegador recorta por el centro, y una foto cuya cara está
+    arriba a la izquierda pierde justo la cara.
+
+    Sanity guarda el punto que Emmy marca en el Studio (0..1); aquí se
+    traduce a `object-position`. Sin marcar, queda el centro de siempre.
+  */
+  const foco =
+    desdeSanity && typeof deSanity?.hx === "number" && typeof deSanity?.hy === "number"
+      ? { objectPosition: `${Math.round(deSanity.hx * 100)}% ${Math.round(deSanity.hy * 100)}%` }
+      : undefined;
+
   return (
     <div className={`relative overflow-clip rounded-2xl bg-cream ${proporcion} ${className}`}>
       <Image
-        src={f.src}
-        alt={f.alt}
+        src={url ?? f.src}
+        // La descripción también se puede cambiar desde Sanity. Si se deja
+        // vacía queda la del código, que está escrita y revisada: una imagen
+        // sin descripción es una imagen que no existe para quien no la ve.
+        alt={deSanity?.alt?.trim() || f.alt}
+        {...(desdeSanity ? { loader: sanityLoader } : {})}
+        {...(desdeSanity && deSanity?.lqip ? { placeholder: "blur" as const, blurDataURL: deSanity.lqip } : {})}
+        style={foco}
         fill
         priority={prioridad}
         sizes="(min-width: 1024px) 42vw, 100vw"

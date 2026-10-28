@@ -90,6 +90,13 @@ export default async function SunniHome() {
   // Los dos botones de la primera pantalla estaban escritos dentro del JSX,
   // así que no se podían cambiar desde Sanity. Ahora sí.
   const { heroBotones } = interfazConSanity(ajustes?.interfaz);
+  /*
+    Las imágenes. Lo que Emmy suba al Studio manda; lo que deje vacío usa el
+    archivo del repositorio. `?? {}` para que la página siga dibujándose si
+    Sanity no responde: una portada sin fotos es mala, una portada que no
+    carga es peor.
+  */
+  const img = ajustes?.imagenes ?? {};
 
   return (
     <main>
@@ -131,7 +138,7 @@ export default async function SunniHome() {
               {/* `aspect-[3/4]` es la proporción exacta del archivo (960×1280),
                   así que `object-cover` no recorta un solo píxel: se ve el
                   encuadre completo que mandaste. */}
-              <Foto cual="clase" proporcion="aspect-[3/4]" prioridad />
+              <Foto cual="clase" deSanity={img.clase} proporcion="aspect-[3/4]" prioridad />
             </InViewReveal>
           </div>
         </Container>
@@ -166,8 +173,7 @@ export default async function SunniHome() {
                   {QUE_HACEMOS.titulo}
                 </h2>
               </div>
-              <Personaje
-                cual="cara"
+              <Personaje cual="cara" deSanity={img.personajeCara}
                 movimiento="late"
                 giro={-13}
                 className="h-28 shrink-0 sm:h-36 md:h-44 lg:h-56"
@@ -213,7 +219,7 @@ export default async function SunniHome() {
         <Container>
           <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-x-[48px]">
             <InViewReveal variant="media" className="min-w-0 lg:col-span-5">
-              <Foto cual="maquina" />
+              <Foto cual="maquina" deSanity={img.maquina} />
             </InViewReveal>
 
             <div className="min-w-0 lg:col-span-6 lg:col-start-7">
@@ -232,7 +238,7 @@ export default async function SunniHome() {
                 */}
                 <div className="flex items-start justify-between gap-6">
                   <Rotulo>{VENDING.eyebrow}</Rotulo>
-                  <Personaje cual="sol" giro={15} className="-mt-4 h-24 shrink-0 sm:h-32 lg:h-40" />
+                  <Personaje cual="sol" deSanity={img.personajeSol} giro={15} className="-mt-4 h-24 shrink-0 sm:h-32 lg:h-40" />
                 </div>
                 <h2 className="mt-5 max-w-[18ch] font-display text-[clamp(2.05rem,4.5vw,3.4rem)] leading-[1.03] font-bold tracking-[-0.03em] text-ink">
                   {VENDING.titulo}
@@ -325,7 +331,7 @@ export default async function SunniHome() {
                 móvil las dos columnas van una tras otra y aquí no hay hueco
                 que llenar, solo scroll de más.
               */}
-              <Foto cual="circulo" proporcion="aspect-[16/10]" className="mt-12 hidden lg:block" />
+              <Foto cual="circulo" deSanity={img.circulo} proporcion="aspect-[16/10]" className="mt-12 hidden lg:block" />
             </InViewReveal>
 
             <InViewReveal delay={0.08} className="min-w-0 lg:col-span-5 lg:col-start-8">
@@ -348,7 +354,7 @@ export default async function SunniHome() {
               {/* La columna derecha terminaba en «Activaciones» mientras la
                   izquierda seguía con la fotografía: ese desnivel era hueco
                   en blanco. El dibujo lo ocupa y cierra la lista. */}
-              <Personaje cual="cara" movimiento="late" giro={11} className="mt-10 ml-auto h-24 sm:h-32" />
+              <Personaje cual="cara" deSanity={img.personajeCara} movimiento="late" giro={11} className="mt-10 ml-auto h-24 sm:h-32" />
             </InViewReveal>
           </div>
         </Container>
@@ -402,7 +408,7 @@ export default async function SunniHome() {
             </div>
 
             <InViewReveal delay={0.08} className="min-w-0 lg:col-span-5">
-              <Foto cual="parque" proporcion="aspect-[3/4]" />
+              <Foto cual="parque" deSanity={img.parque} proporcion="aspect-[3/4]" />
             </InViewReveal>
           </div>
         </Container>
@@ -469,7 +475,7 @@ export default async function SunniHome() {
               {/* El sol corriendo, sobre el panel amarillo. Se sostiene por
                   el trazo negro del dibujo, no por el color: amarillo sobre
                   amarillo se perdería sin ese contorno. */}
-              <Personaje cual="sol" giro={4} className="mx-auto mb-7 h-28 sm:h-36" />
+              <Personaje cual="sol" deSanity={img.personajeSol} giro={4} className="mx-auto mb-7 h-28 sm:h-36" />
               <h2 className="mx-auto max-w-[18ch] font-display text-[clamp(2.3rem,5.6vw,4rem)] leading-[1.0] font-bold tracking-[-0.035em] text-ink">
                 {CIERRE.titulo}
               </h2>

@@ -75,7 +75,16 @@ export const siteSettings = defineType({
   icon: CogIcon,
 
   groups: [
-    { name: "portada", title: "Portada", default: true },
+    /*
+      El orden importa más de lo que parece: es el orden en que Emmy busca.
+      Primero lo que ES la página —sus textos y sus imágenes—, después lo que
+      la rodea, y al final los datos de marca que casi nunca se tocan.
+
+      «Imágenes» iba en tercer lugar, detrás del menú y los formularios, que
+      es justo donde no se busca una fotografía.
+    */
+    { name: "portada", title: "Textos de la página", default: true },
+    { name: "imagenes", title: "Imágenes" },
     { name: "interfaz", title: "Menú, pie y formularios" },
     { name: "contacto", title: "Marca y contacto" },
   ],
@@ -88,7 +97,8 @@ export const siteSettings = defineType({
       group: "portada",
       description:
         "Siete apartados, uno por sección y en el orden en que se ven al bajar por la página. " +
-        "Lo que dejes vacío conserva el texto actual: vaciar un campo nunca deja un hueco.",
+        "Escribe, pulsa «Publish» arriba a la derecha y en menos de un minuto se ve en suniproject.com. " +
+        "Si borras un texto NO queda un hueco: vuelve el que había. Puedes probar sin miedo.",
     }),
 
     defineField({
@@ -100,6 +110,17 @@ export const siteSettings = defineType({
         "Todo lo que se lee fuera de las secciones de la portada: el menú de arriba, los botones de " +
         "la primera pantalla, el pie y lo que dicen los tres formularios. Misma regla: lo que dejes " +
         "vacío conserva el texto actual.",
+    }),
+
+    defineField({
+      name: "imagenes",
+      title: "Imágenes de la portada",
+      type: "fotosSunni",
+      group: "imagenes",
+      description:
+        "Las cuatro fotografías y los dos dibujos, numerados igual que las secciones de «Textos de la página». " +
+        "Cada hueco tiene una forma fija y la foto se recorta para caber: marca con el selector de recorte " +
+        "la cara o el objeto que no puede perderse. Si borras una imagen NO queda un hueco: vuelve la que había.",
     }),
 
     // ── Marca ────────────────────────────────────────────────────────────

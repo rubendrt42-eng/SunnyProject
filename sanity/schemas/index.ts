@@ -2,6 +2,7 @@ import type { SchemaTypeDefinition } from "sanity";
 import { siteSettings } from "./siteSettings";
 import { portada } from "./portada";
 import { interfaz } from "./interfaz";
+import { fotos } from "./fotos";
 
 /**
  * Todos los tipos de contenido del proyecto.
@@ -21,4 +22,4 @@ import { interfaz } from "./interfaz";
  * fotografías, y `./experience` sigue en el repositorio. Si el catálogo
  * vuelve, se recupera devolviendo el import y su lugar en esta lista.
  */
-export const schemaTypes: SchemaTypeDefinition[] = [siteSettings, portada, interfaz];
+export const schemaTypes: SchemaTypeDefinition[] = [siteSettings, portada, interfaz, fotos];
