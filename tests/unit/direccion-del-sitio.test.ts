@@ -65,6 +65,35 @@ describe("la dirección pública del sitio", () => {
     expect(url, "Google indexaría la dirección de Vercel en vez del dominio").not.toContain("vercel.app");
   });
 
+  it("ignora la variable si en producción trae la dirección de Vercel", async () => {
+    /*
+      ESTE ERA EL CASO REAL. Primero se creyó que `NEXT_PUBLIC_SITE_URL` no
+      estaba puesta; sí lo estaba, con `https://sunny-mvp.vercel.app` dentro.
+      Por eso poner el dominio en el código no cambió nada: la variable gana.
+
+      En producción un `*.vercel.app` no es la dirección del sitio, es la del
+      despliegue. Nadie la quiere como canónica.
+    */
+    const url = await siteUrlCon({
+      NEXT_PUBLIC_SITE_URL: "https://sunny-mvp.vercel.app",
+      VERCEL_ENV: "production",
+    });
+    expect(url).toBe(OFICIAL);
+  });
+
+  it("fuera de producción sí respeta un vercel.app, que es donde vive de verdad", async () => {
+    const url = await siteUrlCon({
+      NEXT_PUBLIC_SITE_URL: "https://sunny-mvp-abc123.vercel.app",
+      VERCEL_ENV: "preview",
+    });
+    expect(url).toBe("https://sunny-mvp-abc123.vercel.app");
+  });
+
+  it("una dirección mal escrita no tumba el sitio", async () => {
+    // `new URL()` lanza con basura; se trata como una dirección cualquiera.
+    expect(await siteUrlCon({ NEXT_PUBLIC_SITE_URL: "no-es-una-url" })).toBe("no-es-una-url");
+  });
+
   it("usa NEXT_PUBLIC_SITE_URL cuando está puesta", async () => {
     expect(await siteUrlCon({ NEXT_PUBLIC_SITE_URL: "https://thesunnyproject.mx" })).toBe("https://thesunnyproject.mx");
   });

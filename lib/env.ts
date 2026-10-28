@@ -17,9 +17,24 @@
  * —sirve para mover el sitio sin tocar código— pero ya no hace falta que
  * exista.
  *
+ * LA VARIABLE EXISTÍA, Y TRAÍA LA DIRECCIÓN DE VERCEL
+ *
+ * Primero se creyó que faltaba. No faltaba: estaba puesta, para producción y
+ * para previsualización, con el valor `https://sunny-mvp.vercel.app`. Por eso
+ * poner el dominio en el código no cambió nada — la variable gana.
+ *
+ * Así que la regla no puede ser «la variable manda» a secas. En producción un
+ * `*.vercel.app` NO es la dirección del sitio: es la del despliegue, un
+ * detalle de dónde está alojado. Nadie quiere eso como canónica, ni en el
+ * mapa del sitio, ni en el enlace que se comparte. Cuando la variable trae
+ * eso en producción, se ignora.
+ *
+ * Fuera de producción sí vale: una previsualización vive de verdad en un
+ * `vercel.app` y tiene que probarse a sí misma.
+ *
  * ORDEN
  *
- *   1. `NEXT_PUBLIC_SITE_URL`, si alguien la pone a propósito.
+ *   1. `NEXT_PUBLIC_SITE_URL`, salvo que en producción apunte a vercel.app.
  *   2. En producción, el dominio oficial.
  *   3. En una previsualización, su propia URL: cada rama se prueba a sí misma
  *      y no se hace pasar por el sitio de verdad.
@@ -31,10 +46,22 @@
  */
 const DOMINIO_OFICIAL = "https://www.suniproject.com";
 
-function resolverSiteUrl(): string {
-  if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL;
+/** `https://algo.vercel.app/` -> true. Una dirección rota -> false. */
+function esDeVercel(direccion: string): boolean {
+  try {
+    return /(^|\.)vercel\.app$/.test(new URL(direccion).hostname);
+  } catch {
+    return false;
+  }
+}
 
-  if (process.env.VERCEL_ENV === "production") return DOMINIO_OFICIAL;
+function resolverSiteUrl(): string {
+  const enProduccion = process.env.VERCEL_ENV === "production";
+  const puesta = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+
+  if (puesta && !(enProduccion && esDeVercel(puesta))) return puesta;
+
+  if (enProduccion) return DOMINIO_OFICIAL;
 
   const enVercel = process.env.VERCEL_URL || process.env.VERCEL_PROJECT_PRODUCTION_URL;
   if (enVercel) return `https://${enVercel}`;
