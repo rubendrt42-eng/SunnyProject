@@ -69,14 +69,43 @@ function resolverSiteUrl(): string {
   return "http://localhost:3000";
 }
 
+/**
+ * A QUIÉN LE LLEGAN LOS AVISOS DE SOLICITUD NUEVA.
+ *
+ * Es su propia variable y no `ADMIN_EMAIL` porque no son lo mismo: en la
+ * versión avanzada `ADMIN_EMAIL` es la cuenta que se promueve a administrador
+ * al iniciar sesión —o sea, quien construye el sitio—, y el aviso de una
+ * solicitud tiene que llegarle a quien atiende a los clientes. Hoy son
+ * personas distintas.
+ *
+ * Acepta varias direcciones separadas por comas: durante la entrega conviene
+ * que el aviso le llegue a Emmy Y a quien la acompaña. Si no está puesta, cae
+ * en `ADMIN_EMAIL` para no dejar de avisar a nadie.
+ */
+function correosDeAviso(): string[] {
+  const crudo = process.env.LEADS_EMAIL || process.env.ADMIN_EMAIL || "";
+  return crudo
+    .split(",")
+    .map((c) => c.trim().toLowerCase())
+    .filter((c) => c.includes("@"));
+}
+
 export const env = {
   siteUrl: resolverSiteUrl(),
   supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL || "",
   supabaseAnonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "",
   supabaseServiceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY || "",
   resendApiKey: process.env.RESEND_API_KEY || "",
-  resendFromEmail: process.env.RESEND_FROM_EMAIL || "Sunny Project <onboarding@resend.dev>",
+  /*
+    El remitente por defecto decía «Sunny Project», la marca anterior. Solo se
+    usa mientras no haya `RESEND_FROM_EMAIL`, pero es el nombre que vería
+    quien reciba el correo, así que lo correcto es el de ahora. La dirección
+    sigue siendo la de pruebas de Resend: solo entrega al dueño de la cuenta,
+    y hasta que se verifique el dominio no hay otra.
+  */
+  resendFromEmail: process.env.RESEND_FROM_EMAIL || "Sun-i project <onboarding@resend.dev>",
   adminEmail: (process.env.ADMIN_EMAIL || "").toLowerCase().trim(),
+  leadsEmails: correosDeAviso(),
 };
 
 /**
@@ -90,4 +119,9 @@ export function isSupabaseConfigured(): boolean {
 
 export function isEmailConfigured(): boolean {
   return Boolean(env.resendApiKey);
+}
+
+/** Hay a quién avisarle y con qué mandarlo. */
+export function hayAvisoDeSolicitudes(): boolean {
+  return Boolean(env.resendApiKey) && env.leadsEmails.length > 0;
 }

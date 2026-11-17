@@ -11,18 +11,39 @@ import { env, isEmailConfigured } from "@/lib/env";
  * In development (no RESEND_API_KEY) the rendered email is printed to the
  * console instead of sent.
  */
-export async function sendEmail(params: { to: string; subject: string; react: ReactElement }): Promise<void> {
-  const { to, subject, react } = params;
+export async function sendEmail(params: {
+  to: string;
+  subject: string;
+  react: ReactElement;
+  /**
+   * A quién le contesta quien pulse «Responder», si no es al remitente.
+   *
+   * Para el aviso de una solicitud nueva es la dirección de quien la mandó:
+   * sin esto, responder le escribe al buzón de Sun-i, o sea a quien ya está
+   * leyendo el correo. Es opcional y no cambia a quien ya llamaba a esta
+   * función sin pasarlo.
+   */
+  replyTo?: string;
+}): Promise<void> {
+  const { to, subject, react, replyTo } = params;
 
   try {
     if (!isEmailConfigured()) {
       const html = await render(react);
-      console.log(`\n[email:dev] to=${to} subject="${subject}"\n${html}\n`);
+      console.log(
+        `\n[email:dev] to=${to}${replyTo ? ` replyTo=${replyTo}` : ""} subject="${subject}"\n${html}\n`,
+      );
       return;
     }
 
     const resend = new Resend(env.resendApiKey);
-    const { error } = await resend.emails.send({ from: env.resendFromEmail, to, subject, react });
+    const { error } = await resend.emails.send({
+      from: env.resendFromEmail,
+      to,
+      subject,
+      react,
+      ...(replyTo ? { replyTo } : {}),
+    });
 
     if (error) {
       console.error("[email] Resend error", error);

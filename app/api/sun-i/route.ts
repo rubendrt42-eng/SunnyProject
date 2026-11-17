@@ -1,4 +1,5 @@
-import { NextResponse, type NextRequest } from "next/server";
+import { after, NextResponse, type NextRequest } from "next/server";
+import { avisarSolicitudSunni } from "@/lib/email/solicitud-sunni";
 import { appendSunniLead, SheetsNotConfiguredError } from "@/lib/sheets";
 import { firstErrorMessage, rateLimit, sunniLeadSchema } from "@/lib/mvp-validation";
 
@@ -73,6 +74,36 @@ export async function POST(request: NextRequest) {
       { status: 502 },
     );
   }
+
+  /*
+    EL AVISO POR CORREO VA DESPUÉS DE LA RESPUESTA.
+
+    `after` es de Next: corre el trabajo cuando la respuesta ya salió. Así
+    quien llenó el formulario ve su «gracias» sin esperar a que el servicio
+    de correo conteste, que es medio segundo largo que no tiene por qué
+    pagar.
+
+    Y va aquí abajo, no antes del `return`, por el orden que importa: la hoja
+    de cálculo ya guardó la solicitud. Si el correo falla —la clave caducó,
+    el servicio está caído— nadie pierde nada: el contacto está en la hoja y
+    `avisarSolicitudSunni` se traga el error en vez de convertirlo en un «no
+    pudimos enviar tu solicitud» que sería mentira.
+  */
+  after(async () => {
+    await avisarSolicitudSunni({
+      tipo: d.tipo,
+      nombre: d.nombre,
+      email: d.email,
+      telefono: d.telefono,
+      espacio: d.espacio,
+      categoria: d.categoria,
+      ciudad: d.ciudad,
+      personas: d.personas,
+      interes: d.interes,
+      web: d.web,
+      mensaje: d.mensaje,
+    });
+  });
 
   return NextResponse.json({ ok: true });
 }
